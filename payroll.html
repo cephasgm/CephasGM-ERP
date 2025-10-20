@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#003366">
+  <meta name="description" content="Payroll management module for CephasGM ERP">
   <title>CephasGM – ERP | Payroll</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png">
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, sans-serif;
@@ -71,11 +75,24 @@
     .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
     input, select { width: 100%; padding: 6px; border-radius: 5px; border: 1px solid #ccc; }
     .toolbar { margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .pwa-install { background: #8e44ad; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+    .offline-status { 
+      background: #f39c12; 
+      color: white; 
+      padding: 5px 10px; 
+      border-radius: 4px; 
+      font-size: 12px;
+      display: none;
+    }
   </style>
 </head>
 <body>
 <header>
   CephasGM – ERP <span>Payroll</span>
+  <div>
+    <span class="offline-status" id="offlineStatus">Offline</span>
+    <button class="pwa-install" id="installButton" style="display:none;">📱 Install App</button>
+  </div>
 </header>
 
 <div class="container">
@@ -143,7 +160,7 @@
   </table>
 </div>
 
-<footer>Copyright © 2025 😀</footer>
+<footer>Copyright © 2025 😀 | <span id="appStatus">Online</span></footer>
 
 <!-- Popup Modal -->
 <div id="addModal">
@@ -164,8 +181,11 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
 <script>
 let payrollData = JSON.parse(localStorage.getItem('payrollData') || '[]');
+let deferredPrompt;
 
 const fields = [
   "Date","Employee Name","Employee ID","Currency","Hourly Rate (Normal Shift)","Hourly Rate (Overtime)",
@@ -173,6 +193,41 @@ const fields = [
   "(Normal Working Day) Total Amount","(OverTime) Total Amount","Total Amount","Bonus","Allowance","Deduction",
   "Gross Salary","PAYEE %","Net Salary","Remarks"
 ];
+
+// PWA Installation
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installButton').style.display = 'block';
+});
+
+document.getElementById('installButton').addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      document.getElementById('installButton').style.display = 'none';
+    }
+    deferredPrompt = null;
+  }
+});
+
+// Offline Detection
+window.addEventListener('online', () => {
+  document.getElementById('offlineStatus').style.display = 'none';
+  document.getElementById('appStatus').textContent = 'Online';
+});
+
+window.addEventListener('offline', () => {
+  document.getElementById('offlineStatus').style.display = 'inline-block';
+  document.getElementById('appStatus').textContent = 'Offline';
+});
+
+// Initialize offline status
+if (!navigator.onLine) {
+  document.getElementById('offlineStatus').style.display = 'inline-block';
+  document.getElementById('appStatus').textContent = 'Offline';
+}
 
 function renderForm() {
   const form = document.getElementById('formFields');
@@ -479,6 +534,19 @@ function updateSummary(){
   row[5].textContent=totals.allowance.toFixed(2);
   row[6].textContent=totals.deduction.toFixed(2);
   row[7].textContent=totals.gross.toFixed(2);
+}
+
+// Service Worker Registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then((registration) => {
+        console.log('SW registered: ', registration);
+      })
+      .catch((registrationError) => {
+        console.log('SW registration failed: ', registrationError);
+      });
+  });
 }
 
 // Initialize the application
