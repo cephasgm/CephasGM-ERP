@@ -1,760 +1,626 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CephasGM ERP System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#003366">
+  <meta name="description" content="CephasGM ERP - Complete Business Management Solution">
+  <title>CephasGM – ERP | Dashboard</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#2563eb"/>
-    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
     
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #64748b;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --background: #f8fafc;
-            --surface: #ffffff;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-        }
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    }
+    
+    .logo {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #003366;
+      margin-bottom: 10px;
+    }
+    
+    .tagline {
+      color: #666;
+      font-size: 1.1em;
+    }
+    
+    .nav-container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .nav-menu {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .nav-btn {
+      background: #003366;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    
+    .nav-btn:hover {
+      background: #002244;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .nav-btn.active {
+      background: #27ae60;
+    }
+    
+    .dashboard {
+      flex: 1;
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    .welcome-section {
+      text-align: center;
+      margin-bottom: 50px;
+      color: white;
+    }
+    
+    .welcome-section h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .welcome-section p {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+    
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+    
+    .module-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .module-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    }
+    
+    .module-icon {
+      font-size: 3em;
+      margin-bottom: 15px;
+      display: block;
+    }
+    
+    .module-card h3 {
+      color: #003366;
+      margin-bottom: 10px;
+      font-size: 1.4em;
+    }
+    
+    .module-card p {
+      color: #666;
+      line-height: 1.5;
+    }
+    
+    .stats-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    
+    .stat-card {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .stat-number {
+      font-size: 2em;
+      font-weight: bold;
+      color: #003366;
+      display: block;
+    }
+    
+    .stat-label {
+      color: #666;
+      font-size: 0.9em;
+    }
+    
+    footer {
+      background: #003366;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: auto;
+    }
+    
+    .pwa-status {
+      background: rgba(255,255,255,0.1);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      margin-top: 10px;
+      display: inline-block;
+    }
+    
+    .status-online { background: #27ae60; }
+    .status-offline { background: #e74c3c; }
+    
+    @media (max-width: 768px) {
+      .nav-menu {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .nav-btn {
+        width: 200px;
+        justify-content: center;
+      }
+      
+      .modules-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .welcome-section h1 {
+        font-size: 2em;
+      }
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    /* Installation Prompt Styles */
+    #installButton {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      z-index: 1000;
+      transition: all 0.3s ease;
+      display: none;
+    }
 
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.6;
-        }
+    #installButton:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
 
-        .dashboard {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            min-height: 100vh;
-        }
+    #installButton:active {
+      transform: translateY(0);
+    }
 
-        /* Sidebar Styles */
-        .sidebar {
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            padding: 2rem 1rem;
-            position: fixed;
-            width: 280px;
-            height: 100vh;
-            overflow-y: auto;
-        }
+    /* Installation Success Message */
+    .install-success {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #27ae60;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      animation: slideIn 0.3s ease;
+    }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-            padding: 0 1rem;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.25rem;
-        }
-
-        .nav-section {
-            margin-bottom: 2rem;
-        }
-
-        .nav-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--text-light);
-            margin-bottom: 1rem;
-            padding: 0 1rem;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            color: var(--text-light);
-            text-decoration: none;
-            transition: all 0.2s;
-            margin-bottom: 0.25rem;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-            font-size: 0.95rem;
-        }
-
-        .nav-item:hover {
-            background: #f1f5f9;
-            color: var(--text);
-        }
-
-        .nav-item.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .nav-icon {
-            font-size: 1.25rem;
-            width: 24px;
-            text-align: center;
-        }
-
-        /* Main Content Styles */
-        .main-content {
-            grid-column: 2;
-            padding: 2rem;
-            margin-left: 280px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .header h1 {
-            font-size: 1.875rem;
-            font-weight: 700;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .install-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            position: relative;
-        }
-
-        .install-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        .install-btn::after {
-            content: "Install CephasGM ERP on your device";
-            position: absolute;
-            bottom: -40px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e293b;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-        }
-
-        .install-btn:hover::after {
-            opacity: 1;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-
-        .stat-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .stat-title {
-            color: var(--text-light);
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .stat-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-change {
-            font-size: 0.875rem;
-            color: var(--success);
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        /* Charts Section */
-        .charts-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .chart-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-
-        .chart-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .chart-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-        }
-
-        .chart-container {
-            height: 300px;
-            position: relative;
-        }
-
-        /* AI Assistant */
-        .ai-assistant {
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .ai-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-
-        .ai-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--primary);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1rem;
-        }
-
-        .ai-input-group {
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .ai-input {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.95rem;
-        }
-
-        .ai-send {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        /* Recent Activity */
-        .activity-card {
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            background: #f1f5f9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-        }
-
-        .activity-content {
-            flex: 1;
-        }
-
-        .activity-title {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .activity-desc {
-            color: var(--text-light);
-            font-size: 0.875rem;
-        }
-
-        .activity-time {
-            color: var(--text-light);
-            font-size: 0.875rem;
-        }
-
-        /* Tooltip styles */
-        [data-tooltip] {
-            position: relative;
-        }
-
-        [data-tooltip]::before {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: -40px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e293b;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-            z-index: 1000;
-        }
-
-        [data-tooltip]:hover::before {
-            opacity: 1;
-        }
-
-        /* Focus styles for accessibility */
-        button:focus, .nav-item:focus, .ai-input:focus {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-
-        /* High contrast support */
-        @media (prefers-contrast: high) {
-            :root {
-                --border: #000000;
-                --text-light: #000000;
-            }
-            
-            .nav-item:hover, .stat-card, .chart-card, .ai-assistant, .activity-card {
-                border-width: 2px;
-            }
-        }
-
-        /* Mobile responsiveness */
-        @media (max-width: 1024px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-                z-index: 1000;
-            }
-            
-            .sidebar.mobile-open {
-                transform: translateX(0);
-            }
-            
-            .main-content {
-                margin-left: 0;
-                grid-column: 1;
-            }
-            
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="dashboard">
-        <!-- Sidebar Navigation -->
-        <nav class="sidebar" role="navigation" aria-label="Main navigation">
-            <div class="logo">
-                <div class="logo-icon">CG</div>
-                <div>
-                    <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
-                    <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
-                </div>
-            </div>
+  <header>
+    <div class="logo">CephasGM – ERP</div>
+    <div class="tagline">Complete Business Management Solution</div>
+    <div class="pwa-status status-online" id="pwaStatus">🟢 Online</div>
+  </header>
 
-            <div class="nav-section">
-                <div class="nav-title">Main</div>
-                <button class="nav-item active" data-tooltip="Dashboard overview" aria-label="Dashboard overview - Current page">
-                    <span class="nav-icon">📊</span>
-                    Dashboard
-                </button>
-                <button class="nav-item" data-tooltip="View and manage projects" aria-label="Projects management">
-                    <span class="nav-icon">📁</span>
-                    Projects
-                </button>
-                <button class="nav-item" data-tooltip="Team collaboration space" aria-label="Team collaboration">
-                    <span class="nav-icon">👥</span>
-                    Team
-                </button>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-title">Operations</div>
-                <button class="nav-item" data-tooltip="Financial reports and analytics" aria-label="Financial reports">
-                    <span class="nav-icon">💰</span>
-                    Finance
-                </button>
-                <button class="nav-item" data-tooltip="HR and people management" aria-label="Human resources">
-                    <span class="nav-icon">🏢</span>
-                    HR & People
-                </button>
-                <button class="nav-item" data-tooltip="Inventory and stock control" aria-label="Inventory management">
-                    <span class="nav-icon">📦</span>
-                    Inventory
-                </button>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-title">Tools</div>
-                <button class="nav-item" data-tooltip="Attendance and time tracking" aria-label="Attendance tracking">
-                    <span class="nav-icon" style="font-size: 1.4rem;">⏱️</span>
-                    Attendance
-                </button>
-                <button class="nav-item" data-tooltip="Payroll processing" aria-label="Payroll management">
-                    <span class="nav-icon" style="font-size: 1.4rem;">💳</span>
-                    Payroll
-                </button>
-                <button class="nav-item" data-tooltip="System settings" aria-label="System settings">
-                    <span class="nav-icon" style="font-size: 1.4rem;">⚙️</span>
-                    Settings
-                </button>
-            </div>
-        </nav>
-
-        <!-- Main Content -->
-        <main class="main-content" role="main">
-            <div class="header">
-                <h1>Admin Analytics Dashboard</h1>
-                <div class="header-actions">
-                    <button class="install-btn" id="installButton" aria-label="Install CephasGM ERP application">
-                        📱 Install App
-                    </button>
-                </div>
-            </div>
-
-            <p style="color: var(--text-light); margin-bottom: 2rem;">
-                Monitor project performance, team activity, and resource distribution — powered by simulated JSON data.
-            </p>
-
-            <!-- Stats Grid -->
-            <div class="stats-grid">
-                <div class="stat-card" role="region" aria-label="Active projects statistics">
-                    <div class="stat-header">
-                        <div class="stat-title">Active Projects</div>
-                        <div class="stat-icon" style="background: #dbeafe; color: var(--primary);">📁</div>
-                    </div>
-                    <div class="stat-value">8</div>
-                    <div class="stat-change">
-                        <span>↑ 12%</span> from last month
-                    </div>
-                </div>
-
-                <div class="stat-card" role="region" aria-label="Team activity statistics">
-                    <div class="stat-header">
-                        <div class="stat-title">Team Activity</div>
-                        <div class="stat-icon" style="background: #f0fdf4; color: var(--success);">👥</div>
-                    </div>
-                    <div class="stat-value">94%</div>
-                    <div class="stat-change">
-                        <span>↑ 5%</span> engagement
-                    </div>
-                </div>
-
-                <div class="stat-card" role="region" aria-label="Resource usage statistics">
-                    <div class="stat-header">
-                        <div class="stat-title">Resource Usage</div>
-                        <div class="stat-icon" style="background: #fffbeb; color: var(--warning);">📊</div>
-                    </div>
-                    <div class="stat-value">76%</div>
-                    <div class="stat-change">
-                        <span>↓ 8%</span> optimized
-                    </div>
-                </div>
-
-                <div class="stat-card" role="region" aria-label="Budget tracking statistics">
-                    <div class="stat-header">
-                        <div class="stat-title">Budget Health</div>
-                        <div class="stat-icon" style="background: #fef2f2; color: var(--error);">💰</div>
-                    </div>
-                    <div class="stat-value">92%</div>
-                    <div class="stat-change">
-                        <span>↑ 3%</span> on track
-                    </div>
-                </div>
-            </div>
-
-            <!-- Charts & AI Assistant -->
-            <div class="charts-grid">
-                <div class="chart-card" role="region" aria-label="Performance analytics chart">
-                    <div class="chart-header">
-                        <div class="chart-title">Performance Analytics</div>
-                    </div>
-                    <div class="chart-container" id="performanceChart">
-                        <!-- Chart will be rendered here with live data -->
-                        <div style="display: flex; align-items: end; gap: 8px; height: 100%; padding: 20px 0;">
-                            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
-                                <div style="background: var(--primary); width: 100%; border-radius: 4px; margin-bottom: 8px;"
-                                    data-value="65" class="chart-bar"></div>
-                                <small>Mon</small>
-                            </div>
-                            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
-                                <div style="background: var(--primary); width: 100%; border-radius: 4px; margin-bottom: 8px;"
-                                    data-value="82" class="chart-bar"></div>
-                                <small>Tue</small>
-                            </div>
-                            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
-                                <div style="background: var(--primary); width: 100%; border-radius: 4px; margin-bottom: 8px;"
-                                    data-value="75" class="chart-bar"></div>
-                                <small>Wed</small>
-                            </div>
-                            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
-                                <div style="background: var(--primary); width: 100%; border-radius: 4px; margin-bottom: 8px;"
-                                    data-value="91" class="chart-bar"></div>
-                                <small>Thu</small>
-                            </div>
-                            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
-                                <div style="background: var(--primary); width: 100%; border-radius: 4px; margin-bottom: 8px;"
-                                    data-value="88" class="chart-bar"></div>
-                                <small>Fri</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ai-assistant" role="region" aria-label="CephasAI Assistant">
-                    <div class="ai-header">
-                        <div class="ai-icon">🤖</div>
-                        <div>
-                            <div style="font-weight: 600;">CephasAI Assistant</div>
-                            <div style="font-size: 0.875rem; color: var(--text-light);">
-                                Ask about team goals, reports, or performance.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ai-input-group">
-                        <input type="text" class="ai-input" placeholder="Ask about team performance..." 
-                               aria-label="Ask CephasAI Assistant a question">
-                        <button class="ai-send" aria-label="Send message to AI assistant">Send</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activity -->
-            <div class="activity-card" role="region" aria-label="Recent activity feed">
-                <div class="chart-header">
-                    <div class="chart-title">Recent Activity</div>
-                </div>
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <div class="activity-icon">📊</div>
-                        <div class="activity-content">
-                            <div class="activity-title">Monthly Report Generated</div>
-                            <div class="activity-desc">Q1 2024 Performance Analysis.pdf</div>
-                        </div>
-                        <div class="activity-time">2 hours ago</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon">👥</div>
-                        <div class="activity-content">
-                            <div class="activity-title">Team Meeting Completed</div>
-                            <div class="activity-desc">Sprint planning session</div>
-                        </div>
-                        <div class="activity-time">4 hours ago</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon">✅</div>
-                        <div class="activity-content">
-                            <div class="activity-title">Project Milestone Reached</div>
-                            <div class="activity-desc">"Smart City Initiative" phase 2</div>
-                        </div>
-                        <div class="activity-time">1 day ago</div>
-                    </div>
-                </div>
-            </div>
-        </main>
+  <nav class="nav-container">
+    <div class="nav-menu">
+      <a href="index.html" class="nav-btn active">🏠 Dashboard</a>
+      <a href="payroll.html" class="nav-btn">💰 Payroll</a>
+      <a href="attendance.html" class="nav-btn">⏱️ Attendance & Leave</a>
+      <a href="meetings.html" class="nav-btn">📅 Company Meetings</a>
+      <a href="finance.html" class="nav-btn">💳 Finance</a>
+      <a href="admin.html" class="nav-btn">⚙️ Administrator</a>
     </div>
+  </nav>
 
-    <script>
-        // PWA Installation
-        let deferredPrompt;
-        const installButton = document.getElementById('installButton');
+  <main class="dashboard">
+    <section class="welcome-section">
+      <h1>Welcome to CephasGM ERP</h1>
+      <p>Streamline your business operations with our comprehensive management system</p>
+    </section>
 
+    <section class="modules-grid">
+      <div class="module-card" onclick="location.href='payroll.html'">
+        <span class="module-icon">💰</span>
+        <h3>Payroll Management</h3>
+        <p>Manage employee salaries, bonuses, deductions, and generate payroll reports with automatic calculations.</p>
+      </div>
+
+      <div class="module-card" onclick="location.href='attendance.html'">
+        <span class="module-icon">⏱️</span>
+        <h3>Attendance & Leave</h3>
+        <p>Track employee attendance, manage leave requests, and monitor working hours with real-time updates.</p>
+      </div>
+
+      <div class="module-card" onclick="location.href='meetings.html'">
+        <span class="module-icon">📅</span>
+        <h3>Company Meetings</h3>
+        <p>Schedule and manage company meetings, integrate with Google Calendar, and track meeting outcomes.</p>
+      </div>
+
+      <div class="module-card" onclick="location.href='finance.html'">
+        <span class="module-icon">💳</span>
+        <h3>Finance Management</h3>
+        <p>Comprehensive financial tracking, expense management, revenue reports, and budget planning.</p>
+      </div>
+
+      <div class="module-card" onclick="location.href='admin.html'">
+        <span class="module-icon">⚙️</span>
+        <h3>Administrator</h3>
+        <p>System configuration, user management, permissions, and overall system administration controls.</p>
+      </div>
+
+      <div class="module-card">
+        <span class="module-icon">📊</span>
+        <h3>Reports & Analytics</h3>
+        <p>Generate comprehensive reports, visualize data with charts, and gain insights into business performance.</p>
+      </div>
+    </section>
+
+    <section class="stats-section">
+      <div class="stat-card">
+        <span class="stat-number" id="totalEmployees">0</span>
+        <span class="stat-label">Total Employees</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="pendingPayroll">0</span>
+        <span class="stat-label">Pending Payroll</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="activeMeetings">0</span>
+        <span class="stat-label">Active Meetings</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="systemHealth">100%</span>
+        <span class="stat-label">System Health</span>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Copyright © 2025 😀
+  </footer>
+
+  <!-- Install Button (will be shown when PWA can be installed) -->
+  <button id="installButton">📱 Install CephasGM ERP</button>
+
+  <script>
+    // Load dashboard statistics
+    function loadDashboardStats() {
+      // Load payroll data for employee count
+      try {
+        const payrollData = JSON.parse(localStorage.getItem('payrollData') || '[]');
+        document.getElementById('totalEmployees').textContent = payrollData.length;
+        
+        // Calculate pending payroll (entries from current month)
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+        const pendingPayroll = payrollData.filter(entry => {
+          if (!entry.Date) return false;
+          const entryDate = new Date(entry.Date);
+          return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
+        }).length;
+        document.getElementById('pendingPayroll').textContent = pendingPayroll;
+        
+        // Simulate active meetings (would come from meetings data)
+        document.getElementById('activeMeetings').textContent = Math.floor(Math.random() * 5);
+      } catch (error) {
+        console.log('Error loading dashboard stats:', error);
+      }
+    }
+    
+    // Initialize dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+      loadDashboardStats();
+      
+      // Add click effects to module cards
+      document.querySelectorAll('.module-card').forEach(card => {
+        card.addEventListener('click', function() {
+          this.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            this.style.transform = '';
+          }, 150);
+        });
+      });
+    });
+    
+    // Update stats every 30 seconds
+    setInterval(loadDashboardStats, 30000);
+  </script>
+
+  <!-- Improved PWA Installation Script -->
+  <script>
+    // PWA Installation with Manual Trigger
+    let deferredPrompt;
+    let installButton;
+
+    function initializePWA() {
+        installButton = document.getElementById('installButton');
+        
+        // Listen for beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('🎯 beforeinstallprompt event fired');
             e.preventDefault();
             deferredPrompt = e;
-            installButton.style.display = 'flex';
             
-            installButton.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        installButton.textContent = '✅ Installed';
-                        installButton.disabled = true;
-                    }
-                    deferredPrompt = null;
+            // Show install button
+            installButton.style.display = 'block';
+            console.log('📱 Install button should be visible now');
+            
+            installButton.onclick = async () => {
+                if (!deferredPrompt) {
+                    console.log('❌ No deferred prompt available');
+                    return;
                 }
-            });
-        });
-
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('SW registered: ', registration);
-                    })
-                    .catch(registrationError => {
-                        console.log('SW registration failed: ', registrationError);
-                    });
-            });
-        }
-
-        // Active Navigation
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.nav-item').forEach(nav => {
-                    nav.classList.remove('active');
-                    nav.setAttribute('aria-current', 'false');
-                });
-                this.classList.add('active');
-                this.setAttribute('aria-current', 'page');
-            });
-        });
-
-        // Live Chart Data Simulation
-        function updateChartData() {
-            document.querySelectorAll('.chart-bar').forEach(bar => {
-                const currentValue = parseInt(bar.getAttribute('data-value'));
-                const newValue = Math.min(100, Math.max(0, currentValue + (Math.random() * 20 - 10)));
-                bar.setAttribute('data-value', newValue);
-                bar.style.height = newValue + '%';
-            });
-        }
-
-        // Update charts every 30 seconds with live data
-        setInterval(updateChartData, 30000);
-
-        // Initialize chart heights
-        document.querySelectorAll('.chart-bar').forEach(bar => {
-            const value = bar.getAttribute('data-value');
-            bar.style.height = value + '%';
-        });
-
-        // AI Assistant Interaction
-        document.querySelector('.ai-send').addEventListener('click', function() {
-            const input = document.querySelector('.ai-input');
-            const question = input.value.trim();
-            
-            if (question) {
-                // Simulate AI response
-                const responses = [
-                    "Based on current data, team performance is at 94% with positive trending.",
-                    "Project milestones are 85% complete for this quarter.",
-                    "Resource allocation is optimized at 76% utilization.",
-                    "Budget health is strong at 92% with all projects on track."
-                ];
                 
-                const response = responses[Math.floor(Math.random() * responses.length)];
-                alert(`CephasAI: ${response}`);
-                input.value = '';
-            }
+                console.log('🔄 Showing install prompt...');
+                deferredPrompt.prompt();
+                
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to install prompt: ${outcome}`);
+                
+                if (outcome === 'accepted') {
+                    console.log('✅ User accepted the install prompt');
+                    installButton.style.display = 'none';
+                    showInstallSuccess();
+                } else {
+                    console.log('❌ User dismissed the install prompt');
+                    // Keep button visible for next try
+                }
+                
+                deferredPrompt = null;
+            };
         });
 
-        // Export functionality with tooltips
-        document.querySelectorAll('.export-btn').forEach(btn => {
-            btn.setAttribute('data-tooltip', 'Export to Excel/PDF format');
+        // Track successful installation
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('🎉 CephasGM ERP was successfully installed');
+            installButton.style.display = 'none';
+            showInstallSuccess();
         });
 
-        // Enhanced time formatting for attendance
-        function formatTimeTracking(hours, minutes) {
-            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        // Check if already installed
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('📱 App is already installed in standalone mode');
+            installButton.style.display = 'none';
         }
-    </script>
+
+        // Also check for other installation indicators
+        if (window.navigator.standalone) {
+            console.log('📱 App is installed (iOS)');
+            installButton.style.display = 'none';
+        }
+    }
+
+    function showInstallSuccess() {
+        const successMsg = document.createElement('div');
+        successMsg.className = 'install-success';
+        successMsg.innerHTML = '✅ CephasGM ERP Installed Successfully!';
+        document.body.appendChild(successMsg);
+        
+        setTimeout(() => {
+            successMsg.remove();
+        }, 3000);
+    }
+
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('./sw.js')
+                .then(function(registration) {
+                    console.log('✅ ServiceWorker registered successfully with scope:', registration.scope);
+                    
+                    // Check if page is controlled
+                    if (navigator.serviceWorker.controller) {
+                        console.log('⚡ Page is controlled by service worker');
+                    }
+
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        console.log('🔄 New service worker found...');
+                        
+                        newWorker.addEventListener('statechange', () => {
+                            console.log('Service worker state:', newWorker.state);
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('🆕 New content available; please refresh.');
+                            }
+                        });
+                    });
+                })
+                .catch(function(error) {
+                    console.log('❌ ServiceWorker registration failed: ', error);
+                });
+        });
+
+        // Listen for controlled page to claim this client
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            console.log('🔄 Controller changed');
+        });
+    }
+
+    // Offline/Online Detection
+    function updateOnlineStatus() {
+        const statusElement = document.getElementById('pwaStatus');
+        if (navigator.onLine) {
+            statusElement.textContent = '🟢 Online';
+            statusElement.className = 'pwa-status status-online';
+            console.log('✅ Application is online');
+        } else {
+            statusElement.textContent = '🔴 Offline';
+            statusElement.className = 'pwa-status status-offline';
+            console.log('⚠️ Application is offline - using cached resources');
+        }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    // Initialize PWA features when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializePWA);
+    } else {
+        initializePWA();
+    }
+
+    // Initialize online status
+    updateOnlineStatus();
+
+    // Manual installation helper (for testing)
+    function showManualInstallInstructions() {
+        const instructions = `
+📱 How to Install CephasGM ERP:
+
+Chrome/Edge:
+1. Click the "Install" icon in address bar 📥
+2. Or go to: Menu → More Tools → Create Shortcut
+3. Check "Open as window" for app experience
+
+Firefox:
+1. Menu → More Tools → Install CephasGM ERP
+
+Safari (iOS):
+1. Share button → Add to Home Screen
+
+Why no automatic prompt?
+- Need to visit site 2+ times
+- Spend 30+ seconds on site
+- Interact with the site
+- Some browsers restrict automatic prompts
+
+Current Status:
+✅ Service Worker: ${'serviceWorker' in navigator}
+✅ HTTPS: ${location.protocol === 'https:'}
+✅ Manifest: ${!!document.querySelector('link[rel="manifest"]')}
+        `;
+        alert(instructions);
+    }
+
+    // Add manual install helper (temporary - remove after testing)
+    setTimeout(() => {
+        if (!deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('💡 No install prompt yet - showing manual instructions');
+            // Uncomment the line below if you want to automatically show instructions
+            // showManualInstallInstructions();
+        }
+    }, 5000);
+
+    // Network status monitoring
+    if ('connection' in navigator) {
+        const connection = navigator.connection;
+        console.log('📶 Connection type:', connection.effectiveType);
+        console.log('📊 Downlink speed:', connection.downlink + ' Mbps');
+        
+        connection.addEventListener('change', () => {
+            console.log('🔄 Connection changed to:', connection.effectiveType);
+        });
+    }
+
+    // Cache management
+    async function clearOldCaches() {
+        if ('caches' in window) {
+            try {
+                const cacheNames = await caches.keys();
+                const currentCache = 'cephasgm-erp-v2';
+                
+                const deletionPromises = cacheNames.map(cacheName => {
+                    if (cacheName !== currentCache) {
+                        console.log('🗑️ Deleting old cache:', cacheName);
+                        return caches.delete(cacheName);
+                    }
+                });
+                
+                await Promise.all(deletionPromises);
+                console.log('✅ Old caches cleared');
+            } catch (error) {
+                console.log('❌ Error clearing caches:', error);
+            }
+        }
+    }
+
+    // Initialize cache management
+    document.addEventListener('DOMContentLoaded', async () => {
+        await clearOldCaches();
+    });
+
+  </script>
 </body>
 </html>
