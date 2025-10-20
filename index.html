@@ -217,6 +217,60 @@
         font-size: 2em;
       }
     }
+
+    /* Installation Prompt Styles */
+    #installButton {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      z-index: 1000;
+      transition: all 0.3s ease;
+      display: none;
+    }
+
+    #installButton:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+    #installButton:active {
+      transform: translateY(0);
+    }
+
+    /* Installation Success Message */
+    .install-success {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #27ae60;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
   </style>
 </head>
 <body>
@@ -305,6 +359,9 @@
     Copyright © 2025 😀
   </footer>
 
+  <!-- Install Button (will be shown when PWA can be installed) -->
+  <button id="installButton">📱 Install CephasGM ERP</button>
+
   <script>
     // Load dashboard statistics
     function loadDashboardStats() {
@@ -349,232 +406,220 @@
     setInterval(loadDashboardStats, 30000);
   </script>
 
-  <!-- Service Worker Registration and PWA Features -->
+  <!-- Improved PWA Installation Script -->
   <script>
-    // Service Worker Registration
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js')
-          .then(function(registration) {
-            console.log('✅ ServiceWorker registration successful with scope: ', registration.scope);
-            
-            // Check for updates
-            registration.addEventListener('updatefound', () => {
-              const newWorker = registration.installing;
-              console.log('🔄 New service worker found...');
-              
-              newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  console.log('🆕 New content available; please refresh.');
-                  // You can show an update notification here
-                }
-              });
-            });
-          })
-          .catch(function(error) {
-            console.log('❌ ServiceWorker registration failed: ', error);
-          });
-      });
+    // PWA Installation with Manual Trigger
+    let deferredPrompt;
+    let installButton;
 
-      // Listen for controlled page to claim this client
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.log('🔄 Controller changed, page reload might be needed');
-      });
+    function initializePWA() {
+        installButton = document.getElementById('installButton');
+        
+        // Listen for beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('🎯 beforeinstallprompt event fired');
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install button
+            installButton.style.display = 'block';
+            console.log('📱 Install button should be visible now');
+            
+            installButton.onclick = async () => {
+                if (!deferredPrompt) {
+                    console.log('❌ No deferred prompt available');
+                    return;
+                }
+                
+                console.log('🔄 Showing install prompt...');
+                deferredPrompt.prompt();
+                
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to install prompt: ${outcome}`);
+                
+                if (outcome === 'accepted') {
+                    console.log('✅ User accepted the install prompt');
+                    installButton.style.display = 'none';
+                    showInstallSuccess();
+                } else {
+                    console.log('❌ User dismissed the install prompt');
+                    // Keep button visible for next try
+                }
+                
+                deferredPrompt = null;
+            };
+        });
+
+        // Track successful installation
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('🎉 CephasGM ERP was successfully installed');
+            installButton.style.display = 'none';
+            showInstallSuccess();
+        });
+
+        // Check if already installed
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('📱 App is already installed in standalone mode');
+            installButton.style.display = 'none';
+        }
+
+        // Also check for other installation indicators
+        if (window.navigator.standalone) {
+            console.log('📱 App is installed (iOS)');
+            installButton.style.display = 'none';
+        }
     }
 
-    // PWA Installation Prompt
-    let deferredPrompt;
-    const installButton = document.createElement('button');
-    
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      
-      // Show install promotion (optional)
-      installButton.textContent = '📱 Install App';
-      installButton.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #003366;
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 25px;
-        cursor: pointer;
-        font-weight: bold;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        z-index: 1000;
-      `;
-      
-      installButton.addEventListener('click', async () => {
-        if (!deferredPrompt) return;
+    function showInstallSuccess() {
+        const successMsg = document.createElement('div');
+        successMsg.className = 'install-success';
+        successMsg.innerHTML = '✅ CephasGM ERP Installed Successfully!';
+        document.body.appendChild(successMsg);
         
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        
-        if (outcome === 'accepted') {
-          console.log('✅ User accepted the install prompt');
-          installButton.style.display = 'none';
-        } else {
-          console.log('❌ User dismissed the install prompt');
-        }
-        
-        deferredPrompt = null;
-      });
-      
-      document.body.appendChild(installButton);
-    });
+        setTimeout(() => {
+            successMsg.remove();
+        }, 3000);
+    }
 
-    // Track successful installation
-    window.addEventListener('appinstalled', (evt) => {
-      console.log('🎉 CephasGM ERP was successfully installed');
-      if (installButton.parentNode) {
-        installButton.parentNode.removeChild(installButton);
-      }
-    });
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('./sw.js')
+                .then(function(registration) {
+                    console.log('✅ ServiceWorker registered successfully with scope:', registration.scope);
+                    
+                    // Check if page is controlled
+                    if (navigator.serviceWorker.controller) {
+                        console.log('⚡ Page is controlled by service worker');
+                    }
+
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        console.log('🔄 New service worker found...');
+                        
+                        newWorker.addEventListener('statechange', () => {
+                            console.log('Service worker state:', newWorker.state);
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('🆕 New content available; please refresh.');
+                            }
+                        });
+                    });
+                })
+                .catch(function(error) {
+                    console.log('❌ ServiceWorker registration failed: ', error);
+                });
+        });
+
+        // Listen for controlled page to claim this client
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            console.log('🔄 Controller changed');
+        });
+    }
 
     // Offline/Online Detection
     function updateOnlineStatus() {
-      const statusElement = document.getElementById('pwaStatus');
-      if (navigator.onLine) {
-        statusElement.textContent = '🟢 Online';
-        statusElement.className = 'pwa-status status-online';
-        console.log('✅ Application is online');
-      } else {
-        statusElement.textContent = '🔴 Offline';
-        statusElement.className = 'pwa-status status-offline';
-        console.log('⚠️ Application is offline - using cached resources');
-      }
+        const statusElement = document.getElementById('pwaStatus');
+        if (navigator.onLine) {
+            statusElement.textContent = '🟢 Online';
+            statusElement.className = 'pwa-status status-online';
+            console.log('✅ Application is online');
+        } else {
+            statusElement.textContent = '🔴 Offline';
+            statusElement.className = 'pwa-status status-offline';
+            console.log('⚠️ Application is offline - using cached resources');
+        }
     }
 
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
 
-    // Initialize status
+    // Initialize PWA features when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializePWA);
+    } else {
+        initializePWA();
+    }
+
+    // Initialize online status
     updateOnlineStatus();
 
-    // Periodic sync registration (if needed)
-    if ('serviceWorker' in navigator && 'SyncManager' in window) {
-      navigator.serviceWorker.ready.then(registration => {
-        registration.sync.register('background-sync')
-          .then(() => console.log('✅ Background sync registered'))
-          .catch(err => console.log('❌ Background sync registration failed:', err));
-      });
+    // Manual installation helper (for testing)
+    function showManualInstallInstructions() {
+        const instructions = `
+📱 How to Install CephasGM ERP:
+
+Chrome/Edge:
+1. Click the "Install" icon in address bar 📥
+2. Or go to: Menu → More Tools → Create Shortcut
+3. Check "Open as window" for app experience
+
+Firefox:
+1. Menu → More Tools → Install CephasGM ERP
+
+Safari (iOS):
+1. Share button → Add to Home Screen
+
+Why no automatic prompt?
+- Need to visit site 2+ times
+- Spend 30+ seconds on site
+- Interact with the site
+- Some browsers restrict automatic prompts
+
+Current Status:
+✅ Service Worker: ${'serviceWorker' in navigator}
+✅ HTTPS: ${location.protocol === 'https:'}
+✅ Manifest: ${!!document.querySelector('link[rel="manifest"]')}
+        `;
+        alert(instructions);
     }
 
-    // Check if app is running in standalone mode (installed)
-    function checkDisplayMode() {
-      if (window.matchMedia('(display-mode: standalone)').matches) {
-        console.log('📱 App running in standalone mode');
-        document.body.classList.add('standalone');
-      } else {
-        console.log('🌐 App running in browser tab');
-      }
-    }
-
-    checkDisplayMode();
-
-    // Listen for display mode changes
-    window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
-      if (e.matches) {
-        console.log('📱 Changed to standalone mode');
-      } else {
-        console.log('🌐 Changed to browser tab');
-      }
-    });
-
-    // Cache management helper functions
-    const CacheManager = {
-      async clearOldCaches() {
-        if ('caches' in window) {
-          const cacheNames = await caches.keys();
-          const currentCache = 'cephasgm-erp-v2';
-          
-          return Promise.all(
-            cacheNames.map(cacheName => {
-              if (cacheName !== currentCache) {
-                console.log('🗑️ Deleting old cache:', cacheName);
-                return caches.delete(cacheName);
-              }
-            })
-          );
+    // Add manual install helper (temporary - remove after testing)
+    setTimeout(() => {
+        if (!deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('💡 No install prompt yet - showing manual instructions');
+            // Uncomment the line below if you want to automatically show instructions
+            // showManualInstallInstructions();
         }
-      },
-      
-      async getCacheSize() {
+    }, 5000);
+
+    // Network status monitoring
+    if ('connection' in navigator) {
+        const connection = navigator.connection;
+        console.log('📶 Connection type:', connection.effectiveType);
+        console.log('📊 Downlink speed:', connection.downlink + ' Mbps');
+        
+        connection.addEventListener('change', () => {
+            console.log('🔄 Connection changed to:', connection.effectiveType);
+        });
+    }
+
+    // Cache management
+    async function clearOldCaches() {
         if ('caches' in window) {
-          const cache = await caches.open('cephasgm-erp-v2');
-          const keys = await cache.keys();
-          let totalSize = 0;
-          
-          for (const request of keys) {
-            const response = await cache.match(request);
-            if (response) {
-              const blob = await response.blob();
-              totalSize += blob.size;
+            try {
+                const cacheNames = await caches.keys();
+                const currentCache = 'cephasgm-erp-v2';
+                
+                const deletionPromises = cacheNames.map(cacheName => {
+                    if (cacheName !== currentCache) {
+                        console.log('🗑️ Deleting old cache:', cacheName);
+                        return caches.delete(cacheName);
+                    }
+                });
+                
+                await Promise.all(deletionPromises);
+                console.log('✅ Old caches cleared');
+            } catch (error) {
+                console.log('❌ Error clearing caches:', error);
             }
-          }
-          
-          return (totalSize / (1024 * 1024)).toFixed(2) + ' MB';
         }
-        return '0 MB';
-      }
-    };
+    }
 
     // Initialize cache management
     document.addEventListener('DOMContentLoaded', async () => {
-      try {
-        await CacheManager.clearOldCaches();
-        const cacheSize = await CacheManager.getCacheSize();
-        console.log(`💾 Current cache size: ${cacheSize}`);
-      } catch (error) {
-        console.log('❌ Cache management error:', error);
-      }
+        await clearOldCaches();
     });
-
-    // Add to Home Screen functionality
-    function showInstallPromotion() {
-      if (deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches) {
-        // You could show a custom install banner here
-        console.log('📱 Install promotion available');
-      }
-    }
-
-    // Check if page was loaded via service worker
-    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-      console.log('⚡ Page controlled by service worker');
-    }
-
-    // Network status monitoring
-    const ConnectionMonitor = {
-      init() {
-        if ('connection' in navigator) {
-          const connection = navigator.connection;
-          console.log('📶 Connection type:', connection.effectiveType);
-          console.log('📊 Downlink speed:', connection.downlink + ' Mbps');
-          
-          connection.addEventListener('change', () => {
-            console.log('🔄 Connection changed to:', connection.effectiveType);
-            this.handleConnectionChange(connection.effectiveType);
-          });
-        }
-      },
-      
-      handleConnectionChange(connectionType) {
-        const stats = document.getElementById('systemHealth');
-        if (connectionType === 'slow-2g' || connectionType === '2g') {
-          stats.textContent = '85%';
-          stats.style.color = '#f39c12';
-        } else {
-          stats.textContent = '100%';
-          stats.style.color = '#003366';
-        }
-      }
-    };
-
-    // Initialize connection monitoring
-    ConnectionMonitor.init();
 
   </script>
 </body>
