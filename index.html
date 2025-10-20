@@ -186,6 +186,18 @@
       margin-top: auto;
     }
     
+    .pwa-status {
+      background: rgba(255,255,255,0.1);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      margin-top: 10px;
+      display: inline-block;
+    }
+    
+    .status-online { background: #27ae60; }
+    .status-offline { background: #e74c3c; }
+    
     @media (max-width: 768px) {
       .nav-menu {
         flex-direction: column;
@@ -211,6 +223,7 @@
   <header>
     <div class="logo">CephasGM – ERP</div>
     <div class="tagline">Complete Business Management Solution</div>
+    <div class="pwa-status status-online" id="pwaStatus">🟢 Online</div>
   </header>
 
   <nav class="nav-container">
@@ -296,20 +309,25 @@
     // Load dashboard statistics
     function loadDashboardStats() {
       // Load payroll data for employee count
-      const payrollData = JSON.parse(localStorage.getItem('payrollData') || '[]');
-      document.getElementById('totalEmployees').textContent = payrollData.length;
-      
-      // Calculate pending payroll (entries from current month)
-      const currentMonth = new Date().getMonth();
-      const currentYear = new Date().getFullYear();
-      const pendingPayroll = payrollData.filter(entry => {
-        const entryDate = new Date(entry.Date);
-        return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
-      }).length;
-      document.getElementById('pendingPayroll').textContent = pendingPayroll;
-      
-      // Simulate active meetings (would come from meetings data)
-      document.getElementById('activeMeetings').textContent = Math.floor(Math.random() * 5);
+      try {
+        const payrollData = JSON.parse(localStorage.getItem('payrollData') || '[]');
+        document.getElementById('totalEmployees').textContent = payrollData.length;
+        
+        // Calculate pending payroll (entries from current month)
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+        const pendingPayroll = payrollData.filter(entry => {
+          if (!entry.Date) return false;
+          const entryDate = new Date(entry.Date);
+          return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
+        }).length;
+        document.getElementById('pendingPayroll').textContent = pendingPayroll;
+        
+        // Simulate active meetings (would come from meetings data)
+        document.getElementById('activeMeetings').textContent = Math.floor(Math.random() * 5);
+      } catch (error) {
+        console.log('Error loading dashboard stats:', error);
+      }
     }
     
     // Initialize dashboard
@@ -329,6 +347,235 @@
     
     // Update stats every 30 seconds
     setInterval(loadDashboardStats, 30000);
+  </script>
+
+  <!-- Service Worker Registration and PWA Features -->
+  <script>
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./sw.js')
+          .then(function(registration) {
+            console.log('✅ ServiceWorker registration successful with scope: ', registration.scope);
+            
+            // Check for updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              console.log('🔄 New service worker found...');
+              
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('🆕 New content available; please refresh.');
+                  // You can show an update notification here
+                }
+              });
+            });
+          })
+          .catch(function(error) {
+            console.log('❌ ServiceWorker registration failed: ', error);
+          });
+      });
+
+      // Listen for controlled page to claim this client
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        console.log('🔄 Controller changed, page reload might be needed');
+      });
+    }
+
+    // PWA Installation Prompt
+    let deferredPrompt;
+    const installButton = document.createElement('button');
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      
+      // Show install promotion (optional)
+      installButton.textContent = '📱 Install App';
+      installButton.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #003366;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 1000;
+      `;
+      
+      installButton.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        
+        if (outcome === 'accepted') {
+          console.log('✅ User accepted the install prompt');
+          installButton.style.display = 'none';
+        } else {
+          console.log('❌ User dismissed the install prompt');
+        }
+        
+        deferredPrompt = null;
+      });
+      
+      document.body.appendChild(installButton);
+    });
+
+    // Track successful installation
+    window.addEventListener('appinstalled', (evt) => {
+      console.log('🎉 CephasGM ERP was successfully installed');
+      if (installButton.parentNode) {
+        installButton.parentNode.removeChild(installButton);
+      }
+    });
+
+    // Offline/Online Detection
+    function updateOnlineStatus() {
+      const statusElement = document.getElementById('pwaStatus');
+      if (navigator.onLine) {
+        statusElement.textContent = '🟢 Online';
+        statusElement.className = 'pwa-status status-online';
+        console.log('✅ Application is online');
+      } else {
+        statusElement.textContent = '🔴 Offline';
+        statusElement.className = 'pwa-status status-offline';
+        console.log('⚠️ Application is offline - using cached resources');
+      }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    // Initialize status
+    updateOnlineStatus();
+
+    // Periodic sync registration (if needed)
+    if ('serviceWorker' in navigator && 'SyncManager' in window) {
+      navigator.serviceWorker.ready.then(registration => {
+        registration.sync.register('background-sync')
+          .then(() => console.log('✅ Background sync registered'))
+          .catch(err => console.log('❌ Background sync registration failed:', err));
+      });
+    }
+
+    // Check if app is running in standalone mode (installed)
+    function checkDisplayMode() {
+      if (window.matchMedia('(display-mode: standalone)').matches) {
+        console.log('📱 App running in standalone mode');
+        document.body.classList.add('standalone');
+      } else {
+        console.log('🌐 App running in browser tab');
+      }
+    }
+
+    checkDisplayMode();
+
+    // Listen for display mode changes
+    window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
+      if (e.matches) {
+        console.log('📱 Changed to standalone mode');
+      } else {
+        console.log('🌐 Changed to browser tab');
+      }
+    });
+
+    // Cache management helper functions
+    const CacheManager = {
+      async clearOldCaches() {
+        if ('caches' in window) {
+          const cacheNames = await caches.keys();
+          const currentCache = 'cephasgm-erp-v2';
+          
+          return Promise.all(
+            cacheNames.map(cacheName => {
+              if (cacheName !== currentCache) {
+                console.log('🗑️ Deleting old cache:', cacheName);
+                return caches.delete(cacheName);
+              }
+            })
+          );
+        }
+      },
+      
+      async getCacheSize() {
+        if ('caches' in window) {
+          const cache = await caches.open('cephasgm-erp-v2');
+          const keys = await cache.keys();
+          let totalSize = 0;
+          
+          for (const request of keys) {
+            const response = await cache.match(request);
+            if (response) {
+              const blob = await response.blob();
+              totalSize += blob.size;
+            }
+          }
+          
+          return (totalSize / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+        return '0 MB';
+      }
+    };
+
+    // Initialize cache management
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        await CacheManager.clearOldCaches();
+        const cacheSize = await CacheManager.getCacheSize();
+        console.log(`💾 Current cache size: ${cacheSize}`);
+      } catch (error) {
+        console.log('❌ Cache management error:', error);
+      }
+    });
+
+    // Add to Home Screen functionality
+    function showInstallPromotion() {
+      if (deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches) {
+        // You could show a custom install banner here
+        console.log('📱 Install promotion available');
+      }
+    }
+
+    // Check if page was loaded via service worker
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+      console.log('⚡ Page controlled by service worker');
+    }
+
+    // Network status monitoring
+    const ConnectionMonitor = {
+      init() {
+        if ('connection' in navigator) {
+          const connection = navigator.connection;
+          console.log('📶 Connection type:', connection.effectiveType);
+          console.log('📊 Downlink speed:', connection.downlink + ' Mbps');
+          
+          connection.addEventListener('change', () => {
+            console.log('🔄 Connection changed to:', connection.effectiveType);
+            this.handleConnectionChange(connection.effectiveType);
+          });
+        }
+      },
+      
+      handleConnectionChange(connectionType) {
+        const stats = document.getElementById('systemHealth');
+        if (connectionType === 'slow-2g' || connectionType === '2g') {
+          stats.textContent = '85%';
+          stats.style.color = '#f39c12';
+        } else {
+          stats.textContent = '100%';
+          stats.style.color = '#003366';
+        }
+      }
+    };
+
+    // Initialize connection monitoring
+    ConnectionMonitor.init();
+
   </script>
 </body>
 </html>
