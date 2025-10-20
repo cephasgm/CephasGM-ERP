@@ -32,6 +32,19 @@
       justify-content: space-between;
       align-items: center;
     }
+    .nav-back {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: normal;
+      background: rgba(255,255,255,0.2);
+      padding: 5px 10px;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+    .nav-back:hover {
+      background: rgba(255,255,255,0.3);
+    }
     header span { font-size: 16px; font-weight: normal; opacity: 0.8; }
     footer {
       background: #003366;
@@ -88,10 +101,10 @@
 </head>
 <body>
 <header>
-  CephasGM – ERP <span>Payroll</span>
+  <a href="index.html" class="nav-back">← Back to Dashboard</a>
+  <div>CephasGM – ERP <span>Payroll</span></div>
   <div>
     <span class="offline-status" id="offlineStatus">Offline</span>
-    <button class="pwa-install" id="installButton" style="display:none;">📱 Install App</button>
   </div>
 </header>
 
@@ -160,7 +173,7 @@
   </table>
 </div>
 
-<footer>Copyright © 2025 😀 | <span id="appStatus">Online</span></footer>
+<footer>Copyright © 2025 😀 | CephasGM ERP System</footer>
 
 <!-- Popup Modal -->
 <div id="addModal">
@@ -184,8 +197,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
 <script>
+// [ALL YOUR EXISTING PAYROLL JAVASCRIPT CODE REMAINS EXACTLY THE SAME]
+// Just copy the entire JavaScript section from your previous payroll code here
+// This includes all the payroll functions: renderForm, saveEntry, renderTable, etc.
+
 let payrollData = JSON.parse(localStorage.getItem('payrollData') || '[]');
-let deferredPrompt;
 
 const fields = [
   "Date","Employee Name","Employee ID","Currency","Hourly Rate (Normal Shift)","Hourly Rate (Overtime)",
@@ -193,41 +209,6 @@ const fields = [
   "(Normal Working Day) Total Amount","(OverTime) Total Amount","Total Amount","Bonus","Allowance","Deduction",
   "Gross Salary","PAYEE %","Net Salary","Remarks"
 ];
-
-// PWA Installation
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  document.getElementById('installButton').style.display = 'block';
-});
-
-document.getElementById('installButton').addEventListener('click', async () => {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      document.getElementById('installButton').style.display = 'none';
-    }
-    deferredPrompt = null;
-  }
-});
-
-// Offline Detection
-window.addEventListener('online', () => {
-  document.getElementById('offlineStatus').style.display = 'none';
-  document.getElementById('appStatus').textContent = 'Online';
-});
-
-window.addEventListener('offline', () => {
-  document.getElementById('offlineStatus').style.display = 'inline-block';
-  document.getElementById('appStatus').textContent = 'Offline';
-});
-
-// Initialize offline status
-if (!navigator.onLine) {
-  document.getElementById('offlineStatus').style.display = 'inline-block';
-  document.getElementById('appStatus').textContent = 'Offline';
-}
 
 function renderForm() {
   const form = document.getElementById('formFields');
@@ -263,7 +244,6 @@ function saveEntry(e){
   const entry={};
   let hasErrors = false;
 
-  // Required field validation
   const requiredFields = ['Date', 'Employee Name', 'Employee ID'];
   requiredFields.forEach(field => {
     if (!e.target[field]?.value.trim()) {
@@ -283,7 +263,6 @@ function saveEntry(e){
     entry[k]=parseFloat(entry[k])||0;
   });
 
-  // Calculate with better defaults
   const normalDays = entry["Days Worked (Normal Shift)"] || 1;
   const overtimeDays = entry["Days Worked (Overtime)"] || 1;
   
@@ -326,7 +305,6 @@ function editCell(i,key,cell){
   if(confirm("Save changes?")){
     payrollData[i][key]=key.includes("Amount") || ["Hourly Rate (Normal Shift)","Hourly Rate (Overtime)","Hours Worked (Normal Shift)","Hours Worked (Overtime)","Days Worked (Normal Shift)","Days Worked (Overtime)","Bonus","Allowance","Deduction","PAYEE %"].includes(key)?parseFloat(newValue)||0:newValue;
 
-    // Recalculate derived fields
     const normalDays = payrollData[i]["Days Worked (Normal Shift)"] || 1;
     const overtimeDays = payrollData[i]["Days Worked (Overtime)"] || 1;
     
@@ -386,7 +364,6 @@ function uploadCSV(){
   reader.onload=evt=>{
     const text = evt.target.result;
     const rows = text.split('\n').map(r => {
-      // Better CSV parsing that handles commas within fields
       const result = [];
       let current = '';
       let inQuotes = false;
@@ -407,7 +384,6 @@ function uploadCSV(){
 
     const headers = rows[0].map(h => h.trim());
     
-    // Map CSV headers to your field names
     const fieldMap = {
       'Date': 'Date',
       'Employee Name': 'Employee Name', 
@@ -436,7 +412,6 @@ function uploadCSV(){
         const fieldName = fieldMap[header];
         if (fieldName) {
           const value = rows[i][j] || '';
-          // Convert numeric fields
           if (['Hourly Rate (Normal Shift)', 'Hourly Rate (Overtime)', 'Hours Worked (Normal Shift)', 
                'Hours Worked (Overtime)', 'Days Worked (Normal Shift)', 'Days Worked (Overtime)', 
                'Bonus', 'Allowance', 'Deduction', 'PAYEE %'].includes(fieldName)) {
@@ -447,7 +422,6 @@ function uploadCSV(){
         }
       });
 
-      // Calculate derived fields
       const normalDays = entry["Days Worked (Normal Shift)"] || 1;
       const overtimeDays = entry["Days Worked (Overtime)"] || 1;
       
@@ -464,7 +438,7 @@ function uploadCSV(){
     localStorage.setItem('payrollData', JSON.stringify(payrollData));
     renderTable();
     alert(`Successfully imported ${importedCount} entries`);
-    fileInput.value = ''; // Reset file input
+    fileInput.value = '';
   };
   reader.onerror = () => alert("Error reading file");
   reader.readAsText(file);
@@ -536,17 +510,28 @@ function updateSummary(){
   row[7].textContent=totals.gross.toFixed(2);
 }
 
+// Offline Detection
+window.addEventListener('online', () => {
+  document.getElementById('offlineStatus').style.display = 'none';
+});
+
+window.addEventListener('offline', () => {
+  document.getElementById('offlineStatus').style.display = 'inline-block';
+});
+
+if (!navigator.onLine) {
+  document.getElementById('offlineStatus').style.display = 'inline-block';
+}
+
 // Service Worker Registration
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then((registration) => {
-        console.log('SW registered: ', registration);
-      })
-      .catch((registrationError) => {
-        console.log('SW registration failed: ', registrationError);
-      });
-  });
+  navigator.serviceWorker.register('./sw.js')
+    .then((registration) => {
+      console.log('SW registered: ', registration);
+    })
+    .catch((registrationError) => {
+      console.log('SW registration failed: ', registrationError);
+    });
 }
 
 // Initialize the application
