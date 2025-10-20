@@ -1,7 +1,12 @@
-const CACHE_NAME = "payroll-cache-v1";
+const CACHE_NAME = "cephasgm-erp-v2";
 const urlsToCache = [
   "./",
   "./index.html",
+  "./payroll.html",
+  "./attendance.html",
+  "./meetings.html",
+  "./finance.html",
+  "./admin.html",
   "./manifest.json",
   "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
   "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
@@ -35,7 +40,6 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", event => {
   event.respondWith(
     caches.match(event.request).then(response => {
-      // Return cached version or fetch from network
       return response || fetch(event.request);
     })
   );
