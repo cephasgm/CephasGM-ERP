@@ -173,7 +173,7 @@
   </table>
 </div>
 
-<footer>Copyright © 2025 😀</footer>
+<footer>Copyright © 2025 😀 </footer>
 
 <!-- Popup Modal -->
 <div id="addModal">
@@ -197,10 +197,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
 <script>
-// [ALL YOUR EXISTING PAYROLL JAVASCRIPT CODE REMAINS EXACTLY THE SAME]
-// Just copy the entire JavaScript section from your previous payroll code here
-// This includes all the payroll functions: renderForm, saveEntry, renderTable, etc.
-
+// COMPLETE PAYROLL JAVASCRIPT CODE
 let payrollData = JSON.parse(localStorage.getItem('payrollData') || '[]');
 
 const fields = [
@@ -244,6 +241,7 @@ function saveEntry(e){
   const entry={};
   let hasErrors = false;
 
+  // Required field validation
   const requiredFields = ['Date', 'Employee Name', 'Employee ID'];
   requiredFields.forEach(field => {
     if (!e.target[field]?.value.trim()) {
@@ -263,6 +261,7 @@ function saveEntry(e){
     entry[k]=parseFloat(entry[k])||0;
   });
 
+  // Calculate with better defaults
   const normalDays = entry["Days Worked (Normal Shift)"] || 1;
   const overtimeDays = entry["Days Worked (Overtime)"] || 1;
   
@@ -305,6 +304,7 @@ function editCell(i,key,cell){
   if(confirm("Save changes?")){
     payrollData[i][key]=key.includes("Amount") || ["Hourly Rate (Normal Shift)","Hourly Rate (Overtime)","Hours Worked (Normal Shift)","Hours Worked (Overtime)","Days Worked (Normal Shift)","Days Worked (Overtime)","Bonus","Allowance","Deduction","PAYEE %"].includes(key)?parseFloat(newValue)||0:newValue;
 
+    // Recalculate derived fields
     const normalDays = payrollData[i]["Days Worked (Normal Shift)"] || 1;
     const overtimeDays = payrollData[i]["Days Worked (Overtime)"] || 1;
     
@@ -364,6 +364,7 @@ function uploadCSV(){
   reader.onload=evt=>{
     const text = evt.target.result;
     const rows = text.split('\n').map(r => {
+      // Better CSV parsing that handles commas within fields
       const result = [];
       let current = '';
       let inQuotes = false;
@@ -384,6 +385,7 @@ function uploadCSV(){
 
     const headers = rows[0].map(h => h.trim());
     
+    // Map CSV headers to your field names
     const fieldMap = {
       'Date': 'Date',
       'Employee Name': 'Employee Name', 
@@ -412,6 +414,7 @@ function uploadCSV(){
         const fieldName = fieldMap[header];
         if (fieldName) {
           const value = rows[i][j] || '';
+          // Convert numeric fields
           if (['Hourly Rate (Normal Shift)', 'Hourly Rate (Overtime)', 'Hours Worked (Normal Shift)', 
                'Hours Worked (Overtime)', 'Days Worked (Normal Shift)', 'Days Worked (Overtime)', 
                'Bonus', 'Allowance', 'Deduction', 'PAYEE %'].includes(fieldName)) {
@@ -422,6 +425,7 @@ function uploadCSV(){
         }
       });
 
+      // Calculate derived fields
       const normalDays = entry["Days Worked (Normal Shift)"] || 1;
       const overtimeDays = entry["Days Worked (Overtime)"] || 1;
       
@@ -438,7 +442,7 @@ function uploadCSV(){
     localStorage.setItem('payrollData', JSON.stringify(payrollData));
     renderTable();
     alert(`Successfully imported ${importedCount} entries`);
-    fileInput.value = '';
+    fileInput.value = ''; // Reset file input
   };
   reader.onerror = () => alert("Error reading file");
   reader.readAsText(file);
