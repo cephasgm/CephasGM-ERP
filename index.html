@@ -27,11 +27,9 @@
             --gray-800: #1e293b;
             --gray-900: #0f172a;
             
-            --sidebar-width: 280px;
-            --header-height: 70px;
-            --border-radius: 8px;
-            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
         * {
@@ -50,8 +48,8 @@
 
         /* Header Navigation */
         .main-header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
             padding: 1rem 2rem;
             box-shadow: var(--shadow);
             position: fixed;
@@ -68,11 +66,17 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         .logo-icon {
             font-size: 2rem;
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--success));
             color: white;
             width: 50px;
             height: 50px;
@@ -80,17 +84,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: var(--shadow);
         }
 
         .logo-text h1 {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--dark);
+            margin-bottom: 0.25rem;
         }
 
         .logo-text p {
             font-size: 0.875rem;
             color: var(--gray-500);
+            font-weight: 500;
         }
 
         .nav-links {
@@ -102,128 +109,127 @@
         .nav-link {
             text-decoration: none;
             color: var(--gray-600);
-            font-weight: 500;
-            padding: 0.5rem 1rem;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
             border-radius: var(--border-radius);
             transition: all 0.3s ease;
+            position: relative;
+            font-size: 0.95rem;
         }
 
-        .nav-link:hover, .nav-link.active {
-            background: var(--primary-light);
+        .nav-link:hover {
             color: var(--primary);
+            background: var(--primary-light);
         }
 
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            background: var(--gray-100);
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
+        .nav-link.active {
+            color: var(--primary);
+            background: var(--primary-light);
         }
 
-        .user-avatar {
-            width: 40px;
-            height: 40px;
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: white;
-            font-size: 1.1rem;
-        }
-
-        .user-info {
-            text-align: right;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .user-role {
-            font-size: 0.875rem;
-            color: var(--gray-500);
         }
 
         /* Main Content */
         .main-content {
             margin-top: 100px;
             padding: 2rem;
-            max-width: 1400px;
+            max-width: 1200px;
             margin-left: auto;
             margin-right: auto;
         }
 
         .hero-section {
             text-align: center;
-            padding: 4rem 2rem;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            padding: 3rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
             border-radius: 20px;
-            margin-bottom: 3rem;
-            color: white;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .hero-title {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, #fff, #e2e8f0);
+            background: linear-gradient(135deg, var(--primary), var(--success));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .hero-subtitle {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
             margin-bottom: 2rem;
-            opacity: 0.9;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .hero-stat {
             text-align: center;
+            padding: 1.5rem;
+            background: var(--primary-light);
+            border-radius: var(--border-radius);
+            transition: transform 0.3s ease;
+        }
+
+        .hero-stat:hover {
+            transform: translateY(-5px);
         }
 
         .stat-number {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
+            color: var(--primary);
             display: block;
+            margin-bottom: 0.5rem;
         }
 
         .stat-label {
             font-size: 0.875rem;
-            opacity: 0.8;
+            color: var(--gray-600);
+            font-weight: 500;
         }
 
         /* Modules Grid */
         .modules-section {
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         .section-header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         .section-title {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
             color: white;
             margin-bottom: 1rem;
         }
 
         .section-subtitle {
-            font-size: 1.125rem;
+            font-size: 1rem;
             color: rgba(255, 255, 255, 0.8);
             max-width: 600px;
             margin: 0 auto;
@@ -231,23 +237,26 @@
 
         .modules-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .module-card {
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 2rem;
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 1.5rem;
             text-decoration: none;
             color: inherit;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: var(--shadow);
             position: relative;
             overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         .module-card::before {
@@ -261,7 +270,7 @@
         }
 
         .module-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-8px);
             box-shadow: var(--shadow-lg);
             border-color: var(--primary);
         }
@@ -274,19 +283,20 @@
         }
 
         .module-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 15px;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             background: linear-gradient(135deg, var(--primary-light), var(--primary));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             color: white;
+            flex-shrink: 0;
         }
 
         .module-title {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 600;
             color: var(--dark);
             margin-bottom: 0.5rem;
@@ -294,8 +304,9 @@
 
         .module-description {
             color: var(--gray-600);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            flex-grow: 1;
         }
 
         .module-features {
@@ -304,11 +315,12 @@
         }
 
         .module-features li {
-            padding: 0.5rem 0;
+            padding: 0.25rem 0;
             color: var(--gray-600);
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 0.875rem;
         }
 
         .module-features li::before {
@@ -318,14 +330,13 @@
         }
 
         .module-actions {
-            display: flex;
-            gap: 1rem;
+            margin-top: auto;
         }
 
         .btn {
             padding: 0.75rem 1.5rem;
             border-radius: var(--border-radius);
-            font-weight: 500;
+            font-weight: 600;
             text-decoration: none;
             transition: all 0.3s ease;
             border: none;
@@ -333,116 +344,50 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 0.875rem;
+            width: 100%;
+            justify-content: center;
         }
 
         .btn-primary {
             background: var(--primary);
             color: white;
+            box-shadow: var(--shadow);
         }
 
         .btn-primary:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* Quick Stats */
-        .quick-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 1.5rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
             box-shadow: var(--shadow-lg);
-        }
-
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--dark);
-            display: block;
-        }
-
-        .stat-label {
-            color: var(--gray-600);
-            font-size: 0.875rem;
         }
 
         /* Footer */
         .main-footer {
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 3rem 2rem;
+            backdrop-filter: blur(20px);
+            padding: 2rem;
             text-align: center;
-            margin-top: 4rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .footer-logo {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 1rem;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .footer-link {
-            color: var(--gray-600);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-link:hover {
-            color: var(--primary);
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .copyright {
             color: var(--gray-500);
             font-size: 0.875rem;
+            font-weight: 500;
         }
 
         /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .modules-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
         @media (max-width: 768px) {
             .main-header {
                 padding: 1rem;
@@ -451,9 +396,14 @@
             }
 
             .nav-links {
-                gap: 1rem;
+                gap: 0.5rem;
                 flex-wrap: wrap;
                 justify-content: center;
+            }
+
+            .nav-link {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
             }
 
             .hero-title {
@@ -461,7 +411,8 @@
             }
 
             .hero-stats {
-                gap: 1.5rem;
+                grid-template-columns: 1fr;
+                gap: 1rem;
             }
 
             .modules-grid {
@@ -474,7 +425,7 @@
             }
 
             .section-title {
-                font-size: 2rem;
+                font-size: 1.75rem;
             }
         }
 
@@ -494,52 +445,54 @@
             animation: fadeInUp 0.6s ease-out;
         }
 
-        .module-card:nth-child(2) { animation-delay: 0.1s; }
-        .module-card:nth-child(3) { animation-delay: 0.2s; }
-        .module-card:nth-child(4) { animation-delay: 0.3s; }
-        .module-card:nth-child(5) { animation-delay: 0.4s; }
-        .module-card:nth-child(6) { animation-delay: 0.5s; }
+        /* Compact layout for A4 size viewing */
+        @media (min-width: 768px) and (max-width: 1200px) {
+            .modules-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .module-card {
+                padding: 1.25rem;
+            }
+            
+            .hero-section {
+                padding: 2rem 1rem;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Header Navigation -->
     <header class="main-header">
-        <div class="logo">
+        <a href="#home" class="logo">
             <div class="logo-icon">🏢</div>
             <div class="logo-text">
                 <h1>CephasGM ERP</h1>
                 <p>Enterprise Resource Planning</p>
             </div>
-        </div>
+        </a>
 
         <nav class="nav-links">
-            <a href="#dashboard" class="nav-link active">Dashboard</a>
+            <a href="#home" class="nav-link active">Dashboard</a>
             <a href="#operations" class="nav-link">Operations</a>
             <a href="#administration" class="nav-link">Administration</a>
             <a href="#support" class="nav-link">Support</a>
             <a href="#modules" class="nav-link">All Modules</a>
         </nav>
-
-        <div class="user-profile">
-            <div class="user-avatar">CG</div>
-            <div class="user-info">
-                <div class="user-name">CephasGM</div>
-                <div class="user-role">System Administrator</div>
-            </div>
-        </div>
     </header>
 
     <!-- Main Content -->
     <main class="main-content">
         <!-- Hero Section -->
-        <section class="hero-section" id="dashboard">
-            <h1 class="hero-title">Welcome to CephasGM ERP</h1>
-            <p class="hero-subtitle">Complete Business Management Solution - Streamline your operations with our comprehensive ERP system</p>
+        <section class="hero-section" id="home">
+            <h1 class="hero-title">CephasGM ERP System</h1>
+            <p class="hero-subtitle">Complete Business Management Solution - Streamline your operations with our comprehensive ERP platform</p>
             
             <div class="hero-stats">
                 <div class="hero-stat">
                     <span class="stat-number">18</span>
-                    <span class="stat-label">Active Modules</span>
+                    <span class="stat-label">System Modules</span>
                 </div>
                 <div class="hero-stat">
                     <span class="stat-number">1,247</span>
@@ -551,128 +504,69 @@
                 </div>
                 <div class="hero-stat">
                     <span class="stat-number">24/7</span>
-                    <span class="stat-label">Support Available</span>
+                    <span class="stat-label">Support</span>
                 </div>
             </div>
         </section>
-
-        <!-- Quick Stats -->
-        <div class="quick-stats">
-            <div class="stat-card">
-                <div class="stat-icon">💰</div>
-                <div class="stat-value">$124,580</div>
-                <div class="stat-label">Monthly Revenue</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">📊</div>
-                <div class="stat-value">84</div>
-                <div class="stat-label">Active Employees</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">📦</div>
-                <div class="stat-value">1,247</div>
-                <div class="stat-label">Inventory Items</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🚀</div>
-                <div class="stat-value">98%</div>
-                <div class="stat-label">Satisfaction Rate</div>
-            </div>
-        </div>
 
         <!-- Operations Section -->
         <section class="modules-section" id="operations">
             <div class="section-header">
                 <h2 class="section-title">Operations Management</h2>
-                <p class="section-subtitle">Streamline your core business operations with these powerful modules</p>
+                <p class="section-subtitle">Core business operations and workflow management</p>
             </div>
 
             <div class="modules-grid">
-                <!-- Projects -->
                 <a href="projects.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">📋</div>
-                        <h3 class="module-title">Projects Management</h3>
+                        <h3 class="module-title">Projects</h3>
                     </div>
-                    <p class="module-description">Manage projects, timelines, resources and track progress across all departments with advanced Gantt charts and collaboration tools.</p>
-                    <ul class="module-features">
-                        <li>Project planning & scheduling</li>
-                        <li>Resource allocation</li>
-                        <li>Progress tracking</li>
-                        <li>Team collaboration</li>
-                    </ul>
+                    <p class="module-description">Manage projects, timelines, resources and track progress across departments.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
                 </a>
 
-                <!-- Sales -->
                 <a href="sales.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">💰</div>
-                        <h3 class="module-title">Sales & Revenue</h3>
+                        <h3 class="module-title">Sales</h3>
                     </div>
-                    <p class="module-description">Track sales performance, manage leads, monitor revenue streams, and analyze customer buying patterns with detailed analytics.</p>
-                    <ul class="module-features">
-                        <li>Sales pipeline management</li>
-                        <li>Customer relationship management</li>
-                        <li>Revenue analytics</li>
-                        <li>Invoice generation</li>
-                    </ul>
+                    <p class="module-description">Track sales performance, manage leads, and monitor revenue streams.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
                 </a>
 
-                <!-- Inventory -->
                 <a href="inventory.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">📦</div>
-                        <h3 class="module-title">Inventory Control</h3>
+                        <h3 class="module-title">Inventory</h3>
                     </div>
-                    <p class="module-description">Manage stock levels, track inventory movement, optimize warehouse operations, and automate reordering processes.</p>
-                    <ul class="module-features">
-                        <li>Real-time stock tracking</li>
-                        <li>Automated reordering</li>
-                        <li>Warehouse management</li>
-                        <li>Inventory analytics</li>
-                    </ul>
+                    <p class="module-description">Manage stock levels, track inventory movement, and optimize warehouse operations.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
                 </a>
 
-                <!-- Procurement -->
                 <a href="procurement.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">🛒</div>
                         <h3 class="module-title">Procurement</h3>
                     </div>
-                    <p class="module-description">Handle purchase orders, supplier management, procurement processes, and vendor performance tracking.</p>
-                    <ul class="module-features">
-                        <li>Purchase order management</li>
-                        <li>Supplier database</li>
-                        <li>Vendor performance</li>
-                        <li>Procurement analytics</li>
-                    </ul>
+                    <p class="module-description">Handle purchase orders, supplier management, and procurement processes.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
                 </a>
 
-                <!-- Transport -->
                 <a href="transport.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">🚚</div>
-                        <h3 class="module-title">Transport & Logistics</h3>
+                        <h3 class="module-title">Transport</h3>
                     </div>
-                    <p class="module-description">Manage logistics, fleet operations, delivery schedules, route optimization, and shipment tracking.</p>
-                    <ul class="module-features">
-                        <li>Fleet management</li>
-                        <li>Route optimization</li>
-                        <li>Delivery tracking</li>
-                        <li>Logistics analytics</li>
-                    </ul>
+                    <p class="module-description">Manage logistics, fleet operations, and delivery schedules.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
@@ -684,77 +578,49 @@
         <section class="modules-section" id="administration">
             <div class="section-header">
                 <h2 class="section-title">Administration</h2>
-                <p class="section-subtitle">Manage your organization's administrative functions efficiently</p>
+                <p class="section-subtitle">Organizational management and administrative functions</p>
             </div>
 
             <div class="modules-grid">
-                <!-- HR -->
                 <a href="hr.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">👥</div>
                         <h3 class="module-title">Human Resources</h3>
                     </div>
-                    <p class="module-description">Comprehensive employee management, recruitment, performance tracking, and HR policy administration with document management.</p>
-                    <ul class="module-features">
-                        <li>Employee database</li>
-                        <li>Recruitment management</li>
-                        <li>Performance reviews</li>
-                        <li>HR analytics</li>
-                    </ul>
+                    <p class="module-description">Employee management, recruitment, performance tracking, and HR policies.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
                 </a>
 
-                <!-- Payroll -->
                 <a href="payroll.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">💵</div>
-                        <h3 class="module-title">Payroll Management</h3>
+                        <h3 class="module-title">Payroll</h3>
                     </div>
-                    <p class="module-description">Process salaries, manage deductions, handle payroll compliance, and generate payslips with tax calculation automation.</p>
-                    <ul class="module-features">
-                        <li>Automated payroll processing</li>
-                        <li>Tax calculation</li>
-                        <li>Payslip generation</li>
-                        <li>Compliance reporting</li>
-                    </ul>
+                    <p class="module-description">Process salaries, manage deductions, and handle payroll compliance.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
                 </a>
 
-                <!-- Finance -->
                 <a href="finance.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">📊</div>
-                        <h3 class="module-title">Finance & Accounting</h3>
+                        <h3 class="module-title">Finance</h3>
                     </div>
-                    <p class="module-description">Complete accounting suite with budgeting, financial reporting, cash flow management, and compliance tracking.</p>
-                    <ul class="module-features">
-                        <li>General ledger</li>
-                        <li>Budget management</li>
-                        <li>Financial reporting</li>
-                        <li>Cash flow analysis</li>
-                    </ul>
+                    <p class="module-description">Accounting, budgeting, financial reporting, and cash flow management.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
                 </a>
 
-                <!-- Admin -->
                 <a href="admin.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">⚙️</div>
-                        <h3 class="module-title">System Administration</h3>
+                        <h3 class="module-title">System Admin</h3>
                     </div>
-                    <p class="module-description">System configuration, user management, access controls, security settings, and administrative controls.</p>
-                    <ul class="module-features">
-                        <li>User management</li>
-                        <li>System configuration</li>
-                        <li>Security settings</li>
-                        <li>Backup & recovery</li>
-                    </ul>
+                    <p class="module-description">System configuration, user management, and administrative controls.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
@@ -766,59 +632,38 @@
         <section class="modules-section" id="support">
             <div class="section-header">
                 <h2 class="section-title">Support & Services</h2>
-                <p class="section-subtitle">Tools to support your business operations and customer service</p>
+                <p class="section-subtitle">Business support tools and service management</p>
             </div>
 
             <div class="modules-grid">
-                <!-- Customer Service -->
                 <a href="customer-service.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">🤝</div>
                         <h3 class="module-title">Customer Service</h3>
                     </div>
-                    <p class="module-description">Manage customer support tickets, service quality monitoring, feedback collection, and customer satisfaction tracking.</p>
-                    <ul class="module-features">
-                        <li>Ticket management</li>
-                        <li>Customer feedback</li>
-                        <li>Service analytics</li>
-                        <li>Knowledge base</li>
-                    </ul>
+                    <p class="module-description">Manage customer support, tickets, and service quality monitoring.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
                 </a>
 
-                <!-- Meetings -->
                 <a href="meetings.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">👥</div>
-                        <h3 class="module-title">Meetings & Collaboration</h3>
+                        <h3 class="module-title">Meetings</h3>
                     </div>
-                    <p class="module-description">Schedule, organize and track meetings with agenda management, minutes recording, and action item tracking.</p>
-                    <ul class="module-features">
-                        <li>Meeting scheduling</li>
-                        <li>Agenda management</li>
-                        <li>Minutes recording</li>
-                        <li>Action item tracking</li>
-                    </ul>
+                    <p class="module-description">Schedule, organize and track meetings with agenda management.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
                 </a>
 
-                <!-- Legal -->
                 <a href="legal.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">⚖️</div>
-                        <h3 class="module-title">Legal & Compliance</h3>
+                        <h3 class="module-title">Legal</h3>
                     </div>
-                    <p class="module-description">Contract management, compliance tracking, legal document repository, and regulatory requirement monitoring.</p>
-                    <ul class="module-features">
-                        <li>Contract management</li>
-                        <li>Compliance tracking</li>
-                        <li>Document repository</li>
-                        <li>Regulatory monitoring</li>
-                    </ul>
+                    <p class="module-description">Contract management, compliance tracking, and legal document repository.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
@@ -829,66 +674,61 @@
         <!-- All Modules Section -->
         <section class="modules-section" id="modules">
             <div class="section-header">
-                <h2 class="section-title">All System Modules</h2>
-                <p class="section-subtitle">Complete access to all CephasGM ERP modules and features</p>
+                <h2 class="section-title">Additional Modules</h2>
+                <p class="section-subtitle">Complete access to all system modules and features</p>
             </div>
 
             <div class="modules-grid">
-                <!-- Attendance -->
                 <a href="attendance.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">📅</div>
-                        <h3 class="module-title">Attendance Tracking</h3>
+                        <h3 class="module-title">Attendance</h3>
                     </div>
-                    <p class="module-description">Track employee attendance, leaves, time management, and generate attendance reports with biometric integration.</p>
+                    <p class="module-description">Track employee attendance, leaves, and time management.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
                 </a>
 
-                <!-- Community -->
                 <a href="community.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">🌐</div>
-                        <h3 class="module-title">Community & Engagement</h3>
+                        <h3 class="module-title">Community</h3>
                     </div>
-                    <p class="module-description">Internal communication, announcements, employee engagement, social events, and corporate social responsibility.</p>
+                    <p class="module-description">Internal communication, announcements, and employee engagement.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
                 </a>
 
-                <!-- Training -->
                 <a href="training.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">🎓</div>
-                        <h3 class="module-title">Training & Development</h3>
+                        <h3 class="module-title">Training</h3>
                     </div>
-                    <p class="module-description">Employee training programs, skill development tracking, certification management, and training effectiveness analysis.</p>
+                    <p class="module-description">Employee training programs, skill development, and certification tracking.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
                 </a>
 
-                <!-- Safety -->
                 <a href="safety.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">🛡️</div>
-                        <h3 class="module-title">Safety Management</h3>
+                        <h3 class="module-title">Safety</h3>
                     </div>
-                    <p class="module-description">Workplace safety compliance, incident reporting, safety training, risk assessment, and emergency procedure management.</p>
+                    <p class="module-description">Workplace safety compliance, incident reporting, and safety training.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
                 </a>
 
-                <!-- Marketing -->
                 <a href="marketing.html" class="module-card">
                     <div class="module-header">
                         <div class="module-icon">📢</div>
                         <h3 class="module-title">Marketing</h3>
                     </div>
-                    <p class="module-description">Campaign management, marketing analytics, promotional activities, lead generation, and ROI tracking.</p>
+                    <p class="module-description">Campaign management, marketing analytics, and promotional activities.</p>
                     <div class="module-actions">
                         <span class="btn btn-primary">Open Module</span>
                     </div>
@@ -899,24 +739,14 @@
 
     <!-- Footer -->
     <footer class="main-footer">
-        <div class="footer-content">
-            <div class="footer-logo">CephasGM ERP</div>
-            <div class="footer-links">
-                <a href="#dashboard" class="footer-link">Dashboard</a>
-                <a href="#operations" class="footer-link">Operations</a>
-                <a href="#administration" class="footer-link">Administration</a>
-                <a href="#support" class="footer-link">Support</a>
-                <a href="#modules" class="footer-link">All Modules</a>
-            </div>
-            <div class="copyright">
-                &copy; 2024 CephasGM ERP System. All rights reserved.
-            </div>
+        <div class="copyright">
+            Copyright © 2025 😀
         </div>
     </footer>
 
     <script>
         // Smooth scrolling for navigation
-        document.querySelectorAll('.nav-link, .footer-link').forEach(link => {
+        document.querySelectorAll('.nav-link, .logo').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
                 const targetId = this.getAttribute('href');
@@ -925,7 +755,12 @@
                 if (targetSection) {
                     // Update active nav link
                     document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
-                    this.classList.add('active');
+                    if (this.classList.contains('nav-link')) {
+                        this.classList.add('active');
+                    } else {
+                        // If logo clicked, activate dashboard link
+                        document.querySelector('.nav-link[href="#home"]').classList.add('active');
+                    }
                     
                     // Smooth scroll to section
                     targetSection.scrollIntoView({
@@ -964,11 +799,6 @@
                 card.style.animationDelay = `${index * 0.1}s`;
             });
         });
-
-        // Simple notification system
-        window.showNotification = function(message, type = 'info') {
-            console.log(`[${type.toUpperCase()}] ${message}`);
-        };
 
         // Initialize
         console.log('🚀 CephasGM ERP System Loaded Successfully');
