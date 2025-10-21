@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal & Compliance - CephasGM ERP</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1rem;
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            padding: 0 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-icon {
+            font-size: 1.25rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main-content {
+            grid-column: 2;
+            padding: 2rem;
+            margin-left: 280px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .compliance-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), #3b82f6);
+            color: white;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .law-list {
+            list-style: none;
+        }
+
+        .law-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .law-item:last-child {
+            border-bottom: none;
+        }
+
+        .law-name {
+            font-weight: 500;
+        }
+
+        .law-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-compliant {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-review {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .module-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .module-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .module-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            color: white;
+        }
+
+        .module-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+                grid-column: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <nav class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">CG</div>
+                <div>
+                    <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
+                    <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Legal & Compliance</div>
+                <a href="legal.html" class="nav-item active">
+                    <span class="nav-icon">⚖️</span>
+                    Legal Compliance
+                </a>
+                <a href="safety.html" class="nav-item">
+                    <span class="nav-icon">🛡️</span>
+                    Health & Safety
+                </a>
+                <a href="hr.html" class="nav-item">
+                    <span class="nav-icon">👥</span>
+                    HR Management
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Operations</div>
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    Dashboard
+                </a>
+                <a href="finance.html" class="nav-item">
+                    <span class="nav-icon">💳</span>
+                    Finance
+                </a>
+                <a href="admin.html" class="nav-item">
+                    <span class="nav-icon">⚙️</span>
+                    System Admin
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="header">
+                <h1>Legal & Compliance Management</h1>
+                <div style="color: var(--text-light);">Ensure regulatory compliance with national and international standards</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">89%</div>
+                    <div class="stat-label">Overall Compliance</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24</div>
+                    <div class="stat-label">Active Regulations</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Pending Audits</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">156</div>
+                    <div class="stat-label">Legal Documents</div>
+                </div>
+            </div>
+
+            <!-- Compliance Standards Section -->
+            <div class="compliance-grid">
+                <div class="compliance-card">
+                    <div class="card-header">
+                        <div class="card-icon">🇺🇳</div>
+                        <div class="card-title">International Standards</div>
+                    </div>
+                    <ul class="law-list">
+                        <li class="law-item">
+                            <span class="law-name">ISO 9001:2015 Quality Management</span>
+                            <span class="law-status status-compliant">Compliant</span>
+                        </li>
+                        <li class="law-item">
+                            <span class="law-name">ISO 14001 Environmental Management</span>
+                            <span class="law-status status-compliant">Compliant</span>
+                        </li>
+                        <li class="law-item">
+                            <span class="law-name">ISO 45001 Occupational Health & Safety</span>
+                            <span class="law-status status-review">Under Review</span>
+                        </li>
+                        <li class="law-item">
+                            <span class="law-name">GDPR Data Protection</span>
+                            <span class="law-status status-compliant">Compliant</span>
+                        </li>
+                        <li class="law-item">
+                            <span class="law-name">ILO Labor Standards</span>
+                            <span class="law-status status-compliant">Compliant</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="compliance-card">
+                    <div class="card-header">
+                        <div class="card-icon">🇹🇿</div>
+                        <div class="card-title">National Regulations</div>
+                    </div>
+                    <ul class="law-list">
+                        <li class="law-item">
+                            <span class="law-name">Employment & Labor Relations Act</span>
+                            <span class="law-status status-compliant">Compliant</span>
+                        </li>
+                        <li class="law-item">
+                            <span class="law-name">Workers Compensation Act</span>
+                            <span class="law-status status-compliant">Compliant</span>
+                        </li>
+                        <li class="law-item">
+                            <span class="law-name">Occupational Health & Safety Act</span>
+                            <span class="law-status status-pending">Audit Due</span>
+                        </li>
+                        <li class="law-item">
+                            <span class="law-name">Tax Administration Act</span>
+                            <span class="law-status status-compliant">Compliant</span>
+                        </li>
+                        <li class="law-item">
+                            <span class="law-name">Companies Act</span>
+                            <span class="law-status status-compliant">Compliant</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="compliance-card">
+                    <div class="card-header">
+                        <div class="card-icon">📋</div>
+                        <div class="card-title">Industry Specific</div>
+                    </div>
+                    <ul class="law-list">
+                        <li class="law-item">
+                            <span class="law-name">Environmental Protection Regulations</span>
+                            <span class="law-status status-compliant">Compliant</span>
+                        </li>
+                        <li class="law-item">
+                            <span class="law-name">Data Protection Act 2022</span>
+                            <span class="law-status status-review">Update Required</span>
+                        </li>
+                        <li class="law-item">
+                            <span class="law-name">Anti-Corruption & Economic Crimes</span>
+                            <span class="law-status status-compliant">Compliant</span>
+                        </li>
+                        <li class="law-item">
+                            <span class="law-name">Intellectual Property Rights</span>
+                            <span class="law-status status-compliant">Compliant</span>
+                        </li>
+                        <li class="law-item">
+                            <span class="law-name">Export Control Regulations</span>
+                            <span class="law-status status-pending">Training Due</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Legal Management Modules -->
+            <div class="module-grid">
+                <div class="module-card" onclick="alert('Contract Management opening...')">
+                    <div class="module-icon">📑</div>
+                    <h3>Contract Management</h3>
+                    <p>Manage contracts, agreements, and legal document repository with version control</p>
+                </div>
+
+                <div class="module-card" onclick="alert('Compliance Tracking opening...')">
+                    <div class="module-icon">✅</div>
+                    <h3>Compliance Tracking</h3>
+                    <p>Monitor regulatory compliance status and audit readiness across all departments</p>
+                </div>
+
+                <div class="module-card" onclick="alert('Legal Risk Assessment opening...')">
+                    <div class="module-icon">⚠️</div>
+                    <h3>Legal Risk Assessment</h3>
+                    <p>Identify and mitigate legal risks across operations with impact analysis</p>
+                </div>
+
+                <div class="module-card" onclick="alert('Policy Management opening...')">
+                    <div class="module-icon">📋</div>
+                    <h3>Policy Management</h3>
+                    <p>Company policies, procedures, and compliance documentation with approval workflows</p>
+                </div>
+
+                <div class="module-card" onclick="alert('Litigation Management opening...')">
+                    <div class="module-icon">⚔️</div>
+                    <h3>Litigation Management</h3>
+                    <p>Track legal cases, court dates, and litigation expenses with case analytics</p>
+                </div>
+
+                <div class="module-card" onclick="alert('Regulatory Intelligence opening...')">
+                    <div class="module-icon">🔍</div>
+                    <h3>Regulatory Intelligence</h3>
+                    <p>Monitor legal changes, regulatory updates, and compliance requirements globally</p>
+                </div>
+            </div>
+
+            <div class="footer">
+                Copyright © 2025 😀
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.querySelectorAll('.nav-item').forEach(item => {
+            if (item.href === window.location.href) {
+                item.classList.add('active');
+            }
+        });
+
+        document.querySelectorAll('.module-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
