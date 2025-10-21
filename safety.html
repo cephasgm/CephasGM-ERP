@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health & Safety - CephasGM ERP</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1rem;
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            padding: 0 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-icon {
+            font-size: 1.25rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main-content {
+            grid-column: 2;
+            padding: 2rem;
+            margin-left: 280px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Safety Standards Grid */
+        .standards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .standard-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), #3b82f6);
+            color: white;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .compliance-list {
+            list-style: none;
+        }
+
+        .compliance-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .compliance-item:last-child {
+            border-bottom: none;
+        }
+
+        .compliance-name {
+            font-weight: 500;
+        }
+
+        .compliance-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-certified {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-audit {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-implementation {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* Incident Reporting */
+        .incident-alert {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-icon {
+            font-size: 2rem;
+            color: #d97706;
+        }
+
+        .alert-content h3 {
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+
+        .alert-content p {
+            color: #92400e;
+            opacity: 0.8;
+        }
+
+        /* Risk Assessment Matrix */
+        .risk-matrix {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .matrix-cell {
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .risk-low { background: #dcfce7; color: #166534; }
+        .risk-medium { background: #fef3c7; color: #92400e; }
+        .risk-high { background: #fed7aa; color: #9a3412; }
+        .risk-very-high { background: #fecaca; color: #991b1b; }
+        .risk-extreme { background: #fca5a5; color: #7f1d1d; }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .module-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .module-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .module-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+        }
+
+        .module-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+                grid-column: 1;
+            }
+            .matrix-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <nav class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">CG</div>
+                <div>
+                    <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
+                    <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Health & Safety</div>
+                <a href="safety.html" class="nav-item active">
+                    <span class="nav-icon">🛡️</span>
+                    OHS Management
+                </a>
+                <a href="legal.html" class="nav-item">
+                    <span class="nav-icon">⚖️</span>
+                    Legal Compliance
+                </a>
+                <a href="hr.html" class="nav-item">
+                    <span class="nav-icon">👥</span>
+                    HR Management
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Safety Modules</div>
+                <a href="incidents.html" class="nav-item">
+                    <span class="nav-icon">🚨</span>
+                    Incident Reporting
+                </a>
+                <a href="risk-assessment.html" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    Risk Assessment
+                </a>
+                <a href="training.html" class="nav-item">
+                    <span class="nav-icon">🎓</span>
+                    Safety Training
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Operations</div>
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    Dashboard
+                </a>
+                <a href="projects.html" class="nav-item">
+                    <span class="nav-icon">📁</span>
+                    Projects
+                </a>
+                <a href="admin.html" class="nav-item">
+                    <span class="nav-icon">⚙️</span>
+                    System Admin
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="header">
+                <h1>Occupational Health & Safety Management</h1>
+                <div style="color: var(--text-light);">Comprehensive OHS compliance, risk management, and workplace safety protocols</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Lost Time Injuries</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">156</div>
+                    <div class="stat-label">Safety Trainings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Compliance Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24</div>
+                    <div class="stat-label">Active Safety Audits</div>
+                </div>
+            </div>
+
+            <!-- Incident Alert -->
+            <div class="incident-alert">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-content">
+                    <h3>Safety Alert: High-Risk Activity Scheduled</h3>
+                    <p>Electrical maintenance work planned for Building A - Ensure proper lockout/tagout procedures and PPE requirements are followed.</p>
+                </div>
+            </div>
+
+            <!-- Safety Standards Compliance -->
+            <div class="standards-grid">
+                <div class="standard-card">
+                    <div class="card-header">
+                        <div class="card-icon">🌍</div>
+                        <div class="card-title">International Standards</div>
+                    </div>
+                    <ul class="compliance-list">
+                        <li class="compliance-item">
+                            <span class="compliance-name">ISO 45001:2018</span>
+                            <span class="compliance-status status-certified">Certified</span>
+                        </li>
+                        <li class="compliance-item">
+                            <span class="compliance-name">OHSAS 18001</span>
+                            <span class="compliance-status status-certified">Certified</span>
+                        </li>
+                        <li class="compliance-item">
+                            <span class="compliance-name">ILO OSH Standards</span>
+                            <span class="compliance-status status-certified">Compliant</span>
+                        </li>
+                        <li class="compliance-item">
+                            <span class="compliance-name">ISO 14001 Environmental</span>
+                            <span class="compliance-status status-audit">Audit Due</span>
+                        </li>
+                        <li class="compliance-item">
+                            <span class="compliance-name">WHO Health Guidelines</span>
+                            <span class="compliance-status status-implementation">Implementing</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="standard-card">
+                    <div class="card-header">
+                        <div class="card-icon">🇹🇿</div>
+                        <div class="card-title">National Regulations</div>
+                    </div>
+                    <ul class="compliance-list">
+                        <li class="compliance-item">
+                            <span class="compliance-name">OSH Act 2003</span>
+                            <span class="compliance-status status-certified">Compliant</span>
+                        </li>
+                        <li class="compliance-item">
+                            <span class="compliance-name">Factories Ordinance</span>
+                            <span class="compliance-status status-certified">Compliant</span>
+                        </li>
+                        <li class="compliance-item">
+                            <span class="compliance-name">Workmen's Compensation</span>
+                            <span class="compliance-status status-certified">Compliant</span>
+                        </li>
+                        <li class="compliance-item">
+                            <span class="compliance-name">Environmental Management Act</span>
+                            <span class="compliance-status status-audit">Review Needed</span>
+                        </li>
+                        <li class="compliance-item">
+                            <span class="compliance-name">Public Health Act</span>
+                            <span class="compliance-status status-certified">Compliant</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="standard-card">
+                    <div class="card-header">
+                        <div class="card-icon">🏭</div>
+                        <div class="card-title">Industry Specific</div>
+                    </div>
+                    <ul class="compliance-list">
+                        <li class="compliance-item">
+                            <span class="compliance-name">Hazardous Materials Handling</span>
+                            <span class="compliance-status status-certified">Compliant</span>
+                        </li>
+                        <li class="compliance-item">
+                            <span class="compliance-name">Electrical Safety Standards</span>
+                            <span class="compliance-status status-certified">Compliant</span>
+                        </li>
+                        <li class="compliance-item">
+                            <span class="compliance-name">Fire Safety & Prevention</span>
+                            <span class="compliance-status status-audit">Inspection Due</span>
+                        </li>
+                        <li class="compliance-item">
+                            <span class="compliance-name">Machine Guarding Requirements</span>
+                            <span class="compliance-status status-certified">Compliant</span>
+                        </li>
+                        <li class="compliance-item">
+                            <span class="compliance-name">Construction Safety</span>
+                            <span class="compliance-status status-implementation">Upgrading</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Risk Assessment Matrix -->
+            <div class="risk-matrix">
+                <div class="card-header">
+                    <div class="card-icon">📊</div>
+                    <div class="card-title">Risk Assessment Matrix</div>
+                </div>
+                <p style="color: var(--text-light); margin-bottom: 1rem;">Current workplace risk assessment status across departments</p>
+                <div class="matrix-grid">
+                    <div class="matrix-cell risk-low">Low Risk<br>Admin</div>
+                    <div class="matrix-cell risk-medium">Medium Risk<br>Sales</div>
+                    <div class="matrix-cell risk-high">High Risk<br>Warehouse</div>
+                    <div class="matrix-cell risk-very-high">Very High<br>Manufacturing</div>
+                    <div class="matrix-cell risk-extreme">Extreme<br>Construction</div>
+                </div>
+            </div>
+
+            <!-- OHS Management Modules -->
+            <div class="module-grid">
+                <div class="module-card" onclick="alert('Incident Reporting opening...')">
+                    <div class="module-icon">🚨</div>
+                    <h3>Incident Reporting</h3>
+                    <p>Report and investigate workplace incidents, near misses, and accidents with root cause analysis</p>
+                </div>
+
+                <div class="module-card" onclick="alert('Risk Assessment opening...')">
+                    <div class="module-icon">📋</div>
+                    <h3>Risk Assessment</h3>
+                    <p>Conduct comprehensive risk assessments, JSA, and implement control measures</p>
+                </div>
+
+                <div class="module-card" onclick="alert('Safety Training opening...')">
+                    <div class="module-icon">🎓</div>
+                    <h3>Safety Training</h3>
+                    <p>Manage safety training programs, certifications, and competency assessments</p>
+                </div>
+
+                <div class="module-card" onclick="alert('PPE Management opening...')">
+                    <div class="module-icon">🥽</div>
+                    <h3>PPE Management</h3>
+                    <p>Track personal protective equipment issuance, maintenance, and compliance</p>
+                </div>
+
+                <div class="module-card" onclick="alert('Emergency Preparedness opening...')">
+                    <div class="module-icon">🚒</div>
+                    <h3>Emergency Preparedness</h3>
+                    <p>Emergency response plans, drills, and evacuation procedures management</p>
+                </div>
+
+                <div class="module-card" onclick="alert('Health Surveillance opening...')">
+                    <div class="module-icon">🏥</div>
+                    <h3>Health Surveillance</h3>
+                    <p>Employee health monitoring, medical examinations, and wellness programs</p>
+                </div>
+
+                <div class="module-card" onclick="alert('Contractor Safety opening...')">
+                    <div class="module-icon">👷</div>
+                    <h3>Contractor Safety</h3>
+                    <p>Manage contractor safety compliance, permits, and site-specific inductions</p>
+                </div>
+
+                <div class="module-card" onclick="alert('Audit & Inspection opening...')">
+                    <div class="module-icon">🔍</div>
+                    <h3>Audit & Inspection</h3>
+                    <p>Schedule and conduct safety audits, inspections, and compliance verifications</p>
+                </div>
+            </div>
+
+            <div class="footer">
+                Copyright © 2025 😀
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Navigation active state
+        document.querySelectorAll('.nav-item').forEach(item => {
+            if (item.href === window.location.href) {
+                item.classList.add('active');
+            }
+        });
+
+        // Module card hover effects
+        document.querySelectorAll('.module-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Simulate real-time safety alerts
+        function updateSafetyAlerts() {
+            const alerts = [
+                "New safety observation reported in Warehouse B",
+                "Monthly fire drill scheduled for next week",
+                "PPE inspection due for Construction team",
+                "Safety committee meeting reminder"
+            ];
+            
+            const randomAlert = alerts[Math.floor(Math.random() * alerts.length)];
+            // This would typically update an alert system
+            console.log("Safety Alert:", randomAlert);
+        }
+
+        // Update alerts every 2 minutes
+        setInterval(updateSafetyAlerts, 120000);
+    </script>
+</body>
+</html>
