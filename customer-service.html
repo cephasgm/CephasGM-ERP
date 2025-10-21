@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Service - CephasGM ERP</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1rem;
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            padding: 0 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-icon {
+            font-size: 1.25rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main-content {
+            grid-column: 2;
+            padding: 2rem;
+            margin-left: 280px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* AI Chat Assistant */
+        .ai-chat-container {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary), #3b82f6);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .chat-icon {
+            font-size: 1.5rem;
+        }
+
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            padding: 1.5rem;
+            background: var(--background);
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .message.ai {
+            flex-direction: row;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .message.ai .message-avatar {
+            background: var(--primary);
+            color: white;
+        }
+
+        .message.user .message-avatar {
+            background: var(--success);
+            color: white;
+        }
+
+        .message-content {
+            background: var(--surface);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            max-width: 70%;
+        }
+
+        .message.ai .message-content {
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user .message-content {
+            border-bottom-right-radius: 4px;
+            background: var(--primary);
+            color: white;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-right: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .chat-input button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Support Tickets */
+        .tickets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .ticket-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .ticket-id {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .ticket-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-open {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-in-progress {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-resolved {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .ticket-info {
+            margin-bottom: 1rem;
+        }
+
+        .ticket-customer {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .ticket-issue {
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        .ticket-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .ticket-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--background);
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .ticket-btn.primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* QA Feedback Form */
+        .qa-form {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .form-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .star {
+            font-size: 2rem;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star.active {
+            color: #f59e0b;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .module-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .module-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .module-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ec4899, #f472b6);
+            color: white;
+        }
+
+        .module-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+                grid-column: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <nav class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">CG</div>
+                <div>
+                    <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
+                    <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Customer Relations</div>
+                <a href="customer-service.html" class="nav-item active">
+                    <span class="nav-icon">🎯</span>
+                    Customer Service
+                </a>
+                <a href="sales.html" class="nav-item">
+                    <span class="nav-icon">💰</span>
+                    Sales & CRM
+                </a>
+                <a href="marketing.html" class="nav-item">
+                    <span class="nav-icon">📢</span>
+                    Marketing
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Support</div>
+                <a href="tickets.html" class="nav-item">
+                    <span class="nav-icon">🎫</span>
+                    Support Tickets
+                </a>
+                <a href="feedback.html" class="nav-item">
+                    <span class="nav-icon">💬</span>
+                    Customer Feedback
+                </a>
+                <a href="knowledge-base.html" class="nav-item">
+                    <span class="nav-icon">📚</span>
+                    Knowledge Base
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Operations</div>
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    Dashboard
+                </a>
+                <a href="projects.html" class="nav-item">
+                    <span class="nav-icon">📁</span>
+                    Projects
+                </a>
+                <a href="finance.html" class="nav-item">
+                    <span class="nav-icon">💳</span>
+                    Finance
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="header">
+                <h1>Customer Service Center</h1>
+                <div style="color: var(--text-light);">AI-powered support, ticket management, and customer satisfaction tracking</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">42</div>
+                    <div class="stat-label">Open Tickets</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">15m</div>
+                    <div class="stat-label">Avg Response Time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">96%</div>
+                    <div class="stat-label">Satisfaction Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Active Agents</div>
+                </div>
+            </div>
+
+            <!-- AI Chat Assistant -->
+            <div class="ai-chat-container">
+                <div class="chat-header">
+                    <div class="chat-icon">🤖</div>
+                    <div>
+                        <div style="font-weight: 600;">CephasAI Support Assistant</div>
+                        <div style="font-size: 0.875rem; opacity: 0.9;">Ask me anything about our products and services</div>
+                    </div>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai">
+                        <div class="message-avatar">AI</div>
+                        <div class="message-content">
+                            Hello! I'm CephasAI, your virtual support assistant. How can I help you today?
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="chatInput" placeholder="Type your question here...">
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+
+            <!-- Support Tickets Queue -->
+            <div class="tickets-grid">
+                <div class="ticket-card">
+                    <div class="ticket-header">
+                        <span class="ticket-id">#CS-7824</span>
+                        <span class="ticket-status status-open">Open</span>
+                    </div>
+                    <div class="ticket-info">
+                        <div class="ticket-customer">John M. - Premium Customer</div>
+                        <div class="ticket-issue">Product delivery delayed by 2 days, needs urgent update</div>
+                    </div>
+                    <div class="ticket-actions">
+                        <button class="ticket-btn primary">Assign to Me</button>
+                        <button class="ticket-btn">View Details</button>
+                    </div>
+                </div>
+
+                <div class="ticket-card">
+                    <div class="ticket-header">
+                        <span class="ticket-id">#CS-7819</span>
+                        <span class="ticket-status status-in-progress">In Progress</span>
+                    </div>
+                    <div class="ticket-info">
+                        <div class="ticket-customer">Sarah K. - Business Client</div>
+                        <div class="ticket-issue">Technical issue with software integration, requires developer</div>
+                    </div>
+                    <div class="ticket-actions">
+                        <button class="ticket-btn primary">Resolve</button>
+                        <button class="ticket-btn">Escalate</button>
+                    </div>
+                </div>
+
+                <div class="ticket-card">
+                    <div class="ticket-header">
+                        <span class="ticket-id">#CS-7815</span>
+                        <span class="ticket-status status-resolved">Resolved</span>
+                    </div>
+                    <div class="ticket-info">
+                        <div class="ticket-customer">David T. - New Customer</div>
+                        <div class="ticket-issue">Billing inquiry resolved, customer satisfied with explanation</div>
+                    </div>
+                    <div class="ticket-actions">
+                        <button class="ticket-btn">View Feedback</button>
+                        <button class="ticket-btn">Close Ticket</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quality Assurance Feedback Form -->
+            <div class="qa-form">
+                <div class="form-title">Service Quality Assessment</div>
+                <div class="rating-stars" id="ratingStars">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">How would you rate our service?</label>
+                    <select class="form-input">
+                        <option>Excellent</option>
+                        <option>Good</option>
+                        <option>Average</option>
+                        <option>Poor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">What could we improve?</label>
+                    <textarea class="form-textarea" placeholder="Please share your suggestions..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Would you recommend our service?</label>
+                    <select class="form-input">
+                        <option>Definitely yes</option>
+                        <option>Probably yes</option>
+                        <option>Not sure</option>
+                        <option>Probably not</option>
+                    </select>
+                </div>
+                <button class="submit-btn">Submit Feedback</button>
+            </div>
+
+            <!-- Customer Service Modules -->
+            <div class="module-grid">
+                <div class="module-card" onclick="alert('Ticket Management opening...')">
+                    <div class="module-icon">🎫</div>
+                    <h3>Ticket Management</h3>
+                    <p>Create, assign, and track customer support tickets with SLA monitoring</p>
+                </div>
+
+                <div class="module-card" onclick="alert('Live Chat Support opening...')">
+                    <div class="module-icon">💬</div>
+                    <h3>Live Chat Support</h3>
+                    <p>Real-time customer support with agent assignment and chat history</p>
+                </div>
+
+                <div class="module-card" onclick="alert('Customer Feedback opening...')">
+                    <div class="module-icon">⭐</div>
+                    <h3>Customer Feedback</h3>
+                    <p>Collect and analyze customer satisfaction scores and feedback</p>
+                </div>
+
+                <div class="module-card" onclick="alert('Knowledge Base opening...')">
+                    <div class="module-icon">📚</div>
+                    <h3>Knowledge Base</h3>
+                    <p>Self-service help articles, FAQs, and troubleshooting guides</p>
+                </div>
+
+                <div class="module-card" onclick="alert('Service Analytics opening...')">
+                    <div class="module-icon">📊</div>
+                    <h3>Service Analytics</h3>
+                    <p>Performance metrics, response times, and customer satisfaction trends</p>
+                </div>
+
+                <div class="module-card" onclick="alert('CRM Integration opening...')">
+                    <div class="module-icon">👥</div>
+                    <h3>CRM Integration</h3>
+                    <p>Seamless integration with customer relationship management system</p>
+                </div>
+            </div>
+
+            <div class="footer">
+                Copyright © 2025 😀
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Navigation active state
+        document.querySelectorAll('.nav-item').forEach(item => {
+            if (item.href === window.location.href) {
+                item.classList.add('active');
+            }
+        });
+
+        // Module card hover effects
+        document.querySelectorAll('.module-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // AI Chat Functionality
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                // Add user message
+                const chatMessages = document.getElementById('chatMessages');
+                const userMessage = document.createElement('div');
+                userMessage.className = 'message user';
+                userMessage.innerHTML = `
+                    <div class="message-avatar">You</div>
+                    <div class="message-content">${message}</div>
+                `;
+                chatMessages.appendChild(userMessage);
+                
+                // Clear input
+                input.value = '';
+                
+                // Simulate AI response
+                setTimeout(() => {
+                    const aiResponse = document.createElement('div');
+                    aiResponse.className = 'message ai';
+                    
+                    const responses = [
+                        "I understand your concern. Let me check that for you.",
+                        "Thank you for your question. Here's what I can tell you...",
+                        "I can help with that! Based on our records...",
+                        "That's a great question. Let me provide you with the information..."
+                    ];
+                    
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    
+                    aiResponse.innerHTML = `
+                        <div class="message-avatar">AI</div>
+                        <div class="message-content">${randomResponse}</div>
+                    `;
+                    chatMessages.appendChild(aiResponse);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 1000);
+                
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        // Star rating functionality
+        const stars = document.querySelectorAll('.star');
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const rating = this.getAttribute('data-rating');
+                stars.forEach(s => {
+                    if (s.getAttribute('data-rating') <= rating) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // Enter key for chat
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
