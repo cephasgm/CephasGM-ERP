@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Management - CephasGM ERP</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1rem;
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            padding: 0 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-icon {
+            font-size: 1.25rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            grid-column: 2;
+            padding: 2rem;
+            margin-left: 280px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+        }
+
+        /* Module Grid */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .module-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .module-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .module-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), #3b82f6);
+            color: white;
+        }
+
+        .module-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+                grid-column: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">CG</div>
+                <div>
+                    <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
+                    <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Main</div>
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    Dashboard
+                </a>
+                <a href="hr.html" class="nav-item active">
+                    <span class="nav-icon">👥</span>
+                    HR Management
+                </a>
+                <a href="finance.html" class="nav-item">
+                    <span class="nav-icon">💰</span>
+                    Finance
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Operations</div>
+                <a href="attendance.html" class="nav-item">
+                    <span class="nav-icon">⏱️</span>
+                    Attendance
+                </a>
+                <a href="payroll.html" class="nav-item">
+                    <span class="nav-icon">💳</span>
+                    Payroll
+                </a>
+                <a href="inventory.html" class="nav-item">
+                    <span class="nav-icon">📦</span>
+                    Inventory
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1>Human Resources Management</h1>
+                <div style="color: var(--text-light);">Manage employees, recruitment, and HR operations</div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">142</div>
+                    <div class="stat-label">Total Employees</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Open Positions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">94%</div>
+                    <div class="stat-label">Satisfaction Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Pending Requests</div>
+                </div>
+            </div>
+
+            <!-- HR Modules Grid -->
+            <div class="module-grid">
+                <a href="attendance.html" class="module-card">
+                    <div class="module-icon">⏱️</div>
+                    <h3>Attendance & Time</h3>
+                    <p>Track employee hours, leaves, and attendance records with real-time monitoring</p>
+                </a>
+
+                <a href="payroll.html" class="module-card">
+                    <div class="module-icon">💳</div>
+                    <h3>Payroll Management</h3>
+                    <p>Process salaries, deductions, bonuses, and generate payslips automatically</p>
+                </a>
+
+                <a href="recruitment.html" class="module-card">
+                    <div class="module-icon">💼</div>
+                    <h3>Recruitment</h3>
+                    <p>Manage job postings, applications, interviews, and onboarding processes</p>
+                </a>
+
+                <a href="training.html" class="module-card">
+                    <div class="module-icon">🎓</div>
+                    <h3>Training & Development</h3>
+                    <p>Employee skills tracking, training programs, and professional growth plans</p>
+                </a>
+
+                <a href="legal.html" class="module-card">
+                    <div class="module-icon">⚖️</div>
+                    <h3>Legal & Compliance</h3>
+                    <p>Contract management, regulatory compliance, and legal document tracking</p>
+                </a>
+
+                <a href="safety.html" class="module-card">
+                    <div class="module-icon">🛡️</div>
+                    <h3>Health & Safety</h3>
+                    <p>OSHA compliance, incident reports, safety protocols, and workplace safety</p>
+                </a>
+
+                <a href="performance.html" class="module-card">
+                    <div class="module-icon">📈</div>
+                    <h3>Performance Reviews</h3>
+                    <p>Employee evaluations, KPI tracking, and performance improvement plans</p>
+                </a>
+
+                <a href="benefits.html" class="module-card">
+                    <div class="module-icon">🏥</div>
+                    <h3>Benefits Administration</h3>
+                    <p>Health insurance, retirement plans, and employee benefits management</p>
+                </a>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                Copyright © 2025 😀
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Simple navigation active state
+        document.querySelectorAll('.nav-item').forEach(item => {
+            if (item.href === window.location.href) {
+                item.classList.add('active');
+            }
+        });
+
+        // Add hover effects
+        document.querySelectorAll('.module-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
