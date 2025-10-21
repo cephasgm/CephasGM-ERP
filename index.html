@@ -3,12 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#003366">
+  <meta name="theme-color" content="#2563eb">
   <meta name="description" content="CephasGM ERP - Complete Business Management Solution">
-  <title>CephasGM – ERP | Dashboard</title>
+  <title>Dashboard - CephasGM ERP</title>
+  
+  <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  
   <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #64748b;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --background: #f8fafc;
+      --surface: #ffffff;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --border: #e2e8f0;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -16,230 +34,275 @@
     }
     
     body {
-      font-family: 'Segoe UI', Tahoma, sans-serif;
+      font-family: 'Segoe UI', system-ui, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #333;
+      color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
     
-    header {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    .dashboard {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
     }
-    
+
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 2rem 1rem;
+      position: fixed;
+      width: 280px;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
     .logo {
-      font-size: 2.5em;
-      font-weight: bold;
-      color: #003366;
-      margin-bottom: 10px;
-    }
-    
-    .tagline {
-      color: #666;
-      font-size: 1.1em;
-    }
-    
-    .nav-container {
-      background: rgba(255, 255, 255, 0.9);
-      padding: 15px 0;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-    }
-    
-    .nav-menu {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-    
-    .nav-btn {
-      background: #003366;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 25px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      transition: all 0.3s ease;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      padding: 0 1rem;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--primary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.25rem;
+    }
+
+    .nav-section {
+      margin-bottom: 2rem;
+    }
+
+    .nav-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 1rem;
+      padding: 0 1rem;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      color: var(--text-light);
       text-decoration: none;
-    }
-    
-    .nav-btn:hover {
-      background: #002244;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    }
-    
-    .nav-btn.active {
-      background: #27ae60;
-    }
-    
-    .dashboard {
-      flex: 1;
-      padding: 40px 20px;
-      max-width: 1200px;
-      margin: 0 auto;
+      transition: all 0.2s;
+      margin-bottom: 0.25rem;
+      border: none;
+      background: none;
       width: 100%;
+      text-align: left;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .nav-icon {
+      font-size: 1.25rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .main-content {
+      grid-column: 2;
+      padding: 2rem;
+      margin-left: 280px;
+      background: var(--background);
+      min-height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 2rem;
+      background: var(--surface);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .header-content {
+      text-align: center;
+      flex: 1;
+    }
+
+    .header-content p {
+      color: var(--text-light);
+      font-size: 1.1rem;
+      margin-top: 0.5rem;
+    }
+
+    .pwa-status {
+      background: var(--success);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .status-offline {
+      background: var(--error);
     }
     
     .welcome-section {
       text-align: center;
-      margin-bottom: 50px;
-      color: white;
+      margin-bottom: 3rem;
+      color: var(--text);
     }
     
     .welcome-section h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     
     .welcome-section p {
-      font-size: 1.2em;
-      opacity: 0.9;
+      font-size: 1.2rem;
+      color: var(--text-light);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
     }
     
     .modules-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 25px;
-      margin-top: 30px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
     }
     
     .module-card {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 15px;
-      padding: 30px;
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem;
       text-align: center;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
       cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      display: block;
     }
     
     .module-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border-color: var(--primary);
     }
     
     .module-icon {
-      font-size: 3em;
-      margin-bottom: 15px;
+      font-size: 3rem;
+      margin-bottom: 1rem;
       display: block;
     }
     
     .module-card h3 {
-      color: #003366;
-      margin-bottom: 10px;
-      font-size: 1.4em;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+      font-weight: 600;
     }
     
     .module-card p {
-      color: #666;
+      color: var(--text-light);
       line-height: 1.5;
+      font-size: 0.95rem;
     }
     
     .stats-section {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-top: 40px;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
     }
     
     .stat-card {
-      background: rgba(255, 255, 255, 0.9);
-      padding: 20px;
-      border-radius: 10px;
+      background: var(--surface);
+      padding: 1.5rem;
+      border-radius: 12px;
       text-align: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border: 1px solid var(--border);
     }
     
     .stat-number {
-      font-size: 2em;
-      font-weight: bold;
-      color: #003366;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
       display: block;
+      margin-bottom: 0.5rem;
     }
     
     .stat-label {
-      color: #666;
-      font-size: 0.9em;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      font-weight: 500;
     }
     
     footer {
-      background: #003366;
-      color: white;
+      background: var(--surface);
+      color: var(--text-light);
       text-align: center;
-      padding: 20px 0;
-      margin-top: auto;
-    }
-    
-    .pwa-status {
-      background: rgba(255,255,255,0.1);
-      padding: 8px 15px;
-      border-radius: 20px;
-      font-size: 0.9em;
-      margin-top: 10px;
-      display: inline-block;
-    }
-    
-    .status-online { background: #27ae60; }
-    .status-offline { background: #e74c3c; }
-    
-    @media (max-width: 768px) {
-      .nav-menu {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .nav-btn {
-        width: 200px;
-        justify-content: center;
-      }
-      
-      .modules-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .welcome-section h1 {
-        font-size: 2em;
-      }
+      padding: 2rem;
+      margin-top: 3rem;
+      border-top: 1px solid var(--border);
     }
 
-    /* Installation Prompt Styles */
+    /* Enhanced PWA Installation Styles */
     #installButton {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      bottom: 2rem;
+      right: 2rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: white;
       border: none;
-      padding: 15px 25px;
-      border-radius: 25px;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
       cursor: pointer;
-      font-weight: bold;
-      font-size: 14px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
       z-index: 1000;
       transition: all 0.3s ease;
       display: none;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     #installButton:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
     }
 
     #installButton:active {
@@ -249,16 +312,19 @@
     /* Installation Success Message */
     .install-success {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #27ae60;
+      top: 2rem;
+      right: 2rem;
+      background: var(--success);
       color: white;
-      padding: 15px 20px;
-      border-radius: 10px;
-      font-weight: bold;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
       z-index: 1000;
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
       animation: slideIn 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     @keyframes slideIn {
@@ -271,106 +337,294 @@
         opacity: 1;
       }
     }
+
+    /* PWA Installation Card in Sidebar */
+    .pwa-install-card {
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .pwa-install-card h4 {
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .pwa-install-card p {
+      font-size: 0.875rem;
+      opacity: 0.9;
+      margin-bottom: 1rem;
+    }
+
+    .pwa-install-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.875rem;
+      width: 100%;
+      transition: all 0.2s;
+    }
+
+    .pwa-install-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        transform: translateX(-100%);
+        z-index: 1000;
+      }
+      .sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+        grid-column: 1;
+      }
+      .modules-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+      .stats-section {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      #installButton {
+        bottom: 1rem;
+        right: 1rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+      }
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1001;
+      font-size: 1.25rem;
+    }
+
+    @media (max-width: 1024px) {
+      .mobile-menu-toggle {
+        display: block;
+      }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">CephasGM – ERP</div>
-    <div class="tagline">Complete Business Management Solution</div>
-    <div class="pwa-status status-online" id="pwaStatus">🟢 Online</div>
-  </header>
+  <!-- Mobile Menu Toggle -->
+  <button class="mobile-menu-toggle" onclick="toggleSidebar()">☰</button>
 
-  <nav class="nav-container">
-    <div class="nav-menu">
-      <a href="index.html" class="nav-btn active">🏠 Dashboard</a>
-      <a href="payroll.html" class="nav-btn">💰 Payroll</a>
-      <a href="attendance.html" class="nav-btn">⏱️ Attendance & Leave</a>
-      <a href="meetings.html" class="nav-btn">📅 Company Meetings</a>
-      <a href="finance.html" class="nav-btn">💳 Finance</a>
-      <a href="admin.html" class="nav-btn">⚙️ Administrator</a>
-    </div>
-  </nav>
-
-  <main class="dashboard">
-    <section class="welcome-section">
-      <h1>Welcome to CephasGM ERP</h1>
-      <p>Streamline your business operations with our comprehensive management system</p>
-    </section>
-
-    <section class="modules-grid">
-      <div class="module-card" onclick="location.href='payroll.html'">
-        <span class="module-icon">💰</span>
-        <h3>Payroll Management</h3>
-        <p>Manage employee salaries, bonuses, deductions, and generate payroll reports with automatic calculations.</p>
+  <div class="dashboard">
+    <!-- Enhanced Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+      <div class="logo">
+        <div class="logo-icon">CG</div>
+        <div>
+          <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
+          <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
+        </div>
       </div>
 
-      <div class="module-card" onclick="location.href='attendance.html'">
-        <span class="module-icon">⏱️</span>
-        <h3>Attendance & Leave</h3>
-        <p>Track employee attendance, manage leave requests, and monitor working hours with real-time updates.</p>
+      <div class="nav-section">
+        <div class="nav-title">Main Navigation</div>
+        <a href="index.html" class="nav-item active">
+          <span class="nav-icon">📊</span>
+          Dashboard
+        </a>
+        <a href="payroll.html" class="nav-item">
+          <span class="nav-icon">💰</span>
+          Payroll
+        </a>
+        <a href="attendance.html" class="nav-item">
+          <span class="nav-icon">⏱️</span>
+          Attendance
+        </a>
       </div>
 
-      <div class="module-card" onclick="location.href='meetings.html'">
-        <span class="module-icon">📅</span>
-        <h3>Company Meetings</h3>
-        <p>Schedule and manage company meetings, integrate with Google Calendar, and track meeting outcomes.</p>
+      <div class="nav-section">
+        <div class="nav-title">Business Operations</div>
+        <a href="finance.html" class="nav-item">
+          <span class="nav-icon">💳</span>
+          Finance
+        </a>
+        <a href="meetings.html" class="nav-item">
+          <span class="nav-icon">👥</span>
+          Meetings
+        </a>
+        <a href="projects.html" class="nav-item">
+          <span class="nav-icon">📁</span>
+          Projects
+        </a>
       </div>
 
-      <div class="module-card" onclick="location.href='finance.html'">
-        <span class="module-icon">💳</span>
-        <h3>Finance Management</h3>
-        <p>Comprehensive financial tracking, expense management, revenue reports, and budget planning.</p>
+      <div class="nav-section">
+        <div class="nav-title">Management</div>
+        <a href="hr.html" class="nav-item">
+          <span class="nav-icon">👥</span>
+          HR Management
+        </a>
+        <a href="admin.html" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          System Admin
+        </a>
+        <a href="reports.html" class="nav-item">
+          <span class="nav-icon">📈</span>
+          Reports
+        </a>
       </div>
 
-      <div class="module-card" onclick="location.href='admin.html'">
-        <span class="module-icon">⚙️</span>
-        <h3>Administrator</h3>
-        <p>System configuration, user management, permissions, and overall system administration controls.</p>
+      <!-- PWA Installation Card in Sidebar -->
+      <div class="pwa-install-card" id="pwaInstallCard">
+        <h4>📱 Install App</h4>
+        <p>Get the full app experience with offline access</p>
+        <button class="pwa-install-btn" onclick="triggerPWAInstall()">
+          Install CephasGM ERP
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="header">
+        <div class="header-content">
+          <h1>Welcome to CephasGM ERP</h1>
+          <p>Streamline your business operations with our comprehensive management system</p>
+        </div>
+        <div class="pwa-status" id="pwaStatus">🟢 Online</div>
       </div>
 
-      <div class="module-card">
-        <span class="module-icon">📊</span>
-        <h3>Reports & Analytics</h3>
-        <p>Generate comprehensive reports, visualize data with charts, and gain insights into business performance.</p>
+      <!-- Quick Stats -->
+      <div class="stats-section">
+        <div class="stat-card">
+          <span class="stat-number" id="totalEmployees">0</span>
+          <span class="stat-label">Total Employees</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="pendingPayroll">0</span>
+          <span class="stat-label">Pending Payroll</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="activeMeetings">0</span>
+          <span class="stat-label">Active Meetings</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="systemHealth">100%</span>
+          <span class="stat-label">System Health</span>
+        </div>
       </div>
-    </section>
 
-    <section class="stats-section">
-      <div class="stat-card">
-        <span class="stat-number" id="totalEmployees">0</span>
-        <span class="stat-label">Total Employees</span>
+      <!-- Modules Grid -->
+      <div class="modules-grid">
+        <a href="payroll.html" class="module-card">
+          <span class="module-icon">💰</span>
+          <h3>Payroll Management</h3>
+          <p>Manage employee salaries, bonuses, deductions, and generate payroll reports with automatic calculations.</p>
+        </a>
+
+        <a href="attendance.html" class="module-card">
+          <span class="module-icon">⏱️</span>
+          <h3>Attendance & Leave</h3>
+          <p>Track employee attendance, manage leave requests, and monitor working hours with real-time updates.</p>
+        </a>
+
+        <a href="meetings.html" class="module-card">
+          <span class="module-icon">👥</span>
+          <h3>Company Meetings</h3>
+          <p>Schedule and manage company meetings, track attendance, and document meeting outcomes efficiently.</p>
+        </a>
+
+        <a href="finance.html" class="module-card">
+          <span class="module-icon">💳</span>
+          <h3>Finance Management</h3>
+          <p>Comprehensive financial tracking, expense management, revenue reports, and budget planning tools.</p>
+        </a>
+
+        <a href="hr.html" class="module-card">
+          <span class="module-icon">👥</span>
+          <h3>HR Management</h3>
+          <p>Employee records, performance tracking, recruitment, and comprehensive human resources management.</p>
+        </a>
+
+        <a href="admin.html" class="module-card">
+          <span class="module-icon">⚙️</span>
+          <h3>System Administration</h3>
+          <p>System configuration, user management, permissions, and overall system administration controls.</p>
+        </a>
+
+        <a href="projects.html" class="module-card">
+          <span class="module-icon">📁</span>
+          <h3>Project Management</h3>
+          <p>Plan, track, and manage projects with timelines, resource allocation, and progress monitoring.</p>
+        </a>
+
+        <a href="reports.html" class="module-card">
+          <span class="module-icon">📊</span>
+          <h3>Reports & Analytics</h3>
+          <p>Generate comprehensive reports, visualize data with charts, and gain insights into business performance.</p>
+        </a>
       </div>
-      <div class="stat-card">
-        <span class="stat-number" id="pendingPayroll">0</span>
-        <span class="stat-label">Pending Payroll</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-number" id="activeMeetings">0</span>
-        <span class="stat-label">Active Meetings</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-number" id="systemHealth">100%</span>
-        <span class="stat-label">System Health</span>
-      </div>
-    </section>
-  </main>
+    </main>
+  </div>
 
   <footer>
-    Copyright © 2025 😀
+    Copyright © 2025 😀 | CephasGM ERP System
   </footer>
 
-  <!-- Install Button (will be shown when PWA can be installed) -->
-  <button id="installButton">📱 Install CephasGM ERP</button>
+  <!-- Floating Install Button -->
+  <button id="installButton">
+    <span style="font-size: 1.2rem;">📱</span>
+    Install App
+  </button>
 
   <script>
+    // Mobile Sidebar Toggle
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('mobile-open');
+    }
+
+    // Close sidebar when clicking on a link (mobile)
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const sidebar = document.getElementById('sidebar');
+        if (window.innerWidth <= 1024) {
+          sidebar.classList.remove('mobile-open');
+        }
+      });
+    });
+
     // Load dashboard statistics
     function loadDashboardStats() {
-      // Load payroll data for employee count
       try {
         const payrollData = JSON.parse(localStorage.getItem('payrollData') || '[]');
         document.getElementById('totalEmployees').textContent = payrollData.length;
         
-        // Calculate pending payroll (entries from current month)
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
         const pendingPayroll = payrollData.filter(entry => {
@@ -380,7 +634,6 @@
         }).length;
         document.getElementById('pendingPayroll').textContent = pendingPayroll;
         
-        // Simulate active meetings (would come from meetings data)
         document.getElementById('activeMeetings').textContent = Math.floor(Math.random() * 5);
       } catch (error) {
         console.log('Error loading dashboard stats:', error);
@@ -394,7 +647,7 @@
       // Add click effects to module cards
       document.querySelectorAll('.module-card').forEach(card => {
         card.addEventListener('click', function() {
-          this.style.transform = 'scale(0.95)';
+          this.style.transform = 'scale(0.98)';
           setTimeout(() => {
             this.style.transform = '';
           }, 150);
@@ -406,14 +659,16 @@
     setInterval(loadDashboardStats, 30000);
   </script>
 
-  <!-- Improved PWA Installation Script -->
+  <!-- Enhanced PWA Installation Script -->
   <script>
-    // PWA Installation with Manual Trigger
+    // PWA Installation Management
     let deferredPrompt;
     let installButton;
+    let pwaInstallCard;
 
     function initializePWA() {
         installButton = document.getElementById('installButton');
+        pwaInstallCard = document.getElementById('pwaInstallCard');
         
         // Listen for beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -421,53 +676,64 @@
             e.preventDefault();
             deferredPrompt = e;
             
-            // Show install button
-            installButton.style.display = 'block';
-            console.log('📱 Install button should be visible now');
-            
-            installButton.onclick = async () => {
-                if (!deferredPrompt) {
-                    console.log('❌ No deferred prompt available');
-                    return;
-                }
-                
-                console.log('🔄 Showing install prompt...');
-                deferredPrompt.prompt();
-                
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response to install prompt: ${outcome}`);
-                
-                if (outcome === 'accepted') {
-                    console.log('✅ User accepted the install prompt');
-                    installButton.style.display = 'none';
-                    showInstallSuccess();
-                } else {
-                    console.log('❌ User dismissed the install prompt');
-                    // Keep button visible for next try
-                }
-                
-                deferredPrompt = null;
-            };
+            // Show both install button and sidebar card
+            installButton.style.display = 'flex';
+            pwaInstallCard.style.display = 'block';
+            console.log('📱 Install prompts should be visible now');
         });
+
+        // Install button click handler
+        installButton.onclick = async () => {
+            await triggerPWAInstall();
+        };
 
         // Track successful installation
         window.addEventListener('appinstalled', (evt) => {
             console.log('🎉 CephasGM ERP was successfully installed');
             installButton.style.display = 'none';
+            pwaInstallCard.style.display = 'none';
             showInstallSuccess();
         });
 
         // Check if already installed
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            console.log('📱 App is already installed in standalone mode');
+        if (isPWAInstalled()) {
+            console.log('📱 App is already installed');
             installButton.style.display = 'none';
+            pwaInstallCard.style.display = 'none';
         }
+    }
 
-        // Also check for other installation indicators
-        if (window.navigator.standalone) {
-            console.log('📱 App is installed (iOS)');
-            installButton.style.display = 'none';
+    // Unified install function
+    async function triggerPWAInstall() {
+        if (!deferredPrompt) {
+            console.log('❌ No deferred prompt available');
+            showManualInstallInstructions();
+            return;
         }
+        
+        console.log('🔄 Showing install prompt...');
+        deferredPrompt.prompt();
+        
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to install prompt: ${outcome}`);
+        
+        if (outcome === 'accepted') {
+            console.log('✅ User accepted the install prompt');
+            installButton.style.display = 'none';
+            pwaInstallCard.style.display = 'none';
+            showInstallSuccess();
+        } else {
+            console.log('❌ User dismissed the install prompt');
+            // Keep prompts visible for next try
+        }
+        
+        deferredPrompt = null;
+    }
+
+    function isPWAInstalled() {
+        return window.matchMedia('(display-mode: standalone)').matches || 
+               window.navigator.standalone ||
+               document.referrer.includes('android-app://');
     }
 
     function showInstallSuccess() {
@@ -488,12 +754,10 @@
                 .then(function(registration) {
                     console.log('✅ ServiceWorker registered successfully with scope:', registration.scope);
                     
-                    // Check if page is controlled
                     if (navigator.serviceWorker.controller) {
                         console.log('⚡ Page is controlled by service worker');
                     }
 
-                    // Check for updates
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
                         console.log('🔄 New service worker found...');
@@ -511,7 +775,6 @@
                 });
         });
 
-        // Listen for controlled page to claim this client
         navigator.serviceWorker.addEventListener('controllerchange', () => {
             console.log('🔄 Controller changed');
         });
@@ -522,7 +785,7 @@
         const statusElement = document.getElementById('pwaStatus');
         if (navigator.onLine) {
             statusElement.textContent = '🟢 Online';
-            statusElement.className = 'pwa-status status-online';
+            statusElement.className = 'pwa-status';
             console.log('✅ Application is online');
         } else {
             statusElement.textContent = '🔴 Offline';
@@ -534,54 +797,29 @@
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
 
-    // Initialize PWA features when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializePWA);
-    } else {
-        initializePWA();
-    }
-
-    // Initialize online status
-    updateOnlineStatus();
-
-    // Manual installation helper (for testing)
+    // Manual installation helper
     function showManualInstallInstructions() {
         const instructions = `
 📱 How to Install CephasGM ERP:
 
 Chrome/Edge:
-1. Click the "Install" icon in address bar 📥
-2. Or go to: Menu → More Tools → Create Shortcut
-3. Check "Open as window" for app experience
+• Click the "Install" icon in address bar 📥
+• Or: Menu → More Tools → Create Shortcut
 
 Firefox:
-1. Menu → More Tools → Install CephasGM ERP
+• Menu → More Tools → Install CephasGM ERP
 
 Safari (iOS):
-1. Share button → Add to Home Screen
+• Share button → Add to Home Screen
 
-Why no automatic prompt?
-- Need to visit site 2+ times
-- Spend 30+ seconds on site
-- Interact with the site
-- Some browsers restrict automatic prompts
-
-Current Status:
-✅ Service Worker: ${'serviceWorker' in navigator}
-✅ HTTPS: ${location.protocol === 'https:'}
-✅ Manifest: ${!!document.querySelector('link[rel="manifest"]')}
+Why install?
+✅ Works offline
+✅ Faster loading
+✅ App-like experience
+✅ Push notifications
         `;
         alert(instructions);
     }
-
-    // Add manual install helper (temporary - remove after testing)
-    setTimeout(() => {
-        if (!deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches) {
-            console.log('💡 No install prompt yet - showing manual instructions');
-            // Uncomment the line below if you want to automatically show instructions
-            // showManualInstallInstructions();
-        }
-    }, 5000);
 
     // Network status monitoring
     if ('connection' in navigator) {
@@ -616,10 +854,25 @@ Current Status:
         }
     }
 
-    // Initialize cache management
-    document.addEventListener('DOMContentLoaded', async () => {
-        await clearOldCaches();
-    });
+    // Initialize everything when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            initializePWA();
+            updateOnlineStatus();
+            clearOldCaches();
+        });
+    } else {
+        initializePWA();
+        updateOnlineStatus();
+        clearOldCaches();
+    }
+
+    // Check for PWA installability after a delay
+    setTimeout(() => {
+        if (!deferredPrompt && !isPWAInstalled()) {
+            console.log('💡 No install prompt yet - PWA might be installable later');
+        }
+    }, 5000);
 
   </script>
 </body>
