@@ -1,664 +1,1110 @@
-// pwa-init.js - Enhanced PWA Initialization for CephasGM ERP
-class PWAInitializer {
-  constructor() {
-    this.isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    this.deferredPrompt = null;
-    this.updateAvailable = false;
-    this.registration = null;
-    this.init();
-  }
-
-  async init() {
-    await this.registerServiceWorker();
-    this.setupInstallPrompt();
-    this.setupOfflineDetection();
-    this.setupAppBadge();
-    this.setupPeriodicSync();
-    this.setupPerformanceMonitoring();
-    this.checkForUpdates();
-    
-    console.log('🚀 CephasGM ERP PWA Enhanced Initialization Complete');
-    console.log('📱 Standalone Mode:', this.isStandalone);
-    console.log('🔧 Service Worker:', 'serviceWorker' in navigator);
-  }
-
-  // Enhanced Service Worker Registration
-  async registerServiceWorker() {
-    if ('serviceWorker' in navigator) {
-      try {
-        this.registration = await navigator.serviceWorker.register('./sw.js', {
-          scope: './',
-          updateViaCache: 'none'
-        });
-
-        console.log('✅ Service Worker registered successfully:', this.registration);
-
-        // Listen for updates
-        this.registration.addEventListener('updatefound', () => {
-          const newWorker = this.registration.installing;
-          console.log('🔄 New Service Worker found...');
-          
-          newWorker.addEventListener('statechange', () => {
-            console.log(`🔄 Service Worker state: ${newWorker.state}`);
-            
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              this.updateAvailable = true;
-              this.showUpdateNotification();
-            }
-          });
-        });
-
-        // Check if the page is controlled
-        if (navigator.serviceWorker.controller) {
-          console.log('🎯 This page is controlled by Service Worker');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="description" content="System Administration - CephasGM ERP">
+    <title>System Administration - CephasGM ERP</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.png">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        // Set up periodic update checks
-        setInterval(() => {
-          this.registration.update();
-        }, 60 * 60 * 1000); // Check every hour
-
-      } catch (error) {
-        console.error('❌ Service Worker registration failed:', error);
-        this.showNotification('Service Worker registration failed. Some features may not work offline.', 'error');
-      }
-    } else {
-      console.warn('⚠️ Service Workers are not supported');
-    }
-  }
-
-  // Enhanced Install Prompt Handling
-  setupInstallPrompt() {
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      this.deferredPrompt = e;
-      console.log('📱 Install prompt available');
-      
-      // Show install button after a delay
-      setTimeout(() => {
-        if (this.deferredPrompt && !this.isStandalone) {
-          this.showInstallButton();
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-      }, 3000);
-    });
 
-    window.addEventListener('appinstalled', (evt) => {
-      console.log('🎉 PWA installed successfully');
-      this.deferredPrompt = null;
-      this.hideInstallButton();
-      this.showNotification('App installed successfully! 🎉', 'success');
-      
-      // Track installation
-      this.trackEvent('pwa_installed');
-    });
-
-    // Detect if already installed
-    if (this.isStandalone) {
-      console.log('📱 Running in standalone mode');
-      this.trackEvent('pwa_standalone');
-    }
-  }
-
-  // Enhanced Install Button
-  showInstallButton() {
-    // Remove existing button if any
-    this.hideInstallButton();
-
-    const installBtn = document.createElement('button');
-    installBtn.id = 'pwa-install-btn';
-    installBtn.innerHTML = `
-      <span style="font-size: 1.2rem; margin-right: 0.5rem;">📱</span>
-      Install CephasGM ERP
-      <small style="display: block; font-size: 0.75rem; opacity: 0.8; margin-top: 0.25rem;">
-        Get full app experience
-      </small>
-    `;
-    
-    installBtn.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      color: white;
-      border: none;
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
-      z-index: 10000;
-      transition: all 0.3s ease;
-      max-width: 200px;
-      text-align: left;
-      font-family: inherit;
-    `;
-    
-    installBtn.addEventListener('mouseenter', () => {
-      installBtn.style.transform = 'translateY(-2px) scale(1.02)';
-      installBtn.style.boxShadow = '0 12px 30px rgba(37, 99, 235, 0.4)';
-    });
-    
-    installBtn.addEventListener('mouseleave', () => {
-      installBtn.style.transform = 'translateY(0) scale(1)';
-      installBtn.style.boxShadow = '0 8px 25px rgba(37, 99, 235, 0.3)';
-    });
-
-    installBtn.addEventListener('click', () => this.installApp());
-    document.body.appendChild(installBtn);
-
-    // Auto-hide after 30 seconds
-    setTimeout(() => {
-      this.hideInstallButton();
-    }, 30000);
-  }
-
-  hideInstallButton() {
-    const installBtn = document.getElementById('pwa-install-btn');
-    if (installBtn) {
-      installBtn.remove();
-    }
-  }
-
-  // Enhanced App Installation
-  async installApp() {
-    if (this.deferredPrompt) {
-      try {
-        this.deferredPrompt.prompt();
-        const { outcome } = await this.deferredPrompt.userChoice;
-        
-        console.log(`📱 User ${outcome} the install prompt`);
-        
-        if (outcome === 'accepted') {
-          this.trackEvent('pwa_install_accepted');
-        } else {
-          this.trackEvent('pwa_install_declined');
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
         }
-        
-        this.deferredPrompt = null;
-        this.hideInstallButton();
-      } catch (error) {
-        console.error('❌ Install prompt error:', error);
-        this.showNotification('Failed to install app. Please try again.', 'error');
-      }
-    } else {
-      this.showNotification('App installation not available', 'info');
-    }
-  }
 
-  // Enhanced Offline Detection
-  setupOfflineDetection() {
-    window.addEventListener('online', () => {
-      this.showNotification('Connection restored ✅', 'success');
-      document.body.classList.remove('offline');
-      this.trackEvent('connection_restored');
-      
-      // Sync data when coming back online
-      this.syncOfflineData();
-    });
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
 
-    window.addEventListener('offline', () => {
-      this.showNotification('You are currently offline 📶', 'warning');
-      document.body.classList.add('offline');
-      this.trackEvent('connection_lost');
-    });
+        .sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1rem;
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            overflow-y: auto;
+        }
 
-    // Initial check
-    if (!navigator.onLine) {
-      document.body.classList.add('offline');
-      this.showNotification('You are currently offline 📶', 'warning');
-    }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
 
-    // Add offline indicator to page
-    this.addOfflineIndicator();
-  }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
 
-  addOfflineIndicator() {
-    const indicator = document.createElement('div');
-    indicator.id = 'offline-indicator';
-    indicator.innerHTML = '📶 Offline';
-    indicator.style.cssText = `
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: #f59e0b;
-      color: white;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      z-index: 10001;
-      display: none;
-    `;
-    document.body.appendChild(indicator);
+        .nav-section {
+            margin-bottom: 2rem;
+        }
 
-    // Update visibility based on connection status
-    const updateIndicator = () => {
-      indicator.style.display = navigator.onLine ? 'none' : 'block';
-    };
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            padding: 0 1rem;
+            letter-spacing: 0.5px;
+        }
 
-    window.addEventListener('online', updateIndicator);
-    window.addEventListener('offline', updateIndicator);
-    updateIndicator();
-  }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
 
-  // Enhanced App Badge
-  setupAppBadge() {
-    if ('setAppBadge' in navigator) {
-      // Set initial badge (could be based on notifications)
-      // navigator.setAppBadge(0);
-      
-      // Listen for notification changes
-      // this.setupBadgeUpdates();
-    }
-  }
+        .nav-item:hover, .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
 
-  // Periodic Background Sync
-  setupPeriodicSync() {
-    if ('periodicSync' in navigator && this.registration) {
-      try {
-        navigator.periodicSync.register('content-update', {
-          minInterval: 24 * 60 * 60 * 1000 // 24 hours
-        }).then(() => {
-          console.log('🔄 Periodic sync registered');
-        });
-      } catch (error) {
-        console.log('⚠️ Periodic sync not supported:', error);
-      }
-    }
-  }
+        .nav-icon {
+            font-size: 1.25rem;
+            width: 24px;
+            text-align: center;
+        }
 
-  // Performance Monitoring
-  setupPerformanceMonitoring() {
-    // Monitor Core Web Vitals
-    if ('PerformanceObserver' in window) {
-      try {
-        const observer = new PerformanceObserver((list) => {
-          for (const entry of list.getEntries()) {
-            console.log(`📊 ${entry.name}:`, entry.value);
-            
-            // Track important metrics
-            if (entry.name === 'first-contentful-paint') {
-              this.trackEvent('performance_fcp', Math.round(entry.value));
+        .main-content {
+            grid-column: 2;
+            padding: 2rem;
+            margin-left: 280px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+        }
+
+        /* Enhanced Toolbar */
+        .toolbar {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding: 1.5rem;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+            transform: translateY(-1px);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Admin Panels */
+        .admin-panels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .admin-panel {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* User Management */
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .user-table th,
+        .user-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .user-table th {
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            background: var(--primary);
+            color: white;
+        }
+
+        .role-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .role-admin {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        .role-manager {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .role-user {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* System Settings */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .setting-item {
+            background: var(--background);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .setting-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Module Access Control */
+        .access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .access-card {
+            background: var(--background);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .access-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .access-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .access-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .access-btn {
+            padding: 0.25rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--surface);
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .access-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Department Management */
+        .department-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .department-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--background);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .department-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .department-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.875rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
             }
-            if (entry.name === 'largest-contentful-paint') {
-              this.trackEvent('performance_lcp', Math.round(entry.value));
+            .sidebar {
+                transform: translateX(-100%);
             }
-          }
-        });
+            .main-content {
+                margin-left: 0;
+                grid-column: 1;
+            }
+            .admin-panels {
+                grid-template-columns: 1fr;
+            }
+        }
 
-        observer.observe({ entryTypes: ['paint', 'largest-contentful-paint'] });
-      } catch (error) {
-        console.log('⚠️ Performance monitoring not available:', error);
-      }
-    }
-  }
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .toolbar {
+                flex-direction: column;
+            }
+        }
 
-  // Enhanced Update Notifications
-  showUpdateNotification() {
-    if (this.isStandalone) {
-      this.showNotification('New version available! Restart the app to update. 🔄', 'info', {
-        actions: [
-          {
-            label: 'Update Now',
-            callback: () => this.updateApp()
-          }
-        ]
-      });
-    } else {
-      this.showUpdateButton();
-    }
-  }
-
-  showUpdateButton() {
-    const updateBtn = document.createElement('button');
-    updateBtn.id = 'pwa-update-btn';
-    updateBtn.innerHTML = '🔄 Update Available';
-    updateBtn.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #f59e0b;
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      z-index: 10000;
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-      transition: all 0.3s ease;
-    `;
-    
-    updateBtn.addEventListener('click', () => this.updateApp());
-    document.body.appendChild(updateBtn);
-
-    // Auto-hide after 1 minute
-    setTimeout(() => {
-      updateBtn.remove();
-    }, 60000);
-  }
-
-  updateApp() {
-    if (this.registration && this.registration.waiting) {
-      this.registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-      
-      // Reload page when user navigates
-      const reloadPage = () => {
-        window.location.reload();
-      };
-      
-      this.showNotification('Updating app...', 'info');
-      setTimeout(reloadPage, 1000);
-    }
-  }
-
-  // Enhanced Check for Updates
-  checkForUpdates() {
-    if (this.registration) {
-      this.registration.update().then(() => {
-        console.log('🔄 Update check completed');
-      });
-    }
-
-    // Check every 6 hours
-    setInterval(() => {
-      if (this.registration) {
-        this.registration.update();
-      }
-    }, 6 * 60 * 60 * 1000);
-  }
-
-  // Enhanced Notification System
-  showNotification(message, type = 'info', options = {}) {
-    // Use native notifications if available and permitted
-    if ('Notification' in window && Notification.permission === 'granted') {
-      const notification = new Notification('CephasGM ERP', {
-        body: message,
-        icon: './icon-192.png',
-        badge: './icon-192.png',
-        tag: 'erp-notification'
-      });
-
-      notification.onclick = () => {
-        window.focus();
-        notification.close();
-      };
-
-      return;
-    }
-
-    // Fallback to in-app notifications
-    this.showInAppNotification(message, type, options);
-  }
-
-  showInAppNotification(message, type, options = {}) {
-    // Remove existing notification
-    this.hideInAppNotification();
-
-    const notification = document.createElement('div');
-    notification.id = 'in-app-notification';
-    notification.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 0.75rem;">
-        <span style="font-size: 1.25rem;">${this.getNotificationIcon(type)}</span>
-        <div>
-          <div style="font-weight: 600;">${message}</div>
-          ${options.actions ? `
-            <div style="margin-top: 0.5rem;">
-              ${options.actions.map(action => 
-                `<button onclick="${action.callback}" style="background: var(--primary); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; margin-right: 0.5rem; cursor: pointer; font-size: 0.75rem;">
-                  ${action.label}
-                </button>`
-              ).join('')}
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #0f172a;
+                --surface: #1e293b;
+                --text: #f1f5f9;
+                --text-light: #94a3b8;
+                --border: #334155;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <nav class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">CG</div>
+                <div>
+                    <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
+                    <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
+                </div>
             </div>
-          ` : ''}
-        </div>
-      </div>
-    `;
 
-    const backgroundColor = {
-      info: '#3b82f6',
-      success: '#10b981',
-      warning: '#f59e0b',
-      error: '#ef4444'
-    }[type] || '#3b82f6';
+            <div class="nav-section">
+                <div class="nav-title">Administration</div>
+                <a href="admin.html" class="nav-item active">
+                    <span class="nav-icon">⚙️</span>
+                    System Admin
+                </a>
+                <a href="hr.html" class="nav-item">
+                    <span class="nav-icon">👥</span>
+                    HR Management
+                </a>
+                <a href="finance.html" class="nav-item">
+                    <span class="nav-icon">💰</span>
+                    Finance
+                </a>
+            </div>
 
-    notification.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: ${backgroundColor};
-      color: white;
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-      z-index: 10002;
-      max-width: 400px;
-      animation: slideInRight 0.3s ease;
-    `;
+            <div class="nav-section">
+                <div class="nav-title">User Management</div>
+                <a href="#users" class="nav-item">
+                    <span class="nav-icon">👤</span>
+                    Users
+                </a>
+                <a href="#roles" class="nav-item">
+                    <span class="nav-icon">🔐</span>
+                    Roles & Permissions
+                </a>
+                <a href="#departments" class="nav-item">
+                    <span class="nav-icon">🏢</span>
+                    Departments
+                </a>
+            </div>
 
-    document.body.appendChild(notification);
+            <div class="nav-section">
+                <div class="nav-title">System</div>
+                <a href="#settings" class="nav-item">
+                    <span class="nav-icon">⚙️</span>
+                    System Settings
+                </a>
+                <a href="#modules" class="nav-item">
+                    <span class="nav-icon">📦</span>
+                    Module Access
+                </a>
+                <a href="#backup" class="nav-item">
+                    <span class="nav-icon">💾</span>
+                    Backup & Restore
+                </a>
+            </div>
+        </nav>
 
-    // Auto-hide after 5 seconds
-    setTimeout(() => {
-      this.hideInAppNotification();
-    }, 5000);
-  }
+        <main class="main-content">
+            <div class="header">
+                <div>
+                    <h1>System Administration</h1>
+                    <div style="color: var(--text-light);">Manage users, permissions, departments, and system configuration</div>
+                </div>
+            </div>
 
-  hideInAppNotification() {
-    const notification = document.getElementById('in-app-notification');
-    if (notification) {
-      notification.remove();
-    }
-  }
+            <!-- Enhanced Toolbar -->
+            <div class="toolbar">
+                <button class="btn-primary" onclick="addNewUser()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">👤</span>
+                    Add User
+                </button>
+                <button class="btn-primary" onclick="createDepartment()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">🏢</span>
+                    Create Department
+                </button>
+                <button class="btn-secondary" onclick="backupSystem()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">💾</span>
+                    Backup System
+                </button>
+                <button class="btn-secondary" onclick="systemDiagnostics()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">🔧</span>
+                    System Diagnostics
+                </button>
+            </div>
 
-  getNotificationIcon(type) {
-    const icons = {
-      info: 'ℹ️',
-      success: '✅',
-      warning: '⚠️',
-      error: '❌'
-    };
-    return icons[type] || 'ℹ️';
-  }
+            <!-- System Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card" onclick="viewUsers()">
+                    <div class="stat-number" id="totalUsers">24</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-card" onclick="viewDepartments()">
+                    <div class="stat-number" id="totalDepartments">8</div>
+                    <div class="stat-label">Departments</div>
+                </div>
+                <div class="stat-card" onclick="viewActiveModules()">
+                    <div class="stat-number" id="activeModules">18</div>
+                    <div class="stat-label">Active Modules</div>
+                </div>
+                <div class="stat-card" onclick="viewSystemHealth()">
+                    <div class="stat-number" id="systemHealth">98%</div>
+                    <div class="stat-label">System Health</div>
+                </div>
+            </div>
 
-  // Enhanced Data Sync for Offline Usage
-  async syncOfflineData() {
-    console.log('🔄 Syncing offline data...');
-    
-    // Implementation for syncing any pending offline data
-    // This would sync form submissions, updates, etc.
-    
-    try {
-      // Example: Sync pending forms
-      const pendingForms = JSON.parse(localStorage.getItem('pendingForms') || '[]');
-      
-      for (const form of pendingForms) {
-        // Send form data to server
-        const response = await fetch(form.url, {
-          method: 'POST',
-          body: JSON.stringify(form.data),
-          headers: { 'Content-Type': 'application/json' }
-        });
-        
-        if (response.ok) {
-          // Remove from pending forms
-          pendingForms.splice(pendingForms.indexOf(form), 1);
+            <!-- Admin Panels -->
+            <div class="admin-panels">
+                <!-- User Management Panel -->
+                <div class="admin-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">User Management</div>
+                        <button class="btn-primary" onclick="addNewUser()" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                            Add User
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Role</th>
+                                    <th>Department</th>
+                                    <th>Last Login</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userList">
+                                <!-- Dynamic content will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- System Settings Panel -->
+                <div class="admin-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">System Settings</div>
+                    </div>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label class="setting-label">System Maintenance</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="maintenanceMode">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label class="setting-label">Auto Backup</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="autoBackup" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label class="setting-label">Email Notifications</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="emailNotifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label class="setting-label">Audit Logging</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="auditLogging" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Module Access Control -->
+                <div class="admin-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Module Access Control</div>
+                    </div>
+                    <div class="access-grid">
+                        <div class="access-card">
+                            <div class="access-header">
+                                <div class="access-icon">📊</div>
+                                <div>
+                                    <div style="font-weight: 600;">Finance</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-light);">Budget, Accounting, Reports</div>
+                                </div>
+                            </div>
+                            <div class="access-controls">
+                                <button class="access-btn active" data-role="admin">Admin</button>
+                                <button class="access-btn" data-role="manager">Manager</button>
+                                <button class="access-btn" data-role="user">User</button>
+                                <button class="access-btn" data-role="none">None</button>
+                            </div>
+                        </div>
+                        <div class="access-card">
+                            <div class="access-header">
+                                <div class="access-icon">👥</div>
+                                <div>
+                                    <div style="font-weight: 600;">HR</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-light);">Employees, Payroll, Attendance</div>
+                                </div>
+                            </div>
+                            <div class="access-controls">
+                                <button class="access-btn active" data-role="admin">Admin</button>
+                                <button class="access-btn" data-role="manager">Manager</button>
+                                <button class="access-btn" data-role="user">User</button>
+                                <button class="access-btn" data-role="none">None</button>
+                            </div>
+                        </div>
+                        <div class="access-card">
+                            <div class="access-header">
+                                <div class="access-icon">📦</div>
+                                <div>
+                                    <div style="font-weight: 600;">Inventory</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-light);">Stock, Orders, Suppliers</div>
+                                </div>
+                            </div>
+                            <div class="access-controls">
+                                <button class="access-btn" data-role="admin">Admin</button>
+                                <button class="access-btn active" data-role="manager">Manager</button>
+                                <button class="access-btn" data-role="user">User</button>
+                                <button class="access-btn" data-role="none">None</button>
+                            </div>
+                        </div>
+                        <div class="access-card">
+                            <div class="access-header">
+                                <div class="access-icon">📋</div>
+                                <div>
+                                    <div style="font-weight: 600;">Projects</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-light);">Tasks, Timeline, Resources</div>
+                                </div>
+                            </div>
+                            <div class="access-controls">
+                                <button class="access-btn" data-role="admin">Admin</button>
+                                <button class="access-btn active" data-role="manager">Manager</button>
+                                <button class="access-btn" data-role="user">User</button>
+                                <button class="access-btn" data-role="none">None</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Department Management -->
+                <div class="admin-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Department Management</div>
+                        <button class="btn-primary" onclick="createDepartment()" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                            Add Department
+                        </button>
+                    </div>
+                    <div class="department-list">
+                        <div class="department-item">
+                            <div class="department-info">
+                                <div class="department-icon">💼</div>
+                                <div>
+                                    <div style="font-weight: 600;">Finance</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-light);">12 members</div>
+                                </div>
+                            </div>
+                            <button class="btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
+                                Manage
+                            </button>
+                        </div>
+                        <div class="department-item">
+                            <div class="department-info">
+                                <div class="department-icon">👥</div>
+                                <div>
+                                    <div style="font-weight: 600;">Human Resources</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-light);">8 members</div>
+                                </div>
+                            </div>
+                            <button class="btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
+                                Manage
+                            </button>
+                        </div>
+                        <div class="department-item">
+                            <div class="department-info">
+                                <div class="department-icon">📦</div>
+                                <div>
+                                    <div style="font-weight: 600;">Operations</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-light);">24 members</div>
+                                </div>
+                            </div>
+                            <button class="btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
+                                Manage
+                            </button>
+                        </div>
+                        <div class="department-item">
+                            <div class="department-info">
+                                <div class="department-icon">🛒</div>
+                                <div>
+                                    <div style="font-weight: 600;">Procurement</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-light);">6 members</div>
+                                </div>
+                            </div>
+                            <button class="btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
+                                Manage
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                Copyright © 2025 😀
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Enhanced Admin Management System
+        class AdminManager {
+            constructor() {
+                this.userData = JSON.parse(localStorage.getItem('adminUserData')) || this.getSampleUserData();
+                this.departmentData = JSON.parse(localStorage.getItem('adminDepartmentData')) || this.getSampleDepartmentData();
+                this.systemSettings = JSON.parse(localStorage.getItem('adminSystemSettings')) || this.getDefaultSettings();
+                this.initialize();
+            }
+
+            initialize() {
+                this.setupNavigation();
+                this.loadUserData();
+                this.loadDepartmentData();
+                this.loadSystemSettings();
+                this.setupEventListeners();
+                this.startRealTimeUpdates();
+            }
+
+            setupNavigation() {
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    if (item.href === window.location.href) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+
+            getSampleUserData() {
+                return [
+                    {
+                        id: 1,
+                        name: 'Cephas GM',
+                        email: 'cephas@cephasgm.com',
+                        role: 'admin',
+                        department: 'Administration',
+                        lastLogin: '2024-12-10 08:30',
+                        status: 'active',
+                        avatar: 'CG'
+                    },
+                    {
+                        id: 2,
+                        name: 'Sarah Johnson',
+                        email: 'sarah@cephasgm.com',
+                        role: 'manager',
+                        department: 'Finance',
+                        lastLogin: '2024-12-09 14:20',
+                        status: 'active',
+                        avatar: 'SJ'
+                    },
+                    {
+                        id: 3,
+                        name: 'Michael Chen',
+                        email: 'michael@cephasgm.com',
+                        role: 'user',
+                        department: 'Operations',
+                        lastLogin: '2024-12-10 09:15',
+                        status: 'active',
+                        avatar: 'MC'
+                    },
+                    {
+                        id: 4,
+                        name: 'David Wilson',
+                        email: 'david@cephasgm.com',
+                        role: 'manager',
+                        department: 'HR',
+                        lastLogin: '2024-12-08 16:45',
+                        status: 'inactive',
+                        avatar: 'DW'
+                    }
+                ];
+            }
+
+            getSampleDepartmentData() {
+                return [
+                    { id: 1, name: 'Finance', members: 12, icon: '💼' },
+                    { id: 2, name: 'Human Resources', members: 8, icon: '👥' },
+                    { id: 3, name: 'Operations', members: 24, icon: '📦' },
+                    { id: 4, name: 'Procurement', members: 6, icon: '🛒' },
+                    { id: 5, name: 'Sales', members: 15, icon: '💰' },
+                    { id: 6, name: 'Marketing', members: 9, icon: '📢' },
+                    { id: 7, name: 'IT', members: 5, icon: '💻' },
+                    { id: 8, name: 'Administration', members: 4, icon: '⚙️' }
+                ];
+            }
+
+            getDefaultSettings() {
+                return {
+                    maintenanceMode: false,
+                    autoBackup: true,
+                    emailNotifications: true,
+                    auditLogging: true,
+                    systemTheme: 'light',
+                    language: 'en',
+                    timezone: 'UTC+3'
+                };
+            }
+
+            loadUserData() {
+                this.renderUserList();
+                this.updateStats();
+            }
+
+            loadDepartmentData() {
+                this.updateStats();
+            }
+
+            loadSystemSettings() {
+                // Load toggle states
+                document.getElementById('maintenanceMode').checked = this.systemSettings.maintenanceMode;
+                document.getElementById('autoBackup').checked = this.systemSettings.autoBackup;
+                document.getElementById('emailNotifications').checked = this.systemSettings.emailNotifications;
+                document.getElementById('auditLogging').checked = this.systemSettings.auditLogging;
+            }
+
+            renderUserList() {
+                const tbody = document.getElementById('userList');
+                tbody.innerHTML = this.userData.map(user => `
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.875rem;">
+                                    ${user.avatar}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 600;">${user.name}</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-light);">${user.email}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="role-badge role-${user.role}">
+                                ${user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                            </span>
+                        </td>
+                        <td>${user.department}</td>
+                        <td>${user.lastLogin}</td>
+                        <td>
+                            <span style="color: ${user.status === 'active' ? 'var(--success)' : 'var(--error)'}; font-weight: 600;">
+                                ${user.status.charAt(0).toUpperCase() + user.status.slice(1)}
+                            </span>
+                        </td>
+                        <td>
+                            <button style="background: var(--primary); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem;" onclick="editUser(${user.id})">
+                                Edit
+                            </button>
+                            <button style="background: var(--error); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; margin-left: 0.25rem;" onclick="deleteUser(${user.id})">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            updateStats() {
+                document.getElementById('totalUsers').textContent = this.userData.length;
+                document.getElementById('totalDepartments').textContent = this.departmentData.length;
+                document.getElementById('activeModules').textContent = '18';
+                document.getElementById('systemHealth').textContent = '98%';
+            }
+
+            setupEventListeners() {
+                // Toggle switches
+                document.getElementById('maintenanceMode').addEventListener('change', (e) => {
+                    this.systemSettings.maintenanceMode = e.target.checked;
+                    this.saveSystemSettings();
+                    this.showNotification(`Maintenance mode ${e.target.checked ? 'enabled' : 'disabled'}`, 'info');
+                });
+
+                document.getElementById('autoBackup').addEventListener('change', (e) => {
+                    this.systemSettings.autoBackup = e.target.checked;
+                    this.saveSystemSettings();
+                });
+
+                document.getElementById('emailNotifications').addEventListener('change', (e) => {
+                    this.systemSettings.emailNotifications = e.target.checked;
+                    this.saveSystemSettings();
+                });
+
+                document.getElementById('auditLogging').addEventListener('change', (e) => {
+                    this.systemSettings.auditLogging = e.target.checked;
+                    this.saveSystemSettings();
+                });
+
+                // Module access controls
+                document.querySelectorAll('.access-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const card = e.target.closest('.access-card');
+                        card.querySelectorAll('.access-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        
+                        const module = card.querySelector('.access-header div:first-child').textContent;
+                        const role = e.target.dataset.role;
+                        this.updateModuleAccess(module, role);
+                    });
+                });
+            }
+
+            saveSystemSettings() {
+                localStorage.setItem('adminSystemSettings', JSON.stringify(this.systemSettings));
+            }
+
+            updateModuleAccess(module, role) {
+                console.log(`Updated ${module} access to: ${role}`);
+                this.showNotification(`${module} access updated to ${role}`, 'success');
+            }
+
+            startRealTimeUpdates() {
+                // Simulate real-time system updates
+                setInterval(() => {
+                    this.simulateSystemUpdates();
+                }, 30000);
+            }
+
+            simulateSystemUpdates() {
+                // Simulate small changes in system stats
+                const systemHealth = document.getElementById('systemHealth');
+                const currentHealth = parseInt(systemHealth.textContent);
+                const change = Math.random() > 0.5 ? 1 : -1;
+                const newHealth = Math.max(95, Math.min(100, currentHealth + change));
+                systemHealth.textContent = `${newHealth}%`;
+            }
+
+            showNotification(message, type = 'info') {
+                // Simple notification implementation
+                console.log(`[${type.toUpperCase()}] ${message}`);
+                alert(message); // In a real implementation, use a proper notification system
+            }
         }
-      }
-      
-      localStorage.setItem('pendingForms', JSON.stringify(pendingForms));
-      console.log('✅ Offline data sync completed');
-    } catch (error) {
-      console.error('❌ Offline data sync failed:', error);
-    }
-  }
 
-  // Enhanced Analytics and Tracking
-  trackEvent(eventName, value = null) {
-    const eventData = {
-      event: eventName,
-      timestamp: new Date().toISOString(),
-      url: window.location.href,
-      userAgent: navigator.userAgent,
-      standalone: this.isStandalone,
-      value: value
-    };
+        // Global admin functions
+        const adminManager = new AdminManager();
 
-    console.log('📊 Event tracked:', eventData);
-    
-    // Store events for later submission
-    const events = JSON.parse(localStorage.getItem('pwa_events') || '[]');
-    events.push(eventData);
-    localStorage.setItem('pwa_events', JSON.stringify(events.slice(-100))); // Keep last 100 events
-    
-    // Try to send immediately if online
-    if (navigator.onLine) {
-      this.sendEventsToAnalytics();
-    }
-  }
+        function addNewUser() {
+            alert('Opening New User Form...');
+            // Implementation for adding new user
+        }
 
-  async sendEventsToAnalytics() {
-    const events = JSON.parse(localStorage.getItem('pwa_events') || '[]');
-    
-    if (events.length > 0) {
-      try {
-        // In a real implementation, send to your analytics service
-        console.log('📊 Sending analytics events:', events.length);
-        
-        // Clear sent events
-        localStorage.setItem('pwa_events', '[]');
-      } catch (error) {
-        console.error('❌ Analytics send failed:', error);
-      }
-    }
-  }
+        function createDepartment() {
+            alert('Creating New Department...');
+            // Implementation for creating department
+        }
 
-  // Enhanced Cache Management
-  async getCacheInfo() {
-    if ('serviceWorker' in navigator && this.registration) {
-      try {
-        const cache = await caches.open('cephasgm-erp-v4.0');
-        const keys = await cache.keys();
-        
-        return {
-          cacheName: 'cephasgm-erp-v4.0',
-          cachedItems: keys.length,
-          totalSize: 'N/A' // Would need more complex calculation
-        };
-      } catch (error) {
-        console.error('❌ Cache info error:', error);
-        return null;
-      }
-    }
-    return null;
-  }
+        function backupSystem() {
+            alert('Starting System Backup...');
+            // Implementation for system backup
+        }
 
-  // Enhanced Error Handling
-  setupErrorHandling() {
-    window.addEventListener('error', (event) => {
-      this.trackEvent('javascript_error', {
-        message: event.message,
-        filename: event.filename,
-        lineno: event.lineno,
-        colno: event.colno
-      });
-    });
+        function systemDiagnostics() {
+            alert('Running System Diagnostics...');
+            // Implementation for system diagnostics
+        }
 
-    window.addEventListener('unhandledrejection', (event) => {
-      this.trackEvent('promise_rejection', {
-        reason: event.reason?.toString()
-      });
-    });
-  }
-}
+        function viewUsers() {
+            alert('Opening User Management...');
+        }
 
-// Initialize PWA when DOM is loaded
-document.addEventListener('DOMContentLoaded', async () => {
-  // Add PWA meta tags
-  addPWAMetaTags();
-  
-  // Request notification permission
-  if ('Notification' in window && Notification.permission === 'default') {
-    try {
-      await Notification.requestPermission();
-    } catch (error) {
-      console.log('Notification permission request failed:', error);
-    }
-  }
-  
-  // Initialize PWA
-  window.pwa = new PWAInitializer();
-  
-  // Add CSS for animations
-  addNotificationCSS();
-});
+        function viewDepartments() {
+            alert('Opening Department Management...');
+        }
 
-// Add necessary meta tags
-function addPWAMetaTags() {
-  const metaTags = [
-    { name: 'theme-color', content: '#2563eb' },
-    { name: 'apple-mobile-web-app-capable', content: 'yes' },
-    { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
-    { name: 'apple-mobile-web-app-title', content: 'CephasGM ERP' },
-    { name: 'mobile-web-app-capable', content: 'yes' },
-    { name: 'msapplication-TileColor', content: '#2563eb' },
-    { name: 'msapplication-config', content: '/browserconfig.xml' }
-  ];
+        function viewActiveModules() {
+            alert('Viewing Active Modules...');
+        }
 
-  metaTags.forEach(tag => {
-    const existing = document.querySelector(`meta[name="${tag.name}"]`);
-    if (!existing) {
-      const meta = document.createElement('meta');
-      meta.name = tag.name;
-      meta.content = tag.content;
-      document.head.appendChild(meta);
-    }
-  });
+        function viewSystemHealth() {
+            alert('Viewing System Health Dashboard...');
+        }
 
-  // Add Apple touch icon
-  const appleIcon = document.createElement('link');
-  appleIcon.rel = 'apple-touch-icon';
-  appleIcon.href = './icon-192.png';
-  document.head.appendChild(appleIcon);
-}
+        function editUser(id) {
+            alert(`Editing User: ${id}`);
+        }
 
-// Add CSS for notifications
-function addNotificationCSS() {
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes slideInRight {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-    
-    .offline {
-      filter: grayscale(0.3);
-    }
-    
-    .offline::before {
-      content: '📶 Offline';
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: #f59e0b;
-      color: white;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      z-index: 10001;
-    }
-  `;
-  document.head.appendChild(style);
-}
+        function deleteUser(id) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                alert(`User ${id} deleted`);
+                // Implementation for deleting user
+            }
+        }
 
-// Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = PWAInitializer;
-}
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(registration => {
+                    console.log('Service Worker registered successfully:', registration);
+                })
+                .catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+        }
+    </script>
+</body>
+</html>
