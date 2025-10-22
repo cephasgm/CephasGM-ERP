@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meeting Management - CephasGM ERP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
     <style>
         :root {
             --primary: #2563eb;
@@ -17,6 +19,10 @@
             --text: #1e293b;
             --text-light: #64748b;
             --border: #e2e8f0;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --meeting-purple: #8b5cf6;
+            --meeting-blue: #3b82f6;
         }
 
         * {
@@ -26,7 +32,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: var(--background);
             color: var(--text);
             line-height: 1.6;
@@ -46,6 +52,7 @@
             width: 280px;
             height: 100vh;
             overflow-y: auto;
+            z-index: 100;
         }
 
         .logo {
@@ -98,6 +105,7 @@
             text-align: left;
             cursor: pointer;
             font-size: 0.95rem;
+            position: relative;
         }
 
         .nav-item:hover, .nav-item.active {
@@ -122,11 +130,59 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .header h1 {
             font-size: 1.875rem;
             font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--background);
+        }
+
+        .btn-meeting {
+            background: linear-gradient(135deg, var(--meeting-purple), var(--meeting-blue));
+            color: white;
+        }
+
+        .btn-meeting:hover {
+            background: linear-gradient(135deg, #7c3aed, #1d4ed8);
         }
 
         .stats-grid {
@@ -144,6 +200,13 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .stat-card::before {
@@ -181,6 +244,13 @@
             padding: 1.5rem;
             border-radius: 12px;
             border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .overview-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .card-header {
@@ -203,6 +273,7 @@
             align-items: center;
             justify-content: center;
             color: var(--text-light);
+            flex-direction: column;
         }
 
         /* Quick Actions */
@@ -226,6 +297,7 @@
             background: var(--primary);
             color: white;
             border-color: var(--primary);
+            transform: translateY(-2px);
         }
 
         .action-icon {
@@ -240,6 +312,7 @@
             border: 1px solid var(--border);
             padding: 1.5rem;
             margin-bottom: 2rem;
+            box-shadow: var(--shadow);
         }
 
         .meetings-grid {
@@ -255,11 +328,13 @@
             border-radius: 8px;
             border: 1px solid var(--border);
             transition: all 0.2s;
+            box-shadow: var(--shadow);
         }
 
         .meeting-card:hover {
             border-color: var(--primary);
             transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .meeting-card.urgent {
@@ -314,6 +389,14 @@
             background: var(--surface);
             cursor: pointer;
             font-size: 0.875rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .meeting-btn:hover {
+            transform: translateY(-1px);
         }
 
         .meeting-btn.primary {
@@ -329,6 +412,7 @@
             border: 1px solid var(--border);
             padding: 1.5rem;
             margin-bottom: 2rem;
+            box-shadow: var(--shadow);
         }
 
         .rooms-grid {
@@ -344,6 +428,13 @@
             border-radius: 8px;
             border: 1px solid var(--border);
             text-align: center;
+            transition: transform 0.2s;
+            box-shadow: var(--shadow);
+        }
+
+        .room-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .room-status {
@@ -386,12 +477,14 @@
             text-decoration: none;
             color: inherit;
             display: block;
+            box-shadow: var(--shadow);
+            position: relative;
         }
 
         .module-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--meeting-purple);
         }
 
         .module-icon {
@@ -403,7 +496,7 @@
             justify-content: center;
             font-size: 1.75rem;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+            background: linear-gradient(135deg, var(--meeting-purple), var(--meeting-blue));
             color: white;
         }
 
@@ -418,6 +511,34 @@
             font-size: 0.95rem;
         }
 
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--text);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
         .footer {
             text-align: center;
             padding: 2rem;
@@ -426,26 +547,158 @@
             border-top: 1px solid var(--border);
         }
 
+        /* Language Selector */
+        .language-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .language-selector select {
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1000;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .dark-mode-toggle:hover {
+            background: var(--background);
+            color: var(--text);
+        }
+
+        /* Responsive Design */
         @media (max-width: 1024px) {
             .dashboard {
                 grid-template-columns: 1fr;
             }
             .sidebar {
                 transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .sidebar.active {
+                transform: translateX(0);
             }
             .main-content {
                 margin-left: 0;
                 grid-column: 1;
+                padding: 1rem;
+            }
+            .mobile-nav-toggle {
+                display: flex;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
             }
             .meetings-overview {
                 grid-template-columns: 1fr;
             }
         }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .module-grid {
+                grid-template-columns: 1fr;
+            }
+            .meetings-grid {
+                grid-template-columns: 1fr;
+            }
+            .rooms-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .meeting-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Dark Mode Support */
+        .dark-mode {
+            --background: #0f172a;
+            --surface: #1e293b;
+            --text: #f1f5f9;
+            --text-light: #94a3b8;
+            --border: #334155;
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Focus styles for keyboard navigation */
+        button:focus, a:focus, select:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Currency Selector */
+        .currency-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .currency-selector select {
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+        }
     </style>
 </head>
 <body>
+    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+    </button>
+
     <div class="dashboard">
-        <nav class="sidebar">
+        <nav class="sidebar" id="sidebar">
             <div class="logo">
                 <div class="logo-icon">CG</div>
                 <div>
@@ -500,13 +753,47 @@
                     <span class="nav-icon">⚙️</span>
                     System Admin
                 </a>
+                <a href="payroll.html" class="nav-item">
+                    <span class="nav-icon">💰</span>
+                    Payroll
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">User</div>
+                <div class="nav-item">
+                    <span class="nav-icon">👤</span>
+                    <span id="userRole">Meeting Coordinator</span>
+                </div>
+                <button class="nav-item" id="logoutBtn">
+                    <span class="nav-icon">🚪</span>
+                    Logout
+                </button>
             </div>
         </nav>
 
         <main class="main-content">
             <div class="header">
-                <h1>Meeting & Collaboration Management</h1>
-                <div style="color: var(--text-light);">Schedule, manage, and collaborate on meetings with integrated tools</div>
+                <div>
+                    <h1>Meeting & Collaboration Management</h1>
+                    <div style="color: var(--text-light);">Schedule, manage, and collaborate on meetings with integrated tools</div>
+                </div>
+                <div class="header-actions">
+                    
+                    <div class="language-selector">
+                        <span>Language:</span>
+                        <select id="languageSelect">
+                            <option value="en">English</option>
+                            <option value="sw">Swahili</option>
+                        </select>
+                    </div>
+                    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="btn btn-meeting" id="newMeetingBtn">
+                        <i class="fas fa-plus"></i> New Meeting
+                    </button>
+                </div>
             </div>
 
             <div class="stats-grid">
@@ -540,6 +827,7 @@
                         </select>
                     </div>
                     <div class="calendar-container">
+                        <i class="fas fa-calendar-alt" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
                         Interactive Meeting Calendar
                         <br><small style="opacity: 0.7;">Visual schedule of all meetings and events</small>
                     </div>
@@ -550,21 +838,25 @@
                         <div class="card-title">Quick Actions</div>
                     </div>
                     <div class="meeting-actions">
-                        <div class="action-btn" onclick="alert('Schedule New Meeting')">
+                        <div class="action-btn tooltip" onclick="scheduleMeeting()">
                             <div class="action-icon">➕</div>
                             <div>New Meeting</div>
+                            <span class="tooltip-text">Schedule a new meeting with participants</span>
                         </div>
-                        <div class="action-btn" onclick="alert('Join Video Call')">
+                        <div class="action-btn tooltip" onclick="joinVideoCall()">
                             <div class="action-icon">🎥</div>
                             <div>Join Call</div>
+                            <span class="tooltip-text">Join an active video conference</span>
                         </div>
-                        <div class="action-btn" onclick="alert('Book Meeting Room')">
+                        <div class="action-btn tooltip" onclick="bookMeetingRoom()">
                             <div class="action-icon">🏢</div>
                             <div>Book Room</div>
+                            <span class="tooltip-text">Reserve a meeting room</span>
                         </div>
-                        <div class="action-btn" onclick="alert('Generate Report')">
+                        <div class="action-btn tooltip" onclick="generateReport()">
                             <div class="action-icon">📊</div>
                             <div>Reports</div>
+                            <span class="tooltip-text">Generate meeting analytics reports</span>
                         </div>
                     </div>
                 </div>
@@ -574,8 +866,8 @@
             <div class="upcoming-section">
                 <div class="card-header">
                     <div class="card-title">Upcoming Meetings</div>
-                    <button style="background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
-                        Schedule Meeting
+                    <button class="btn btn-primary" id="scheduleMeetingBtn">
+                        <i class="fas fa-calendar-plus"></i> Schedule Meeting
                     </button>
                 </div>
                 <div class="meetings-grid">
@@ -589,8 +881,12 @@
                             <div style="font-size: 0.875rem; color: var(--text-light);">+5 more</div>
                         </div>
                         <div class="meeting-actions-row">
-                            <button class="meeting-btn primary">Join Now</button>
-                            <button class="meeting-btn">Details</button>
+                            <button class="meeting-btn primary">
+                                <i class="fas fa-video"></i> Join Now
+                            </button>
+                            <button class="meeting-btn">
+                                <i class="fas fa-info-circle"></i> Details
+                            </button>
                         </div>
                     </div>
 
@@ -603,8 +899,12 @@
                             <div class="participant-avatar">LN</div>
                         </div>
                         <div class="meeting-actions-row">
-                            <button class="meeting-btn primary">Join</button>
-                            <button class="meeting-btn">Reschedule</button>
+                            <button class="meeting-btn primary">
+                                <i class="fas fa-video"></i> Join
+                            </button>
+                            <button class="meeting-btn">
+                                <i class="fas fa-clock"></i> Reschedule
+                            </button>
                         </div>
                     </div>
 
@@ -617,8 +917,12 @@
                             <div class="participant-avatar">RJ</div>
                         </div>
                         <div class="meeting-actions-row">
-                            <button class="meeting-btn primary">Prepare</button>
-                            <button class="meeting-btn">Documents</button>
+                            <button class="meeting-btn primary">
+                                <i class="fas fa-briefcase"></i> Prepare
+                            </button>
+                            <button class="meeting-btn">
+                                <i class="fas fa-file-alt"></i> Documents
+                            </button>
                         </div>
                     </div>
 
@@ -631,8 +935,12 @@
                             <div class="participant-avatar">DM</div>
                         </div>
                         <div class="meeting-actions-row">
-                            <button class="meeting-btn primary">Agenda</button>
-                            <button class="meeting-btn">Materials</button>
+                            <button class="meeting-btn primary">
+                                <i class="fas fa-list-alt"></i> Agenda
+                            </button>
+                            <button class="meeting-btn">
+                                <i class="fas fa-paperclip"></i> Materials
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -675,52 +983,60 @@
 
             <!-- Meeting Management Modules -->
             <div class="module-grid">
-                <div class="module-card" onclick="alert('Meeting Scheduling opening...')">
+                <div class="module-card tooltip" onclick="openModule('meeting-scheduling')">
                     <div class="module-icon">📅</div>
                     <h3>Meeting Scheduling</h3>
                     <p>Schedule meetings, send invitations, and manage calendars with conflict detection</p>
+                    <span class="tooltip-text">Intelligent scheduling with availability checking</span>
                 </div>
 
-                <div class="module-card" onclick="alert('Video Conferencing opening...')">
+                <div class="module-card tooltip" onclick="openModule('video-conferencing')">
                     <div class="module-icon">🎥</div>
                     <h3>Video Conferencing</h3>
                     <p>Integrated video calls, screen sharing, and virtual meeting rooms</p>
+                    <span class="tooltip-text">HD video with recording and transcription</span>
                 </div>
 
-                <div class="module-card" onclick="alert('Room Booking opening...')">
+                <div class="module-card tooltip" onclick="openModule('room-booking')">
                     <div class="module-icon">🏢</div>
                     <h3>Room Booking</h3>
                     <p>Manage meeting rooms, equipment, and facility reservations</p>
+                    <span class="tooltip-text">Real-time room availability and booking</span>
                 </div>
 
-                <div class="module-card" onclick="alert('Agenda Management opening...')">
+                <div class="module-card tooltip" onclick="openModule('agenda-management')">
                     <div class="module-icon">📋</div>
                     <h3>Agenda Management</h3>
                     <p>Create meeting agendas, assign topics, and track action items</p>
+                    <span class="tooltip-text">Collaborative agenda creation and tracking</span>
                 </div>
 
-                <div class="module-card" onclick="alert('Minutes & Notes opening...')">
+                <div class="module-card tooltip" onclick="openModule('minutes-notes')">
                     <div class="module-icon">📝</div>
                     <h3>Minutes & Notes</h3>
                     <p>Take meeting minutes, assign tasks, and track decisions</p>
+                    <span class="tooltip-text">Automated minute taking and task assignment</span>
                 </div>
 
-                <div class="module-card" onclick="alert('Collaboration Tools opening...')">
+                <div class="module-card tooltip" onclick="openModule('collaboration-tools')">
                     <div class="module-icon">🤝</div>
                     <h3>Collaboration Tools</h3>
                     <p>Shared documents, whiteboards, and real-time collaboration features</p>
+                    <span class="tooltip-text">Real-time document collaboration and sharing</span>
                 </div>
 
-                <div class="module-card" onclick="alert('Attendance Tracking opening...')">
+                <div class="module-card tooltip" onclick="openModule('attendance-tracking')">
                     <div class="module-icon">👥</div>
                     <h3>Attendance Tracking</h3>
                     <p>Track meeting participation, attendance rates, and engagement metrics</p>
+                    <span class="tooltip-text">Automated attendance and participation tracking</span>
                 </div>
 
-                <div class="module-card" onclick="alert('Meeting Analytics opening...')">
+                <div class="module-card tooltip" onclick="openModule('meeting-analytics')">
                     <div class="module-icon">📊</div>
                     <h3>Meeting Analytics</h3>
                     <p>Analyze meeting effectiveness, duration, and participation patterns</p>
+                    <span class="tooltip-text">Advanced analytics for meeting optimization</span>
                 </div>
             </div>
 
@@ -731,7 +1047,12 @@
     </div>
 
     <script>
-        // Navigation active state
+        // Mobile navigation toggle
+        document.getElementById('mobileNavToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Active navigation highlighting
         document.querySelectorAll('.nav-item').forEach(item => {
             if (item.href === window.location.href) {
                 item.classList.add('active');
@@ -748,18 +1069,104 @@
             });
         });
 
+        // Language selector
+        document.getElementById('languageSelect').addEventListener('change', function() {
+            const selectedLanguage = this.value;
+            if (selectedLanguage === 'sw') {
+                alert('Lugha imebadilishwa kuwa Kiswahili');
+                // In a real implementation, this would change all text to Swahili
+            } else {
+                alert('Language changed to English');
+                // In a real implementation, this would change all text to English
+            }
+        });
+
+        // Dark mode toggle
+        document.getElementById('darkModeToggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+
+        // Currency conversion (for meeting cost tracking if implemented)
+        document.getElementById('currencySelect').addEventListener('change', function() {
+            const selectedCurrency = this.value;
+            alert(`Currency changed to ${selectedCurrency}`);
+            // In a real implementation, this would convert meeting-related costs
+        });
+
         // Meeting card interactions
         document.querySelectorAll('.meeting-btn.primary').forEach(btn => {
             btn.addEventListener('click', function() {
                 const meetingTitle = this.closest('.meeting-card').querySelector('.meeting-title').textContent;
-                if (this.textContent === 'Join Now' || this.textContent === 'Join') {
+                if (this.textContent.includes('Join Now') || this.textContent.includes('Join')) {
                     alert(`Joining meeting: "${meetingTitle}"`);
-                } else if (this.textContent === 'Prepare') {
+                } else if (this.textContent.includes('Prepare')) {
                     alert(`Preparing for emergency meeting: "${meetingTitle}"`);
-                } else if (this.textContent === 'Agenda') {
+                } else if (this.textContent.includes('Agenda')) {
                     alert(`Viewing agenda for: "${meetingTitle}"`);
                 }
             });
+        });
+
+        // Quick action functions
+        function scheduleMeeting() {
+            alert('Opening meeting scheduler...');
+        }
+
+        function joinVideoCall() {
+            alert('Opening video conferencing interface...');
+        }
+
+        function bookMeetingRoom() {
+            alert('Opening room booking system...');
+        }
+
+        function generateReport() {
+            alert('Generating meeting analytics report...');
+        }
+
+        // Module opening function
+        function openModule(module) {
+            const moduleNames = {
+                'meeting-scheduling': 'Meeting Scheduling',
+                'video-conferencing': 'Video Conferencing',
+                'room-booking': 'Room Booking',
+                'agenda-management': 'Agenda Management',
+                'minutes-notes': 'Minutes & Notes',
+                'collaboration-tools': 'Collaboration Tools',
+                'attendance-tracking': 'Attendance Tracking',
+                'meeting-analytics': 'Meeting Analytics'
+            };
+            
+            alert(`${moduleNames[module]} opening...`);
+            // In a real implementation, this would navigate to the specific module page
+        }
+
+        // New meeting button
+        document.getElementById('newMeetingBtn').addEventListener('click', function() {
+            alert('Creating new meeting...');
+            // In a real implementation, this would open a meeting creation form
+        });
+
+        // Schedule meeting button
+        document.getElementById('scheduleMeetingBtn').addEventListener('click', function() {
+            alert('Opening meeting scheduler...');
+            // In a real implementation, this would open a scheduling interface
+        });
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to logout?')) {
+                alert('Logging out...');
+                // In a real implementation, this would redirect to login page
+            }
         });
 
         // Simulate room status updates
@@ -814,6 +1221,38 @@
 
         // Update live meeting times every minute
         setInterval(updateMeetingTimes, 60000);
+
+        // PWA initialization
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
+        // Check for PWA update
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(registration => {
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    console.log('New service worker found...');
+                    
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            // New update available
+                            if (confirm('A new version is available. Refresh to update?')) {
+                                window.location.reload();
+                            }
+                        }
+                    });
+                });
+            });
+        }
     </script>
 </body>
 </html>
