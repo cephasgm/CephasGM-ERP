@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="description" content="HR Management - CephasGM ERP">
     <title>HR Management - CephasGM ERP</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.png">
     <style>
         :root {
             --primary: #2563eb;
@@ -17,6 +21,7 @@
             --text: #1e293b;
             --text-light: #64748b;
             --border: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         * {
@@ -38,7 +43,6 @@
             min-height: 100vh;
         }
 
-        /* Sidebar Styles */
         .sidebar {
             background: var(--surface);
             border-right: 1px solid var(--border);
@@ -112,7 +116,6 @@
             text-align: center;
         }
 
-        /* Main Content */
         .main-content {
             grid-column: 2;
             padding: 2rem;
@@ -129,6 +132,249 @@
         .header h1 {
             font-size: 1.875rem;
             font-weight: 700;
+        }
+
+        /* Enhanced Toolbar */
+        .toolbar {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding: 1.5rem;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .stat-trend {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+
+        .trend-up {
+            color: var(--success);
+        }
+
+        .trend-down {
+            color: var(--error);
+        }
+
+        /* HR Overview */
+        .hr-overview {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .overview-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .chart-container {
+            height: 300px;
+            background: var(--background);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-btn {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Employee List */
+        .employee-section {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        .employee-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .employee-table th,
+        .employee-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .employee-table th {
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            background: var(--primary);
+            color: white;
+        }
+
+        .employee-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-onboarding {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-leave {
+            background: #fecaca;
+            color: #991b1b;
         }
 
         /* Module Grid */
@@ -149,6 +395,7 @@
             text-decoration: none;
             color: inherit;
             display: block;
+            box-shadow: var(--shadow);
         }
 
         .module-card:hover {
@@ -181,35 +428,6 @@
             font-size: 0.95rem;
         }
 
-        /* Stats Section */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-        /* Footer */
         .footer {
             text-align: center;
             padding: 2rem;
@@ -218,6 +436,7 @@
             border-top: 1px solid var(--border);
         }
 
+        /* Responsive Design */
         @media (max-width: 1024px) {
             .dashboard {
                 grid-template-columns: 1fr;
@@ -229,12 +448,42 @@
                 margin-left: 0;
                 grid-column: 1;
             }
+            .hr-overview {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .toolbar {
+                flex-direction: column;
+            }
+            .module-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #0f172a;
+                --surface: #1e293b;
+                --text: #f1f5f9;
+                --text-light: #94a3b8;
+                --border: #334155;
+            }
         }
     </style>
 </head>
 <body>
     <div class="dashboard">
-        <!-- Sidebar Navigation -->
         <nav class="sidebar">
             <div class="logo">
                 <div class="logo-icon">CG</div>
@@ -275,32 +524,139 @@
                     Inventory
                 </a>
             </div>
+
+            <div class="nav-section">
+                <div class="nav-title">HR Modules</div>
+                <a href="recruitment.html" class="nav-item">
+                    <span class="nav-icon">💼</span>
+                    Recruitment
+                </a>
+                <a href="performance.html" class="nav-item">
+                    <span class="nav-icon">📈</span>
+                    Performance
+                </a>
+                <a href="training.html" class="nav-item">
+                    <span class="nav-icon">🎓</span>
+                    Training
+                </a>
+            </div>
         </nav>
 
-        <!-- Main Content -->
         <main class="main-content">
             <div class="header">
                 <h1>Human Resources Management</h1>
-                <div style="color: var(--text-light);">Manage employees, recruitment, and HR operations</div>
+                <div style="color: var(--text-light);">Manage employees, recruitment, and HR operations with integrated analytics</div>
+            </div>
+
+            <!-- Enhanced Toolbar -->
+            <div class="toolbar">
+                <button class="btn-primary" onclick="addNewEmployee()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">👤</span>
+                    Add Employee
+                </button>
+                <button class="btn-primary" onclick="runPayroll()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">💳</span>
+                    Run Payroll
+                </button>
+                <button class="btn-success" onclick="generateReports()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">📊</span>
+                    Generate Reports
+                </button>
+                <button class="btn-primary" onclick="syncAttendance()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">⏱️</span>
+                    Sync Attendance
+                </button>
             </div>
 
             <!-- Quick Stats -->
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number">142</div>
+                <div class="stat-card" onclick="viewEmployees()">
+                    <div class="stat-number" id="totalEmployees">142</div>
                     <div class="stat-label">Total Employees</div>
+                    <div class="stat-trend trend-up">↑ 5 this month</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">8</div>
+                <div class="stat-card" onclick="viewRecruitment()">
+                    <div class="stat-number" id="openPositions">8</div>
                     <div class="stat-label">Open Positions</div>
+                    <div class="stat-trend trend-down">↓ 2 from last week</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">94%</div>
+                <div class="stat-card" onclick="viewPerformance()">
+                    <div class="stat-number" id="satisfactionRate">94%</div>
                     <div class="stat-label">Satisfaction Rate</div>
+                    <div class="stat-trend trend-up">↑ 3% this quarter</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">12</div>
+                <div class="stat-card" onclick="viewPendingRequests()">
+                    <div class="stat-number" id="pendingRequests">12</div>
                     <div class="stat-label">Pending Requests</div>
+                    <div class="stat-trend trend-up">↑ 4 today</div>
+                </div>
+            </div>
+
+            <!-- HR Overview -->
+            <div class="hr-overview">
+                <div class="overview-card">
+                    <div class="card-header">
+                        <div class="card-title">Workforce Analytics</div>
+                        <select id="analyticsRange" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--background);">
+                            <option>Last 30 Days</option>
+                            <option>Last Quarter</option>
+                            <option>Last Year</option>
+                        </select>
+                    </div>
+                    <div class="chart-container" id="workforceChart">
+                        Workforce Distribution & Trends
+                    </div>
+                </div>
+
+                <div class="overview-card">
+                    <div class="card-header">
+                        <div class="card-title">Quick Actions</div>
+                    </div>
+                    <div class="quick-actions">
+                        <div class="action-btn" onclick="processLeaveRequests()">
+                            <div class="action-icon">🏖️</div>
+                            <div>Leave Requests</div>
+                        </div>
+                        <div class="action-btn" onclick="viewOnboarding()">
+                            <div class="action-icon">🚀</div>
+                            <div>Onboarding</div>
+                        </div>
+                        <div class="action-btn" onclick="manageBenefits()">
+                            <div class="action-icon">🏥</div>
+                            <div>Benefits</div>
+                        </div>
+                        <div class="action-btn" onclick="exportHRData()">
+                            <div class="action-icon">📤</div>
+                            <div>Export Data</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee List -->
+            <div class="employee-section">
+                <div class="card-header">
+                    <div class="card-title">Recent Employee Activity</div>
+                    <button class="btn-primary" onclick="viewAllEmployees()">
+                        View All Employees
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="employee-table">
+                        <thead>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Department</th>
+                                <th>Position</th>
+                                <th>Join Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeeList">
+                            <!-- Dynamic content will be loaded here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -309,53 +665,45 @@
                 <a href="attendance.html" class="module-card">
                     <div class="module-icon">⏱️</div>
                     <h3>Attendance & Time</h3>
-                    <p>Track employee hours, leaves, and attendance records with real-time monitoring</p>
+                    <p>Track employee hours, leaves, and attendance records with real-time monitoring and payroll integration</p>
                 </a>
-
                 <a href="payroll.html" class="module-card">
                     <div class="module-icon">💳</div>
                     <h3>Payroll Management</h3>
-                    <p>Process salaries, deductions, bonuses, and generate payslips automatically</p>
+                    <p>Process salaries, deductions, bonuses, and generate payslips automatically with multi-currency support</p>
                 </a>
-
                 <a href="recruitment.html" class="module-card">
                     <div class="module-icon">💼</div>
                     <h3>Recruitment</h3>
-                    <p>Manage job postings, applications, interviews, and onboarding processes</p>
+                    <p>Manage job postings, applications, interviews, and onboarding processes with candidate tracking</p>
                 </a>
-
                 <a href="training.html" class="module-card">
                     <div class="module-icon">🎓</div>
                     <h3>Training & Development</h3>
-                    <p>Employee skills tracking, training programs, and professional growth plans</p>
+                    <p>Employee skills tracking, training programs, and professional growth plans with certification management</p>
                 </a>
-
-                <a href="legal.html" class="module-card">
-                    <div class="module-icon">⚖️</div>
-                    <h3>Legal & Compliance</h3>
-                    <p>Contract management, regulatory compliance, and legal document tracking</p>
-                </a>
-
-                <a href="safety.html" class="module-card">
-                    <div class="module-icon">🛡️</div>
-                    <h3>Health & Safety</h3>
-                    <p>OSHA compliance, incident reports, safety protocols, and workplace safety</p>
-                </a>
-
                 <a href="performance.html" class="module-card">
                     <div class="module-icon">📈</div>
                     <h3>Performance Reviews</h3>
-                    <p>Employee evaluations, KPI tracking, and performance improvement plans</p>
+                    <p>Employee evaluations, KPI tracking, and performance improvement plans with 360-degree feedback</p>
                 </a>
-
                 <a href="benefits.html" class="module-card">
                     <div class="module-icon">🏥</div>
                     <h3>Benefits Administration</h3>
-                    <p>Health insurance, retirement plans, and employee benefits management</p>
+                    <p>Health insurance, retirement plans, and employee benefits management with enrollment tracking</p>
+                </a>
+                <a href="legal.html" class="module-card">
+                    <div class="module-icon">⚖️</div>
+                    <h3>Legal & Compliance</h3>
+                    <p>Contract management, regulatory compliance, and legal document tracking with audit trails</p>
+                </a>
+                <a href="safety.html" class="module-card">
+                    <div class="module-icon">🛡️</div>
+                    <h3>Health & Safety</h3>
+                    <p>OSHA compliance, incident reports, safety protocols, and workplace safety monitoring</p>
                 </a>
             </div>
 
-            <!-- Footer -->
             <div class="footer">
                 Copyright © 2025 😀
             </div>
@@ -363,22 +711,272 @@
     </div>
 
     <script>
-        // Simple navigation active state
-        document.querySelectorAll('.nav-item').forEach(item => {
-            if (item.href === window.location.href) {
-                item.classList.add('active');
+        // Enhanced HR Management System
+        class HRManager {
+            constructor() {
+                this.employeeData = JSON.parse(localStorage.getItem('employeeData')) || this.getSampleData();
+                this.initialize();
             }
+
+            initialize() {
+                this.setupNavigation();
+                this.loadHRData();
+                this.setupEventListeners();
+                this.startRealTimeUpdates();
+            }
+
+            setupNavigation() {
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    if (item.href === window.location.href) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+
+            getSampleData() {
+                return [
+                    {
+                        id: 1,
+                        name: 'John Mwangi',
+                        department: 'Engineering',
+                        position: 'Senior Developer',
+                        joinDate: '2023-01-15',
+                        status: 'active',
+                        avatar: 'JM'
+                    },
+                    {
+                        id: 2,
+                        name: 'Sarah Johnson',
+                        department: 'Marketing',
+                        position: 'Marketing Manager',
+                        joinDate: '2023-03-20',
+                        status: 'active',
+                        avatar: 'SJ'
+                    },
+                    {
+                        id: 3,
+                        name: 'David Kimani',
+                        department: 'Sales',
+                        position: 'Sales Executive',
+                        joinDate: '2024-01-10',
+                        status: 'onboarding',
+                        avatar: 'DK'
+                    },
+                    {
+                        id: 4,
+                        name: 'Grace Omondi',
+                        department: 'Finance',
+                        position: 'Accountant',
+                        joinDate: '2022-11-05',
+                        status: 'active',
+                        avatar: 'GO'
+                    },
+                    {
+                        id: 5,
+                        name: 'Michael Adebayo',
+                        department: 'HR',
+                        position: 'HR Specialist',
+                        joinDate: '2024-02-01',
+                        status: 'leave',
+                        avatar: 'MA'
+                    }
+                ];
+            }
+
+            loadHRData() {
+                this.updateStats();
+                this.renderEmployeeList();
+                this.updateCharts();
+            }
+
+            updateStats() {
+                const totalEmployees = this.employeeData.length;
+                const activeEmployees = this.employeeData.filter(emp => emp.status === 'active').length;
+                const onboardingEmployees = this.employeeData.filter(emp => emp.status === 'onboarding').length;
+                const onLeaveEmployees = this.employeeData.filter(emp => emp.status === 'leave').length;
+
+                document.getElementById('totalEmployees').textContent = totalEmployees;
+                document.getElementById('openPositions').textContent = Math.max(0, 8 - onboardingEmployees);
+                document.getElementById('satisfactionRate').textContent = '94%';
+                document.getElementById('pendingRequests').textContent = 12;
+            }
+
+            renderEmployeeList() {
+                const tbody = document.getElementById('employeeList');
+                tbody.innerHTML = this.employeeData.map(employee => `
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <div class="employee-avatar">${employee.avatar}</div>
+                                <div>
+                                    <div style="font-weight: 600;">${employee.name}</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-light);">ID: EMP${employee.id.toString().padStart(3, '0')}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${employee.department}</td>
+                        <td>${employee.position}</td>
+                        <td>${new Date(employee.joinDate).toLocaleDateString()}</td>
+                        <td>
+                            <span class="status-badge status-${employee.status}">
+                                ${employee.status.charAt(0).toUpperCase() + employee.status.slice(1)}
+                            </span>
+                        </td>
+                        <td>
+                            <button style="background: var(--primary); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem;" onclick="viewEmployee(${employee.id})">
+                                View
+                            </button>
+                            <button style="background: var(--secondary); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; margin-left: 0.25rem;" onclick="editEmployee(${employee.id})">
+                                Edit
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            updateCharts() {
+                const chart = document.getElementById('workforceChart');
+                // Simple chart visualization
+                chart.innerHTML = `
+                    <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 12px; height: 12px; background: var(--success); border-radius: 2px;"></div>
+                            <span>Active: 85%</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 12px; height: 12px; background: var(--warning); border-radius: 2px;"></div>
+                            <span>Onboarding: 10%</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 12px; height: 12px; background: var(--error); border-radius: 2px;"></div>
+                            <span>On Leave: 5%</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            setupEventListeners() {
+                document.getElementById('analyticsRange').addEventListener('change', (e) => {
+                    this.filterAnalyticsByRange(e.target.value);
+                });
+            }
+
+            filterAnalyticsByRange(range) {
+                console.log('Filtering analytics by:', range);
+                this.updateCharts();
+            }
+
+            startRealTimeUpdates() {
+                // Simulate real-time HR data updates
+                setInterval(() => {
+                    this.simulateHRUpdates();
+                }, 45000);
+            }
+
+            simulateHRUpdates() {
+                // Simulate random HR data changes for demo
+                const stats = ['totalEmployees', 'openPositions', 'pendingRequests'];
+                const randomStat = stats[Math.floor(Math.random() * stats.length)];
+                const currentElement = document.getElementById(randomStat);
+                
+                if (currentElement) {
+                    const currentValue = parseInt(currentElement.textContent);
+                    const change = Math.random() > 0.5 ? 1 : -1;
+                    const newValue = Math.max(0, currentValue + change);
+                    currentElement.textContent = newValue;
+                    
+                    // Update trend indicator
+                    const trendElement = currentElement.parentElement.querySelector('.stat-trend');
+                    if (trendElement) {
+                        trendElement.textContent = change > 0 ? `↑ ${change} just now` : `↓ ${Math.abs(change)} just now`;
+                        trendElement.className = `stat-trend ${change > 0 ? 'trend-up' : 'trend-down'}`;
+                    }
+                }
+            }
+        }
+
+        // Global functions for HR operations
+        function addNewEmployee() {
+            alert('Opening New Employee Form...');
+            // Implementation for adding new employee
+        }
+
+        function runPayroll() {
+            alert('Initiating Payroll Process...');
+            // Integration with payroll system
+            window.location.href = 'payroll.html';
+        }
+
+        function generateReports() {
+            alert('Generating HR Reports...');
+            // Implementation for report generation
+        }
+
+        function syncAttendance() {
+            alert('Syncing with Attendance System...');
+            // Integration with attendance system
+            window.location.href = 'attendance.html';
+        }
+
+        function viewEmployees() {
+            alert('Opening Employee Directory...');
+        }
+
+        function viewRecruitment() {
+            alert('Opening Recruitment Dashboard...');
+        }
+
+        function viewPerformance() {
+            alert('Opening Performance Management...');
+        }
+
+        function viewPendingRequests() {
+            alert('Opening Pending Requests...');
+        }
+
+        function processLeaveRequests() {
+            alert('Processing Leave Requests...');
+        }
+
+        function viewOnboarding() {
+            alert('Viewing Onboarding Process...');
+        }
+
+        function manageBenefits() {
+            alert('Managing Employee Benefits...');
+        }
+
+        function exportHRData() {
+            alert('Exporting HR Data...');
+        }
+
+        function viewAllEmployees() {
+            alert('Opening Complete Employee List...');
+        }
+
+        function viewEmployee(id) {
+            alert(`Viewing Employee Details: ${id}`);
+        }
+
+        function editEmployee(id) {
+            alert(`Editing Employee: ${id}`);
+        }
+
+        // Initialize the HR manager when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new HRManager();
         });
 
-        // Add hover effects
-        document.querySelectorAll('.module-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-4px)';
-            });
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then((registration) => {
+                    console.log('SW registered: ', registration);
+                })
+                .catch((registrationError) => {
+                    console.log('SW registration failed: ', registrationError);
+                });
+        }
     </script>
 </body>
 </html>
