@@ -48,7 +48,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             color: var(--gray-800);
             line-height: 1.6;
             min-height: 100vh;
@@ -333,13 +333,13 @@
         .section-title {
             font-size: 2rem;
             font-weight: 700;
-            color: white;
+            color: var(--gray-800);
             margin-bottom: 1rem;
         }
 
         .section-subtitle {
             font-size: 1rem;
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--gray-600);
             max-width: 600px;
             margin: 0 auto;
         }
@@ -881,7 +881,6 @@
         </div>
     </footer>
 
-    <script src="pwa-init.js"></script>
     <script>
         // Smooth scrolling for navigation
         document.querySelectorAll('.nav-link, .logo').forEach(link => {
@@ -934,6 +933,42 @@
             cards.forEach((card, index) => {
                 card.style.animationDelay = `${index * 0.1}s`;
             });
+        });
+
+        // PWA Installation
+        let deferredPrompt;
+        const pwaInstallBanner = document.getElementById('pwaInstallBanner');
+        const pwaInstallButton = document.getElementById('pwaInstallButton');
+        const pwaInstallDismiss = document.getElementById('pwaInstallDismiss');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            pwaInstallBanner.classList.add('show');
+        });
+
+        pwaInstallButton.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    pwaInstallBanner.classList.remove('show');
+                }
+                deferredPrompt = null;
+            }
+        });
+
+        pwaInstallDismiss.addEventListener('click', () => {
+            pwaInstallBanner.classList.remove('show');
+        });
+
+        // Offline detection
+        window.addEventListener('online', () => {
+            document.getElementById('offlineIndicator').classList.remove('show');
+        });
+
+        window.addEventListener('offline', () => {
+            document.getElementById('offlineIndicator').classList.add('show');
         });
 
         // Initialize
