@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="description" content="Finance Management - CephasGM ERP">
     <title>Finance Management - CephasGM ERP</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.png">
     <style>
         :root {
             --primary: #2563eb;
@@ -17,6 +21,7 @@
             --text: #1e293b;
             --text-light: #64748b;
             --border: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         * {
@@ -129,6 +134,68 @@
             font-weight: 700;
         }
 
+        /* Enhanced Toolbar */
+        .toolbar {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding: 1.5rem;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+            transform: translateY(-1px);
+        }
+
+        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -144,6 +211,14 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
         .stat-card::before {
@@ -171,6 +246,7 @@
         .stat-trend {
             font-size: 0.875rem;
             margin-top: 0.5rem;
+            font-weight: 600;
         }
 
         .trend-up {
@@ -194,6 +270,7 @@
             padding: 1.5rem;
             border-radius: 12px;
             border: 1px solid var(--border);
+            box-shadow: var(--shadow);
         }
 
         .card-header {
@@ -216,6 +293,7 @@
             align-items: center;
             justify-content: center;
             color: var(--text-light);
+            position: relative;
         }
 
         /* Quick Actions */
@@ -229,7 +307,7 @@
             background: var(--background);
             border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 1rem;
+            padding: 1.5rem 1rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
@@ -242,21 +320,23 @@
         }
 
         .action-icon {
-            font-size: 1.5rem;
+            font-size: 2rem;
             margin-bottom: 0.5rem;
         }
 
-        /* Recent Transactions */
+        /* Transactions Section */
         .transactions-section {
             background: var(--surface);
             border-radius: 12px;
             border: 1px solid var(--border);
             padding: 1.5rem;
             margin-bottom: 2rem;
+            box-shadow: var(--shadow);
         }
 
         .table-container {
             overflow-x: auto;
+            margin-top: 1rem;
         }
 
         .transactions-table {
@@ -275,6 +355,8 @@
             font-weight: 600;
             color: var(--text-light);
             font-size: 0.875rem;
+            background: var(--primary);
+            color: white;
         }
 
         .amount-positive {
@@ -309,6 +391,63 @@
             color: #991b1b;
         }
 
+        /* Budget Progress */
+        .budget-section {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .budget-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--background);
+            border-radius: 8px;
+        }
+
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .budget-name {
+            font-weight: 600;
+        }
+
+        .budget-amount {
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-danger {
+            background: var(--error);
+        }
+
+        .progress-warning {
+            background: var(--warning);
+        }
+
+        /* Module Grid */
         .module-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -326,6 +465,7 @@
             text-decoration: none;
             color: inherit;
             display: block;
+            box-shadow: var(--shadow);
         }
 
         .module-card:hover {
@@ -366,6 +506,23 @@
             border-top: 1px solid var(--border);
         }
 
+        /* Currency Selector */
+        .currency-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+
+        .currency-select {
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        /* Responsive Design */
         @media (max-width: 1024px) {
             .dashboard {
                 grid-template-columns: 1fr;
@@ -379,6 +536,38 @@
             }
             .financial-overview {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .toolbar {
+                flex-direction: column;
+            }
+            .module-grid {
+                grid-template-columns: 1fr;
+            }
+            .currency-selector {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #0f172a;
+                --surface: #1e293b;
+                --text: #f1f5f9;
+                --text-light: #94a3b8;
+                --border: #334155;
             }
         }
     </style>
@@ -441,34 +630,87 @@
                     Projects
                 </a>
             </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Integration</div>
+                <a href="hr.html" class="nav-item">
+                    <span class="nav-icon">👥</span>
+                    HR Management
+                </a>
+                <a href="attendance.html" class="nav-item">
+                    <span class="nav-icon">⏱️</span>
+                    Attendance
+                </a>
+                <a href="inventory.html" class="nav-item">
+                    <span class="nav-icon">📦</span>
+                    Inventory
+                </a>
+            </div>
         </nav>
 
         <main class="main-content">
             <div class="header">
-                <h1>Financial Management</h1>
-                <div style="color: var(--text-light);">Comprehensive financial overview, accounting, and financial analytics</div>
+                <div>
+                    <h1>Financial Management</h1>
+                    <div style="color: var(--text-light);">Comprehensive financial overview, accounting, and financial analytics with multi-currency support</div>
+                </div>
+                <div class="currency-selector">
+                    <span>Currency:</span>
+                    <select class="currency-select" id="currencySelector" onchange="changeCurrency(this.value)">
+                        <option value="TZS">TZS</option>
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="GBP">GBP</option>
+                        <option value="ZAR">ZAR</option>
+                    </select>
+                </div>
             </div>
 
+            <!-- Enhanced Toolbar -->
+            <div class="toolbar">
+                <button class="btn-primary" onclick="createInvoice()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">🧾</span>
+                    Create Invoice
+                </button>
+                <button class="btn-primary" onclick="recordExpense()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">📤</span>
+                    Record Expense
+                </button>
+                <button class="btn-success" onclick="generateFinancialReports()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">📊</span>
+                    Generate Reports
+                </button>
+                <button class="btn-warning" onclick="syncPayrollData()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">💳</span>
+                    Sync Payroll
+                </button>
+                <button class="btn-primary" onclick="runBudgetAnalysis()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">📈</span>
+                    Budget Analysis
+                </button>
+            </div>
+
+            <!-- Financial Statistics -->
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number">₦24.8M</div>
+                <div class="stat-card" onclick="viewRevenueDetails()">
+                    <div class="stat-number" id="totalRevenue">₦24.8M</div>
                     <div class="stat-label">Total Revenue</div>
-                    <div class="stat-trend trend-up">↑ 12.4% from last month</div>
+                    <div class="stat-trend trend-up" id="revenueTrend">↑ 12.4% from last month</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">₦8.7M</div>
+                <div class="stat-card" onclick="viewExpenseDetails()">
+                    <div class="stat-number" id="totalExpenses">₦8.7M</div>
                     <div class="stat-label">Total Expenses</div>
-                    <div class="stat-trend trend-down">↓ 3.2% from last month</div>
+                    <div class="stat-trend trend-down" id="expenseTrend">↓ 3.2% from last month</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">₦16.1M</div>
+                <div class="stat-card" onclick="viewProfitDetails()">
+                    <div class="stat-number" id="netProfit">₦16.1M</div>
                     <div class="stat-label">Net Profit</div>
-                    <div class="stat-trend trend-up">↑ 18.7% from last month</div>
+                    <div class="stat-trend trend-up" id="profitTrend">↑ 18.7% from last month</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">94%</div>
+                <div class="stat-card" onclick="viewBudgetDetails()">
+                    <div class="stat-number" id="budgetUtilization">94%</div>
                     <div class="stat-label">Budget Utilization</div>
-                    <div class="stat-trend trend-up">↑ 2.1% from target</div>
+                    <div class="stat-trend trend-up" id="budgetTrend">↑ 2.1% from target</div>
                 </div>
             </div>
 
@@ -477,15 +719,18 @@
                 <div class="overview-card">
                     <div class="card-header">
                         <div class="card-title">Financial Performance</div>
-                        <select style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--background);">
+                        <select id="timeRange" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--background);">
                             <option>Last 30 Days</option>
                             <option>Last Quarter</option>
                             <option>Last Year</option>
                         </select>
                     </div>
-                    <div class="chart-container">
-                        Revenue vs Expenses Chart
-                        <br><small style="opacity: 0.7;">Visual representation of financial performance</small>
+                    <div class="chart-container" id="financialChart">
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.5rem; margin-bottom: 1rem;">📊</div>
+                            Revenue vs Expenses Chart
+                            <br><small style="opacity: 0.7;">Visual representation of financial performance</small>
+                        </div>
                     </div>
                 </div>
 
@@ -494,19 +739,19 @@
                         <div class="card-title">Quick Actions</div>
                     </div>
                     <div class="quick-actions">
-                        <div class="action-btn" onclick="alert('Create New Invoice')">
+                        <div class="action-btn" onclick="createInvoice()">
                             <div class="action-icon">🧾</div>
                             <div>New Invoice</div>
                         </div>
-                        <div class="action-btn" onclick="alert('Record Expense')">
+                        <div class="action-btn" onclick="recordExpense()">
                             <div class="action-icon">📤</div>
                             <div>Record Expense</div>
                         </div>
-                        <div class="action-btn" onclick="alert('Generate Report')">
+                        <div class="action-btn" onclick="generateFinancialReports()">
                             <div class="action-icon">📊</div>
                             <div>Generate Report</div>
                         </div>
-                        <div class="action-btn" onclick="alert('Process Payment')">
+                        <div class="action-btn" onclick="processPayment()">
                             <div class="action-icon">💸</div>
                             <div>Process Payment</div>
                         </div>
@@ -514,11 +759,24 @@
                 </div>
             </div>
 
+            <!-- Budget Progress -->
+            <div class="budget-section">
+                <div class="card-header">
+                    <div class="card-title">Budget Progress</div>
+                    <button class="btn-primary" onclick="manageBudgets()">
+                        Manage Budgets
+                    </button>
+                </div>
+                <div id="budgetList">
+                    <!-- Dynamic budget items will be loaded here -->
+                </div>
+            </div>
+
             <!-- Recent Transactions -->
             <div class="transactions-section">
                 <div class="card-header">
                     <div class="card-title">Recent Transactions</div>
-                    <button style="background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
+                    <button class="btn-primary" onclick="viewAllTransactions()">
                         View All Transactions
                     </button>
                 </div>
@@ -531,44 +789,11 @@
                                 <th>Category</th>
                                 <th>Amount</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>Dec 10, 2024</td>
-                                <td>Client Payment - Project Alpha</td>
-                                <td>Revenue</td>
-                                <td class="amount-positive">+₦4,250,000</td>
-                                <td><span class="status-badge status-completed">Completed</span></td>
-                            </tr>
-                            <tr>
-                                <td>Dec 9, 2024</td>
-                                <td>Office Supplies Purchase</td>
-                                <td>Expenses</td>
-                                <td class="amount-negative">-₦245,000</td>
-                                <td><span class="status-badge status-completed">Completed</span></td>
-                            </tr>
-                            <tr>
-                                <td>Dec 8, 2024</td>
-                                <td>Software Subscription Renewal</td>
-                                <td>Expenses</td>
-                                <td class="amount-negative">-₦180,000</td>
-                                <td><span class="status-badge status-pending">Pending</span></td>
-                            </tr>
-                            <tr>
-                                <td>Dec 7, 2024</td>
-                                <td>Consulting Services - Client Beta</td>
-                                <td>Revenue</td>
-                                <td class="amount-positive">+₦2,800,000</td>
-                                <td><span class="status-badge status-completed">Completed</span></td>
-                            </tr>
-                            <tr>
-                                <td>Dec 6, 2024</td>
-                                <td>Equipment Maintenance</td>
-                                <td>Expenses</td>
-                                <td class="amount-negative">-₦420,000</td>
-                                <td><span class="status-badge status-completed">Completed</span></td>
-                            </tr>
+                        <tbody id="transactionsList">
+                            <!-- Dynamic content will be loaded here -->
                         </tbody>
                     </table>
                 </div>
@@ -576,53 +801,56 @@
 
             <!-- Financial Management Modules -->
             <div class="module-grid">
-                <div class="module-card" onclick="alert('Accounting opening...')">
+                <a href="accounting.html" class="module-card">
                     <div class="module-icon">📊</div>
                     <h3>Accounting</h3>
-                    <p>General ledger, chart of accounts, journal entries, and financial statements</p>
-                </div>
-
-                <div class="module-card" onclick="alert('Budgeting & Forecasting opening...')">
+                    <p>General ledger, chart of accounts, journal entries, and financial statements with audit trails</p>
+                </a>
+                <a href="budgeting.html" class="module-card">
                     <div class="module-icon">📈</div>
                     <h3>Budgeting & Forecasting</h3>
-                    <p>Create budgets, financial forecasts, and variance analysis with scenario planning</p>
-                </div>
-
-                <div class="module-card" onclick="alert('Accounts Payable opening...')">
+                    <p>Create budgets, financial forecasts, and variance analysis with scenario planning and KPI tracking</p>
+                </a>
+                <a href="invoicing.html" class="module-card">
+                    <div class="module-icon">🧾</div>
+                    <h3>Invoicing & Billing</h3>
+                    <p>Create and manage invoices, track payments, and automate billing processes with client portals</p>
+                </a>
+                <a href="expense-tracking.html" class="module-card">
                     <div class="module-icon">📤</div>
-                    <h3>Accounts Payable</h3>
-                    <p>Manage vendor payments, expense tracking, and payment scheduling</p>
-                </div>
-
-                <div class="module-card" onclick="alert('Accounts Receivable opening...')">
-                    <div class="module-icon">📥</div>
-                    <h3>Accounts Receivable</h3>
-                    <p>Customer invoicing, payment tracking, and collections management</p>
-                </div>
-
-                <div class="module-card" onclick="alert('Tax Management opening...')">
+                    <h3>Expense Tracking</h3>
+                    <p>Track and categorize expenses, manage receipts, and monitor spending against budgets</p>
+                </a>
+                <a href="tax-management.html" class="module-card">
                     <div class="module-icon">🏛️</div>
                     <h3>Tax Management</h3>
-                    <p>Tax calculations, compliance tracking, and regulatory reporting</p>
-                </div>
-
-                <div class="module-card" onclick="alert('Financial Reporting opening...')">
+                    <p>Tax calculations, compliance tracking, regulatory reporting, and automated tax filings</p>
+                </a>
+                <a href="financial-reporting.html" class="module-card">
                     <div class="module-icon">📑</div>
                     <h3>Financial Reporting</h3>
-                    <p>Generate balance sheets, income statements, and cash flow reports</p>
-                </div>
-
-                <div class="module-card" onclick="alert('Audit Trail opening...')">
+                    <p>Generate balance sheets, income statements, cash flow reports, and custom financial analytics</p>
+                </a>
+                <a href="audit-trail.html" class="module-card">
                     <div class="module-icon">🔍</div>
                     <h3>Audit Trail</h3>
-                    <p>Complete financial transaction history and compliance tracking</p>
-                </div>
-
-                <div class="module-card" onclick="alert('Multi-Currency opening...')">
+                    <p>Complete financial transaction history, compliance tracking, and automated audit reporting</p>
+                </a>
+                <a href="multi-currency.html" class="module-card">
                     <div class="module-icon">🌍</div>
                     <h3>Multi-Currency</h3>
-                    <p>Manage transactions in multiple currencies with real-time exchange rates</p>
-                </div>
+                    <p>Manage transactions in multiple currencies with real-time exchange rates and automated conversions</p>
+                </a>
+                <a href="payroll-integration.html" class="module-card">
+                    <div class="module-icon">💳</div>
+                    <h3>Payroll Integration</h3>
+                    <p>Seamless integration with payroll system for automated salary processing and expense allocation</p>
+                </a>
+                <a href="hr-integration.html" class="module-card">
+                    <div class="module-icon">👥</div>
+                    <h3>HR Integration</h3>
+                    <p>Connect with HR system for employee expense management, benefits administration, and cost tracking</p>
+                </a>
             </div>
 
             <div class="footer">
@@ -632,55 +860,329 @@
     </div>
 
     <script>
-        // Navigation active state
-        document.querySelectorAll('.nav-item').forEach(item => {
-            if (item.href === window.location.href) {
-                item.classList.add('active');
+        // Enhanced Finance Management System
+        class FinanceManager {
+            constructor() {
+                this.financialData = JSON.parse(localStorage.getItem('financialData')) || this.getSampleData();
+                this.currentCurrency = 'TZS';
+                this.exchangeRates = {
+                    'TZS': 1,
+                    'USD': 0.00043,
+                    'EUR': 0.00039,
+                    'GBP': 0.00034,
+                    'ZAR': 0.0078
+                };
+                this.initialize();
             }
-        });
 
-        // Module card hover effects
-        document.querySelectorAll('.module-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-4px)';
-            });
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
+            initialize() {
+                this.setupNavigation();
+                this.loadFinancialData();
+                this.setupEventListeners();
+                this.startRealTimeUpdates();
+            }
 
-        // Action button functionality
-        document.querySelectorAll('.action-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const action = this.querySelector('div:last-child').textContent;
-                alert(`Opening ${action} module...`);
-            });
-        });
+            setupNavigation() {
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    if (item.href === window.location.href) {
+                        item.classList.add('active');
+                    }
+                });
+            }
 
-        // Simulate real-time financial data updates
-        function updateFinancialData() {
-            const revenueElem = document.querySelector('.stat-card:nth-child(1) .stat-number');
-            const expensesElem = document.querySelector('.stat-card:nth-child(2) .stat-number');
-            const profitElem = document.querySelector('.stat-card:nth-child(3) .stat-number');
-            
-            // Simulate small random changes
-            const revenueChange = (Math.random() * 0.02) - 0.01; // -1% to +1%
-            const expensesChange = (Math.random() * 0.01) - 0.005; // -0.5% to +0.5%
-            
-            const currentRevenue = parseFloat(revenueElem.textContent.replace(/[^\d.]/g, '')) * 1000000;
-            const currentExpenses = parseFloat(expensesElem.textContent.replace(/[^\d.]/g, '')) * 1000000;
-            
-            const newRevenue = currentRevenue * (1 + revenueChange);
-            const newExpenses = currentExpenses * (1 + expensesChange);
-            const newProfit = newRevenue - newExpenses;
-            
-            revenueElem.textContent = `₦${(newRevenue / 1000000).toFixed(1)}M`;
-            expensesElem.textContent = `₦${(newExpenses / 1000000).toFixed(1)}M`;
-            profitElem.textContent = `₦${(newProfit / 1000000).toFixed(1)}M`;
+            getSampleData() {
+                return {
+                    transactions: [
+                        {
+                            id: 1,
+                            date: '2024-12-10',
+                            description: 'Client Payment - Project Alpha',
+                            category: 'Revenue',
+                            amount: 4250000,
+                            status: 'completed',
+                            currency: 'TZS'
+                        },
+                        {
+                            id: 2,
+                            date: '2024-12-09',
+                            description: 'Office Supplies Purchase',
+                            category: 'Expenses',
+                            amount: -245000,
+                            status: 'completed',
+                            currency: 'TZS'
+                        },
+                        {
+                            id: 3,
+                            date: '2024-12-08',
+                            description: 'Software Subscription Renewal',
+                            category: 'Expenses',
+                            amount: -180000,
+                            status: 'pending',
+                            currency: 'TZS'
+                        },
+                        {
+                            id: 4,
+                            date: '2024-12-07',
+                            description: 'Consulting Services - Client Beta',
+                            category: 'Revenue',
+                            amount: 2800000,
+                            status: 'completed',
+                            currency: 'TZS'
+                        },
+                        {
+                            id: 5,
+                            date: '2024-12-06',
+                            description: 'Equipment Maintenance',
+                            category: 'Expenses',
+                            amount: -420000,
+                            status: 'completed',
+                            currency: 'TZS'
+                        }
+                    ],
+                    budgets: [
+                        { name: 'Marketing', allocated: 5000000, spent: 4200000, category: 'Expenses' },
+                        { name: 'Operations', allocated: 8000000, spent: 6500000, category: 'Expenses' },
+                        { name: 'Payroll', allocated: 15000000, spent: 14200000, category: 'Expenses' },
+                        { name: 'Sales Target', allocated: 25000000, achieved: 24800000, category: 'Revenue' }
+                    ]
+                };
+            }
+
+            loadFinancialData() {
+                this.updateStats();
+                this.renderTransactions();
+                this.renderBudgets();
+                this.updateCharts();
+            }
+
+            updateStats() {
+                const revenue = this.financialData.transactions
+                    .filter(t => t.amount > 0)
+                    .reduce((sum, t) => sum + t.amount, 0);
+                
+                const expenses = this.financialData.transactions
+                    .filter(t => t.amount < 0)
+                    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+                
+                const profit = revenue - expenses;
+                const budgetUtilization = 94; // This would be calculated from budget data
+
+                document.getElementById('totalRevenue').textContent = this.formatCurrency(revenue);
+                document.getElementById('totalExpenses').textContent = this.formatCurrency(expenses);
+                document.getElementById('netProfit').textContent = this.formatCurrency(profit);
+                document.getElementById('budgetUtilization').textContent = `${budgetUtilization}%`;
+            }
+
+            formatCurrency(amount) {
+                const convertedAmount = amount * this.exchangeRates[this.currentCurrency];
+                const symbol = this.getCurrencySymbol(this.currentCurrency);
+                
+                if (Math.abs(convertedAmount) >= 1000000) {
+                    return `${symbol}${(convertedAmount / 1000000).toFixed(1)}M`;
+                } else if (Math.abs(convertedAmount) >= 1000) {
+                    return `${symbol}${(convertedAmount / 1000).toFixed(1)}K`;
+                } else {
+                    return `${symbol}${convertedAmount.toFixed(0)}`;
+                }
+            }
+
+            getCurrencySymbol(currency) {
+                const symbols = {
+                    'TZS': 'TZS ',
+                    'USD': '$',
+                    'EUR': '€',
+                    'GBP': '£',
+                    'ZAR': 'R'
+                };
+                return symbols[currency] || currency;
+            }
+
+            renderTransactions() {
+                const tbody = document.getElementById('transactionsList');
+                const recentTransactions = this.financialData.transactions.slice(0, 5);
+
+                tbody.innerHTML = recentTransactions.map(transaction => `
+                    <tr>
+                        <td>${new Date(transaction.date).toLocaleDateString()}</td>
+                        <td>${transaction.description}</td>
+                        <td>${transaction.category}</td>
+                        <td class="${transaction.amount > 0 ? 'amount-positive' : 'amount-negative'}">
+                            ${transaction.amount > 0 ? '+' : ''}${this.formatCurrency(transaction.amount)}
+                        </td>
+                        <td>
+                            <span class="status-badge status-${transaction.status}">
+                                ${transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
+                            </span>
+                        </td>
+                        <td>
+                            <button style="background: var(--primary); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem;" onclick="viewTransaction(${transaction.id})">
+                                View
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            renderBudgets() {
+                const container = document.getElementById('budgetList');
+                container.innerHTML = this.financialData.budgets.map(budget => {
+                    const percentage = (budget.spent / budget.allocated) * 100;
+                    const progressClass = percentage > 90 ? 'progress-danger' : percentage > 75 ? 'progress-warning' : '';
+                    
+                    return `
+                        <div class="budget-item">
+                            <div class="budget-header">
+                                <div class="budget-name">${budget.name}</div>
+                                <div class="budget-amount">
+                                    ${this.formatCurrency(budget.spent)} / ${this.formatCurrency(budget.allocated)}
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill ${progressClass}" style="width: ${Math.min(percentage, 100)}%"></div>
+                            </div>
+                            <div style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.5rem;">
+                                ${percentage.toFixed(1)}% utilized
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            updateCharts() {
+                const chart = document.getElementById('financialChart');
+                // Enhanced chart visualization
+                chart.innerHTML = `
+                    <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; padding: 20px;">
+                        <div style="display: flex; align-items: end; gap: 15px; height: 200px;">
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <div style="background: var(--success); width: 40px; height: 160px; border-radius: 4px;"></div>
+                                <div style="margin-top: 10px; font-size: 0.875rem;">Revenue</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <div style="background: var(--error); width: 40px; height: 60px; border-radius: 4px;"></div>
+                                <div style="margin-top: 10px; font-size: 0.875rem;">Expenses</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <div style="background: var(--primary); width: 40px; height: 100px; border-radius: 4px;"></div>
+                                <div style="margin-top: 10px; font-size: 0.875rem;">Profit</div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; color: var(--text-light);">
+                            Monthly Financial Performance
+                        </div>
+                    </div>
+                `;
+            }
+
+            setupEventListeners() {
+                document.getElementById('timeRange').addEventListener('change', (e) => {
+                    this.filterByTimeRange(e.target.value);
+                });
+            }
+
+            filterByTimeRange(range) {
+                console.log('Filtering financial data by:', range);
+                this.updateCharts();
+            }
+
+            startRealTimeUpdates() {
+                // Simulate real-time financial data updates
+                setInterval(() => {
+                    this.simulateFinancialUpdates();
+                }, 60000);
+            }
+
+            simulateFinancialUpdates() {
+                // Simulate small changes in financial data for demo
+                const stats = ['totalRevenue', 'totalExpenses', 'netProfit'];
+                const randomStat = stats[Math.floor(Math.random() * stats.length)];
+                
+                // Small random fluctuations
+                const change = (Math.random() * 0.02) - 0.01; // -1% to +1%
+                this.updateStats();
+            }
+
+            changeCurrency(currency) {
+                this.currentCurrency = currency;
+                this.loadFinancialData();
+            }
         }
 
-        // Update every 30 seconds for demo
-        setInterval(updateFinancialData, 30000);
+        // Global finance functions
+        const financeManager = new FinanceManager();
+
+        function changeCurrency(currency) {
+            financeManager.changeCurrency(currency);
+        }
+
+        function createInvoice() {
+            alert('Opening Invoice Creation...');
+            // Implementation for invoice creation
+        }
+
+        function recordExpense() {
+            alert('Opening Expense Recording...');
+            // Implementation for expense recording
+        }
+
+        function generateFinancialReports() {
+            alert('Generating Financial Reports...');
+            // Implementation for report generation
+        }
+
+        function syncPayrollData() {
+            alert('Syncing with Payroll System...');
+            // Integration with payroll system
+            window.location.href = 'payroll.html';
+        }
+
+        function runBudgetAnalysis() {
+            alert('Running Budget Analysis...');
+            // Implementation for budget analysis
+        }
+
+        function processPayment() {
+            alert('Processing Payment...');
+        }
+
+        function manageBudgets() {
+            alert('Opening Budget Management...');
+        }
+
+        function viewAllTransactions() {
+            alert('Opening All Transactions...');
+        }
+
+        function viewTransaction(id) {
+            alert(`Viewing Transaction: ${id}`);
+        }
+
+        function viewRevenueDetails() {
+            alert('Opening Revenue Details...');
+        }
+
+        function viewExpenseDetails() {
+            alert('Opening Expense Details...');
+        }
+
+        function viewProfitDetails() {
+            alert('Opening Profit Details...');
+        }
+
+        function viewBudgetDetails() {
+            alert('Opening Budget Details...');
+        }
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then((registration) => {
+                    console.log('SW registered: ', registration);
+                })
+                .catch((registrationError) => {
+                    console.log('SW registration failed: ', registrationError);
+                });
+        }
     </script>
 </body>
 </html>
