@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Health & Safety - CephasGM ERP</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #2563eb;
@@ -54,6 +55,8 @@
             gap: 0.75rem;
             margin-bottom: 2rem;
             padding: 0 1rem;
+            text-decoration: none;
+            color: inherit;
         }
 
         .logo-icon {
@@ -142,6 +145,18 @@
             border-radius: 12px;
             border: 1px solid var(--border);
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary);
         }
 
         .stat-number {
@@ -156,7 +171,7 @@
             font-size: 0.9rem;
         }
 
-        /* Safety Standards Grid */
+        /* Enhanced Safety Standards Grid */
         .standards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -205,6 +220,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .compliance-item:hover {
+            background: var(--background);
+            border-radius: 6px;
+            padding: 0.75rem;
         }
 
         .compliance-item:last-child {
@@ -237,7 +260,7 @@
             color: #1e40af;
         }
 
-        /* Incident Reporting */
+        /* Enhanced Incident Reporting */
         .incident-alert {
             background: #fef3c7;
             border: 1px solid #f59e0b;
@@ -264,7 +287,7 @@
             opacity: 0.8;
         }
 
-        /* Risk Assessment Matrix */
+        /* Enhanced Risk Assessment Matrix */
         .risk-matrix {
             background: var(--surface);
             border-radius: 12px;
@@ -286,6 +309,12 @@
             text-align: center;
             font-weight: 600;
             font-size: 0.875rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .matrix-cell:hover {
+            transform: scale(1.05);
         }
 
         .risk-low { background: #dcfce7; color: #166534; }
@@ -294,6 +323,7 @@
         .risk-very-high { background: #fecaca; color: #991b1b; }
         .risk-extreme { background: #fca5a5; color: #7f1d1d; }
 
+        /* Enhanced Module Grid */
         .module-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -343,12 +373,148 @@
             font-size: 0.95rem;
         }
 
+        /* New Enhanced Components */
+        .chart-container {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .incident-management {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .incident-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .incident-table th,
+        .incident-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .incident-table th {
+            background: var(--background);
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .incident-severity {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .severity-minor { background: #dbeafe; color: #1e40af; }
+        .severity-moderate { background: #fef3c7; color: #92400e; }
+        .severity-serious { background: #fed7aa; color: #9a3412; }
+        .severity-critical { background: #fecaca; color: #991b1b; }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            background: var(--background);
+        }
+
         .footer {
             text-align: center;
             padding: 2rem;
             margin-top: 3rem;
             color: var(--text-light);
             border-top: 1px solid var(--border);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--background);
         }
 
         @media (max-width: 1024px) {
@@ -365,19 +531,22 @@
             .matrix-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <div class="dashboard">
         <nav class="sidebar">
-            <div class="logo">
+            <a href="index.html" class="logo">
                 <div class="logo-icon">CG</div>
                 <div>
                     <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
                     <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
                 </div>
-            </div>
+            </a>
 
             <div class="nav-section">
                 <div class="nav-title">Health & Safety</div>
@@ -397,18 +566,18 @@
 
             <div class="nav-section">
                 <div class="nav-title">Safety Modules</div>
-                <a href="incidents.html" class="nav-item">
+                <button class="nav-item" onclick="openModal('incidentsModal')">
                     <span class="nav-icon">🚨</span>
                     Incident Reporting
-                </a>
-                <a href="risk-assessment.html" class="nav-item">
+                </button>
+                <button class="nav-item" onclick="openModal('riskModal')">
                     <span class="nav-icon">📊</span>
                     Risk Assessment
-                </a>
-                <a href="training.html" class="nav-item">
+                </button>
+                <button class="nav-item" onclick="openModal('trainingModal')">
                     <span class="nav-icon">🎓</span>
                     Safety Training
-                </a>
+                </button>
             </div>
 
             <div class="nav-section">
@@ -453,6 +622,29 @@
                 </div>
             </div>
 
+            <!-- Safety Performance Charts -->
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="card-header">
+                        <div class="card-title">Incident Trends</div>
+                        <select onchange="updateCharts()" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--background);">
+                            <option>Last 6 Months</option>
+                            <option>Last Year</option>
+                            <option>Last 2 Years</option>
+                        </select>
+                    </div>
+                    <canvas id="incidentChart" height="250"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="card-header">
+                        <div class="card-title">Compliance Status</div>
+                        <div style="color: var(--success); font-weight: 600;">98% Overall</div>
+                    </div>
+                    <canvas id="complianceChart" height="250"></canvas>
+                </div>
+            </div>
+
             <!-- Incident Alert -->
             <div class="incident-alert">
                 <div class="alert-icon">⚠️</div>
@@ -460,6 +652,77 @@
                     <h3>Safety Alert: High-Risk Activity Scheduled</h3>
                     <p>Electrical maintenance work planned for Building A - Ensure proper lockout/tagout procedures and PPE requirements are followed.</p>
                 </div>
+            </div>
+
+            <!-- Incident Management -->
+            <div class="incident-management">
+                <div class="card-header">
+                    <div class="card-title">Recent Safety Incidents</div>
+                    <button class="btn btn-primary" onclick="openModal('reportIncidentModal')">+ Report Incident</button>
+                </div>
+                <table class="incident-table">
+                    <thead>
+                        <tr>
+                            <th>Incident ID</th>
+                            <th>Type</th>
+                            <th>Location</th>
+                            <th>Reported By</th>
+                            <th>Severity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>INC-2024-001</strong></td>
+                            <td>Near Miss</td>
+                            <td>Warehouse B</td>
+                            <td>John Mwita</td>
+                            <td><span class="incident-severity severity-minor">Minor</span></td>
+                            <td>Under Investigation</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>INC-2024-002</strong></td>
+                            <td>First Aid</td>
+                            <td>Manufacturing Floor</td>
+                            <td>Sarah Kim</td>
+                            <td><span class="incident-severity severity-moderate">Moderate</span></td>
+                            <td>Resolved</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>INC-2024-003</strong></td>
+                            <td>Equipment Damage</td>
+                            <td>Loading Bay</td>
+                            <td>Mike Johnson</td>
+                            <td><span class="incident-severity severity-serious">Serious</span></td>
+                            <td>Investigation Complete</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>INC-2024-004</strong></td>
+                            <td>Chemical Spill</td>
+                            <td>Lab Area</td>
+                            <td>David Ochieng</td>
+                            <td><span class="incident-severity severity-critical">Critical</span></td>
+                            <td>Emergency Response</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <!-- Safety Standards Compliance -->
@@ -470,23 +733,23 @@
                         <div class="card-title">International Standards</div>
                     </div>
                     <ul class="compliance-list">
-                        <li class="compliance-item">
+                        <li class="compliance-item" onclick="openModal('standardDetailsModal')">
                             <span class="compliance-name">ISO 45001:2018</span>
                             <span class="compliance-status status-certified">Certified</span>
                         </li>
-                        <li class="compliance-item">
+                        <li class="compliance-item" onclick="openModal('standardDetailsModal')">
                             <span class="compliance-name">OHSAS 18001</span>
                             <span class="compliance-status status-certified">Certified</span>
                         </li>
-                        <li class="compliance-item">
+                        <li class="compliance-item" onclick="openModal('standardDetailsModal')">
                             <span class="compliance-name">ILO OSH Standards</span>
                             <span class="compliance-status status-certified">Compliant</span>
                         </li>
-                        <li class="compliance-item">
+                        <li class="compliance-item" onclick="openModal('standardDetailsModal')">
                             <span class="compliance-name">ISO 14001 Environmental</span>
                             <span class="compliance-status status-audit">Audit Due</span>
                         </li>
-                        <li class="compliance-item">
+                        <li class="compliance-item" onclick="openModal('standardDetailsModal')">
                             <span class="compliance-name">WHO Health Guidelines</span>
                             <span class="compliance-status status-implementation">Implementing</span>
                         </li>
@@ -499,23 +762,23 @@
                         <div class="card-title">National Regulations</div>
                     </div>
                     <ul class="compliance-list">
-                        <li class="compliance-item">
+                        <li class="compliance-item" onclick="openModal('standardDetailsModal')">
                             <span class="compliance-name">OSH Act 2003</span>
                             <span class="compliance-status status-certified">Compliant</span>
                         </li>
-                        <li class="compliance-item">
+                        <li class="compliance-item" onclick="openModal('standardDetailsModal')">
                             <span class="compliance-name">Factories Ordinance</span>
                             <span class="compliance-status status-certified">Compliant</span>
                         </li>
-                        <li class="compliance-item">
+                        <li class="compliance-item" onclick="openModal('standardDetailsModal')">
                             <span class="compliance-name">Workmen's Compensation</span>
                             <span class="compliance-status status-certified">Compliant</span>
                         </li>
-                        <li class="compliance-item">
+                        <li class="compliance-item" onclick="openModal('standardDetailsModal')">
                             <span class="compliance-name">Environmental Management Act</span>
                             <span class="compliance-status status-audit">Review Needed</span>
                         </li>
-                        <li class="compliance-item">
+                        <li class="compliance-item" onclick="openModal('standardDetailsModal')">
                             <span class="compliance-name">Public Health Act</span>
                             <span class="compliance-status status-certified">Compliant</span>
                         </li>
@@ -528,23 +791,23 @@
                         <div class="card-title">Industry Specific</div>
                     </div>
                     <ul class="compliance-list">
-                        <li class="compliance-item">
+                        <li class="compliance-item" onclick="openModal('standardDetailsModal')">
                             <span class="compliance-name">Hazardous Materials Handling</span>
                             <span class="compliance-status status-certified">Compliant</span>
                         </li>
-                        <li class="compliance-item">
+                        <li class="compliance-item" onclick="openModal('standardDetailsModal')">
                             <span class="compliance-name">Electrical Safety Standards</span>
                             <span class="compliance-status status-certified">Compliant</span>
                         </li>
-                        <li class="compliance-item">
+                        <li class="compliance-item" onclick="openModal('standardDetailsModal')">
                             <span class="compliance-name">Fire Safety & Prevention</span>
                             <span class="compliance-status status-audit">Inspection Due</span>
                         </li>
-                        <li class="compliance-item">
+                        <li class="compliance-item" onclick="openModal('standardDetailsModal')">
                             <span class="compliance-name">Machine Guarding Requirements</span>
                             <span class="compliance-status status-certified">Compliant</span>
                         </li>
-                        <li class="compliance-item">
+                        <li class="compliance-item" onclick="openModal('standardDetailsModal')">
                             <span class="compliance-name">Construction Safety</span>
                             <span class="compliance-status status-implementation">Upgrading</span>
                         </li>
@@ -560,59 +823,59 @@
                 </div>
                 <p style="color: var(--text-light); margin-bottom: 1rem;">Current workplace risk assessment status across departments</p>
                 <div class="matrix-grid">
-                    <div class="matrix-cell risk-low">Low Risk<br>Admin</div>
-                    <div class="matrix-cell risk-medium">Medium Risk<br>Sales</div>
-                    <div class="matrix-cell risk-high">High Risk<br>Warehouse</div>
-                    <div class="matrix-cell risk-very-high">Very High<br>Manufacturing</div>
-                    <div class="matrix-cell risk-extreme">Extreme<br>Construction</div>
+                    <div class="matrix-cell risk-low" onclick="openModal('riskDetailsModal')">Low Risk<br>Admin</div>
+                    <div class="matrix-cell risk-medium" onclick="openModal('riskDetailsModal')">Medium Risk<br>Sales</div>
+                    <div class="matrix-cell risk-high" onclick="openModal('riskDetailsModal')">High Risk<br>Warehouse</div>
+                    <div class="matrix-cell risk-very-high" onclick="openModal('riskDetailsModal')">Very High<br>Manufacturing</div>
+                    <div class="matrix-cell risk-extreme" onclick="openModal('riskDetailsModal')">Extreme<br>Construction</div>
                 </div>
             </div>
 
             <!-- OHS Management Modules -->
             <div class="module-grid">
-                <div class="module-card" onclick="alert('Incident Reporting opening...')">
+                <div class="module-card" onclick="openModal('incidentsModal')">
                     <div class="module-icon">🚨</div>
                     <h3>Incident Reporting</h3>
                     <p>Report and investigate workplace incidents, near misses, and accidents with root cause analysis</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Risk Assessment opening...')">
+                <div class="module-card" onclick="openModal('riskModal')">
                     <div class="module-icon">📋</div>
                     <h3>Risk Assessment</h3>
                     <p>Conduct comprehensive risk assessments, JSA, and implement control measures</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Safety Training opening...')">
+                <div class="module-card" onclick="openModal('trainingModal')">
                     <div class="module-icon">🎓</div>
                     <h3>Safety Training</h3>
                     <p>Manage safety training programs, certifications, and competency assessments</p>
                 </div>
 
-                <div class="module-card" onclick="alert('PPE Management opening...')">
+                <div class="module-card" onclick="openModal('ppeModal')">
                     <div class="module-icon">🥽</div>
                     <h3>PPE Management</h3>
                     <p>Track personal protective equipment issuance, maintenance, and compliance</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Emergency Preparedness opening...')">
+                <div class="module-card" onclick="openModal('emergencyModal')">
                     <div class="module-icon">🚒</div>
                     <h3>Emergency Preparedness</h3>
                     <p>Emergency response plans, drills, and evacuation procedures management</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Health Surveillance opening...')">
+                <div class="module-card" onclick="openModal('healthModal')">
                     <div class="module-icon">🏥</div>
                     <h3>Health Surveillance</h3>
                     <p>Employee health monitoring, medical examinations, and wellness programs</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Contractor Safety opening...')">
+                <div class="module-card" onclick="openModal('contractorModal')">
                     <div class="module-icon">👷</div>
                     <h3>Contractor Safety</h3>
                     <p>Manage contractor safety compliance, permits, and site-specific inductions</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Audit & Inspection opening...')">
+                <div class="module-card" onclick="openModal('auditModal')">
                     <div class="module-icon">🔍</div>
                     <h3>Audit & Inspection</h3>
                     <p>Schedule and conduct safety audits, inspections, and compliance verifications</p>
@@ -625,40 +888,216 @@
         </main>
     </div>
 
+    <!-- Modals -->
+    <div id="reportIncidentModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('reportIncidentModal')">×</button>
+            <h2 style="margin-bottom: 1.5rem;">Report Safety Incident</h2>
+            <div class="form-group">
+                <label>Incident Type</label>
+                <select>
+                    <option>Near Miss</option>
+                    <option>First Aid</option>
+                    <option>Medical Treatment</option>
+                    <option>Lost Time Injury</option>
+                    <option>Property Damage</option>
+                    <option>Environmental Incident</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" placeholder="Enter incident location">
+            </div>
+            <div class="form-group">
+                <label>Date & Time</label>
+                <input type="datetime-local">
+            </div>
+            <div class="form-group">
+                <label>Severity Level</label>
+                <select>
+                    <option>Minor</option>
+                    <option>Moderate</option>
+                    <option>Serious</option>
+                    <option>Critical</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea rows="4" placeholder="Provide detailed description of the incident"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Immediate Actions Taken</label>
+                <textarea rows="3" placeholder="Describe immediate response actions"></textarea>
+            </div>
+            <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                <button class="btn btn-primary" style="flex: 1;" onclick="reportIncident()">Submit Report</button>
+                <button class="btn btn-outline" style="flex: 1;" onclick="closeModal('reportIncidentModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="incidentsModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('incidentsModal')">×</button>
+            <h2 style="margin-bottom: 1.5rem;">Incident Management</h2>
+            <div class="form-group">
+                <label>Search Incidents</label>
+                <input type="text" placeholder="Search by incident ID or location...">
+            </div>
+            <div class="form-group">
+                <label>Filter by Severity</label>
+                <select>
+                    <option>All Severities</option>
+                    <option>Minor</option>
+                    <option>Moderate</option>
+                    <option>Serious</option>
+                    <option>Critical</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Filter by Status</label>
+                <select>
+                    <option>All Statuses</option>
+                    <option>Under Investigation</option>
+                    <option>Investigation Complete</option>
+                    <option>Resolved</option>
+                    <option>Emergency Response</option>
+                </select>
+            </div>
+            <div style="margin-top: 2rem; text-align: center;">
+                <button class="btn btn-primary" onclick="closeModal('incidentsModal')">Manage Incidents</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Navigation active state
-        document.querySelectorAll('.nav-item').forEach(item => {
-            if (item.href === window.location.href) {
-                item.classList.add('active');
+        // Chart Initialization
+        let incidentChart, complianceChart;
+
+        function initializeCharts() {
+            // Incident Trends Chart
+            const incidentCtx = document.getElementById('incidentChart').getContext('2d');
+            incidentChart = new Chart(incidentCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Incidents Reported',
+                        data: [8, 12, 6, 9, 7, 4],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Near Misses',
+                        data: [15, 18, 12, 14, 16, 10],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+
+            // Compliance Status Chart
+            const complianceCtx = document.getElementById('complianceChart').getContext('2d');
+            complianceChart = new Chart(complianceCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Compliant', 'Needs Review', 'Non-Compliant'],
+                    datasets: [{
+                        data: [85, 10, 5],
+                        backgroundColor: [
+                            '#10b981',
+                            '#f59e0b',
+                            '#ef4444'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // System Functions
+        function reportIncident() {
+            alert('Safety incident reported successfully! Investigation team has been notified.');
+            closeModal('reportIncidentModal');
+        }
+
+        function updateCharts() {
+            alert('Updating safety performance charts...');
+            // In real implementation, this would fetch new data
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            
+            // Navigation active state
+            document.querySelectorAll('.nav-item').forEach(item => {
+                if (item.href === window.location.href) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Module card hover effects
+            document.querySelectorAll('.module-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Close modal when clicking outside
+            window.onclick = function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
             }
         });
 
-        // Module card hover effects
-        document.querySelectorAll('.module-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-4px)';
+        // Simulate real-time safety updates
+        setInterval(() => {
+            // Update incident counts randomly
+            const incidentCounts = document.querySelectorAll('.incident-table td:nth-child(5)');
+            incidentCounts.forEach(cell => {
+                if (Math.random() > 0.8) {
+                    const currentSeverity = cell.textContent.trim();
+                    const severities = ['Minor', 'Moderate', 'Serious', 'Critical'];
+                    const currentIndex = severities.indexOf(currentSeverity);
+                    if (currentIndex > -1 && currentIndex < severities.length - 1) {
+                        cell.textContent = severities[currentIndex + 1];
+                        cell.className = `incident-severity severity-${severities[currentIndex + 1].toLowerCase()}`;
+                    }
+                }
             });
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
-
-        // Simulate real-time safety alerts
-        function updateSafetyAlerts() {
-            const alerts = [
-                "New safety observation reported in Warehouse B",
-                "Monthly fire drill scheduled for next week",
-                "PPE inspection due for Construction team",
-                "Safety committee meeting reminder"
-            ];
-            
-            const randomAlert = alerts[Math.floor(Math.random() * alerts.length)];
-            // This would typically update an alert system
-            console.log("Safety Alert:", randomAlert);
-        }
-
-        // Update alerts every 2 minutes
-        setInterval(updateSafetyAlerts, 120000);
+        }, 30000);
     </script>
 </body>
 </html>
