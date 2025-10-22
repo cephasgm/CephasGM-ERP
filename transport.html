@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transport & Logistics - CephasGM ERP</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         :root {
             --primary: #2563eb;
@@ -54,6 +57,8 @@
             gap: 0.75rem;
             margin-bottom: 2rem;
             padding: 0 1rem;
+            text-decoration: none;
+            color: inherit;
         }
 
         .logo-icon {
@@ -142,6 +147,18 @@
             border-radius: 12px;
             border: 1px solid var(--border);
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary);
         }
 
         .stat-number {
@@ -156,6 +173,7 @@
             font-size: 0.9rem;
         }
 
+        /* Enhanced Logistics Grid */
         .logistics-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -204,6 +222,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .shipment-item:hover {
+            background: var(--background);
+            border-radius: 6px;
+            padding: 0.75rem;
         }
 
         .shipment-item:last-child {
@@ -253,6 +279,7 @@
             color: #7c3aed;
         }
 
+        /* Enhanced Module Grid */
         .module-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -302,12 +329,186 @@
             font-size: 0.95rem;
         }
 
+        /* New Enhanced Components */
+        .chart-container {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .map-container {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            height: 400px;
+        }
+
+        #liveTrackingMap {
+            height: 100%;
+            border-radius: 8px;
+        }
+
+        .fleet-management {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .fleet-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .fleet-table th,
+        .fleet-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .fleet-table th {
+            background: var(--background);
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .vehicle-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-maintenance {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-idle {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            background: var(--background);
+        }
+
         .footer {
             text-align: center;
             padding: 2rem;
             margin-top: 3rem;
             color: var(--text-light);
             border-top: 1px solid var(--border);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--background);
+        }
+
+        .currency-input {
+            display: flex;
+            align-items: center;
+        }
+
+        .currency-input select {
+            width: 100px;
+            margin-right: 1rem;
+        }
+
+        .currency-input input {
+            flex: 1;
         }
 
         @media (max-width: 1024px) {
@@ -321,19 +522,22 @@
                 margin-left: 0;
                 grid-column: 1;
             }
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <div class="dashboard">
         <nav class="sidebar">
-            <div class="logo">
+            <a href="index.html" class="logo">
                 <div class="logo-icon">CG</div>
                 <div>
                     <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
                     <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
                 </div>
-            </div>
+            </a>
 
             <div class="nav-section">
                 <div class="nav-title">Supply Chain</div>
@@ -396,7 +600,7 @@
                     <div class="stat-label">Active Shipments</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">₦8.7M</div>
+                    <div class="stat-number">TZS 8.7M</div>
                     <div class="stat-label">Monthly Logistics Cost</div>
                 </div>
                 <div class="stat-card">
@@ -409,6 +613,109 @@
                 </div>
             </div>
 
+            <!-- Performance Charts -->
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="card-header">
+                        <div class="card-title">Shipping Performance</div>
+                        <select onchange="updateCharts()" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--background);">
+                            <option>Last 7 Days</option>
+                            <option>Last 30 Days</option>
+                            <option>Last 90 Days</option>
+                        </select>
+                    </div>
+                    <canvas id="shippingChart" height="250"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="card-header">
+                        <div class="card-title">Cost Analysis</div>
+                        <div style="color: var(--success); font-weight: 600;">-12% vs Last Month</div>
+                    </div>
+                    <canvas id="costChart" height="250"></canvas>
+                </div>
+            </div>
+
+            <!-- Live Tracking Map -->
+            <div class="map-container">
+                <div class="card-header">
+                    <div class="card-title">Live Fleet Tracking</div>
+                    <button class="btn btn-primary" onclick="refreshMap()">Refresh Locations</button>
+                </div>
+                <div id="liveTrackingMap"></div>
+            </div>
+
+            <!-- Fleet Management -->
+            <div class="fleet-management">
+                <div class="card-header">
+                    <div class="card-title">Fleet Management</div>
+                    <button class="btn btn-primary" onclick="openModal('addVehicleModal')">+ Add Vehicle</button>
+                </div>
+                <table class="fleet-table">
+                    <thead>
+                        <tr>
+                            <th>Vehicle ID</th>
+                            <th>Type</th>
+                            <th>Driver</th>
+                            <th>Current Location</th>
+                            <th>Status</th>
+                            <th>Fuel Level</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>TRK-001</strong></td>
+                            <td>Heavy Truck</td>
+                            <td>John Mwita</td>
+                            <td>Dar → Arusha</td>
+                            <td><span class="vehicle-status status-active">Active</span></td>
+                            <td>78%</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">Track</button>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>VAN-015</strong></td>
+                            <td>Delivery Van</td>
+                            <td>Sarah Kim</td>
+                            <td>Dar City Center</td>
+                            <td><span class="vehicle-status status-active">Active</span></td>
+                            <td>45%</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">Track</button>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>TRK-008</strong></td>
+                            <td>Refrigerated Truck</td>
+                            <td>Mike Johnson</td>
+                            <td>Maintenance Depot</td>
+                            <td><span class="vehicle-status status-maintenance">Maintenance</span></td>
+                            <td>100%</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">Track</button>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Details</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>VAN-022</strong></td>
+                            <td>Cargo Van</td>
+                            <td>David Ochieng</td>
+                            <td>Company Yard</td>
+                            <td><span class="vehicle-status status-idle">Idle</span></td>
+                            <td>90%</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">Track</button>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Details</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
             <!-- Live Shipments Tracking -->
             <div class="logistics-grid">
                 <div class="logistics-card">
@@ -417,28 +724,28 @@
                         <div class="card-title">Domestic Shipments</div>
                     </div>
                     <ul class="shipment-list">
-                        <li class="shipment-item">
+                        <li class="shipment-item" onclick="openModal('shipmentDetailsModal')">
                             <div class="shipment-info">
                                 <span class="shipment-id">TRK-7824</span>
                                 <span class="shipment-route">Dar → Arusha</span>
                             </div>
                             <span class="shipment-status status-in-transit">In Transit</span>
                         </li>
-                        <li class="shipment-item">
+                        <li class="shipment-item" onclick="openModal('shipmentDetailsModal')">
                             <div class="shipment-info">
                                 <span class="shipment-id">TRK-7819</span>
                                 <span class="shipment-route">Mwanza → Dodoma</span>
                             </div>
                             <span class="shipment-status status-delivered">Delivered</span>
                         </li>
-                        <li class="shipment-item">
+                        <li class="shipment-item" onclick="openModal('shipmentDetailsModal')">
                             <div class="shipment-info">
                                 <span class="shipment-id">TRK-7821</span>
                                 <span class="shipment-route">Mbeya → Dar</span>
                             </div>
                             <span class="shipment-status status-delayed">Delayed</span>
                         </li>
-                        <li class="shipment-item">
+                        <li class="shipment-item" onclick="openModal('shipmentDetailsModal')">
                             <div class="shipment-info">
                                 <span class="shipment-id">TRK-7825</span>
                                 <span class="shipment-route">Tanga → Morogoro</span>
@@ -454,28 +761,28 @@
                         <div class="card-title">International Shipments</div>
                     </div>
                     <ul class="shipment-list">
-                        <li class="shipment-item">
+                        <li class="shipment-item" onclick="openModal('shipmentDetailsModal')">
                             <div class="shipment-info">
                                 <span class="shipment-id">INT-4582</span>
                                 <span class="shipment-route">Dar → Rotterdam</span>
                             </div>
                             <span class="shipment-status status-customs">Customs</span>
                         </li>
-                        <li class="shipment-item">
+                        <li class="shipment-item" onclick="openModal('shipmentDetailsModal')">
                             <div class="shipment-info">
                                 <span class="shipment-id">INT-4580</span>
                                 <span class="shipment-route">Mombasa → Shanghai</span>
                             </div>
                             <span class="shipment-status status-in-transit">At Sea</span>
                         </li>
-                        <li class="shipment-item">
+                        <li class="shipment-item" onclick="openModal('shipmentDetailsModal')">
                             <div class="shipment-info">
                                 <span class="shipment-id">INT-4578</span>
                                 <span class="shipment-route">Dubai → Dar</span>
                             </div>
                             <span class="shipment-status status-delivered">Arrived</span>
                         </li>
-                        <li class="shipment-item">
+                        <li class="shipment-item" onclick="openModal('shipmentDetailsModal')">
                             <div class="shipment-info">
                                 <span class="shipment-id">INT-4583</span>
                                 <span class="shipment-route">Dar → Hamburg</span>
@@ -491,28 +798,28 @@
                         <div class="card-title">Import/Export Operations</div>
                     </div>
                     <ul class="shipment-list">
-                        <li class="shipment-item">
+                        <li class="shipment-item" onclick="openModal('shipmentDetailsModal')">
                             <div class="shipment-info">
                                 <span class="shipment-id">IMP-2365</span>
                                 <span class="shipment-route">China → Tanzania</span>
                             </div>
                             <span class="shipment-status status-customs">Customs Clearance</span>
                         </li>
-                        <li class="shipment-item">
+                        <li class="shipment-item" onclick="openModal('shipmentDetailsModal')">
                             <div class="shipment-info">
                                 <span class="shipment-id">EXP-1247</span>
                                 <span class="shipment-route">Tanzania → Kenya</span>
                             </div>
                             <span class="shipment-status status-in-transit">Border Crossing</span>
                         </li>
-                        <li class="shipment-item">
+                        <li class="shipment-item" onclick="openModal('shipmentDetailsModal')">
                             <div class="shipment-info">
                                 <span class="shipment-id">IMP-2368</span>
                                 <span class="shipment-route">India → Tanzania</span>
                             </div>
                             <span class="shipment-status status-delayed">Documentation</span>
                         </li>
-                        <li class="shipment-item">
+                        <li class="shipment-item" onclick="openModal('shipmentDetailsModal')">
                             <div class="shipment-info">
                                 <span class="shipment-id">EXP-1250</span>
                                 <span class="shipment-route">Tanzania → Uganda</span>
@@ -525,49 +832,49 @@
 
             <!-- Logistics Management Modules -->
             <div class="module-grid">
-                <div class="module-card" onclick="alert('Fleet Management opening...')">
+                <div class="module-card" onclick="openModal('fleetModal')">
                     <div class="module-icon">🚛</div>
                     <h3>Fleet Management</h3>
                     <p>Manage vehicle fleet, maintenance schedules, fuel consumption, and driver assignments</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Route Optimization opening...')">
+                <div class="module-card" onclick="openModal('routeModal')">
                     <div class="module-icon">🗺️</div>
                     <h3>Route Optimization</h3>
                     <p>Plan optimal delivery routes, track real-time GPS, and optimize fuel efficiency</p>
                 </div>
 
-                <div class="module-card" onclick="alert('International Shipping opening...')">
+                <div class="module-card" onclick="openModal('shippingModal')">
                     <div class="module-icon">🌍</div>
                     <h3>International Shipping</h3>
                     <p>Manage ocean freight, air cargo, and cross-border logistics with customs integration</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Warehouse Management opening...')">
+                <div class="module-card" onclick="openModal('warehouseModal')">
                     <div class="module-icon">🏭</div>
                     <h3>Warehouse Management</h3>
                     <p>Inventory storage, picking optimization, and warehouse operations management</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Customs Compliance opening...')">
+                <div class="module-card" onclick="openModal('customsModal')">
                     <div class="module-icon">🛃</div>
                     <h3>Customs Compliance</h3>
                     <p>Manage import/export documentation, tariffs, and regulatory compliance</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Logistics Analytics opening...')">
+                <div class="module-card" onclick="openModal('analyticsModal')">
                     <div class="module-icon">📊</div>
                     <h3>Logistics Analytics</h3>
                     <p>Performance metrics, cost analysis, and supply chain optimization insights</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Freight Forwarding opening...')">
+                <div class="module-card" onclick="openModal('freightModal')">
                     <div class="module-icon">🚢</div>
                     <h3>Freight Forwarding</h3>
                     <p>Manage freight bookings, carrier relationships, and international logistics partners</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Supply Chain Visibility opening...')">
+                <div class="module-card" onclick="openModal('visibilityModal')">
                     <div class="module-icon">👁️</div>
                     <h3>Supply Chain Visibility</h3>
                     <p>End-to-end shipment tracking, real-time updates, and exception management</p>
@@ -580,38 +887,226 @@
         </main>
     </div>
 
+    <!-- Modals -->
+    <div id="shipmentDetailsModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('shipmentDetailsModal')">×</button>
+            <h2 style="margin-bottom: 1.5rem;">Shipment Details</h2>
+            <div class="form-group">
+                <label>Shipment ID</label>
+                <input type="text" value="TRK-7824" readonly>
+            </div>
+            <div class="form-group">
+                <label>Route</label>
+                <input type="text" value="Dar es Salaam → Arusha" readonly>
+            </div>
+            <div class="form-group">
+                <label>Current Status</label>
+                <input type="text" value="In Transit" readonly>
+            </div>
+            <div class="form-group">
+                <label>Estimated Arrival</label>
+                <input type="text" value="2024-01-15 14:30" readonly>
+            </div>
+            <div class="form-group">
+                <label>Shipping Cost</label>
+                <div class="currency-input">
+                    <select>
+                        <option>TZS</option>
+                        <option>USD</option>
+                        <option>EUR</option>
+                    </select>
+                    <input type="number" value="1250000" step="0.01">
+                </div>
+            </div>
+            <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                <button class="btn btn-primary" style="flex: 1;">Track Shipment</button>
+                <button class="btn btn-outline" style="flex: 1;" onclick="closeModal('shipmentDetailsModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="addVehicleModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('addVehicleModal')">×</button>
+            <h2 style="margin-bottom: 1.5rem;">Add New Vehicle</h2>
+            <div class="form-group">
+                <label>Vehicle Type</label>
+                <select>
+                    <option>Heavy Truck</option>
+                    <option>Delivery Van</option>
+                    <option>Refrigerated Truck</option>
+                    <option>Cargo Van</option>
+                    <option>Pickup Truck</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>License Plate</label>
+                <input type="text" placeholder="Enter license plate">
+            </div>
+            <div class="form-group">
+                <label>Assigned Driver</label>
+                <select>
+                    <option>John Mwita</option>
+                    <option>Sarah Kim</option>
+                    <option>Mike Johnson</option>
+                    <option>David Ochieng</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Fuel Capacity</label>
+                <input type="number" placeholder="Enter capacity in liters">
+            </div>
+            <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                <button class="btn btn-primary" style="flex: 1;" onclick="addVehicle()">Add Vehicle</button>
+                <button class="btn btn-outline" style="flex: 1;" onclick="closeModal('addVehicleModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        document.querySelectorAll('.nav-item').forEach(item => {
-            if (item.href === window.location.href) {
-                item.classList.add('active');
-            }
-        });
+        // Chart Initialization
+        let shippingChart, costChart, trackingMap;
 
-        document.querySelectorAll('.module-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-4px)';
+        function initializeCharts() {
+            // Shipping Performance Chart
+            const shippingCtx = document.getElementById('shippingChart').getContext('2d');
+            shippingChart = new Chart(shippingCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'On-Time Deliveries',
+                        data: [45, 52, 48, 55, 58, 50, 42],
+                        backgroundColor: '#10b981'
+                    }, {
+                        label: 'Delayed Shipments',
+                        data: [5, 3, 7, 2, 1, 4, 8],
+                        backgroundColor: '#f59e0b'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
             });
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
 
-        // Simulate real-time shipment updates
-        function updateShipmentStatus() {
-            const statuses = document.querySelectorAll('.shipment-status');
-            statuses.forEach(status => {
-                if (status.classList.contains('status-in-transit')) {
-                    // Randomly update some shipments
-                    if (Math.random() > 0.7) {
-                        status.textContent = 'Delivered';
-                        status.className = 'shipment-status status-delivered';
+            // Cost Analysis Chart
+            const costCtx = document.getElementById('costChart').getContext('2d');
+            costChart = new Chart(costCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Logistics Cost (TZS)',
+                        data: [8500000, 9200000, 7800000, 8100000, 7600000, 8700000],
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
                 }
             });
         }
 
-        // Update every 30 seconds
-        setInterval(updateShipmentStatus, 30000);
+        // Map Initialization
+        function initializeMap() {
+            trackingMap = L.map('liveTrackingMap').setView([-6.3690, 34.8888], 6); // Center on Tanzania
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(trackingMap);
+
+            // Add sample vehicle markers
+            const vehicles = [
+                { lat: -6.7924, lng: 39.2083, name: 'TRK-001', status: 'Active' }, // Dar es Salaam
+                { lat: -3.3822, lng: 36.6829, name: 'TRK-7824', status: 'In Transit' }, // Arusha
+                { lat: -6.1620, lng: 35.7516, name: 'VAN-015', status: 'Active' }, // Dodoma
+                { lat: -2.5164, lng: 32.9176, name: 'TRK-008', status: 'Maintenance' } // Mwanza
+            ];
+
+            vehicles.forEach(vehicle => {
+                const marker = L.marker([vehicle.lat, vehicle.lng]).addTo(trackingMap);
+                marker.bindPopup(`
+                    <strong>${vehicle.name}</strong><br>
+                    Status: ${vehicle.status}<br>
+                    Location: ${vehicle.lat.toFixed(4)}, ${vehicle.lng.toFixed(4)}
+                `);
+            });
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // System Functions
+        function refreshMap() {
+            alert('Refreshing vehicle locations...');
+            // In real implementation, this would fetch updated GPS data
+        }
+
+        function addVehicle() {
+            alert('New vehicle added to fleet!');
+            closeModal('addVehicleModal');
+        }
+
+        function updateCharts() {
+            alert('Updating charts with latest data...');
+            // In real implementation, this would fetch new data
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            initializeMap();
+            
+            // Navigation active state
+            document.querySelectorAll('.nav-item').forEach(item => {
+                if (item.href === window.location.href) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Close modal when clicking outside
+            window.onclick = function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            }
+        });
+
+        // Simulate real-time updates
+        setInterval(() => {
+            // Update shipment statuses randomly
+            const statuses = document.querySelectorAll('.shipment-status');
+            statuses.forEach(status => {
+                if (status.classList.contains('status-in-transit') && Math.random() > 0.8) {
+                    status.textContent = 'Delivered';
+                    status.className = 'shipment-status status-delivered';
+                }
+            });
+        }, 30000);
     </script>
 </body>
 </html>
