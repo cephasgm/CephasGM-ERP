@@ -1,2057 +1,664 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#2563eb">
-    <meta name="description" content="System Administration - CephasGM ERP">
-    <title>System Administration - CephasGM ERP</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #64748b;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --background: #f8fafc;
-            --surface: #ffffff;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-            --shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            padding: 2rem 1rem;
-            position: fixed;
-            width: 280px;
-            height: 100vh;
-            overflow-y: auto;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-            padding: 0 1rem;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.25rem;
-        }
-
-        .nav-section {
-            margin-bottom: 2rem;
-        }
-
-        .nav-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--text-light);
-            margin-bottom: 1rem;
-            padding: 0 1rem;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            color: var(--text-light);
-            text-decoration: none;
-            transition: all 0.2s;
-            margin-bottom: 0.25rem;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-            font-size: 0.95rem;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .nav-icon {
-            font-size: 1.25rem;
-            width: 24px;
-            text-align: center;
-        }
-
-        .main-content {
-            grid-column: 2;
-            padding: 2rem;
-            margin-left: 280px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .header h1 {
-            font-size: 1.875rem;
-            font-weight: 700;
-        }
-
-        /* Enhanced Toolbar */
-        .toolbar {
-            margin-bottom: 2rem;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            padding: 1.5rem;
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #059669;
-            transform: translateY(-1px);
-        }
-
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-        }
-
-        .btn-warning:hover {
-            background: #d97706;
-            transform: translateY(-1px);
-        }
-
-        .btn-danger {
-            background: var(--error);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-            transform: translateY(-1px);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text);
-        }
-
-        .btn-outline:hover {
-            background: var(--background);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--primary);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-        /* Enhanced System Overview */
-        .system-overview {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .overview-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .system-metrics {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-
-        .metric-item {
-            background: var(--background);
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .metric-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .metric-label {
-            font-size: 0.875rem;
-            color: var(--text-light);
-            margin-top: 0.25rem;
-        }
-
-        /* Enhanced Quick Actions */
-        .admin-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-        }
-
-        .action-btn {
-            background: var(--background);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.5rem 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .action-btn:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .action-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Enhanced User Management */
-        .user-management {
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
-
-        .user-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        .user-table th,
-        .user-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .user-table th {
-            background: var(--primary);
-            color: white;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-        }
-
-        .user-role {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .role-admin {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .role-manager {
-            background: #ddd6fe;
-            color: #7c3aed;
-        }
-
-        .role-user {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .role-guest {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-active {
-            color: var(--success);
-            font-weight: 600;
-        }
-
-        .status-inactive {
-            color: var(--error);
-            font-weight: 600;
-        }
-
-        .status-pending {
-            color: var(--warning);
-            font-weight: 600;
-        }
-
-        /* Enhanced Permission Management */
-        .permission-section {
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
-
-        .permission-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
-
-        .permission-card {
-            background: var(--background);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .permission-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .permission-title {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .permission-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .permission-item {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            padding: 0.75rem;
-            background: var(--surface);
-            border-radius: 6px;
-        }
-
-        .permission-name {
-            flex: 1;
-            font-weight: 500;
-        }
-
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--border);
-            transition: .4s;
-            border-radius: 24px;
-        }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .toggle-slider {
-            background-color: var(--success);
-        }
-
-        input:checked + .toggle-slider:before {
-            transform: translateX(26px);
-        }
-
-        /* Enhanced System Health */
-        .health-section {
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
-
-        .health-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .health-card {
-            background: var(--background);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .health-status {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-align: center;
-            margin-top: 1rem;
-        }
-
-        .status-healthy {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-warning {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-critical {
-            background: #fecaca;
-            color: #991b1b;
-        }
-
-        /* Enhanced Security Overview */
-        .security-section {
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
-
-        .security-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .security-stat {
-            text-align: center;
-            padding: 1rem;
-            background: var(--background);
-            border-radius: 8px;
-        }
-
-        .security-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .security-label {
-            font-size: 0.875rem;
-            color: var(--text-light);
-            margin-top: 0.25rem;
-        }
-
-        /* Enhanced Recent Activities */
-        .activities-section {
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
-
-        .activities-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.25rem;
-        }
-
-        .activity-content {
-            flex: 1;
-        }
-
-        .activity-title {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .activity-desc {
-            color: var(--text-light);
-            font-size: 0.875rem;
-        }
-
-        .activity-time {
-            color: var(--text-light);
-            font-size: 0.875rem;
-            white-space: nowrap;
-        }
-
-        /* Enhanced Module Grid */
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .module-card {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            box-shadow: var(--shadow);
-        }
-
-        .module-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-color: var(--primary);
-        }
-
-        .module-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
-            color: white;
-        }
-
-        .module-card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .module-card p {
-            color: var(--text-light);
-            font-size: 0.95rem;
-        }
-
-        /* Chart Containers */
-        .chart-container {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
-
-        .chart-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            color: var(--text-light);
-            border-top: 1px solid var(--border);
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: var(--surface);
-            margin: 5% auto;
-            padding: 2rem;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 600px;
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 25px rgba(0,0,0,0.1);
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-light);
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: var(--background);
-            color: var(--text);
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .form-actions .btn {
-            flex: 1;
-        }
-
-        /* Role Badges */
-        .role-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .main-content {
-                margin-left: 0;
-                grid-column: 1;
-            }
-            .system-overview {
-                grid-template-columns: 1fr;
-            }
-            .chart-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 1rem;
-            }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            .toolbar {
-                flex-direction: column;
-            }
-            .module-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --background: #0f172a;
-                --surface: #1e293b;
-                --text: #f1f5f9;
-                --text-light: #94a3b8;
-                --border: #334155;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="dashboard">
-        <nav class="sidebar">
-            <a href="index.html" class="logo">
-                <div class="logo-icon">CG</div>
-                <div>
-                    <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
-                    <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
-                </div>
-            </a>
-
-            <div class="nav-section">
-                <div class="nav-title">System Administration</div>
-                <a href="admin.html" class="nav-item active">
-                    <span class="nav-icon">⚙️</span>
-                    System Dashboard
-                </a>
-                <button class="nav-item" onclick="openModal('userManagementModal')">
-                    <span class="nav-icon">👥</span>
-                    User Management
-                </button>
-                <button class="nav-item" onclick="openModal('permissionModal')">
-                    <span class="nav-icon">🔐</span>
-                    Access Control
-                </button>
-                <button class="nav-item" onclick="openModal('securityModal')">
-                    <span class="nav-icon">🔒</span>
-                    Security Center
-                </button>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-title">System Modules</div>
-                <button class="nav-item" onclick="openModal('backupModal')">
-                    <span class="nav-icon">💾</span>
-                    Backup & Recovery
-                </button>
-                <button class="nav-item" onclick="openModal('logsModal')">
-                    <span class="nav-icon">📋</span>
-                    System Logs
-                </button>
-                <button class="nav-item" onclick="openModal('updatesModal')">
-                    <span class="nav-icon">🔄</span>
-                    Updates & Patches
-                </button>
-                <button class="nav-item" onclick="openModal('auditModal')">
-                    <span class="nav-icon">📊</span>
-                    Audit Trail
-                </button>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-title">Operations</div>
-                <a href="index.html" class="nav-item">
-                    <span class="nav-icon">📊</span>
-                    Main Dashboard
-                </a>
-                <a href="hr.html" class="nav-item">
-                    <span class="nav-icon">👥</span>
-                    HR Management
-                </a>
-                <a href="finance.html" class="nav-item">
-                    <span class="nav-icon">💰</span>
-                    Finance
-                </a>
-                <a href="payroll.html" class="nav-item">
-                    <span class="nav-icon">💳</span>
-                    Payroll
-                </a>
-            </div>
-        </nav>
-
-        <main class="main-content">
-            <div class="header">
-                <div>
-                    <h1>System Administration</h1>
-                    <div style="color: var(--text-light);">Comprehensive system management, user access control, and security administration</div>
-                </div>
-                <div style="display: flex; gap: 1rem;">
-                    <button class="btn btn-primary" onclick="openModal('addUserModal')">
-                        <span>👤</span> Add User
-                    </button>
-                    <button class="btn btn-success" onclick="runSystemDiagnostic()">
-                        <span>🔍</span> System Check
-                    </button>
-                </div>
-            </div>
-
-            <!-- Enhanced Toolbar -->
-            <div class="toolbar">
-                <button class="btn btn-primary" onclick="openModal('userManagementModal')">
-                    <span>👥</span> User Management
-                </button>
-                <button class="btn btn-primary" onclick="openModal('permissionModal')">
-                    <span>🔐</span> Access Control
-                </button>
-                <button class="btn btn-success" onclick="openModal('roleManagementModal')">
-                    <span>🏷️</span> Role Management
-                </button>
-                <button class="btn btn-warning" onclick="openModal('securityModal')">
-                    <span>🔒</span> Security Settings
-                </button>
-                <button class="btn btn-primary" onclick="openModal('backupModal')">
-                    <span>💾</span> Backup System
-                </button>
-            </div>
-
-            <!-- System Statistics -->
-            <div class="stats-grid">
-                <div class="stat-card" onclick="openModal('userManagementModal')">
-                    <div class="stat-number" id="totalUsers">156</div>
-                    <div class="stat-label">Total Users</div>
-                </div>
-                <div class="stat-card" onclick="openModal('securityModal')">
-                    <div class="stat-number">98.7%</div>
-                    <div class="stat-label">System Uptime</div>
-                </div>
-                <div class="stat-card" onclick="openModal('permissionModal')">
-                    <div class="stat-number">4</div>
-                    <div class="stat-label">User Roles</div>
-                </div>
-                <div class="stat-card" onclick="openModal('logsModal')">
-                    <div class="stat-number">0</div>
-                    <div class="stat-label">Security Alerts</div>
-                </div>
-            </div>
-
-            <!-- Performance Charts -->
-            <div class="chart-grid">
-                <div class="chart-container">
-                    <div class="card-header">
-                        <div class="card-title">System Performance</div>
-                        <select id="timeRange" onchange="updateCharts()" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--background);">
-                            <option>Last 24 Hours</option>
-                            <option>Last 7 Days</option>
-                            <option>Last 30 Days</option>
-                        </select>
-                    </div>
-                    <canvas id="performanceChart" height="250"></canvas>
-                </div>
-
-                <div class="chart-container">
-                    <div class="card-header">
-                        <div class="card-title">User Activity Distribution</div>
-                        <div style="color: var(--success); font-weight: 600;">Active</div>
-                    </div>
-                    <canvas id="userActivityChart" height="250"></canvas>
-                </div>
-            </div>
-
-            <!-- System Overview -->
-            <div class="system-overview">
-                <div class="overview-card">
-                    <div class="card-header">
-                        <div class="card-title">System Metrics</div>
-                        <button class="btn btn-outline" onclick="refreshMetrics()">Refresh</button>
-                    </div>
-                    <div class="system-metrics">
-                        <div class="metric-item">
-                            <div class="metric-value">2.1%</div>
-                            <div class="metric-label">CPU Usage</div>
-                        </div>
-                        <div class="metric-item">
-                            <div class="metric-value">45%</div>
-                            <div class="metric-label">Memory Usage</div>
-                        </div>
-                        <div class="metric-item">
-                            <div class="metric-value">1.2GB</div>
-                            <div class="metric-label">Disk Usage</div>
-                        </div>
-                        <div class="metric-item">
-                            <div class="metric-value">24ms</div>
-                            <div class="metric-label">Response Time</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="overview-card">
-                    <div class="card-header">
-                        <div class="card-title">Quick Admin Actions</div>
-                    </div>
-                    <div class="admin-actions">
-                        <div class="action-btn" onclick="runBackup()">
-                            <div class="action-icon">💾</div>
-                            <div>Backup</div>
-                        </div>
-                        <div class="action-btn" onclick="openModal('userManagementModal')">
-                            <div class="action-icon">👥</div>
-                            <div>Users</div>
-                        </div>
-                        <div class="action-btn" onclick="openModal('permissionModal')">
-                            <div class="action-icon">🔐</div>
-                            <div>Permissions</div>
-                        </div>
-                        <div class="action-btn" onclick="openModal('securityModal')">
-                            <div class="action-icon">🔒</div>
-                            <div>Security</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Enhanced User Management -->
-            <div class="user-management">
-                <div class="card-header">
-                    <div class="card-title">User Management</div>
-                    <div>
-                        <button class="btn btn-outline" onclick="exportUserData()">Export</button>
-                        <button class="btn btn-primary" onclick="openModal('addUserModal')" style="margin-left: 1rem;">+ Add User</button>
-                    </div>
-                </div>
-                <table class="user-table">
-                    <thead>
-                        <tr>
-                            <th>User</th>
-                            <th>Role</th>
-                            <th>Department</th>
-                            <th>Last Login</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userTableBody">
-                        <!-- Dynamic content will be loaded here -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Enhanced Permission Management -->
-            <div class="permission-section">
-                <div class="card-header">
-                    <div class="card-title">Role-Based Access Control</div>
-                    <button class="btn btn-primary" onclick="openModal('roleManagementModal')">Manage Roles</button>
-                </div>
-                <div class="permission-grid" id="permissionGrid">
-                    <!-- Dynamic permission cards will be loaded here -->
-                </div>
-            </div>
-
-            <!-- System Health -->
-            <div class="health-section">
-                <div class="card-header">
-                    <div class="card-title">System Health Status</div>
-                    <div style="color: var(--success); font-weight: 600;">All Systems Operational</div>
-                </div>
-                <div class="health-grid">
-                    <div class="health-card">
-                        <div style="font-weight: 600; margin-bottom: 0.5rem;">Database Server</div>
-                        <div style="font-size: 0.875rem; color: var(--text-light);">MySQL 8.0 - Production</div>
-                        <div class="health-status status-healthy">Healthy</div>
-                    </div>
-
-                    <div class="health-card">
-                        <div style="font-weight: 600; margin-bottom: 0.5rem;">Web Server</div>
-                        <div style="font-size: 0.875rem; color: var(--text-light);">Apache 2.4 - Load Balanced</div>
-                        <div class="health-status status-healthy">Healthy</div>
-                    </div>
-
-                    <div class="health-card">
-                        <div style="font-weight: 600; margin-bottom: 0.5rem;">Security System</div>
-                        <div style="font-size: 0.875rem; color: var(--text-light);">Encrypted - Multi-factor Auth</div>
-                        <div class="health-status status-healthy">Secure</div>
-                    </div>
-
-                    <div class="health-card">
-                        <div style="font-weight: 600; margin-bottom: 0.5rem;">Backup System</div>
-                        <div style="font-size: 0.875rem; color: var(--text-light);">Automated - Encrypted</div>
-                        <div class="health-status status-healthy">Healthy</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activities -->
-            <div class="activities-section">
-                <div class="card-header">
-                    <div class="card-title">Recent System Activities</div>
-                    <button class="btn btn-primary" onclick="openModal('auditModal')">View Audit Trail</button>
-                </div>
-                <div class="activities-list" id="activitiesList">
-                    <!-- Dynamic activities will be loaded here -->
-                </div>
-            </div>
-
-            <!-- System Administration Modules -->
-            <div class="module-grid">
-                <div class="module-card" onclick="openModal('userManagementModal')">
-                    <div class="module-icon">👥</div>
-                    <h3>User Management</h3>
-                    <p>Manage user accounts, roles, permissions, and access controls across all system modules</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('permissionModal')">
-                    <div class="module-icon">🔐</div>
-                    <h3>Access Control</h3>
-                    <p>Configure role-based permissions, feature access, and security protocols for users</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('securityModal')">
-                    <div class="module-icon">🔒</div>
-                    <h3>Security Center</h3>
-                    <p>Monitor security threats, configure firewalls, and manage comprehensive security policies</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('auditModal')">
-                    <div class="module-icon">📊</div>
-                    <h3>Audit Trail</h3>
-                    <p>Track all user activities, system changes, and security events with detailed logging</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('backupModal')">
-                    <div class="module-icon">💾</div>
-                    <h3>Backup & Recovery</h3>
-                    <p>Automated backups, disaster recovery plans, and data restoration tools</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('logsModal')">
-                    <div class="module-icon">📋</div>
-                    <h3>System Logs</h3>
-                    <p>Comprehensive system logs, error tracking, and performance monitoring</p>
-                </div>
-            </div>
-
-            <div class="footer">
-                Copyright © 2025 😀
-            </div>
-        </main>
-    </div>
-
-    <!-- Enhanced Modals -->
-    <div id="userManagementModal" class="modal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal('userManagementModal')">×</button>
-            <h2 style="margin-bottom: 1.5rem;">User Management</h2>
-            <div class="form-group">
-                <label>Search Users</label>
-                <input type="text" placeholder="Enter username or email..." id="userSearch">
-            </div>
-            <div class="form-group">
-                <label>Filter by Role</label>
-                <select id="roleFilter">
-                    <option value="">All Roles</option>
-                    <option value="admin">Administrator</option>
-                    <option value="manager">Manager</option>
-                    <option value="user">User</option>
-                    <option value="guest">Guest/Demo</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Filter by Status</label>
-                <select id="statusFilter">
-                    <option value="">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                    <option value="pending">Pending</option>
-                </select>
-            </div>
-            <div class="form-actions">
-                <button class="btn btn-primary" onclick="applyUserFilters()">Apply Filters</button>
-                <button class="btn btn-outline" onclick="resetUserFilters()">Reset</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="addUserModal" class="modal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal('addUserModal')">×</button>
-            <h2 style="margin-bottom: 1.5rem;">Add New User</h2>
-            <div class="form-group">
-                <label>Full Name *</label>
-                <input type="text" placeholder="Enter full name" id="userFullName" required>
-            </div>
-            <div class="form-group">
-                <label>Email Address *</label>
-                <input type="email" placeholder="Enter email address" id="userEmail" required>
-            </div>
-            <div class="form-group">
-                <label>Username *</label>
-                <input type="text" placeholder="Enter username" id="userUsername" required>
-            </div>
-            <div class="form-group">
-                <label>User Role *</label>
-                <select id="userRole" required>
-                    <option value="">Select Role</option>
-                    <option value="admin">Administrator</option>
-                    <option value="manager">Manager</option>
-                    <option value="user">Standard User</option>
-                    <option value="guest">Guest/Demo User</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Department</label>
-                <select id="userDepartment">
-                    <option value="">Select Department</option>
-                    <option value="it">IT</option>
-                    <option value="sales">Sales</option>
-                    <option value="finance">Finance</option>
-                    <option value="hr">HR</option>
-                    <option value="operations">Operations</option>
-                    <option value="demo">Demo</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Initial Password</label>
-                <input type="password" placeholder="Enter initial password" id="userPassword">
-                <small style="color: var(--text-light);">Leave blank to generate automatic password</small>
-            </div>
-            <div class="form-group">
-                <label>Access Expiry Date</label>
-                <input type="date" id="userExpiry">
-                <small style="color: var(--text-light);">Leave blank for no expiry</small>
-            </div>
-            <div class="form-actions">
-                <button class="btn btn-primary" onclick="createNewUser()">Create User</button>
-                <button class="btn btn-outline" onclick="closeModal('addUserModal')">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="permissionModal" class="modal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal('permissionModal')">×</button>
-            <h2 style="margin-bottom: 1.5rem;">Access Control & Permissions</h2>
-            <div class="form-group">
-                <label>Select Role to Configure</label>
-                <select id="permissionRole" onchange="loadRolePermissions()">
-                    <option value="admin">Administrator</option>
-                    <option value="manager">Manager</option>
-                    <option value="user">Standard User</option>
-                    <option value="guest">Guest/Demo User</option>
-                </select>
-            </div>
-            
-            <div id="permissionSettings">
-                <!-- Dynamic permission settings will be loaded here -->
-            </div>
-
-            <div class="form-actions">
-                <button class="btn btn-primary" onclick="savePermissions()">Save Permissions</button>
-                <button class="btn btn-outline" onclick="closeModal('permissionModal')">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="roleManagementModal" class="modal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal('roleManagementModal')">×</button>
-            <h2 style="margin-bottom: 1.5rem;">Role Management</h2>
-            
-            <div class="permission-grid">
-                <div class="permission-card">
-                    <div class="permission-header">
-                        <div class="permission-title">Administrator</div>
-                        <span class="role-badge role-admin">Full Access</span>
-                    </div>
-                    <p style="color: var(--text-light); font-size: 0.875rem; margin-bottom: 1rem;">
-                        Complete system access including user management, security settings, and all modules
-                    </p>
-                    <div class="permission-list">
-                        <div class="permission-item">
-                            <span class="permission-name">All System Modules</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked disabled>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div class="permission-item">
-                            <span class="permission-name">User Management</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked disabled>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div class="permission-item">
-                            <span class="permission-name">Security Settings</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked disabled>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="permission-card">
-                    <div class="permission-header">
-                        <div class="permission-title">Manager</div>
-                        <span class="role-badge role-manager">Manager Access</span>
-                    </div>
-                    <p style="color: var(--text-light); font-size: 0.875rem; margin-bottom: 1rem;">
-                        Department-level access with reporting capabilities and team management
-                    </p>
-                    <div class="permission-list">
-                        <div class="permission-item">
-                            <span class="permission-name">HR & Payroll</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div class="permission-item">
-                            <span class="permission-name">Finance Reports</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div class="permission-item">
-                            <span class="permission-name">Team Management</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="permission-card">
-                    <div class="permission-header">
-                        <div class="permission-title">Standard User</div>
-                        <span class="role-badge role-user">Limited Access</span>
-                    </div>
-                    <p style="color: var(--text-light); font-size: 0.875rem; margin-bottom: 1rem;">
-                        Basic system access for daily operations and personal data management
-                    </p>
-                    <div class="permission-list">
-                        <div class="permission-item">
-                            <span class="permission-name">Attendance</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div class="permission-item">
-                            <span class="permission-name">Personal Data</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div class="permission-item">
-                            <span class="permission-name">Basic Reports</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="permission-card">
-                    <div class="permission-header">
-                        <div class="permission-title">Guest/Demo</div>
-                        <span class="role-badge role-guest">Read Only</span>
-                    </div>
-                    <p style="color: var(--text-light); font-size: 0.875rem; margin-bottom: 1rem;">
-                        Demonstration access with view-only permissions and no data modification
-                    </p>
-                    <div class="permission-list">
-                        <div class="permission-item">
-                            <span class="permission-name">View Dashboard</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div class="permission-item">
-                            <span class="permission-name">Demo Data Only</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div class="permission-item">
-                            <span class="permission-name">No Data Export</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-actions">
-                <button class="btn btn-primary" onclick="saveRoleSettings()">Save Role Settings</button>
-                <button class="btn btn-outline" onclick="closeModal('roleManagementModal')">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Enhanced Admin Management System
-        class AdminManager {
-            constructor() {
-                this.users = JSON.parse(localStorage.getItem('adminUsers')) || this.getDefaultUsers();
-                this.roles = JSON.parse(localStorage.getItem('adminRoles')) || this.getDefaultRoles();
-                this.activities = JSON.parse(localStorage.getItem('adminActivities')) || this.getDefaultActivities();
-                this.initialize();
-            }
-
-            initialize() {
-                this.setupNavigation();
-                this.initializeCharts();
-                this.loadUserData();
-                this.loadPermissionData();
-                this.loadActivities();
-                this.setupEventListeners();
-                this.startRealTimeUpdates();
-            }
-
-            getDefaultUsers() {
-                return [
-                    {
-                        id: 1,
-                        name: 'CephasGM Admin',
-                        email: 'cephas@company.com',
-                        username: 'cephasgm',
-                        role: 'admin',
-                        department: 'IT',
-                        lastLogin: new Date().toISOString(),
-                        status: 'active',
-                        avatar: 'CA'
-                    },
-                    {
-                        id: 2,
-                        name: 'Sarah Johnson',
-                        email: 'sarah@company.com',
-                        username: 'sarahj',
-                        role: 'manager',
-                        department: 'Sales',
-                        lastLogin: new Date(Date.now() - 15 * 60000).toISOString(),
-                        status: 'active',
-                        avatar: 'SJ'
-                    },
-                    {
-                        id: 3,
-                        name: 'Mike Chen',
-                        email: 'mike@company.com',
-                        username: 'mikec',
-                        role: 'user',
-                        department: 'Finance',
-                        lastLogin: new Date(Date.now() - 60 * 60000).toISOString(),
-                        status: 'active',
-                        avatar: 'MC'
-                    },
-                    {
-                        id: 4,
-                        name: 'Demo User',
-                        email: 'demo@company.com',
-                        username: 'demouser',
-                        role: 'guest',
-                        department: 'Demo',
-                        lastLogin: new Date(Date.now() - 120 * 60000).toISOString(),
-                        status: 'active',
-                        avatar: 'DU'
-                    }
-                ];
-            }
-
-            getDefaultRoles() {
-                return {
-                    admin: {
-                        name: 'Administrator',
-                        permissions: {
-                            user_management: true,
-                            security_settings: true,
-                            backup_management: true,
-                            system_reports: true,
-                            all_modules: true
-                        }
-                    },
-                    manager: {
-                        name: 'Manager',
-                        permissions: {
-                            user_management: false,
-                            team_management: true,
-                            hr_module: true,
-                            payroll_module: true,
-                            finance_reports: true,
-                            basic_reports: true
-                        }
-                    },
-                    user: {
-                        name: 'Standard User',
-                        permissions: {
-                            attendance_module: true,
-                            personal_data: true,
-                            basic_reports: false,
-                            data_export: false
-                        }
-                    },
-                    guest: {
-                        name: 'Guest/Demo User',
-                        permissions: {
-                            view_dashboard: true,
-                            demo_data_only: true,
-                            data_export: false,
-                            read_only: true
-                        }
-                    }
-                };
-            }
-
-            getDefaultActivities() {
-                return [
-                    {
-                        id: 1,
-                        type: 'login',
-                        title: 'User Login',
-                        description: 'Sarah Johnson logged in from Dar es Salaam',
-                        time: new Date(Date.now() - 2 * 60000).toISOString(),
-                        icon: '🔐'
-                    },
-                    {
-                        id: 2,
-                        type: 'report',
-                        title: 'Report Generated',
-                        description: 'Monthly financial report exported by Finance Team',
-                        time: new Date(Date.now() - 15 * 60000).toISOString(),
-                        icon: '📊'
-                    },
-                    {
-                        id: 3,
-                        type: 'update',
-                        title: 'System Update',
-                        description: 'Security patch v2.1.4 applied successfully',
-                        time: new Date(Date.now() - 60 * 60000).toISOString(),
-                        icon: '🔄'
-                    },
-                    {
-                        id: 4,
-                        type: 'backup',
-                        title: 'Backup Completed',
-                        description: 'Automated nightly backup to secure cloud storage',
-                        time: new Date(Date.now() - 180 * 60000).toISOString(),
-                        icon: '💾'
-                    },
-                    {
-                        id: 5,
-                        type: 'user',
-                        title: 'New User Added',
-                        description: 'Michael Chen added to Sales Department',
-                        time: new Date(Date.now() - 300 * 60000).toISOString(),
-                        icon: '👥'
-                    }
-                ];
-            }
-
-            setupNavigation() {
-                document.querySelectorAll('.nav-item').forEach(item => {
-                    if (item.href === window.location.href) {
-                        item.classList.add('active');
-                    }
-                });
-            }
-
-            initializeCharts() {
-                // Performance Chart
-                const performanceCtx = document.getElementById('performanceChart').getContext('2d');
-                this.performanceChart = new Chart(performanceCtx, {
-                    type: 'line',
-                    data: {
-                        labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
-                        datasets: [{
-                            label: 'CPU Usage',
-                            data: [12, 19, 3, 5, 2, 3],
-                            borderColor: '#2563eb',
-                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }, {
-                            label: 'Memory Usage',
-                            data: [15, 12, 8, 10, 7, 12],
-                            borderColor: '#10b981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100
-                            }
-                        }
-                    }
-                });
-
-                // User Activity Chart
-                const userActivityCtx = document.getElementById('userActivityChart').getContext('2d');
-                this.userActivityChart = new Chart(userActivityCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Administrators', 'Managers', 'Users', 'Guests'],
-                        datasets: [{
-                            data: [5, 12, 89, 50],
-                            backgroundColor: [
-                                '#2563eb',
-                                '#7c3aed',
-                                '#10b981',
-                                '#f59e0b'
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                            }
-                        }
-                    }
-                });
-            }
-
-            loadUserData() {
-                const tbody = document.getElementById('userTableBody');
-                tbody.innerHTML = this.users.map(user => `
-                    <tr>
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.875rem;">
-                                    ${user.avatar}
-                                </div>
-                                <div>
-                                    <div style="font-weight: 600;">${user.name}</div>
-                                    <div style="color: var(--text-light); font-size: 0.875rem;">${user.email}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="user-role role-${user.role}">${this.roles[user.role].name}</span></td>
-                        <td>${user.department}</td>
-                        <td>${this.formatTimeAgo(new Date(user.lastLogin))}</td>
-                        <td class="status-${user.status}">${user.status.charAt(0).toUpperCase() + user.status.slice(1)}</td>
-                        <td>
-                            <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;" onclick="editUser(${user.id})">Edit</button>
-                            <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;" onclick="resetUserPassword(${user.id})">Reset</button>
-                            ${user.role !== 'admin' ? `<button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem; color: var(--error);" onclick="deleteUser(${user.id})">Delete</button>` : ''}
-                        </td>
-                    </tr>
-                `).join('');
-
-                // Update user count
-                document.getElementById('totalUsers').textContent = this.users.length;
-            }
-
-            loadPermissionData() {
-                const grid = document.getElementById('permissionGrid');
-                grid.innerHTML = Object.entries(this.roles).map(([roleKey, role]) => `
-                    <div class="permission-card">
-                        <div class="permission-header">
-                            <div class="permission-title">${role.name}</div>
-                            <span class="user-role role-${roleKey}">${this.getRoleAccessLevel(roleKey)}</span>
-                        </div>
-                        <p style="color: var(--text-light); font-size: 0.875rem; margin-bottom: 1rem;">
-                            ${this.getRoleDescription(roleKey)}
-                        </p>
-                        <div class="permission-list">
-                            ${Object.entries(role.permissions).slice(0, 3).map(([perm, allowed]) => `
-                                <div class="permission-item">
-                                    <span class="permission-name">${this.formatPermissionName(perm)}</span>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" ${allowed ? 'checked' : ''} disabled>
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <button class="btn btn-outline" style="width: 100%; margin-top: 1rem;" onclick="configureRole('${roleKey}')">
-                            Configure Permissions
-                        </button>
-                    </div>
-                `).join('');
-            }
-
-            loadActivities() {
-                const container = document.getElementById('activitiesList');
-                container.innerHTML = this.activities.slice(0, 5).map(activity => `
-                    <div class="activity-item">
-                        <div class="activity-icon">${activity.icon}</div>
-                        <div class="activity-content">
-                            <div class="activity-title">${activity.title}</div>
-                            <div class="activity-desc">${activity.description}</div>
-                        </div>
-                        <div class="activity-time">${this.formatTimeAgo(new Date(activity.time))}</div>
-                    </div>
-                `).join('');
-            }
-
-            formatTimeAgo(date) {
-                const now = new Date();
-                const diffMs = now - date;
-                const diffMins = Math.floor(diffMs / 60000);
-                const diffHours = Math.floor(diffMs / 3600000);
-                const diffDays = Math.floor(diffMs / 86400000);
-
-                if (diffMins < 1) return 'Just now';
-                if (diffMins < 60) return `${diffMins} min ago`;
-                if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-                return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-            }
-
-            formatPermissionName(permission) {
-                return permission.split('_').map(word => 
-                    word.charAt(0).toUpperCase() + word.slice(1)
-                ).join(' ');
-            }
-
-            getRoleAccessLevel(role) {
-                const levels = {
-                    'admin': 'Full Access',
-                    'manager': 'Manager Access',
-                    'user': 'Limited Access',
-                    'guest': 'Read Only'
-                };
-                return levels[role] || 'Custom Access';
-            }
-
-            getRoleDescription(role) {
-                const descriptions = {
-                    'admin': 'Complete system access including user management, security settings, and all modules',
-                    'manager': 'Department-level access with reporting capabilities and team management',
-                    'user': 'Basic system access for daily operations and personal data management',
-                    'guest': 'Demonstration access with view-only permissions and no data modification'
-                };
-                return descriptions[role] || 'Custom role configuration';
-            }
-
-            setupEventListeners() {
-                // Add event listeners for filters and search
-                document.getElementById('timeRange')?.addEventListener('change', (e) => {
-                    this.updateCharts(e.target.value);
-                });
-            }
-
-            updateCharts(timeRange) {
-                console.log('Updating charts for:', timeRange);
-                // In a real application, this would fetch new data based on the time range
-            }
-
-            startRealTimeUpdates() {
-                // Simulate real-time system updates
-                setInterval(() => {
-                    this.simulateSystemUpdates();
-                }, 30000);
-            }
-
-            simulateSystemUpdates() {
-                // Simulate small changes in system metrics
-                const metrics = document.querySelectorAll('.metric-value');
-                metrics.forEach(metric => {
-                    const current = parseFloat(metric.textContent);
-                    const change = (Math.random() * 5) - 2.5;
-                    let newValue = Math.max(0, Math.min(100, current + change));
-                    
-                    if (metric.textContent.includes('GB')) {
-                        metric.textContent = newValue.toFixed(1) + 'GB';
-                    } else if (metric.textContent.includes('ms')) {
-                        metric.textContent = Math.round(newValue) + 'ms';
-                    } else {
-                        metric.textContent = newValue.toFixed(1) + '%';
-                    }
-                });
-            }
-        }
-
-        // Global admin functions
-        const adminManager = new AdminManager();
-
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'block';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        function createNewUser() {
-            const fullName = document.getElementById('userFullName').value;
-            const email = document.getElementById('userEmail').value;
-            const username = document.getElementById('userUsername').value;
-            const role = document.getElementById('userRole').value;
-            const department = document.getElementById('userDepartment').value;
-
-            if (!fullName || !email || !username || !role) {
-                alert('Please fill in all required fields');
-                return;
-            }
-
-            const newUser = {
-                id: Date.now(),
-                name: fullName,
-                email: email,
-                username: username,
-                role: role,
-                department: department,
-                lastLogin: new Date().toISOString(),
-                status: 'active',
-                avatar: fullName.split(' ').map(n => n[0]).join('').toUpperCase()
-            };
-
-            adminManager.users.push(newUser);
-            localStorage.setItem('adminUsers', JSON.stringify(adminManager.users));
-            
-            adminManager.loadUserData();
-            closeModal('addUserModal');
-            
-            // Log activity
-            logActivity('user', `New user ${fullName} added as ${role}`);
-            
-            alert('User created successfully!');
-        }
-
-        function editUser(userId) {
-            const user = adminManager.users.find(u => u.id === userId);
-            if (user) {
-                alert(`Editing user: ${user.name}`);
-                // In a real app, this would open an edit modal with user data
-            }
-        }
-
-        function resetUserPassword(userId) {
-            if (confirm('Reset password for this user?')) {
-                alert('Password reset instructions sent to user email');
-                logActivity('security', `Password reset for user ID: ${userId}`);
-            }
-        }
-
-        function deleteUser(userId) {
-            if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
-                adminManager.users = adminManager.users.filter(u => u.id !== userId);
-                localStorage.setItem('adminUsers', JSON.stringify(adminManager.users));
-                adminManager.loadUserData();
-                logActivity('user', `User ID: ${userId} deleted`);
-                alert('User deleted successfully');
-            }
-        }
-
-        function configureRole(roleKey) {
-            openModal('permissionModal');
-            document.getElementById('permissionRole').value = roleKey;
-            loadRolePermissions();
-        }
-
-        function loadRolePermissions() {
-            const roleKey = document.getElementById('permissionRole').value;
-            const role = adminManager.roles[roleKey];
-            
-            const container = document.getElementById('permissionSettings');
-            container.innerHTML = `
-                <h3 style="margin-bottom: 1rem;">${role.name} Permissions</h3>
-                <div class="permission-list">
-                    ${Object.entries(role.permissions).map(([perm, allowed]) => `
-                        <div class="permission-item">
-                            <span class="permission-name">${adminManager.formatPermissionName(perm)}</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" ${allowed ? 'checked' : ''} data-permission="${perm}">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function savePermissions() {
-            const roleKey = document.getElementById('permissionRole').value;
-            const checkboxes = document.querySelectorAll('#permissionSettings input[type="checkbox"]');
-            
-            checkboxes.forEach(checkbox => {
-                const perm = checkbox.getAttribute('data-permission');
-                adminManager.roles[roleKey].permissions[perm] = checkbox.checked;
-            });
-            
-            localStorage.setItem('adminRoles', JSON.stringify(adminManager.roles));
-            adminManager.loadPermissionData();
-            closeModal('permissionModal');
-            
-            logActivity('security', `Permissions updated for ${adminManager.roles[roleKey].name} role`);
-            alert('Permissions saved successfully!');
-        }
-
-        function saveRoleSettings() {
-            // Save role configuration
-            localStorage.setItem('adminRoles', JSON.stringify(adminManager.roles));
-            adminManager.loadPermissionData();
-            closeModal('roleManagementModal');
-            alert('Role settings saved successfully!');
-        }
-
-        function runBackup() {
-            alert('System backup initiated. This may take a few minutes...');
-            // Simulate backup process
-            setTimeout(() => {
-                alert('Backup completed successfully!');
-                logActivity('system', 'Automated system backup completed');
-            }, 2000);
-        }
-
-        function runSystemDiagnostic() {
-            alert('Running comprehensive system diagnostic...');
-            // Simulate diagnostic process
-            setTimeout(() => {
-                alert('System diagnostic completed. All systems operational.');
-                logActivity('system', 'Comprehensive system diagnostic completed');
-            }, 3000);
-        }
-
-        function refreshMetrics() {
-            alert('Refreshing system metrics...');
-            adminManager.simulateSystemUpdates();
-        }
-
-        function exportUserData() {
-            alert('Exporting user data to CSV...');
-            // In a real app, this would generate and download a CSV file
-            logActivity('system', 'User data exported');
-        }
-
-        function applyUserFilters() {
-            alert('Applying user filters...');
-            // In a real app, this would filter the user table
-        }
-
-        function resetUserFilters() {
-            document.getElementById('userSearch').value = '';
-            document.getElementById('roleFilter').value = '';
-            document.getElementById('statusFilter').value = '';
-            alert('Filters reset');
-        }
-
-        function logActivity(type, description) {
-            const activities = JSON.parse(localStorage.getItem('adminActivities')) || [];
-            const newActivity = {
-                id: Date.now(),
-                type: type,
-                title: getActivityTitle(type),
-                description: description,
-                time: new Date().toISOString(),
-                icon: getActivityIcon(type)
-            };
-            
-            activities.unshift(newActivity);
-            localStorage.setItem('adminActivities', JSON.stringify(activities.slice(0, 50))); // Keep last 50 activities
-            
-            // Reload activities if admin manager is initialized
-            if (adminManager && adminManager.loadActivities) {
-                adminManager.activities = activities;
-                adminManager.loadActivities();
-            }
-        }
-
-        function getActivityTitle(type) {
-            const titles = {
-                'login': 'User Login',
-                'report': 'Report Generated',
-                'update': 'System Update',
-                'backup': 'Backup Completed',
-                'user': 'User Management',
-                'security': 'Security Event',
-                'system': 'System Operation'
-            };
-            return titles[type] || 'System Activity';
-        }
-
-        function getActivityIcon(type) {
-            const icons = {
-                'login': '🔐',
-                'report': '📊',
-                'update': '🔄',
-                'backup': '💾',
-                'user': '👥',
-                'security': '🔒',
-                'system': '⚙️'
-            };
-            return icons[type] || '📋';
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
-            }
-        }
-
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Additional initialization if needed
+// pwa-init.js - Enhanced PWA Initialization for CephasGM ERP
+class PWAInitializer {
+  constructor() {
+    this.isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    this.deferredPrompt = null;
+    this.updateAvailable = false;
+    this.registration = null;
+    this.init();
+  }
+
+  async init() {
+    await this.registerServiceWorker();
+    this.setupInstallPrompt();
+    this.setupOfflineDetection();
+    this.setupAppBadge();
+    this.setupPeriodicSync();
+    this.setupPerformanceMonitoring();
+    this.checkForUpdates();
+    
+    console.log('🚀 CephasGM ERP PWA Enhanced Initialization Complete');
+    console.log('📱 Standalone Mode:', this.isStandalone);
+    console.log('🔧 Service Worker:', 'serviceWorker' in navigator);
+  }
+
+  // Enhanced Service Worker Registration
+  async registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+      try {
+        this.registration = await navigator.serviceWorker.register('./sw.js', {
+          scope: './',
+          updateViaCache: 'none'
         });
-    </script>
-</body>
-</html>
+
+        console.log('✅ Service Worker registered successfully:', this.registration);
+
+        // Listen for updates
+        this.registration.addEventListener('updatefound', () => {
+          const newWorker = this.registration.installing;
+          console.log('🔄 New Service Worker found...');
+          
+          newWorker.addEventListener('statechange', () => {
+            console.log(`🔄 Service Worker state: ${newWorker.state}`);
+            
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              this.updateAvailable = true;
+              this.showUpdateNotification();
+            }
+          });
+        });
+
+        // Check if the page is controlled
+        if (navigator.serviceWorker.controller) {
+          console.log('🎯 This page is controlled by Service Worker');
+        }
+
+        // Set up periodic update checks
+        setInterval(() => {
+          this.registration.update();
+        }, 60 * 60 * 1000); // Check every hour
+
+      } catch (error) {
+        console.error('❌ Service Worker registration failed:', error);
+        this.showNotification('Service Worker registration failed. Some features may not work offline.', 'error');
+      }
+    } else {
+      console.warn('⚠️ Service Workers are not supported');
+    }
+  }
+
+  // Enhanced Install Prompt Handling
+  setupInstallPrompt() {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      this.deferredPrompt = e;
+      console.log('📱 Install prompt available');
+      
+      // Show install button after a delay
+      setTimeout(() => {
+        if (this.deferredPrompt && !this.isStandalone) {
+          this.showInstallButton();
+        }
+      }, 3000);
+    });
+
+    window.addEventListener('appinstalled', (evt) => {
+      console.log('🎉 PWA installed successfully');
+      this.deferredPrompt = null;
+      this.hideInstallButton();
+      this.showNotification('App installed successfully! 🎉', 'success');
+      
+      // Track installation
+      this.trackEvent('pwa_installed');
+    });
+
+    // Detect if already installed
+    if (this.isStandalone) {
+      console.log('📱 Running in standalone mode');
+      this.trackEvent('pwa_standalone');
+    }
+  }
+
+  // Enhanced Install Button
+  showInstallButton() {
+    // Remove existing button if any
+    this.hideInstallButton();
+
+    const installBtn = document.createElement('button');
+    installBtn.id = 'pwa-install-btn';
+    installBtn.innerHTML = `
+      <span style="font-size: 1.2rem; margin-right: 0.5rem;">📱</span>
+      Install CephasGM ERP
+      <small style="display: block; font-size: 0.75rem; opacity: 0.8; margin-top: 0.25rem;">
+        Get full app experience
+      </small>
+    `;
+    
+    installBtn.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+      z-index: 10000;
+      transition: all 0.3s ease;
+      max-width: 200px;
+      text-align: left;
+      font-family: inherit;
+    `;
+    
+    installBtn.addEventListener('mouseenter', () => {
+      installBtn.style.transform = 'translateY(-2px) scale(1.02)';
+      installBtn.style.boxShadow = '0 12px 30px rgba(37, 99, 235, 0.4)';
+    });
+    
+    installBtn.addEventListener('mouseleave', () => {
+      installBtn.style.transform = 'translateY(0) scale(1)';
+      installBtn.style.boxShadow = '0 8px 25px rgba(37, 99, 235, 0.3)';
+    });
+
+    installBtn.addEventListener('click', () => this.installApp());
+    document.body.appendChild(installBtn);
+
+    // Auto-hide after 30 seconds
+    setTimeout(() => {
+      this.hideInstallButton();
+    }, 30000);
+  }
+
+  hideInstallButton() {
+    const installBtn = document.getElementById('pwa-install-btn');
+    if (installBtn) {
+      installBtn.remove();
+    }
+  }
+
+  // Enhanced App Installation
+  async installApp() {
+    if (this.deferredPrompt) {
+      try {
+        this.deferredPrompt.prompt();
+        const { outcome } = await this.deferredPrompt.userChoice;
+        
+        console.log(`📱 User ${outcome} the install prompt`);
+        
+        if (outcome === 'accepted') {
+          this.trackEvent('pwa_install_accepted');
+        } else {
+          this.trackEvent('pwa_install_declined');
+        }
+        
+        this.deferredPrompt = null;
+        this.hideInstallButton();
+      } catch (error) {
+        console.error('❌ Install prompt error:', error);
+        this.showNotification('Failed to install app. Please try again.', 'error');
+      }
+    } else {
+      this.showNotification('App installation not available', 'info');
+    }
+  }
+
+  // Enhanced Offline Detection
+  setupOfflineDetection() {
+    window.addEventListener('online', () => {
+      this.showNotification('Connection restored ✅', 'success');
+      document.body.classList.remove('offline');
+      this.trackEvent('connection_restored');
+      
+      // Sync data when coming back online
+      this.syncOfflineData();
+    });
+
+    window.addEventListener('offline', () => {
+      this.showNotification('You are currently offline 📶', 'warning');
+      document.body.classList.add('offline');
+      this.trackEvent('connection_lost');
+    });
+
+    // Initial check
+    if (!navigator.onLine) {
+      document.body.classList.add('offline');
+      this.showNotification('You are currently offline 📶', 'warning');
+    }
+
+    // Add offline indicator to page
+    this.addOfflineIndicator();
+  }
+
+  addOfflineIndicator() {
+    const indicator = document.createElement('div');
+    indicator.id = 'offline-indicator';
+    indicator.innerHTML = '📶 Offline';
+    indicator.style.cssText = `
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #f59e0b;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      z-index: 10001;
+      display: none;
+    `;
+    document.body.appendChild(indicator);
+
+    // Update visibility based on connection status
+    const updateIndicator = () => {
+      indicator.style.display = navigator.onLine ? 'none' : 'block';
+    };
+
+    window.addEventListener('online', updateIndicator);
+    window.addEventListener('offline', updateIndicator);
+    updateIndicator();
+  }
+
+  // Enhanced App Badge
+  setupAppBadge() {
+    if ('setAppBadge' in navigator) {
+      // Set initial badge (could be based on notifications)
+      // navigator.setAppBadge(0);
+      
+      // Listen for notification changes
+      // this.setupBadgeUpdates();
+    }
+  }
+
+  // Periodic Background Sync
+  setupPeriodicSync() {
+    if ('periodicSync' in navigator && this.registration) {
+      try {
+        navigator.periodicSync.register('content-update', {
+          minInterval: 24 * 60 * 60 * 1000 // 24 hours
+        }).then(() => {
+          console.log('🔄 Periodic sync registered');
+        });
+      } catch (error) {
+        console.log('⚠️ Periodic sync not supported:', error);
+      }
+    }
+  }
+
+  // Performance Monitoring
+  setupPerformanceMonitoring() {
+    // Monitor Core Web Vitals
+    if ('PerformanceObserver' in window) {
+      try {
+        const observer = new PerformanceObserver((list) => {
+          for (const entry of list.getEntries()) {
+            console.log(`📊 ${entry.name}:`, entry.value);
+            
+            // Track important metrics
+            if (entry.name === 'first-contentful-paint') {
+              this.trackEvent('performance_fcp', Math.round(entry.value));
+            }
+            if (entry.name === 'largest-contentful-paint') {
+              this.trackEvent('performance_lcp', Math.round(entry.value));
+            }
+          }
+        });
+
+        observer.observe({ entryTypes: ['paint', 'largest-contentful-paint'] });
+      } catch (error) {
+        console.log('⚠️ Performance monitoring not available:', error);
+      }
+    }
+  }
+
+  // Enhanced Update Notifications
+  showUpdateNotification() {
+    if (this.isStandalone) {
+      this.showNotification('New version available! Restart the app to update. 🔄', 'info', {
+        actions: [
+          {
+            label: 'Update Now',
+            callback: () => this.updateApp()
+          }
+        ]
+      });
+    } else {
+      this.showUpdateButton();
+    }
+  }
+
+  showUpdateButton() {
+    const updateBtn = document.createElement('button');
+    updateBtn.id = 'pwa-update-btn';
+    updateBtn.innerHTML = '🔄 Update Available';
+    updateBtn.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #f59e0b;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 10000;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+      transition: all 0.3s ease;
+    `;
+    
+    updateBtn.addEventListener('click', () => this.updateApp());
+    document.body.appendChild(updateBtn);
+
+    // Auto-hide after 1 minute
+    setTimeout(() => {
+      updateBtn.remove();
+    }, 60000);
+  }
+
+  updateApp() {
+    if (this.registration && this.registration.waiting) {
+      this.registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+      
+      // Reload page when user navigates
+      const reloadPage = () => {
+        window.location.reload();
+      };
+      
+      this.showNotification('Updating app...', 'info');
+      setTimeout(reloadPage, 1000);
+    }
+  }
+
+  // Enhanced Check for Updates
+  checkForUpdates() {
+    if (this.registration) {
+      this.registration.update().then(() => {
+        console.log('🔄 Update check completed');
+      });
+    }
+
+    // Check every 6 hours
+    setInterval(() => {
+      if (this.registration) {
+        this.registration.update();
+      }
+    }, 6 * 60 * 60 * 1000);
+  }
+
+  // Enhanced Notification System
+  showNotification(message, type = 'info', options = {}) {
+    // Use native notifications if available and permitted
+    if ('Notification' in window && Notification.permission === 'granted') {
+      const notification = new Notification('CephasGM ERP', {
+        body: message,
+        icon: './icon-192.png',
+        badge: './icon-192.png',
+        tag: 'erp-notification'
+      });
+
+      notification.onclick = () => {
+        window.focus();
+        notification.close();
+      };
+
+      return;
+    }
+
+    // Fallback to in-app notifications
+    this.showInAppNotification(message, type, options);
+  }
+
+  showInAppNotification(message, type, options = {}) {
+    // Remove existing notification
+    this.hideInAppNotification();
+
+    const notification = document.createElement('div');
+    notification.id = 'in-app-notification';
+    notification.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span style="font-size: 1.25rem;">${this.getNotificationIcon(type)}</span>
+        <div>
+          <div style="font-weight: 600;">${message}</div>
+          ${options.actions ? `
+            <div style="margin-top: 0.5rem;">
+              ${options.actions.map(action => 
+                `<button onclick="${action.callback}" style="background: var(--primary); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; margin-right: 0.5rem; cursor: pointer; font-size: 0.75rem;">
+                  ${action.label}
+                </button>`
+              ).join('')}
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
+
+    const backgroundColor = {
+      info: '#3b82f6',
+      success: '#10b981',
+      warning: '#f59e0b',
+      error: '#ef4444'
+    }[type] || '#3b82f6';
+
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${backgroundColor};
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      z-index: 10002;
+      max-width: 400px;
+      animation: slideInRight 0.3s ease;
+    `;
+
+    document.body.appendChild(notification);
+
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+      this.hideInAppNotification();
+    }, 5000);
+  }
+
+  hideInAppNotification() {
+    const notification = document.getElementById('in-app-notification');
+    if (notification) {
+      notification.remove();
+    }
+  }
+
+  getNotificationIcon(type) {
+    const icons = {
+      info: 'ℹ️',
+      success: '✅',
+      warning: '⚠️',
+      error: '❌'
+    };
+    return icons[type] || 'ℹ️';
+  }
+
+  // Enhanced Data Sync for Offline Usage
+  async syncOfflineData() {
+    console.log('🔄 Syncing offline data...');
+    
+    // Implementation for syncing any pending offline data
+    // This would sync form submissions, updates, etc.
+    
+    try {
+      // Example: Sync pending forms
+      const pendingForms = JSON.parse(localStorage.getItem('pendingForms') || '[]');
+      
+      for (const form of pendingForms) {
+        // Send form data to server
+        const response = await fetch(form.url, {
+          method: 'POST',
+          body: JSON.stringify(form.data),
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (response.ok) {
+          // Remove from pending forms
+          pendingForms.splice(pendingForms.indexOf(form), 1);
+        }
+      }
+      
+      localStorage.setItem('pendingForms', JSON.stringify(pendingForms));
+      console.log('✅ Offline data sync completed');
+    } catch (error) {
+      console.error('❌ Offline data sync failed:', error);
+    }
+  }
+
+  // Enhanced Analytics and Tracking
+  trackEvent(eventName, value = null) {
+    const eventData = {
+      event: eventName,
+      timestamp: new Date().toISOString(),
+      url: window.location.href,
+      userAgent: navigator.userAgent,
+      standalone: this.isStandalone,
+      value: value
+    };
+
+    console.log('📊 Event tracked:', eventData);
+    
+    // Store events for later submission
+    const events = JSON.parse(localStorage.getItem('pwa_events') || '[]');
+    events.push(eventData);
+    localStorage.setItem('pwa_events', JSON.stringify(events.slice(-100))); // Keep last 100 events
+    
+    // Try to send immediately if online
+    if (navigator.onLine) {
+      this.sendEventsToAnalytics();
+    }
+  }
+
+  async sendEventsToAnalytics() {
+    const events = JSON.parse(localStorage.getItem('pwa_events') || '[]');
+    
+    if (events.length > 0) {
+      try {
+        // In a real implementation, send to your analytics service
+        console.log('📊 Sending analytics events:', events.length);
+        
+        // Clear sent events
+        localStorage.setItem('pwa_events', '[]');
+      } catch (error) {
+        console.error('❌ Analytics send failed:', error);
+      }
+    }
+  }
+
+  // Enhanced Cache Management
+  async getCacheInfo() {
+    if ('serviceWorker' in navigator && this.registration) {
+      try {
+        const cache = await caches.open('cephasgm-erp-v4.0');
+        const keys = await cache.keys();
+        
+        return {
+          cacheName: 'cephasgm-erp-v4.0',
+          cachedItems: keys.length,
+          totalSize: 'N/A' // Would need more complex calculation
+        };
+      } catch (error) {
+        console.error('❌ Cache info error:', error);
+        return null;
+      }
+    }
+    return null;
+  }
+
+  // Enhanced Error Handling
+  setupErrorHandling() {
+    window.addEventListener('error', (event) => {
+      this.trackEvent('javascript_error', {
+        message: event.message,
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno
+      });
+    });
+
+    window.addEventListener('unhandledrejection', (event) => {
+      this.trackEvent('promise_rejection', {
+        reason: event.reason?.toString()
+      });
+    });
+  }
+}
+
+// Initialize PWA when DOM is loaded
+document.addEventListener('DOMContentLoaded', async () => {
+  // Add PWA meta tags
+  addPWAMetaTags();
+  
+  // Request notification permission
+  if ('Notification' in window && Notification.permission === 'default') {
+    try {
+      await Notification.requestPermission();
+    } catch (error) {
+      console.log('Notification permission request failed:', error);
+    }
+  }
+  
+  // Initialize PWA
+  window.pwa = new PWAInitializer();
+  
+  // Add CSS for animations
+  addNotificationCSS();
+});
+
+// Add necessary meta tags
+function addPWAMetaTags() {
+  const metaTags = [
+    { name: 'theme-color', content: '#2563eb' },
+    { name: 'apple-mobile-web-app-capable', content: 'yes' },
+    { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+    { name: 'apple-mobile-web-app-title', content: 'CephasGM ERP' },
+    { name: 'mobile-web-app-capable', content: 'yes' },
+    { name: 'msapplication-TileColor', content: '#2563eb' },
+    { name: 'msapplication-config', content: '/browserconfig.xml' }
+  ];
+
+  metaTags.forEach(tag => {
+    const existing = document.querySelector(`meta[name="${tag.name}"]`);
+    if (!existing) {
+      const meta = document.createElement('meta');
+      meta.name = tag.name;
+      meta.content = tag.content;
+      document.head.appendChild(meta);
+    }
+  });
+
+  // Add Apple touch icon
+  const appleIcon = document.createElement('link');
+  appleIcon.rel = 'apple-touch-icon';
+  appleIcon.href = './icon-192.png';
+  document.head.appendChild(appleIcon);
+}
+
+// Add CSS for notifications
+function addNotificationCSS() {
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    .offline {
+      filter: grayscale(0.3);
+    }
+    
+    .offline::before {
+      content: '📶 Offline';
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #f59e0b;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      z-index: 10001;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// Export for module usage
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = PWAInitializer;
+}
