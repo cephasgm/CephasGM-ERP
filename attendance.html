@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="description" content="Attendance Management - CephasGM ERP">
     <title>Attendance Management - CephasGM ERP</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.png">
     <style>
         :root {
             --primary: #2563eb;
@@ -17,6 +21,7 @@
             --text: #1e293b;
             --text-light: #64748b;
             --border: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         * {
@@ -144,6 +149,7 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+            box-shadow: var(--shadow);
         }
 
         .stat-card::before {
@@ -168,6 +174,34 @@
             font-size: 0.9rem;
         }
 
+        /* Enhanced Toolbar */
+        .toolbar {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding: 1.5rem;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
         /* Attendance Overview */
         .attendance-overview {
             display: grid;
@@ -181,6 +215,7 @@
             padding: 1.5rem;
             border-radius: 12px;
             border: 1px solid var(--border);
+            box-shadow: var(--shadow);
         }
 
         .card-header {
@@ -240,6 +275,7 @@
             border: 1px solid var(--border);
             padding: 1.5rem;
             margin-bottom: 2rem;
+            box-shadow: var(--shadow);
         }
 
         .attendance-grid {
@@ -310,6 +346,7 @@
             border: 1px solid var(--border);
             padding: 1.5rem;
             margin-bottom: 2rem;
+            box-shadow: var(--shadow);
         }
 
         .table-container {
@@ -332,6 +369,8 @@
             font-weight: 600;
             color: var(--text-light);
             font-size: 0.875rem;
+            background: var(--primary);
+            color: white;
         }
 
         .time-in, .time-out {
@@ -356,6 +395,7 @@
             text-decoration: none;
             color: inherit;
             display: block;
+            box-shadow: var(--shadow);
         }
 
         .module-card:hover {
@@ -396,6 +436,7 @@
             border-top: 1px solid var(--border);
         }
 
+        /* Responsive Design */
         @media (max-width: 1024px) {
             .dashboard {
                 grid-template-columns: 1fr;
@@ -409,6 +450,34 @@
             }
             .attendance-overview {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .toolbar {
+                flex-direction: column;
+            }
+            .attendance-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #0f172a;
+                --surface: #1e293b;
+                --text: #f1f5f9;
+                --text-light: #94a3b8;
+                --border: #334155;
             }
         }
     </style>
@@ -479,21 +548,37 @@
                 <div style="color: var(--text-light);">Real-time attendance monitoring, time tracking, and workforce management</div>
             </div>
 
+            <!-- Enhanced Toolbar -->
+            <div class="toolbar">
+                <button class="btn-primary" onclick="clockInOut()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">⏰</span>
+                    Clock In/Out
+                </button>
+                <button class="btn-primary" onclick="exportAttendance()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">📤</span>
+                    Export Data
+                </button>
+                <button class="btn-primary" onclick="generateReports()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">📊</span>
+                    Generate Reports
+                </button>
+            </div>
+
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number">89%</div>
+                    <div class="stat-number" id="presentCount">89%</div>
                     <div class="stat-label">Present Today</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">8</div>
+                    <div class="stat-number" id="lateCount">8</div>
                     <div class="stat-label">Late Arrivals</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">5</div>
+                    <div class="stat-number" id="absentCount">5</div>
                     <div class="stat-label">Absent Today</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">42</div>
+                    <div class="stat-number" id="remoteCount">42</div>
                     <div class="stat-label">Remote Workers</div>
                 </div>
             </div>
@@ -503,15 +588,14 @@
                 <div class="overview-card">
                     <div class="card-header">
                         <div class="card-title">Attendance Analytics</div>
-                        <select style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--background);">
+                        <select id="timeRange" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--background);">
                             <option>Today</option>
                             <option>This Week</option>
                             <option>This Month</option>
                         </select>
                     </div>
-                    <div class="chart-container">
-                        Attendance Trends Chart
-                        <br><small style="opacity: 0.7;">Daily attendance patterns and trends</small>
+                    <div class="chart-container" id="attendanceChart">
+                        Loading Attendance Trends...
                     </div>
                 </div>
 
@@ -520,19 +604,19 @@
                         <div class="card-title">Quick Actions</div>
                     </div>
                     <div class="attendance-actions">
-                        <div class="action-btn" onclick="alert('Manual Time Entry')">
+                        <div class="action-btn" onclick="manualTimeEntry()">
                             <div class="action-icon">✍️</div>
                             <div>Manual Entry</div>
                         </div>
-                        <div class="action-btn" onclick="alert('Generate Reports')">
+                        <div class="action-btn" onclick="generateReports()">
                             <div class="action-icon">📊</div>
                             <div>Reports</div>
                         </div>
-                        <div class="action-btn" onclick="alert('Manage Shifts')">
+                        <div class="action-btn" onclick="manageShifts()">
                             <div class="action-icon">🔄</div>
                             <div>Shift Management</div>
                         </div>
-                        <div class="action-btn" onclick="alert('Export Data')">
+                        <div class="action-btn" onclick="exportAttendance()">
                             <div class="action-icon">📤</div>
                             <div>Export Data</div>
                         </div>
@@ -548,66 +632,8 @@
                         Last updated: <span id="currentTime">Loading...</span>
                     </div>
                 </div>
-                <div class="attendance-grid">
-                    <div class="attendance-card">
-                        <div class="employee-info">
-                            <div class="employee-avatar">JM</div>
-                            <div>
-                                <div style="font-weight: 600;">John Mwangi</div>
-                                <div style="font-size: 0.875rem; color: var(--text-light);">Engineering</div>
-                            </div>
-                        </div>
-                        <div class="attendance-status status-present">Present</div>
-                        <div style="margin-top: 0.5rem; font-size: 0.875rem;">
-                            <div>Time In: <span class="time-in">08:15 AM</span></div>
-                            <div>Location: Office</div>
-                        </div>
-                    </div>
-
-                    <div class="attendance-card">
-                        <div class="employee-info">
-                            <div class="employee-avatar">SJ</div>
-                            <div>
-                                <div style="font-weight: 600;">Sarah Johnson</div>
-                                <div style="font-size: 0.875rem; color: var(--text-light);">Marketing</div>
-                            </div>
-                        </div>
-                        <div class="attendance-status status-remote">Remote</div>
-                        <div style="margin-top: 0.5rem; font-size: 0.875rem;">
-                            <div>Time In: <span class="time-in">08:30 AM</span></div>
-                            <div>Location: Home Office</div>
-                        </div>
-                    </div>
-
-                    <div class="attendance-card">
-                        <div class="employee-info">
-                            <div class="employee-avatar">DK</div>
-                            <div>
-                                <div style="font-weight: 600;">David Kimani</div>
-                                <div style="font-size: 0.875rem; color: var(--text-light);">Sales</div>
-                            </div>
-                        </div>
-                        <div class="attendance-status status-late">Late</div>
-                        <div style="margin-top: 0.5rem; font-size: 0.875rem;">
-                            <div>Time In: <span class="time-in">09:45 AM</span></div>
-                            <div>Location: Office</div>
-                        </div>
-                    </div>
-
-                    <div class="attendance-card">
-                        <div class="employee-info">
-                            <div class="employee-avatar">MA</div>
-                            <div>
-                                <div style="font-weight: 600;">Michael Adebayo</div>
-                                <div style="font-size: 0.875rem; color: var(--text-light);">Finance</div>
-                            </div>
-                        </div>
-                        <div class="attendance-status status-absent">Absent</div>
-                        <div style="margin-top: 0.5rem; font-size: 0.875rem;">
-                            <div>Status: On Leave</div>
-                            <div>Return: Tomorrow</div>
-                        </div>
-                    </div>
+                <div class="attendance-grid" id="liveAttendanceGrid">
+                    <!-- Dynamic content will be loaded here -->
                 </div>
             </div>
 
@@ -615,7 +641,7 @@
             <div class="records-section">
                 <div class="card-header">
                     <div class="card-title">Recent Attendance Records</div>
-                    <button style="background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
+                    <button class="btn-primary" onclick="viewFullHistory()">
                         View Full History
                     </button>
                 </div>
@@ -631,51 +657,8 @@
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div style="font-weight: 600;">John Mwangi</div>
-                                    <div style="font-size: 0.875rem; color: var(--text-light);">Engineering</div>
-                                </td>
-                                <td>Dec 10, 2024</td>
-                                <td class="time-in">08:15 AM</td>
-                                <td class="time-out">05:30 PM</td>
-                                <td style="font-weight: 600;">9.25 hrs</td>
-                                <td><span class="status-badge status-present">Present</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div style="font-weight: 600;">Sarah Johnson</div>
-                                    <div style="font-size: 0.875rem; color: var(--text-light);">Marketing</div>
-                                </td>
-                                <td>Dec 10, 2024</td>
-                                <td class="time-in">08:30 AM</td>
-                                <td class="time-out">06:00 PM</td>
-                                <td style="font-weight: 600;">9.5 hrs</td>
-                                <td><span class="status-badge status-remote">Remote</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div style="font-weight: 600;">David Kimani</div>
-                                    <div style="font-size: 0.875rem; color: var(--text-light);">Sales</div>
-                                </td>
-                                <td>Dec 10, 2024</td>
-                                <td class="time-in">09:45 AM</td>
-                                <td class="time-out">06:15 PM</td>
-                                <td style="font-weight: 600;">8.5 hrs</td>
-                                <td><span class="status-badge status-late">Late</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div style="font-weight: 600;">Grace Omondi</div>
-                                    <div style="font-size: 0.875rem; color: var(--text-light);">Finance</div>
-                                </td>
-                                <td>Dec 10, 2024</td>
-                                <td class="time-in">08:00 AM</td>
-                                <td class="time-out">05:00 PM</td>
-                                <td style="font-weight: 600;">9.0 hrs</td>
-                                <td><span class="status-badge status-present">Present</span></td>
-                            </tr>
+                        <tbody id="attendanceRecords">
+                            <!-- Dynamic content will be loaded here -->
                         </tbody>
                     </table>
                 </div>
@@ -683,53 +666,36 @@
 
             <!-- Attendance Management Modules -->
             <div class="module-grid">
-                <div class="module-card" onclick="alert('Time Tracking opening...')">
+                <a href="time-tracking.html" class="module-card">
                     <div class="module-icon">⏰</div>
                     <h3>Time Tracking</h3>
                     <p>Real-time clock in/out, break management, and overtime tracking with geolocation</p>
-                </div>
-
-                <div class="module-card" onclick="alert('Shift Management opening...')">
+                </a>
+                <a href="shift-management.html" class="module-card">
                     <div class="module-icon">🔄</div>
                     <h3>Shift Management</h3>
                     <p>Create and manage work shifts, rotations, and schedule assignments</p>
-                </div>
-
-                <div class="module-card" onclick="alert('Leave Management opening...')">
+                </a>
+                <a href="leave-management.html" class="module-card">
                     <div class="module-icon">🏖️</div>
                     <h3>Leave Management</h3>
                     <p>Vacation, sick leave, and time-off requests with approval workflows</p>
-                </div>
-
-                <div class="module-card" onclick="alert('Biometric Integration opening...')">
+                </a>
+                <a href="biometric.html" class="module-card">
                     <div class="module-icon">👁️</div>
                     <h3>Biometric Integration</h3>
                     <p>Fingerprint, facial recognition, and card-based attendance systems</p>
-                </div>
-
-                <div class="module-card" onclick="alert('Attendance Reports opening...')">
+                </a>
+                <a href="reports.html" class="module-card">
                     <div class="module-icon">📊</div>
                     <h3>Attendance Reports</h3>
                     <p>Generate detailed reports, analytics, and compliance documentation</p>
-                </div>
-
-                <div class="module-card" onclick="alert('Mobile Attendance opening...')">
+                </a>
+                <a href="mobile-attendance.html" class="module-card">
                     <div class="module-icon">📱</div>
                     <h3>Mobile Attendance</h3>
                     <p>Mobile app for remote clock-ins, GPS tracking, and self-service features</p>
-                </div>
-
-                <div class="module-card" onclick="alert('Overtime Management opening...')">
-                    <div class="module-icon">⚡</div>
-                    <h3>Overtime Management</h3>
-                    <p>Track and approve overtime hours with automatic calculations</p>
-                </div>
-
-                <div class="module-card" onclick="alert('Compliance Tracking opening...')">
-                    <div class="module-icon">📋</div>
-                    <h3>Compliance Tracking</h3>
-                    <p>Ensure labor law compliance, working hours monitoring, and audit trails</p>
-                </div>
+                </a>
             </div>
 
             <div class="footer">
@@ -739,71 +705,234 @@
     </div>
 
     <script>
-        // Navigation active state
-        document.querySelectorAll('.nav-item').forEach(item => {
-            if (item.href === window.location.href) {
-                item.classList.add('active');
+        // Enhanced Attendance Management System
+        class AttendanceManager {
+            constructor() {
+                this.attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+                this.initialize();
             }
-        });
 
-        // Module card hover effects
-        document.querySelectorAll('.module-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-4px)';
-            });
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
+            initialize() {
+                this.setupNavigation();
+                this.updateCurrentTime();
+                this.loadAttendanceData();
+                this.setupEventListeners();
+                this.startRealTimeUpdates();
+            }
 
-        // Update current time
-        function updateCurrentTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('en-US', { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true 
-            });
-            document.getElementById('currentTime').textContent = timeString;
-        }
+            setupNavigation() {
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    if (item.href === window.location.href) {
+                        item.classList.add('active');
+                    }
+                });
+            }
 
-        // Update time immediately and every second
-        updateCurrentTime();
-        setInterval(updateCurrentTime, 1000);
+            updateCurrentTime() {
+                const updateTime = () => {
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: true
+                    });
+                    const dateString = now.toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    document.getElementById('currentTime').textContent = `${dateString} ${timeString}`;
+                };
 
-        // Simulate real-time attendance updates
-        function simulateAttendanceUpdates() {
-            const statusElements = document.querySelectorAll('.attendance-status');
-            const timeElements = document.querySelectorAll('.time-in');
-            
-            // Randomly update some statuses for demo
-            if (Math.random() > 0.7) {
-                const randomIndex = Math.floor(Math.random() * statusElements.length);
-                const statusElement = statusElements[randomIndex];
-                const timeElement = timeElements[randomIndex];
+                updateTime();
+                setInterval(updateTime, 1000);
+            }
+
+            loadAttendanceData() {
+                this.updateStats();
+                this.renderLiveAttendance();
+                this.renderAttendanceRecords();
+                this.updateChart();
+            }
+
+            updateStats() {
+                const today = new Date().toDateString();
+                const todayData = this.attendanceData.filter(record => 
+                    new Date(record.date).toDateString() === today
+                );
+
+                const present = todayData.filter(record => record.status === 'present').length;
+                const late = todayData.filter(record => record.status === 'late').length;
+                const absent = todayData.filter(record => record.status === 'absent').length;
+                const remote = todayData.filter(record => record.status === 'remote').length;
+
+                document.getElementById('presentCount').textContent = `${Math.round((present / todayData.length) * 100)}%`;
+                document.getElementById('lateCount').textContent = late;
+                document.getElementById('absentCount').textContent = absent;
+                document.getElementById('remoteCount').textContent = remote;
+            }
+
+            renderLiveAttendance() {
+                const grid = document.getElementById('liveAttendanceGrid');
+                const sampleData = [
+                    { name: 'John Mwangi', department: 'Engineering', status: 'present', timeIn: '08:15 AM', location: 'Office' },
+                    { name: 'Sarah Johnson', department: 'Marketing', status: 'remote', timeIn: '08:30 AM', location: 'Home Office' },
+                    { name: 'David Kimani', department: 'Sales', status: 'late', timeIn: '09:45 AM', location: 'Office' },
+                    { name: 'Michael Adebayo', department: 'Finance', status: 'absent', timeIn: '', location: '', note: 'On Leave' }
+                ];
+
+                grid.innerHTML = sampleData.map(employee => `
+                    <div class="attendance-card">
+                        <div class="employee-info">
+                            <div class="employee-avatar">${employee.name.split(' ').map(n => n[0]).join('')}</div>
+                            <div>
+                                <div style="font-weight: 600;">${employee.name}</div>
+                                <div style="font-size: 0.875rem; color: var(--text-light);">${employee.department}</div>
+                            </div>
+                        </div>
+                        <div class="attendance-status status-${employee.status}">
+                            ${employee.status.charAt(0).toUpperCase() + employee.status.slice(1)}
+                        </div>
+                        <div style="margin-top: 0.5rem; font-size: 0.875rem;">
+                            ${employee.timeIn ? `<div>Time In: <span class="time-in">${employee.timeIn}</span></div>` : ''}
+                            <div>Location: ${employee.location || 'N/A'}</div>
+                            ${employee.note ? `<div style="color: var(--warning);">Note: ${employee.note}</div>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renderAttendanceRecords() {
+                const tbody = document.getElementById('attendanceRecords');
+                const recentData = this.attendanceData.slice(-5).reverse();
+
+                if (recentData.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-light);">
+                                No attendance records found
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                tbody.innerHTML = recentData.map(record => `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 600;">${record.employeeName}</div>
+                            <div style="font-size: 0.875rem; color: var(--text-light);">${record.department}</div>
+                        </td>
+                        <td>${new Date(record.date).toLocaleDateString()}</td>
+                        <td class="time-in">${record.timeIn}</td>
+                        <td class="time-out">${record.timeOut || '--:--'}</td>
+                        <td style="font-weight: 600;">${record.hoursWorked || '0'} hrs</td>
+                        <td><span class="status-badge status-${record.status}">${record.status}</span></td>
+                    </tr>
+                `).join('');
+            }
+
+            updateChart() {
+                const chart = document.getElementById('attendanceChart');
+                // Simple chart visualization
+                chart.innerHTML = `
+                    <div style="width: 100%; height: 100%; display: flex; align-items: end; justify-content: center; gap: 10px; padding: 20px;">
+                        <div style="background: var(--success); width: 40px; height: 80%; border-radius: 4px;" title="Present: 80%"></div>
+                        <div style="background: var(--warning); width: 40px; height: 60%; border-radius: 4px;" title="Late: 15%"></div>
+                        <div style="background: var(--error); width: 40px; height: 20%; border-radius: 4px;" title="Absent: 5%"></div>
+                    </div>
+                `;
+            }
+
+            setupEventListeners() {
+                document.getElementById('timeRange').addEventListener('change', (e) => {
+                    this.filterDataByTimeRange(e.target.value);
+                });
+            }
+
+            filterDataByTimeRange(range) {
+                // Implement time-based filtering
+                console.log('Filtering by:', range);
+                this.loadAttendanceData();
+            }
+
+            startRealTimeUpdates() {
+                // Simulate real-time updates
+                setInterval(() => {
+                    this.simulateAttendanceChange();
+                }, 30000);
+            }
+
+            simulateAttendanceChange() {
+                // Simulate random attendance status changes for demo
+                const statuses = ['present', 'late', 'remote'];
+                const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
                 
-                const statuses = ['status-present', 'status-late', 'status-remote'];
-                const newStatus = statuses[Math.floor(Math.random() * statuses.length)];
-                
-                // Remove all status classes and add new one
-                statusElement.className = 'attendance-status ' + newStatus;
-                
-                // Update status text
-                if (newStatus === 'status-present') statusElement.textContent = 'Present';
-                if (newStatus === 'status-late') statusElement.textContent = 'Late';
-                if (newStatus === 'status-remote') statusElement.textContent = 'Remote';
-                
-                // Update time for late arrivals
-                if (newStatus === 'status-late') {
-                    const lateTime = '09:' + (Math.floor(Math.random() * 45) + 15).toString().padStart(2, '0') + ' AM';
-                    timeElement.textContent = lateTime;
+                // Update a random employee's status
+                const cards = document.querySelectorAll('.attendance-card');
+                if (cards.length > 0) {
+                    const randomCard = cards[Math.floor(Math.random() * cards.length)];
+                    const statusElement = randomCard.querySelector('.attendance-status');
+                    
+                    // Remove all status classes
+                    statusElement.className = 'attendance-status';
+                    statusElement.classList.add(`status-${randomStatus}`);
+                    statusElement.textContent = randomStatus.charAt(0).toUpperCase() + randomStatus.slice(1);
                 }
             }
         }
 
-        // Update attendance every 30 seconds for demo
-        setInterval(simulateAttendanceUpdates, 30000);
+        // Global functions for button actions
+        function clockInOut() {
+            const employeeId = prompt('Enter your Employee ID:');
+            if (employeeId) {
+                alert(`Clock ${Math.random() > 0.5 ? 'In' : 'Out'} recorded for Employee ${employeeId}`);
+                // In a real application, this would make an API call
+            }
+        }
+
+        function manualTimeEntry() {
+            alert('Opening Manual Time Entry form...');
+            // Implementation for manual time entry
+        }
+
+        function generateReports() {
+            alert('Generating Attendance Reports...');
+            // Implementation for report generation
+        }
+
+        function manageShifts() {
+            alert('Opening Shift Management...');
+            // Implementation for shift management
+        }
+
+        function exportAttendance() {
+            alert('Exporting Attendance Data...');
+            // Implementation for data export
+        }
+
+        function viewFullHistory() {
+            alert('Opening Full Attendance History...');
+            // Implementation for full history view
+        }
+
+        // Initialize the attendance manager when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new AttendanceManager();
+        });
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then((registration) => {
+                    console.log('SW registered: ', registration);
+                })
+                .catch((registrationError) => {
+                    console.log('SW registration failed: ', registrationError);
+                });
+        }
     </script>
 </body>
 </html>
