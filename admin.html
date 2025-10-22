@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Administration - CephasGM ERP</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>" type="image/svg+xml">
+    <title>Admin Module - CephasGM ERP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #2563eb;
@@ -23,7 +23,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
@@ -443,6 +443,206 @@
             box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
         }
         
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            padding: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .data-table th {
+            background: var(--light);
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .data-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .data-table tr:hover {
+            background: #f8fafc;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-sm {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--secondary);
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
         /* Responsive */
         @media (max-width: 1024px) {
             .admin-panels {
@@ -471,6 +671,16 @@
             .admin-dashboard {
                 grid-template-columns: 1fr;
             }
+            
+            .tabs {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
         }
     </style>
 </head>
@@ -494,9 +704,10 @@
                 <div class="sidebar-section-title">System Administration</div>
                 <ul>
                     <li><a href="#" class="active"><span class="icon">📊</span> <span>Dashboard</span></a></li>
-                    <li><a href="#"><span class="icon">👥</span> <span>User Management</span></a></li>
-                    <li><a href="#"><span class="icon">🔐</span> <span>Permissions</span></a></li>
-                    <li><a href="#"><span class="icon">⚙️</span> <span>System Settings</span></a></li>
+                    <li><a href="#" data-tab="users"><span class="icon">👥</span> <span>User Management</span></a></li>
+                    <li><a href="#" data-tab="departments"><span class="icon">🏢</span> <span>Departments</span></a></li>
+                    <li><a href="#" data-tab="permissions"><span class="icon">🔐</span> <span>Permissions</span></a></li>
+                    <li><a href="#" data-tab="settings"><span class="icon">⚙️</span> <span>System Settings</span></a></li>
                 </ul>
             </div>
             
@@ -504,20 +715,9 @@
             <div class="sidebar-section">
                 <div class="sidebar-section-title">Monitoring</div>
                 <ul>
-                    <li><a href="#"><span class="icon">📈</span> <span>Performance</span></a></li>
-                    <li><a href="#"><span class="icon">🛡️</span> <span>Security</span></a></li>
-                    <li><a href="#"><span class="icon">📊</span> <span>Audit Logs</span></a></li>
+                    <li><a href="#" data-tab="statistics"><span class="icon">📈</span> <span>Statistics</span></a></li>
+                    <li><a href="#" data-tab="audit"><span class="icon">📊</span> <span>Audit Logs</span></a></li>
                     <li><a href="#"><span class="icon">💾</span> <span>Backup & Restore</span></a></li>
-                </ul>
-            </div>
-            
-            <!-- Integration -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">Integration</div>
-                <ul>
-                    <li><a href="#"><span class="icon">🔗</span> <span>API Management</span></a></li>
-                    <li><a href="#"><span class="icon">🔄</span> <span>Data Sync</span></a></li>
-                    <li><a href="#"><span class="icon">📡</span> <span>Web Services</span></a></li>
                 </ul>
             </div>
         </nav>
@@ -536,136 +736,631 @@
             </div>
         </div>
         
-        <!-- Admin Dashboard Stats -->
-        <div class="admin-dashboard">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-title">Active Users</div>
-                    <div class="stat-icon">👥</div>
+        <!-- Tabs Navigation -->
+        <div class="tabs">
+            <div class="tab active" data-tab="dashboard">Dashboard</div>
+            <div class="tab" data-tab="users">User Management</div>
+            <div class="tab" data-tab="departments">Departments</div>
+            <div class="tab" data-tab="permissions">Permissions</div>
+            <div class="tab" data-tab="settings">System Settings</div>
+            <div class="tab" data-tab="statistics">Statistics</div>
+            <div class="tab" data-tab="audit">Audit Logs</div>
+        </div>
+        
+        <!-- Dashboard Tab -->
+        <div class="tab-content active" id="dashboard">
+            <!-- Admin Dashboard Stats -->
+            <div class="admin-dashboard">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Active Users</div>
+                        <div class="stat-icon">👥</div>
+                    </div>
+                    <div class="stat-value">142</div>
+                    <div class="stat-change positive">↑ 12% from last week</div>
                 </div>
-                <div class="stat-value">142</div>
-                <div class="stat-change positive">↑ 12% from last week</div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">System Uptime</div>
+                        <div class="stat-icon">🟢</div>
+                    </div>
+                    <div class="stat-value">99.8%</div>
+                    <div class="stat-change positive">↑ 0.2% from last month</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Storage Used</div>
+                        <div class="stat-icon">💾</div>
+                    </div>
+                    <div class="stat-value">68%</div>
+                    <div class="stat-change negative">↑ 5% from last week</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Pending Tasks</div>
+                        <div class="stat-icon">📝</div>
+                    </div>
+                    <div class="stat-value">23</div>
+                    <div class="stat-change negative">↑ 8 from yesterday</div>
+                </div>
             </div>
             
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-title">System Uptime</div>
-                    <div class="stat-icon">🟢</div>
+            <!-- Admin Panels -->
+            <div class="admin-panels">
+                <!-- System Status Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">System Status</div>
+                        <a href="#" class="panel-action">View Details</a>
+                    </div>
+                    <div class="panel-body">
+                        <div class="system-status">
+                            <div class="status-item">
+                                <div class="status-info">
+                                    <div class="status-indicator status-online"></div>
+                                    <div class="status-name">Database</div>
+                                </div>
+                                <div class="status-value">Online</div>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-info">
+                                    <div class="status-indicator status-online"></div>
+                                    <div class="status-name">Web Server</div>
+                                </div>
+                                <div class="status-value">Online</div>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-info">
+                                    <div class="status-indicator status-online"></div>
+                                    <div class="status-name">API Services</div>
+                                </div>
+                                <div class="status-value">Online</div>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-info">
+                                    <div class="status-indicator status-warning"></div>
+                                    <div class="status-name">Backup System</div>
+                                </div>
+                                <div class="status-value">Pending</div>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-info">
+                                    <div class="status-indicator status-online"></div>
+                                    <div class="status-name">Security</div>
+                                </div>
+                                <div class="status-value">Active</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="stat-value">99.8%</div>
-                <div class="stat-change positive">↑ 0.2% from last month</div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-title">Storage Used</div>
-                    <div class="stat-icon">💾</div>
+                
+                <!-- Recent Users Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Recent Users</div>
+                        <a href="#" class="panel-action" data-tab="users">View All</a>
+                    </div>
+                    <div class="panel-body">
+                        <div class="user-list">
+                            <div class="user-item">
+                                <div class="user-avatar-small">JD</div>
+                                <div class="user-details-small">
+                                    <div class="user-name-small">John Doe</div>
+                                    <div class="user-role">Sales Manager</div>
+                                </div>
+                                <div class="user-status status-active">Active</div>
+                            </div>
+                            <div class="user-item">
+                                <div class="user-avatar-small">SJ</div>
+                                <div class="user-details-small">
+                                    <div class="user-name-small">Sarah Johnson</div>
+                                    <div class="user-role">HR Specialist</div>
+                                </div>
+                                <div class="user-status status-active">Active</div>
+                            </div>
+                            <div class="user-item">
+                                <div class="user-avatar-small">MW</div>
+                                <div class="user-details-small">
+                                    <div class="user-name-small">Michael Wilson</div>
+                                    <div class="user-role">Finance Analyst</div>
+                                </div>
+                                <div class="user-status status-inactive">Inactive</div>
+                            </div>
+                            <div class="user-item">
+                                <div class="user-avatar-small">ET</div>
+                                <div class="user-details-small">
+                                    <div class="user-name-small">Emily Taylor</div>
+                                    <div class="user-role">Inventory Manager</div>
+                                </div>
+                                <div class="user-status status-active">Active</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="stat-value">68%</div>
-                <div class="stat-change negative">↑ 5% from last week</div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-title">Pending Tasks</div>
-                    <div class="stat-icon">📝</div>
-                </div>
-                <div class="stat-value">23</div>
-                <div class="stat-change negative">↑ 8 from yesterday</div>
             </div>
         </div>
         
-        <!-- Admin Panels -->
-        <div class="admin-panels">
-            <!-- System Status Panel -->
+        <!-- User Management Tab -->
+        <div class="tab-content" id="users">
             <div class="panel">
                 <div class="panel-header">
-                    <div class="panel-title">System Status</div>
-                    <a href="#" class="panel-action">View Details</a>
+                    <div class="panel-title">User Management</div>
+                    <button class="btn btn-primary" id="addUserBtn">
+                        <i class="fas fa-plus"></i> Add User
+                    </button>
                 </div>
                 <div class="panel-body">
-                    <div class="system-status">
-                        <div class="status-item">
-                            <div class="status-info">
-                                <div class="status-indicator status-online"></div>
-                                <div class="status-name">Database</div>
-                            </div>
-                            <div class="status-value">Online</div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Department</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="user-item">
+                                        <div class="user-avatar-small">JD</div>
+                                        <div class="user-details-small">
+                                            <div class="user-name-small">John Doe</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>john.doe@cephasgm.com</td>
+                                <td>Manager</td>
+                                <td>Sales</td>
+                                <td><span class="user-status status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-item">
+                                        <div class="user-avatar-small">SJ</div>
+                                        <div class="user-details-small">
+                                            <div class="user-name-small">Sarah Johnson</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>sarah.j@cephasgm.com</td>
+                                <td>Specialist</td>
+                                <td>HR</td>
+                                <td><span class="user-status status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-item">
+                                        <div class="user-avatar-small">MW</div>
+                                        <div class="user-details-small">
+                                            <div class="user-name-small">Michael Wilson</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>m.wilson@cephasgm.com</td>
+                                <td>Analyst</td>
+                                <td>Finance</td>
+                                <td><span class="user-status status-inactive">Inactive</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-item">
+                                        <div class="user-avatar-small">ET</div>
+                                        <div class="user-details-small">
+                                            <div class="user-name-small">Emily Taylor</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>e.taylor@cephasgm.com</td>
+                                <td>Manager</td>
+                                <td>Inventory</td>
+                                <td><span class="user-status status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Departments Tab -->
+        <div class="tab-content" id="departments">
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Department Management</div>
+                    <button class="btn btn-primary" id="addDeptBtn">
+                        <i class="fas fa-plus"></i> Add Department
+                    </button>
+                </div>
+                <div class="panel-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Department</th>
+                                <th>Manager</th>
+                                <th>Members</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sales</td>
+                                <td>John Doe</td>
+                                <td>24</td>
+                                <td><span class="user-status status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Human Resources</td>
+                                <td>Sarah Johnson</td>
+                                <td>12</td>
+                                <td><span class="user-status status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Finance</td>
+                                <td>Michael Wilson</td>
+                                <td>18</td>
+                                <td><span class="user-status status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Inventory</td>
+                                <td>Emily Taylor</td>
+                                <td>15</td>
+                                <td><span class="user-status status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Permissions Tab -->
+        <div class="tab-content" id="permissions">
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Module Access Control</div>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+                <div class="panel-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Module</th>
+                                <th>Admin</th>
+                                <th>Manager</th>
+                                <th>User</th>
+                                <th>Guest</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Dashboard</td>
+                                <td><input type="checkbox" checked></td>
+                                <td><input type="checkbox" checked></td>
+                                <td><input type="checkbox" checked></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>User Management</td>
+                                <td><input type="checkbox" checked></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Inventory</td>
+                                <td><input type="checkbox" checked></td>
+                                <td><input type="checkbox" checked></td>
+                                <td><input type="checkbox" checked></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Sales</td>
+                                <td><input type="checkbox" checked></td>
+                                <td><input type="checkbox" checked></td>
+                                <td><input type="checkbox" checked></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Finance</td>
+                                <td><input type="checkbox" checked></td>
+                                <td><input type="checkbox" checked></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Reports</td>
+                                <td><input type="checkbox" checked></td>
+                                <td><input type="checkbox" checked></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- System Settings Tab -->
+        <div class="tab-content" id="settings">
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">System Settings</div>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Settings
+                    </button>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="form-label">Maintenance Mode</label>
+                        <div>
+                            <label><input type="radio" name="maintenance" value="off" checked> Off</label>
+                            <label style="margin-left: 15px;"><input type="radio" name="maintenance" value="on"> On</label>
                         </div>
-                        <div class="status-item">
-                            <div class="status-info">
-                                <div class="status-indicator status-online"></div>
-                                <div class="status-name">Web Server</div>
-                            </div>
-                            <div class="status-value">Online</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Auto Backup</label>
+                        <select class="form-control">
+                            <option value="daily">Daily</option>
+                            <option value="weekly" selected>Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="never">Never</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email Notifications</label>
+                        <div>
+                            <label><input type="checkbox" checked> System alerts</label><br>
+                            <label><input type="checkbox" checked> User activities</label><br>
+                            <label><input type="checkbox"> Backup completion</label>
                         </div>
-                        <div class="status-item">
-                            <div class="status-info">
-                                <div class="status-indicator status-online"></div>
-                                <div class="status-name">API Services</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Session Timeout (minutes)</label>
+                        <input type="number" class="form-control" value="30">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Audit Log Retention (days)</label>
+                        <input type="number" class="form-control" value="90">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Statistics Tab -->
+        <div class="tab-content" id="statistics">
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">System Statistics</div>
+                    <div>
+                        <select class="form-control" style="display: inline-block; width: auto;">
+                            <option>Last 7 days</option>
+                            <option>Last 30 days</option>
+                            <option>Last 90 days</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="admin-dashboard">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-title">Active Sessions</div>
+                                <div class="stat-icon">👥</div>
                             </div>
-                            <div class="status-value">Online</div>
+                            <div class="stat-value">87</div>
+                            <div class="stat-change positive">↑ 5% from yesterday</div>
                         </div>
-                        <div class="status-item">
-                            <div class="status-info">
-                                <div class="status-indicator status-warning"></div>
-                                <div class="status-name">Backup System</div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-title">API Requests</div>
+                                <div class="stat-icon">📡</div>
                             </div>
-                            <div class="status-value">Pending</div>
+                            <div class="stat-value">12.4K</div>
+                            <div class="stat-change positive">↑ 8% from last week</div>
                         </div>
-                        <div class="status-item">
-                            <div class="status-info">
-                                <div class="status-indicator status-online"></div>
-                                <div class="status-name">Security</div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-title">Error Rate</div>
+                                <div class="stat-icon">⚠️</div>
                             </div>
-                            <div class="status-value">Active</div>
+                            <div class="stat-value">0.4%</div>
+                            <div class="stat-change negative">↑ 0.1% from last week</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-title">Avg Response Time</div>
+                                <div class="stat-icon">⚡</div>
+                            </div>
+                            <div class="stat-value">142ms</div>
+                            <div class="stat-change positive">↓ 8ms from last week</div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; border-radius: 12px; padding: 25px; margin-top: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                        <h3 style="margin-bottom: 20px;">User Activity Heatmap</h3>
+                        <div style="height: 200px; background: #f8fafc; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #64748b;">
+                            Heatmap visualization would appear here
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Recent Users Panel -->
+        </div>
+        
+        <!-- Audit Logs Tab -->
+        <div class="tab-content" id="audit">
             <div class="panel">
                 <div class="panel-header">
-                    <div class="panel-title">Recent Users</div>
-                    <a href="#" class="panel-action">View All</a>
-                </div>
-                <div class="panel-body">
-                    <div class="user-list">
-                        <div class="user-item">
-                            <div class="user-avatar-small">JD</div>
-                            <div class="user-details-small">
-                                <div class="user-name-small">John Doe</div>
-                                <div class="user-role">Sales Manager</div>
-                            </div>
-                            <div class="user-status status-active">Active</div>
-                        </div>
-                        <div class="user-item">
-                            <div class="user-avatar-small">SJ</div>
-                            <div class="user-details-small">
-                                <div class="user-name-small">Sarah Johnson</div>
-                                <div class="user-role">HR Specialist</div>
-                            </div>
-                            <div class="user-status status-active">Active</div>
-                        </div>
-                        <div class="user-item">
-                            <div class="user-avatar-small">MW</div>
-                            <div class="user-details-small">
-                                <div class="user-name-small">Michael Wilson</div>
-                                <div class="user-role">Finance Analyst</div>
-                            </div>
-                            <div class="user-status status-inactive">Inactive</div>
-                        </div>
-                        <div class="user-item">
-                            <div class="user-avatar-small">ET</div>
-                            <div class="user-details-small">
-                                <div class="user-name-small">Emily Taylor</div>
-                                <div class="user-role">Inventory Manager</div>
-                            </div>
-                            <div class="user-status status-active">Active</div>
-                        </div>
+                    <div class="panel-title">Audit Logs</div>
+                    <div>
+                        <select class="form-control" style="display: inline-block; width: auto;">
+                            <option>All Activities</option>
+                            <option>User Management</option>
+                            <option>System Changes</option>
+                            <option>Security Events</option>
+                        </select>
                     </div>
                 </div>
+                <div class="panel-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Resource</th>
+                                <th>IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2023-10-23 10:23:45</td>
+                                <td>John Doe</td>
+                                <td>Login</td>
+                                <td>System</td>
+                                <td>192.168.1.105</td>
+                            </tr>
+                            <tr>
+                                <td>2023-10-23 09:15:32</td>
+                                <td>Sarah Johnson</td>
+                                <td>Create User</td>
+                                <td>User Management</td>
+                                <td>192.168.1.112</td>
+                            </tr>
+                            <tr>
+                                <td>2023-10-23 08:42:18</td>
+                                <td>Michael Wilson</td>
+                                <td>Update Record</td>
+                                <td>Finance</td>
+                                <td>192.168.1.108</td>
+                            </tr>
+                            <tr>
+                                <td>2023-10-22 16:35:27</td>
+                                <td>Emily Taylor</td>
+                                <td>Delete Record</td>
+                                <td>Inventory</td>
+                                <td>192.168.1.115</td>
+                            </tr>
+                            <tr>
+                                <td>2023-10-22 14:20:11</td>
+                                <td>John Doe</td>
+                                <td>Permission Change</td>
+                                <td>User Management</td>
+                                <td>192.168.1.105</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal" id="addUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Add New User</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" placeholder="Enter email address">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role</label>
+                    <select class="form-control">
+                        <option>Admin</option>
+                        <option>Manager</option>
+                        <option>User</option>
+                        <option>Guest</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Department</label>
+                    <select class="form-control">
+                        <option>Sales</option>
+                        <option>HR</option>
+                        <option>Finance</option>
+                        <option>Inventory</option>
+                        <option>IT</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <div>
+                        <label><input type="radio" name="status" value="active" checked> Active</label>
+                        <label style="margin-left: 15px;"><input type="radio" name="status" value="inactive"> Inactive</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary">Add User</button>
+                <button class="btn" style="background: #e2e8f0;">Cancel</button>
             </div>
         </div>
     </div>
@@ -707,9 +1402,89 @@
                 sidebar.classList.remove('active');
             }
         });
+        
+        // Tab functionality
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const sidebarLinks = document.querySelectorAll('.sidebar-nav a[data-tab]');
+        
+        function switchTab(tabName) {
+            // Update tabs
+            tabs.forEach(tab => {
+                if (tab.getAttribute('data-tab') === tabName) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            // Update tab contents
+            tabContents.forEach(content => {
+                if (content.id === tabName) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+            
+            // Update sidebar active state
+            sidebarLinks.forEach(link => {
+                if (link.getAttribute('data-tab') === tabName) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+        
+        // Add event listeners to tabs
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                switchTab(tabName);
+            });
+        });
+        
+        // Add event listeners to sidebar links
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const tabName = this.getAttribute('data-tab');
+                switchTab(tabName);
+                
+                // Close sidebar on mobile after selection
+                if (window.innerWidth <= 768) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+        
+        // Modal functionality
+        const addUserBtn = document.getElementById('addUserBtn');
+        const addUserModal = document.getElementById('addUserModal');
+        const modalClose = document.querySelector('.modal-close');
+        
+        addUserBtn.addEventListener('click', function() {
+            addUserModal.style.display = 'flex';
+        });
+        
+        modalClose.addEventListener('click', function() {
+            addUserModal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', function(event) {
+            if (event.target === addUserModal) {
+                addUserModal.style.display = 'none';
+            }
+        });
+        
+        // Add similar functionality for department modal
+        const addDeptBtn = document.getElementById('addDeptBtn');
+        
+        addDeptBtn.addEventListener('click', function() {
+            // In a real application, this would open a department modal
+            alert('Add Department functionality would open a modal here');
+        });
     </script>
-    
-    <!-- Include PWA Script -->
-    <script src="pwa-init.js"></script>
 </body>
 </html>
