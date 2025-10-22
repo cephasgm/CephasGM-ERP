@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#2563eb">
-    <meta name="description" content="System Administration - CephasGM ERP">
     <title>System Administration - CephasGM ERP</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="icon-192.png">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>" type="image/svg+xml">
     <style>
         :root {
             --primary: #2563eb;
@@ -15,1096 +12,704 @@
             --secondary: #64748b;
             --success: #10b981;
             --warning: #f59e0b;
-            --error: #ef4444;
-            --background: #f8fafc;
-            --surface: #ffffff;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --sidebar-width: 280px;
+            --header-height: 70px;
         }
-
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-
+        
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 280px 1fr;
+            background-color: #f1f5f9;
+            color: #334155;
+            display: flex;
             min-height: 100vh;
         }
-
+        
+        /* Sidebar Styles */
         .sidebar {
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            padding: 2rem 1rem;
-            position: fixed;
-            width: 280px;
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--dark) 0%, #0f172a 100%);
+            color: white;
             height: 100vh;
+            position: fixed;
             overflow-y: auto;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 100;
         }
-
-        .logo {
+        
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .sidebar h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-            padding: 0 1rem;
+            gap: 10px;
         }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 10px;
+        
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #93c5fd;
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .back-home:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-3px);
+        }
+        
+        .timestamp {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 15px 0;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 10px;
+        }
+        
+        .sidebar-section-title {
+            padding: 12px 20px 8px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 2px;
+        }
+        
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .sidebar-nav a:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: white;
+            padding-left: 25px;
+        }
+        
+        .sidebar-nav a.active {
+            background: linear-gradient(90deg, var(--primary) 0%, rgba(37, 99, 235, 0.2) 100%);
+            color: white;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .sidebar-nav .icon {
+            margin-right: 12px;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: margin-left 0.3s;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .header h1 {
+            color: var(--dark);
+            font-size: 2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 1.25rem;
+            font-size: 1.2rem;
         }
-
-        .nav-section {
-            margin-bottom: 2rem;
-        }
-
-        .nav-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--text-light);
-            margin-bottom: 1rem;
-            padding: 0 1rem;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-item {
+        
+        .user-details {
             display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            color: var(--text-light);
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .logout {
+            color: var(--danger);
             text-decoration: none;
-            transition: all 0.2s;
-            margin-bottom: 0.25rem;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
+            transition: all 0.3s;
         }
-
-        .nav-item:hover, .nav-item.active {
-            background: var(--primary);
-            color: white;
+        
+        .logout:hover {
+            text-decoration: underline;
         }
-
-        .nav-icon {
-            font-size: 1.25rem;
-            width: 24px;
-            text-align: center;
+        
+        /* Admin Dashboard */
+        .admin-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
         }
-
-        .main-content {
-            grid-column: 2;
-            padding: 2rem;
-            margin-left: 280px;
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            border-left: 4px solid var(--primary);
         }
-
-        .header {
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
+            align-items: flex-start;
+            margin-bottom: 15px;
         }
-
-        .header h1 {
-            font-size: 1.875rem;
-            font-weight: 700;
-        }
-
-        /* Enhanced Toolbar */
-        .toolbar {
-            margin-bottom: 2rem;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            padding: 1.5rem;
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-secondary:hover {
-            background: #475569;
-            transform: translateY(-1px);
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--primary);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: var(--text-light);
+        
+        .stat-title {
             font-size: 0.9rem;
+            color: var(--secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-
+        
+        .stat-icon {
+            font-size: 1.8rem;
+            opacity: 0.7;
+        }
+        
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .stat-change {
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .positive {
+            color: var(--success);
+        }
+        
+        .negative {
+            color: var(--danger);
+        }
+        
         /* Admin Panels */
         .admin-panels {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
         }
-
-        .admin-panel {
-            background: var(--surface);
+        
+        .panel {
+            background: white;
             border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            box-shadow: var(--shadow);
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
-
+        
         .panel-header {
+            padding: 20px 25px;
+            background: var(--light);
+            border-bottom: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
         }
-
+        
         .panel-title {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 600;
+            color: var(--dark);
         }
-
-        /* User Management */
-        .user-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
+        
+        .panel-action {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
-
-        .user-table th,
-        .user-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
+        
+        .panel-body {
+            padding: 25px;
         }
-
-        .user-table th {
-            font-weight: 600;
-            color: var(--text-light);
-            font-size: 0.875rem;
-            background: var(--primary);
-            color: white;
-        }
-
-        .role-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .role-admin {
-            background: #fecaca;
-            color: #991b1b;
-        }
-
-        .role-manager {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .role-user {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        /* System Settings */
-        .settings-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-
-        .setting-item {
-            background: var(--background);
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .setting-label {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--border);
-            transition: .4s;
-            border-radius: 24px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: var(--primary);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-
-        /* Module Access Control */
-        .access-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-        }
-
-        .access-card {
-            background: var(--background);
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .access-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-
-        .access-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.25rem;
-        }
-
-        .access-controls {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .access-btn {
-            padding: 0.25rem 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            background: var(--surface);
-            cursor: pointer;
-            font-size: 0.75rem;
-            transition: all 0.2s;
-        }
-
-        .access-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        /* Department Management */
-        .department-list {
+        
+        .system-status {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 15px;
         }
-
-        .department-item {
+        
+        .status-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.75rem;
-            background: var(--background);
-            border-radius: 6px;
-            border: 1px solid var(--border);
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
         }
-
-        .department-info {
+        
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        
+        .status-info {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 12px;
         }
-
-        .department-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        .status-online {
+            background: var(--success);
+        }
+        
+        .status-warning {
+            background: var(--warning);
+        }
+        
+        .status-offline {
+            background: var(--danger);
+        }
+        
+        .status-name {
+            font-weight: 500;
+        }
+        
+        .status-value {
+            font-weight: 600;
+        }
+        
+        /* User List */
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .user-item:last-child {
+            border-bottom: none;
+        }
+        
+        .user-avatar-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             background: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 0.875rem;
+            font-weight: 600;
         }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            color: var(--text-light);
-            border-top: 1px solid var(--border);
+        
+        .user-details-small {
+            flex: 1;
         }
-
-        /* Responsive Design */
+        
+        .user-name-small {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .user-role {
+            font-size: 0.85rem;
+            color: var(--secondary);
+        }
+        
+        .user-status {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .status-inactive {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        /* Mobile Toggle */
+        .toggle-sidebar {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        }
+        
+        /* Responsive */
         @media (max-width: 1024px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .main-content {
-                margin-left: 0;
-                grid-column: 1;
-            }
             .admin-panels {
                 grid-template-columns: 1fr;
             }
         }
-
+        
         @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
             .main-content {
-                padding: 1rem;
+                margin-left: 0;
+                padding: 20px;
             }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
+            
+            .toggle-sidebar {
+                display: block;
             }
-            .toolbar {
-                flex-direction: column;
-            }
-        }
-
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --background: #0f172a;
-                --surface: #1e293b;
-                --text: #f1f5f9;
-                --text-light: #94a3b8;
-                --border: #334155;
+            
+            .admin-dashboard {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <nav class="sidebar">
-            <div class="logo">
-                <div class="logo-icon">CG</div>
-                <div>
-                    <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
-                    <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
-                </div>
+    <!-- Toggle Button for Mobile -->
+    <button class="toggle-sidebar" id="toggleSidebar">☰</button>
+    
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🏢 CephasGM ERP</h2>
+            <a href="home.html" class="back-home">
+                <span>←</span> Back to Dashboard
+            </a>
+            <div class="timestamp" id="current-time">Loading...</div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <!-- System Administration -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">System Administration</div>
+                <ul>
+                    <li><a href="#" class="active"><span class="icon">📊</span> <span>Dashboard</span></a></li>
+                    <li><a href="#"><span class="icon">👥</span> <span>User Management</span></a></li>
+                    <li><a href="#"><span class="icon">🔐</span> <span>Permissions</span></a></li>
+                    <li><a href="#"><span class="icon">⚙️</span> <span>System Settings</span></a></li>
+                </ul>
             </div>
-
-            <div class="nav-section">
-                <div class="nav-title">Administration</div>
-                <a href="admin.html" class="nav-item active">
-                    <span class="nav-icon">⚙️</span>
-                    System Admin
-                </a>
-                <a href="hr.html" class="nav-item">
-                    <span class="nav-icon">👥</span>
-                    HR Management
-                </a>
-                <a href="finance.html" class="nav-item">
-                    <span class="nav-icon">💰</span>
-                    Finance
-                </a>
+            
+            <!-- Monitoring -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Monitoring</div>
+                <ul>
+                    <li><a href="#"><span class="icon">📈</span> <span>Performance</span></a></li>
+                    <li><a href="#"><span class="icon">🛡️</span> <span>Security</span></a></li>
+                    <li><a href="#"><span class="icon">📊</span> <span>Audit Logs</span></a></li>
+                    <li><a href="#"><span class="icon">💾</span> <span>Backup & Restore</span></a></li>
+                </ul>
             </div>
-
-            <div class="nav-section">
-                <div class="nav-title">User Management</div>
-                <a href="#users" class="nav-item">
-                    <span class="nav-icon">👤</span>
-                    Users
-                </a>
-                <a href="#roles" class="nav-item">
-                    <span class="nav-icon">🔐</span>
-                    Roles & Permissions
-                </a>
-                <a href="#departments" class="nav-item">
-                    <span class="nav-icon">🏢</span>
-                    Departments
-                </a>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-title">System</div>
-                <a href="#settings" class="nav-item">
-                    <span class="nav-icon">⚙️</span>
-                    System Settings
-                </a>
-                <a href="#modules" class="nav-item">
-                    <span class="nav-icon">📦</span>
-                    Module Access
-                </a>
-                <a href="#backup" class="nav-item">
-                    <span class="nav-icon">💾</span>
-                    Backup & Restore
-                </a>
+            
+            <!-- Integration -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Integration</div>
+                <ul>
+                    <li><a href="#"><span class="icon">🔗</span> <span>API Management</span></a></li>
+                    <li><a href="#"><span class="icon">🔄</span> <span>Data Sync</span></a></li>
+                    <li><a href="#"><span class="icon">📡</span> <span>Web Services</span></a></li>
+                </ul>
             </div>
         </nav>
-
-        <main class="main-content">
-            <div class="header">
-                <div>
-                    <h1>System Administration</h1>
-                    <div style="color: var(--text-light);">Manage users, permissions, departments, and system configuration</div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1><span class="icon">⚙️</span> System Administration</h1>
+            <div class="user-info">
+                <div class="user-avatar">CG</div>
+                <div class="user-details">
+                    <div class="user-name">CephasGM</div>
+                    <a href="#" class="logout">Logout</a>
                 </div>
             </div>
-
-            <!-- Enhanced Toolbar -->
-            <div class="toolbar">
-                <button class="btn-primary" onclick="addNewUser()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">👤</span>
-                    Add User
-                </button>
-                <button class="btn-primary" onclick="createDepartment()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">🏢</span>
-                    Create Department
-                </button>
-                <button class="btn-secondary" onclick="backupSystem()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">💾</span>
-                    Backup System
-                </button>
-                <button class="btn-secondary" onclick="systemDiagnostics()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">🔧</span>
-                    System Diagnostics
-                </button>
+        </div>
+        
+        <!-- Admin Dashboard Stats -->
+        <div class="admin-dashboard">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">Active Users</div>
+                    <div class="stat-icon">👥</div>
+                </div>
+                <div class="stat-value">142</div>
+                <div class="stat-change positive">↑ 12% from last week</div>
             </div>
-
-            <!-- System Statistics -->
-            <div class="stats-grid">
-                <div class="stat-card" onclick="viewUsers()">
-                    <div class="stat-number" id="totalUsers">24</div>
-                    <div class="stat-label">Total Users</div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">System Uptime</div>
+                    <div class="stat-icon">🟢</div>
                 </div>
-                <div class="stat-card" onclick="viewDepartments()">
-                    <div class="stat-number" id="totalDepartments">8</div>
-                    <div class="stat-label">Departments</div>
-                </div>
-                <div class="stat-card" onclick="viewActiveModules()">
-                    <div class="stat-number" id="activeModules">18</div>
-                    <div class="stat-label">Active Modules</div>
-                </div>
-                <div class="stat-card" onclick="viewSystemHealth()">
-                    <div class="stat-number" id="systemHealth">98%</div>
-                    <div class="stat-label">System Health</div>
-                </div>
+                <div class="stat-value">99.8%</div>
+                <div class="stat-change positive">↑ 0.2% from last month</div>
             </div>
-
-            <!-- Admin Panels -->
-            <div class="admin-panels">
-                <!-- User Management Panel -->
-                <div class="admin-panel">
-                    <div class="panel-header">
-                        <div class="panel-title">User Management</div>
-                        <button class="btn-primary" onclick="addNewUser()" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
-                            Add User
-                        </button>
-                    </div>
-                    <div class="table-container">
-                        <table class="user-table">
-                            <thead>
-                                <tr>
-                                    <th>User</th>
-                                    <th>Role</th>
-                                    <th>Department</th>
-                                    <th>Last Login</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="userList">
-                                <!-- Dynamic content will be loaded here -->
-                            </tbody>
-                        </table>
-                    </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">Storage Used</div>
+                    <div class="stat-icon">💾</div>
                 </div>
-
-                <!-- System Settings Panel -->
-                <div class="admin-panel">
-                    <div class="panel-header">
-                        <div class="panel-title">System Settings</div>
-                    </div>
-                    <div class="settings-grid">
-                        <div class="setting-item">
-                            <label class="setting-label">System Maintenance</label>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="maintenanceMode">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="setting-item">
-                            <label class="setting-label">Auto Backup</label>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="autoBackup" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="setting-item">
-                            <label class="setting-label">Email Notifications</label>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="emailNotifications" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="setting-item">
-                            <label class="setting-label">Audit Logging</label>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="auditLogging" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
+                <div class="stat-value">68%</div>
+                <div class="stat-change negative">↑ 5% from last week</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">Pending Tasks</div>
+                    <div class="stat-icon">📝</div>
                 </div>
-
-                <!-- Module Access Control -->
-                <div class="admin-panel">
-                    <div class="panel-header">
-                        <div class="panel-title">Module Access Control</div>
-                    </div>
-                    <div class="access-grid">
-                        <div class="access-card">
-                            <div class="access-header">
-                                <div class="access-icon">📊</div>
-                                <div>
-                                    <div style="font-weight: 600;">Finance</div>
-                                    <div style="font-size: 0.875rem; color: var(--text-light);">Budget, Accounting, Reports</div>
-                                </div>
-                            </div>
-                            <div class="access-controls">
-                                <button class="access-btn active" data-role="admin">Admin</button>
-                                <button class="access-btn" data-role="manager">Manager</button>
-                                <button class="access-btn" data-role="user">User</button>
-                                <button class="access-btn" data-role="none">None</button>
-                            </div>
-                        </div>
-                        <div class="access-card">
-                            <div class="access-header">
-                                <div class="access-icon">👥</div>
-                                <div>
-                                    <div style="font-weight: 600;">HR</div>
-                                    <div style="font-size: 0.875rem; color: var(--text-light);">Employees, Payroll, Attendance</div>
-                                </div>
-                            </div>
-                            <div class="access-controls">
-                                <button class="access-btn active" data-role="admin">Admin</button>
-                                <button class="access-btn" data-role="manager">Manager</button>
-                                <button class="access-btn" data-role="user">User</button>
-                                <button class="access-btn" data-role="none">None</button>
-                            </div>
-                        </div>
-                        <div class="access-card">
-                            <div class="access-header">
-                                <div class="access-icon">📦</div>
-                                <div>
-                                    <div style="font-weight: 600;">Inventory</div>
-                                    <div style="font-size: 0.875rem; color: var(--text-light);">Stock, Orders, Suppliers</div>
-                                </div>
-                            </div>
-                            <div class="access-controls">
-                                <button class="access-btn" data-role="admin">Admin</button>
-                                <button class="access-btn active" data-role="manager">Manager</button>
-                                <button class="access-btn" data-role="user">User</button>
-                                <button class="access-btn" data-role="none">None</button>
-                            </div>
-                        </div>
-                        <div class="access-card">
-                            <div class="access-header">
-                                <div class="access-icon">📋</div>
-                                <div>
-                                    <div style="font-weight: 600;">Projects</div>
-                                    <div style="font-size: 0.875rem; color: var(--text-light);">Tasks, Timeline, Resources</div>
-                                </div>
-                            </div>
-                            <div class="access-controls">
-                                <button class="access-btn" data-role="admin">Admin</button>
-                                <button class="access-btn active" data-role="manager">Manager</button>
-                                <button class="access-btn" data-role="user">User</button>
-                                <button class="access-btn" data-role="none">None</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="stat-value">23</div>
+                <div class="stat-change negative">↑ 8 from yesterday</div>
+            </div>
+        </div>
+        
+        <!-- Admin Panels -->
+        <div class="admin-panels">
+            <!-- System Status Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">System Status</div>
+                    <a href="#" class="panel-action">View Details</a>
                 </div>
-
-                <!-- Department Management -->
-                <div class="admin-panel">
-                    <div class="panel-header">
-                        <div class="panel-title">Department Management</div>
-                        <button class="btn-primary" onclick="createDepartment()" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
-                            Add Department
-                        </button>
-                    </div>
-                    <div class="department-list">
-                        <div class="department-item">
-                            <div class="department-info">
-                                <div class="department-icon">💼</div>
-                                <div>
-                                    <div style="font-weight: 600;">Finance</div>
-                                    <div style="font-size: 0.875rem; color: var(--text-light);">12 members</div>
-                                </div>
+                <div class="panel-body">
+                    <div class="system-status">
+                        <div class="status-item">
+                            <div class="status-info">
+                                <div class="status-indicator status-online"></div>
+                                <div class="status-name">Database</div>
                             </div>
-                            <button class="btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
-                                Manage
-                            </button>
+                            <div class="status-value">Online</div>
                         </div>
-                        <div class="department-item">
-                            <div class="department-info">
-                                <div class="department-icon">👥</div>
-                                <div>
-                                    <div style="font-weight: 600;">Human Resources</div>
-                                    <div style="font-size: 0.875rem; color: var(--text-light);">8 members</div>
-                                </div>
+                        <div class="status-item">
+                            <div class="status-info">
+                                <div class="status-indicator status-online"></div>
+                                <div class="status-name">Web Server</div>
                             </div>
-                            <button class="btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
-                                Manage
-                            </button>
+                            <div class="status-value">Online</div>
                         </div>
-                        <div class="department-item">
-                            <div class="department-info">
-                                <div class="department-icon">📦</div>
-                                <div>
-                                    <div style="font-weight: 600;">Operations</div>
-                                    <div style="font-size: 0.875rem; color: var(--text-light);">24 members</div>
-                                </div>
+                        <div class="status-item">
+                            <div class="status-info">
+                                <div class="status-indicator status-online"></div>
+                                <div class="status-name">API Services</div>
                             </div>
-                            <button class="btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
-                                Manage
-                            </button>
+                            <div class="status-value">Online</div>
                         </div>
-                        <div class="department-item">
-                            <div class="department-info">
-                                <div class="department-icon">🛒</div>
-                                <div>
-                                    <div style="font-weight: 600;">Procurement</div>
-                                    <div style="font-size: 0.875rem; color: var(--text-light);">6 members</div>
-                                </div>
+                        <div class="status-item">
+                            <div class="status-info">
+                                <div class="status-indicator status-warning"></div>
+                                <div class="status-name">Backup System</div>
                             </div>
-                            <button class="btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
-                                Manage
-                            </button>
+                            <div class="status-value">Pending</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-info">
+                                <div class="status-indicator status-online"></div>
+                                <div class="status-name">Security</div>
+                            </div>
+                            <div class="status-value">Active</div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="footer">
-                Copyright © 2025 😀
+            
+            <!-- Recent Users Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Recent Users</div>
+                    <a href="#" class="panel-action">View All</a>
+                </div>
+                <div class="panel-body">
+                    <div class="user-list">
+                        <div class="user-item">
+                            <div class="user-avatar-small">JD</div>
+                            <div class="user-details-small">
+                                <div class="user-name-small">John Doe</div>
+                                <div class="user-role">Sales Manager</div>
+                            </div>
+                            <div class="user-status status-active">Active</div>
+                        </div>
+                        <div class="user-item">
+                            <div class="user-avatar-small">SJ</div>
+                            <div class="user-details-small">
+                                <div class="user-name-small">Sarah Johnson</div>
+                                <div class="user-role">HR Specialist</div>
+                            </div>
+                            <div class="user-status status-active">Active</div>
+                        </div>
+                        <div class="user-item">
+                            <div class="user-avatar-small">MW</div>
+                            <div class="user-details-small">
+                                <div class="user-name-small">Michael Wilson</div>
+                                <div class="user-role">Finance Analyst</div>
+                            </div>
+                            <div class="user-status status-inactive">Inactive</div>
+                        </div>
+                        <div class="user-item">
+                            <div class="user-avatar-small">ET</div>
+                            <div class="user-details-small">
+                                <div class="user-name-small">Emily Taylor</div>
+                                <div class="user-role">Inventory Manager</div>
+                            </div>
+                            <div class="user-status status-active">Active</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </main>
+        </div>
     </div>
 
     <script>
-        // Enhanced Admin Management System
-        class AdminManager {
-            constructor() {
-                this.userData = JSON.parse(localStorage.getItem('adminUserData')) || this.getSampleUserData();
-                this.departmentData = JSON.parse(localStorage.getItem('adminDepartmentData')) || this.getSampleDepartmentData();
-                this.systemSettings = JSON.parse(localStorage.getItem('adminSystemSettings')) || this.getDefaultSettings();
-                this.initialize();
-            }
-
-            initialize() {
-                this.setupNavigation();
-                this.loadUserData();
-                this.loadDepartmentData();
-                this.loadSystemSettings();
-                this.setupEventListeners();
-                this.startRealTimeUpdates();
-            }
-
-            setupNavigation() {
-                document.querySelectorAll('.nav-item').forEach(item => {
-                    if (item.href === window.location.href) {
-                        item.classList.add('active');
-                    }
-                });
-            }
-
-            getSampleUserData() {
-                return [
-                    {
-                        id: 1,
-                        name: 'Cephas GM',
-                        email: 'cephas@cephasgm.com',
-                        role: 'admin',
-                        department: 'Administration',
-                        lastLogin: '2024-12-10 08:30',
-                        status: 'active',
-                        avatar: 'CG'
-                    },
-                    {
-                        id: 2,
-                        name: 'Sarah Johnson',
-                        email: 'sarah@cephasgm.com',
-                        role: 'manager',
-                        department: 'Finance',
-                        lastLogin: '2024-12-09 14:20',
-                        status: 'active',
-                        avatar: 'SJ'
-                    },
-                    {
-                        id: 3,
-                        name: 'Michael Chen',
-                        email: 'michael@cephasgm.com',
-                        role: 'user',
-                        department: 'Operations',
-                        lastLogin: '2024-12-10 09:15',
-                        status: 'active',
-                        avatar: 'MC'
-                    },
-                    {
-                        id: 4,
-                        name: 'David Wilson',
-                        email: 'david@cephasgm.com',
-                        role: 'manager',
-                        department: 'HR',
-                        lastLogin: '2024-12-08 16:45',
-                        status: 'inactive',
-                        avatar: 'DW'
-                    }
-                ];
-            }
-
-            getSampleDepartmentData() {
-                return [
-                    { id: 1, name: 'Finance', members: 12, icon: '💼' },
-                    { id: 2, name: 'Human Resources', members: 8, icon: '👥' },
-                    { id: 3, name: 'Operations', members: 24, icon: '📦' },
-                    { id: 4, name: 'Procurement', members: 6, icon: '🛒' },
-                    { id: 5, name: 'Sales', members: 15, icon: '💰' },
-                    { id: 6, name: 'Marketing', members: 9, icon: '📢' },
-                    { id: 7, name: 'IT', members: 5, icon: '💻' },
-                    { id: 8, name: 'Administration', members: 4, icon: '⚙️' }
-                ];
-            }
-
-            getDefaultSettings() {
-                return {
-                    maintenanceMode: false,
-                    autoBackup: true,
-                    emailNotifications: true,
-                    auditLogging: true,
-                    systemTheme: 'light',
-                    language: 'en',
-                    timezone: 'UTC+3'
-                };
-            }
-
-            loadUserData() {
-                this.renderUserList();
-                this.updateStats();
-            }
-
-            loadDepartmentData() {
-                this.updateStats();
-            }
-
-            loadSystemSettings() {
-                // Load toggle states
-                document.getElementById('maintenanceMode').checked = this.systemSettings.maintenanceMode;
-                document.getElementById('autoBackup').checked = this.systemSettings.autoBackup;
-                document.getElementById('emailNotifications').checked = this.systemSettings.emailNotifications;
-                document.getElementById('auditLogging').checked = this.systemSettings.auditLogging;
-            }
-
-            renderUserList() {
-                const tbody = document.getElementById('userList');
-                tbody.innerHTML = this.userData.map(user => `
-                    <tr>
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.875rem;">
-                                    ${user.avatar}
-                                </div>
-                                <div>
-                                    <div style="font-weight: 600;">${user.name}</div>
-                                    <div style="font-size: 0.875rem; color: var(--text-light);">${user.email}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="role-badge role-${user.role}">
-                                ${user.role.charAt(0).toUpperCase() + user.role.slice(1)}
-                            </span>
-                        </td>
-                        <td>${user.department}</td>
-                        <td>${user.lastLogin}</td>
-                        <td>
-                            <span style="color: ${user.status === 'active' ? 'var(--success)' : 'var(--error)'}; font-weight: 600;">
-                                ${user.status.charAt(0).toUpperCase() + user.status.slice(1)}
-                            </span>
-                        </td>
-                        <td>
-                            <button style="background: var(--primary); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem;" onclick="editUser(${user.id})">
-                                Edit
-                            </button>
-                            <button style="background: var(--error); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; margin-left: 0.25rem;" onclick="deleteUser(${user.id})">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            updateStats() {
-                document.getElementById('totalUsers').textContent = this.userData.length;
-                document.getElementById('totalDepartments').textContent = this.departmentData.length;
-                document.getElementById('activeModules').textContent = '18';
-                document.getElementById('systemHealth').textContent = '98%';
-            }
-
-            setupEventListeners() {
-                // Toggle switches
-                document.getElementById('maintenanceMode').addEventListener('change', (e) => {
-                    this.systemSettings.maintenanceMode = e.target.checked;
-                    this.saveSystemSettings();
-                    this.showNotification(`Maintenance mode ${e.target.checked ? 'enabled' : 'disabled'}`, 'info');
-                });
-
-                document.getElementById('autoBackup').addEventListener('change', (e) => {
-                    this.systemSettings.autoBackup = e.target.checked;
-                    this.saveSystemSettings();
-                });
-
-                document.getElementById('emailNotifications').addEventListener('change', (e) => {
-                    this.systemSettings.emailNotifications = e.target.checked;
-                    this.saveSystemSettings();
-                });
-
-                document.getElementById('auditLogging').addEventListener('change', (e) => {
-                    this.systemSettings.auditLogging = e.target.checked;
-                    this.saveSystemSettings();
-                });
-
-                // Module access controls
-                document.querySelectorAll('.access-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const card = e.target.closest('.access-card');
-                        card.querySelectorAll('.access-btn').forEach(b => b.classList.remove('active'));
-                        e.target.classList.add('active');
-                        
-                        const module = card.querySelector('.access-header div:first-child').textContent;
-                        const role = e.target.dataset.role;
-                        this.updateModuleAccess(module, role);
-                    });
-                });
-            }
-
-            saveSystemSettings() {
-                localStorage.setItem('adminSystemSettings', JSON.stringify(this.systemSettings));
-            }
-
-            updateModuleAccess(module, role) {
-                console.log(`Updated ${module} access to: ${role}`);
-                this.showNotification(`${module} access updated to ${role}`, 'success');
-            }
-
-            startRealTimeUpdates() {
-                // Simulate real-time system updates
-                setInterval(() => {
-                    this.simulateSystemUpdates();
-                }, 30000);
-            }
-
-            simulateSystemUpdates() {
-                // Simulate small changes in system stats
-                const systemHealth = document.getElementById('systemHealth');
-                const currentHealth = parseInt(systemHealth.textContent);
-                const change = Math.random() > 0.5 ? 1 : -1;
-                const newHealth = Math.max(95, Math.min(100, currentHealth + change));
-                systemHealth.textContent = `${newHealth}%`;
-            }
-
-            showNotification(message, type = 'info') {
-                // Simple notification implementation
-                console.log(`[${type.toUpperCase()}] ${message}`);
-                alert(message); // In a real implementation, use a proper notification system
-            }
+        // Update timestamp in real-time
+        function updateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('current-time').textContent = now.toLocaleDateString('en-US', options);
         }
-
-        // Global admin functions
-        const adminManager = new AdminManager();
-
-        function addNewUser() {
-            alert('Opening New User Form...');
-            // Implementation for adding new user
-        }
-
-        function createDepartment() {
-            alert('Creating New Department...');
-            // Implementation for creating department
-        }
-
-        function backupSystem() {
-            alert('Starting System Backup...');
-            // Implementation for system backup
-        }
-
-        function systemDiagnostics() {
-            alert('Running System Diagnostics...');
-            // Implementation for system diagnostics
-        }
-
-        function viewUsers() {
-            alert('Opening User Management...');
-        }
-
-        function viewDepartments() {
-            alert('Opening Department Management...');
-        }
-
-        function viewActiveModules() {
-            alert('Viewing Active Modules...');
-        }
-
-        function viewSystemHealth() {
-            alert('Viewing System Health Dashboard...');
-        }
-
-        function editUser(id) {
-            alert(`Editing User: ${id}`);
-        }
-
-        function deleteUser(id) {
-            if (confirm('Are you sure you want to delete this user?')) {
-                alert(`User ${id} deleted`);
-                // Implementation for deleting user
+        
+        // Update time immediately and then every second
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // Toggle sidebar on mobile
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+        
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('toggleSidebar');
+            
+            if (window.innerWidth <= 768 && 
+                !sidebar.contains(event.target) && 
+                !toggleBtn.contains(event.target) &&
+                sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
             }
-        }
-
-        // PWA Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js')
-                .then(registration => {
-                    console.log('Service Worker registered successfully:', registration);
-                })
-                .catch(error => {
-                    console.log('Service Worker registration failed:', error);
-                });
-        }
+        });
     </script>
+    
+    <!-- Include PWA Script -->
+    <script src="pwa-init.js"></script>
 </body>
 </html>
