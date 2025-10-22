@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Training & Development - CephasGM ERP</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #2563eb;
@@ -54,6 +55,8 @@
             gap: 0.75rem;
             margin-bottom: 2rem;
             padding: 0 1rem;
+            text-decoration: none;
+            color: inherit;
         }
 
         .logo-icon {
@@ -142,6 +145,18 @@
             border-radius: 12px;
             border: 1px solid var(--border);
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary);
         }
 
         .stat-number {
@@ -156,6 +171,7 @@
             font-size: 0.9rem;
         }
 
+        /* Enhanced Module Grid */
         .module-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -205,12 +221,217 @@
             font-size: 0.95rem;
         }
 
+        /* New Enhanced Components */
+        .chart-container {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .training-management {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .training-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .training-table th,
+        .training-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .training-table th {
+            background: var(--background);
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .training-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-completed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-upcoming {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-cancelled {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .skills-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .skill-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .skill-item:last-child {
+            border-bottom: none;
+        }
+
+        .skill-progress {
+            width: 100px;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .skill-progress-bar {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            background: var(--background);
+        }
+
         .footer {
             text-align: center;
             padding: 2rem;
             margin-top: 3rem;
             color: var(--text-light);
             border-top: 1px solid var(--border);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--background);
+        }
+
+        .currency-input {
+            display: flex;
+            align-items: center;
+        }
+
+        .currency-input select {
+            width: 100px;
+            margin-right: 1rem;
+        }
+
+        .currency-input input {
+            flex: 1;
         }
 
         @media (max-width: 1024px) {
@@ -224,19 +445,22 @@
                 margin-left: 0;
                 grid-column: 1;
             }
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <div class="dashboard">
         <nav class="sidebar">
-            <div class="logo">
+            <a href="index.html" class="logo">
                 <div class="logo-icon">CG</div>
                 <div>
                     <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
                     <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
                 </div>
-            </div>
+            </a>
 
             <div class="nav-section">
                 <div class="nav-title">HR Development</div>
@@ -291,46 +515,216 @@
                     <div class="stat-label">Employees Trained</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">₦3.8M</div>
+                    <div class="stat-number">TZS 3.8M</div>
                     <div class="stat-label">Training Budget</div>
                 </div>
             </div>
 
+            <!-- Performance Charts -->
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="card-header">
+                        <div class="card-title">Training Completion</div>
+                        <select onchange="updateCharts()" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--background);">
+                            <option>Last 30 Days</option>
+                            <option>Last 90 Days</option>
+                            <option>Last Year</option>
+                        </select>
+                    </div>
+                    <canvas id="completionChart" height="250"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="card-header">
+                        <div class="card-title">Skills Distribution</div>
+                        <div style="color: var(--success); font-weight: 600;">+15% Growth</div>
+                    </div>
+                    <canvas id="skillsChart" height="250"></canvas>
+                </div>
+            </div>
+
+            <!-- Training Programs Management -->
+            <div class="training-management">
+                <div class="card-header">
+                    <div class="card-title">Training Programs</div>
+                    <button class="btn btn-primary" onclick="openModal('addTrainingModal')">+ New Program</button>
+                </div>
+                <table class="training-table">
+                    <thead>
+                        <tr>
+                            <th>Program Name</th>
+                            <th>Type</th>
+                            <th>Participants</th>
+                            <th>Start Date</th>
+                            <th>Status</th>
+                            <th>Budget</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Leadership Development</strong></td>
+                            <td>Management</td>
+                            <td>24/30</td>
+                            <td>2024-02-01</td>
+                            <td><span class="training-status status-active">Active</span></td>
+                            <td>TZS 450,000</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Digital Skills Bootcamp</strong></td>
+                            <td>Technical</td>
+                            <td>45/45</td>
+                            <td>2024-01-15</td>
+                            <td><span class="training-status status-completed">Completed</span></td>
+                            <td>TZS 680,000</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sales Excellence</strong></td>
+                            <td>Sales</td>
+                            <td>18/25</td>
+                            <td>2024-02-15</td>
+                            <td><span class="training-status status-upcoming">Upcoming</span></td>
+                            <td>TZS 320,000</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Safety Compliance</strong></td>
+                            <td>Compliance</td>
+                            <td>89/89</td>
+                            <td>2024-01-05</td>
+                            <td><span class="training-status status-completed">Completed</span></td>
+                            <td>TZS 210,000</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Skills Inventory -->
+            <div class="skills-grid">
+                <div class="skills-card">
+                    <div class="card-header">
+                        <div class="card-title">Technical Skills</div>
+                    </div>
+                    <div class="skill-item">
+                        <span>JavaScript Development</span>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <span>Data Analysis</span>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 60%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <span>Cloud Computing</span>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 45%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <span>Cybersecurity</span>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 35%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skills-card">
+                    <div class="card-header">
+                        <div class="card-title">Soft Skills</div>
+                    </div>
+                    <div class="skill-item">
+                        <span>Leadership</span>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <span>Communication</span>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <span>Problem Solving</span>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 70%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <span>Team Collaboration</span>
+                        <div class="skill-progress">
+                            <div class="skill-progress-bar" style="width: 90%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Management Modules -->
             <div class="module-grid">
-                <div class="module-card" onclick="alert('Training Programs opening...')">
+                <div class="module-card" onclick="openModal('programsModal')">
                     <div class="module-icon">📚</div>
                     <h3>Training Programs</h3>
-                    <p>Manage training courses, schedules, and enrollment</p>
+                    <p>Manage training courses, schedules, and enrollment with detailed tracking</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Skills Inventory opening...')">
+                <div class="module-card" onclick="openModal('skillsModal')">
                     <div class="module-icon">🔧</div>
                     <h3>Skills Inventory</h3>
-                    <p>Track employee skills, competencies, and certifications</p>
+                    <p>Track employee skills, competencies, certifications, and skill gaps</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Career Development opening...')">
+                <div class="module-card" onclick="openModal('careerModal')">
                     <div class="module-icon">🚀</div>
                     <h3>Career Development</h3>
-                    <p>Career paths, growth plans, and promotion tracking</p>
+                    <p>Career paths, growth plans, promotion tracking, and succession planning</p>
                 </div>
 
-                <div class="module-card" onclick="alert('E-Learning opening...')">
+                <div class="module-card" onclick="openModal('elearningModal')">
                     <div class="module-icon">💻</div>
                     <h3>E-Learning Portal</h3>
-                    <p>Online courses, webinars, and digital training materials</p>
+                    <p>Online courses, webinars, digital training materials, and progress tracking</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Training Budget opening...')">
+                <div class="module-card" onclick="openModal('budgetModal')">
                     <div class="module-icon">💰</div>
                     <h3>Training Budget</h3>
-                    <p>Manage training costs, approvals, and budget allocation</p>
+                    <p>Manage training costs, approvals, budget allocation, and ROI analysis</p>
                 </div>
 
-                <div class="module-card" onclick="alert('Compliance Training opening...')">
+                <div class="module-card" onclick="openModal('complianceModal')">
                     <div class="module-icon">🛡️</div>
                     <h3>Compliance Training</h3>
-                    <p>Mandatory training, certifications, and compliance tracking</p>
+                    <p>Mandatory training, certifications, compliance tracking, and audit reports</p>
+                </div>
+
+                <div class="module-card" onclick="openModal('analyticsModal')">
+                    <div class="module-icon">📊</div>
+                    <h3>Training Analytics</h3>
+                    <p>Performance metrics, effectiveness analysis, and training impact measurement</p>
+                </div>
+
+                <div class="module-card" onclick="openModal('certificationsModal')">
+                    <div class="module-icon">🏆</div>
+                    <h3>Certifications</h3>
+                    <p>Professional certifications, renewal tracking, and credential management</p>
                 </div>
             </div>
 
@@ -340,21 +734,216 @@
         </main>
     </div>
 
+    <!-- Modals -->
+    <div id="addTrainingModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('addTrainingModal')">×</button>
+            <h2 style="margin-bottom: 1.5rem;">Create New Training Program</h2>
+            <div class="form-group">
+                <label>Program Name</label>
+                <input type="text" placeholder="Enter program name">
+            </div>
+            <div class="form-group">
+                <label>Training Type</label>
+                <select>
+                    <option>Technical Skills</option>
+                    <option>Soft Skills</option>
+                    <option>Leadership</option>
+                    <option>Compliance</option>
+                    <option>Sales</option>
+                    <option>Customer Service</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Start Date</label>
+                <input type="date">
+            </div>
+                <div class="form-group">
+                <label>End Date</label>
+                <input type="date">
+            </div>
+            <div class="form-group">
+                <label>Maximum Participants</label>
+                <input type="number" placeholder="Enter maximum participants">
+            </div>
+            <div class="form-group">
+                <label>Training Budget</label>
+                <div class="currency-input">
+                    <select>
+                        <option>TZS</option>
+                        <option>USD</option>
+                        <option>EUR</option>
+                    </select>
+                    <input type="number" placeholder="0.00" step="0.01">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea rows="3" placeholder="Enter program description"></textarea>
+            </div>
+            <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                <button class="btn btn-primary" style="flex: 1;" onclick="createTrainingProgram()">Create Program</button>
+                <button class="btn btn-outline" style="flex: 1;" onclick="closeModal('addTrainingModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="programsModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('programsModal')">×</button>
+            <h2 style="margin-bottom: 1.5rem;">Training Programs Management</h2>
+            <div class="form-group">
+                <label>Search Programs</label>
+                <input type="text" placeholder="Search by program name or type...">
+            </div>
+            <div class="form-group">
+                <label>Filter by Status</label>
+                <select>
+                    <option>All Statuses</option>
+                    <option>Active</option>
+                    <option>Completed</option>
+                    <option>Upcoming</option>
+                    <option>Cancelled</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Filter by Department</label>
+                <select>
+                    <option>All Departments</option>
+                    <option>IT</option>
+                    <option>Sales</option>
+                    <option>Finance</option>
+                    <option>HR</option>
+                    <option>Operations</option>
+                </select>
+            </div>
+            <div style="margin-top: 2rem; text-align: center;">
+                <button class="btn btn-primary" onclick="closeModal('programsModal')">Manage Programs</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        document.querySelectorAll('.nav-item').forEach(item => {
-            if (item.href === window.location.href) {
-                item.classList.add('active');
+        // Chart Initialization
+        let completionChart, skillsChart;
+
+        function initializeCharts() {
+            // Training Completion Chart
+            const completionCtx = document.getElementById('completionChart').getContext('2d');
+            completionChart = new Chart(completionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Completed Training',
+                        data: [45, 52, 48, 65, 58, 70],
+                        backgroundColor: '#10b981'
+                    }, {
+                        label: 'In Progress',
+                        data: [15, 12, 18, 8, 12, 5],
+                        backgroundColor: '#f59e0b'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+
+            // Skills Distribution Chart
+            const skillsCtx = document.getElementById('skillsChart').getContext('2d');
+            skillsChart = new Chart(skillsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Technical', 'Soft Skills', 'Leadership', 'Compliance', 'Sales'],
+                    datasets: [{
+                        data: [35, 25, 15, 15, 10],
+                        backgroundColor: [
+                            '#2563eb',
+                            '#10b981',
+                            '#8b5cf6',
+                            '#f59e0b',
+                            '#ef4444'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // System Functions
+        function createTrainingProgram() {
+            alert('New training program created successfully!');
+            closeModal('addTrainingModal');
+        }
+
+        function updateCharts() {
+            alert('Updating charts with latest training data...');
+            // In real implementation, this would fetch new data
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            
+            // Navigation active state
+            document.querySelectorAll('.nav-item').forEach(item => {
+                if (item.href === window.location.href) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Module card hover effects
+            document.querySelectorAll('.module-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Close modal when clicking outside
+            window.onclick = function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
             }
         });
 
-        document.querySelectorAll('.module-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-4px)';
+        // Simulate real-time updates
+        setInterval(() => {
+            // Update training completion rates randomly
+            const completionRates = document.querySelectorAll('.training-table td:nth-child(3)');
+            completionRates.forEach(cell => {
+                if (cell.textContent.includes('/')) {
+                    const [current, max] = cell.textContent.split('/').map(Number);
+                    if (current < max && Math.random() > 0.7) {
+                        cell.textContent = `${current + 1}/${max}`;
+                    }
+                }
             });
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
+        }, 30000);
     </script>
 </body>
 </html>
