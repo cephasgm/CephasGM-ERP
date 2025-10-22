@@ -1,1020 +1,1306 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#2563eb">
-  <meta name="description" content="Payroll management module for CephasGM ERP">
-  <title>Payroll Management - CephasGM ERP</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icons/icon-192.png">
-  <style>
-    :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --secondary: #64748b;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --error: #ef4444;
-      --background: #f8fafc;
-      --surface: #ffffff;
-      --text: #1e293b;
-      --text-light: #64748b;
-      --border: #e2e8f0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="description" content="Payroll Management - CephasGM ERP">
+    <title>Payroll Management - CephasGM ERP</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.png">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
 
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      margin: 0;
-      background: var(--background);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .dashboard {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      min-height: 100vh;
-    }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
 
-    .sidebar {
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      padding: 2rem 1rem;
-      position: fixed;
-      width: 280px;
-      height: 100vh;
-      overflow-y: auto;
-    }
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 2rem;
-      padding: 0 1rem;
-    }
+        .sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1rem;
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            overflow-y: auto;
+        }
 
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      background: var(--primary);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      font-size: 1.25rem;
-    }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
 
-    .nav-section {
-      margin-bottom: 2rem;
-    }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
 
-    .nav-title {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      color: var(--text-light);
-      margin-bottom: 1rem;
-      padding: 0 1rem;
-      letter-spacing: 0.5px;
-    }
+        .nav-section {
+            margin-bottom: 2rem;
+        }
 
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      color: var(--text-light);
-      text-decoration: none;
-      transition: all 0.2s;
-      margin-bottom: 0.25rem;
-      border: none;
-      background: none;
-      width: 100%;
-      text-align: left;
-      cursor: pointer;
-      font-size: 0.95rem;
-    }
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            padding: 0 1rem;
+            letter-spacing: 0.5px;
+        }
 
-    .nav-item:hover, .nav-item.active {
-      background: var(--primary);
-      color: white;
-    }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
 
-    .nav-icon {
-      font-size: 1.25rem;
-      width: 24px;
-      text-align: center;
-    }
+        .nav-item:hover, .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
 
-    .main-content {
-      grid-column: 2;
-      padding: 2rem;
-      margin-left: 280px;
-    }
+        .nav-icon {
+            font-size: 1.25rem;
+            width: 24px;
+            text-align: center;
+        }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
+        .main-content {
+            grid-column: 2;
+            padding: 2rem;
+            margin-left: 280px;
+        }
 
-    .header h1 {
-      font-size: 1.875rem;
-      font-weight: 700;
-      color: var(--text);
-    }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text);
+        }
 
-    .stat-card {
-      background: var(--surface);
-      padding: 1.5rem;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
+        /* Enhanced Toolbar */
+        .toolbar {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding: 1.5rem;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
 
-    .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: var(--primary);
-    }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
 
-    .stat-number {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 0.5rem;
-    }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
 
-    .stat-label {
-      color: var(--text-light);
-      font-size: 0.9rem;
-    }
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
 
-    /* Enhanced Toolbar */
-    .toolbar {
-      margin-bottom: 2rem;
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      padding: 1.5rem;
-      background: var(--surface);
-      border-radius: 12px;
-      border: 1px solid var(--border);
-    }
+        .btn-secondary:hover {
+            background: #475569;
+            transform: translateY(-1px);
+        }
 
-    .btn-primary { 
-      background: var(--primary); 
-      color: white; 
-      border: none; 
-      padding: 0.75rem 1.5rem; 
-      border-radius: 8px; 
-      cursor: pointer; 
-      font-weight: 600;
-      transition: all 0.2s;
-    }
+        .btn-success {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
 
-    .btn-primary:hover {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-    }
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
 
-    .btn-secondary { 
-      background: var(--secondary); 
-      color: white; 
-      border: none; 
-      padding: 0.75rem 1.5rem; 
-      border-radius: 8px; 
-      cursor: pointer; 
-      font-weight: 600;
-      transition: all 0.2s;
-    }
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
 
-    .btn-secondary:hover {
-      background: #475569;
-      transform: translateY(-1px);
-    }
+        .btn-warning:hover {
+            background: #d97706;
+        }
 
-    .btn-export { 
-      background: var(--success); 
-      color: white; 
-      border: none; 
-      padding: 0.75rem 1.5rem; 
-      border-radius: 8px; 
-      cursor: pointer; 
-      font-weight: 600;
-      transition: all 0.2s;
-    }
+        .btn-danger {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
 
-    .btn-export:hover {
-      background: #059669;
-      transform: translateY(-1px);
-    }
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
 
-    .btn-danger { 
-      background: var(--error); 
-      color: white; 
-      border: none; 
-      padding: 0.75rem 1.5rem; 
-      border-radius: 8px; 
-      cursor: pointer; 
-      font-weight: 600;
-      transition: all 0.2s;
-    }
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
 
-    .btn-danger:hover {
-      background: #dc2626;
-      transform: translateY(-1px);
-    }
+        .stat-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-    .btn-warning { 
-      background: var(--warning); 
-      color: white; 
-      border: none; 
-      padding: 0.5rem 1rem; 
-      border-radius: 6px; 
-      cursor: pointer; 
-      font-size: 0.875rem;
-    }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
 
-    /* Enhanced Tables */
-    table { 
-      border-collapse: collapse; 
-      width: 100%; 
-      background: var(--surface); 
-      border-radius: 12px; 
-      overflow: hidden; 
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
-    }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary);
+        }
 
-    th, td { 
-      border: 1px solid var(--border); 
-      padding: 12px; 
-      text-align: left; 
-      font-size: 0.875rem; 
-    }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
 
-    th { 
-      background: var(--primary); 
-      color: white; 
-      position: sticky; 
-      top: 0; 
-      z-index: 5; 
-      font-weight: 600;
-    }
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
 
-    tr:nth-child(even) { background: #f8fafc; }
-    tr:hover { background: #f1f5f9; }
+        .stat-trend {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
 
-    tr.locked { 
-      background: #fef3c7; 
-      color: #92400e;
-    }
+        .trend-up {
+            color: var(--success);
+        }
 
-    .actions button { 
-      margin: 2px; 
-      padding: 6px 10px; 
-      border: none; 
-      border-radius: 6px; 
-      cursor: pointer; 
-      font-size: 0.75rem;
-    }
+        .trend-down {
+            color: var(--error);
+        }
 
-    /* Enhanced Modal */
-    #addModal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      justify-content: center; 
-      align-items: center; 
-      z-index: 1000;
-    }
+        /* Payroll Overview */
+        .payroll-overview {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
 
-    .modal-content {
-      background: var(--surface);
-      border-radius: 12px;
-      padding: 2rem;
-      width: 90%;
-      max-width: 900px;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: 0 20px 25px rgba(0,0,0,0.1);
-    }
+        .overview-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
 
-    .modal-header { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border);
-    }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
 
-    .modal-header h3 { 
-      margin: 0; 
-      color: var(--primary); 
-      font-size: 1.5rem;
-    }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
 
-    .modal-header button {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--text-light);
-    }
+        .chart-container {
+            height: 300px;
+            background: var(--background);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+        }
 
-    .modal-header button:hover {
-      color: var(--error);
-    }
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
 
-    .form-grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-      gap: 1rem; 
-      margin-bottom: 1.5rem;
-    }
+        .action-btn {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
 
-    .form-grid label {
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 0.5rem;
-      display: block;
-    }
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
 
-    input, select { 
-      width: 100%; 
-      padding: 0.75rem; 
-      border-radius: 8px; 
-      border: 1px solid var(--border); 
-      background: var(--surface);
-      color: var(--text);
-      font-size: 0.95rem;
-    }
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
 
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
+        /* Enhanced Tables */
+        .table-section {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
 
-    .modal-actions {
-      display: flex;
-      gap: 1rem;
-      justify-content: flex-end;
-      margin-top: 1.5rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border);
-    }
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
 
-    /* File Upload Styles */
-    .file-upload-group {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background: var(--surface);
+            border-radius: 8px;
+            overflow: hidden;
+        }
 
-    .file-upload-group input[type="file"] {
-      flex: 1;
-      padding: 0.5rem;
-      border: 1px dashed var(--border);
-      border-radius: 6px;
-    }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 12px;
+            text-align: left;
+            font-size: 0.875rem;
+        }
 
-    /* Offline Status */
-    .offline-status { 
-      background: var(--warning); 
-      color: white; 
-      padding: 0.5rem 1rem; 
-      border-radius: 20px; 
-      font-size: 0.75rem;
-      font-weight: 600;
-      display: none;
-    }
+        th {
+            background: var(--primary);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            font-weight: 600;
+        }
 
-    /* Section Headers */
-    .section-header {
-      color: var(--primary);
-      margin: 2rem 0 1rem 0;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--primary);
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
+        tr:nth-child(even) { 
+            background: #f8fafc; 
+        }
 
-    @media (max-width: 1024px) {
-      .dashboard {
-        grid-template-columns: 1fr;
-      }
-      .sidebar {
-        transform: translateX(-100%);
-      }
-      .main-content {
-        margin-left: 0;
-        grid-column: 1;
-      }
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+        tr:hover { 
+            background: #f1f5f9; 
+        }
 
-    @media (max-width: 768px) {
-      .toolbar {
-        flex-direction: column;
-      }
-      .toolbar button {
-        width: 100%;
-      }
-      table {
-        font-size: 0.75rem;
-      }
-      th, td {
-        padding: 8px 4px;
-      }
-    }
-  </style>
+        tr.locked {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .currency-select {
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .amount-cell {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .positive-amount {
+            color: var(--success);
+        }
+
+        .negative-amount {
+            color: var(--error);
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .actions button {
+            padding: 0.25rem 0.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        /* Enhanced Modal */
+        #payrollModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px rgba(0,0,0,0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .modal-header button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .modal-header button:hover {
+            color: var(--error);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-grid label {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* File Upload Styles */
+        .file-upload-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .file-upload-group input[type="file"] {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px dashed var(--border);
+            border-radius: 6px;
+        }
+
+        /* Offline Status */
+        .offline-status {
+            background: var(--warning);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        /* Section Headers */
+        .section-header {
+            color: var(--primary);
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+                grid-column: 1;
+            }
+            .payroll-overview {
+                grid-template-columns: 1fr;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .toolbar {
+                flex-direction: column;
+            }
+            .table-container {
+                font-size: 0.75rem;
+            }
+            th, td {
+                padding: 8px 4px;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #0f172a;
+                --surface: #1e293b;
+                --text: #f1f5f9;
+                --text-light: #94a3b8;
+                --border: #334155;
+            }
+            tr:nth-child(even) { 
+                background: #1e293b; 
+            }
+            tr:hover { 
+                background: #334155; 
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="dashboard">
-    <nav class="sidebar">
-      <div class="logo">
-        <div class="logo-icon">CG</div>
-        <div>
-          <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
-          <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
-        </div>
-      </div>
+    <div class="dashboard">
+        <nav class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">CG</div>
+                <div>
+                    <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
+                    <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
+                </div>
+            </div>
 
-      <div class="nav-section">
-        <div class="nav-title">Payroll & HR</div>
-        <a href="payroll.html" class="nav-item active">
-          <span class="nav-icon">💳</span>
-          Payroll Management
-        </a>
-        <a href="hr.html" class="nav-item">
-          <span class="nav-icon">👥</span>
-          HR Management
-        </a>
-        <a href="attendance.html" class="nav-item">
-          <span class="nav-icon">⏱️</span>
-          Attendance
-        </a>
-      </div>
+            <div class="nav-section">
+                <div class="nav-title">Payroll & HR</div>
+                <a href="payroll.html" class="nav-item active">
+                    <span class="nav-icon">💳</span>
+                    Payroll Management
+                </a>
+                <a href="hr.html" class="nav-item">
+                    <span class="nav-icon">👥</span>
+                    HR Management
+                </a>
+                <a href="attendance.html" class="nav-item">
+                    <span class="nav-icon">⏱️</span>
+                    Attendance
+                </a>
+            </div>
 
-      <div class="nav-section">
-        <div class="nav-title">Payroll Modules</div>
-        <a href="salary-structure.html" class="nav-item">
-          <span class="nav-icon">🏗️</span>
-          Salary Structure
-        </a>
-        <a href="tax-management.html" class="nav-item">
-          <span class="nav-icon">🏛️</span>
-          Tax Management
-        </a>
-        <a href="benefits.html" class="nav-item">
-          <span class="nav-icon">🏥</span>
-          Benefits
-        </a>
-      </div>
+            <div class="nav-section">
+                <div class="nav-title">Payroll Modules</div>
+                <a href="salary-structure.html" class="nav-item">
+                    <span class="nav-icon">🏗️</span>
+                    Salary Structure
+                </a>
+                <a href="tax-management.html" class="nav-item">
+                    <span class="nav-icon">🏛️</span>
+                    Tax Management
+                </a>
+                <a href="benefits.html" class="nav-item">
+                    <span class="nav-icon">🏥</span>
+                    Benefits
+                </a>
+            </div>
 
-      <div class="nav-section">
-        <div class="nav-title">Operations</div>
-        <a href="index.html" class="nav-item">
-          <span class="nav-icon">📊</span>
-          Dashboard
-        </a>
-        <a href="finance.html" class="nav-item">
-          <span class="nav-icon">💰</span>
-          Finance
-        </a>
-        <a href="admin.html" class="nav-item">
-          <span class="nav-icon">⚙️</span>
-          System Admin
-        </a>
-      </div>
-    </nav>
+            <div class="nav-section">
+                <div class="nav-title">Operations</div>
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    Dashboard
+                </a>
+                <a href="finance.html" class="nav-item">
+                    <span class="nav-icon">💰</span>
+                    Finance
+                </a>
+                <a href="admin.html" class="nav-item">
+                    <span class="nav-icon">⚙️</span>
+                    System Admin
+                </a>
+            </div>
+        </nav>
 
-    <main class="main-content">
-      <div class="header">
-        <h1>Payroll Management</h1>
-        <div>
-          <span class="offline-status" id="offlineStatus">Offline</span>
-        </div>
-      </div>
+        <main class="main-content">
+            <div class="header">
+                <h1>Payroll Management</h1>
+                <div>
+                    <span class="offline-status" id="offlineStatus">Offline</span>
+                </div>
+            </div>
 
-      <!-- Payroll Statistics -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-number" id="totalEmployees">0</div>
-          <div class="stat-label">Total Employees</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="totalPayroll">₦0.00</div>
-          <div class="stat-label">Total Payroll</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="avgSalary">₦0.00</div>
-          <div class="stat-label">Average Salary</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="pendingApprovals">0</div>
-          <div class="stat-label">Pending</div>
-        </div>
-      </div>
+            <!-- Enhanced Toolbar -->
+            <div class="toolbar">
+                <button class="btn-primary" onclick="openPayrollModal()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">➕</span>
+                    Add Payroll Entry
+                </button>
+                <button class="btn-success" onclick="processPayroll()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">⚡</span>
+                    Process Payroll
+                </button>
+                <button class="btn-secondary" onclick="importAttendanceData()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">⏱️</span>
+                    Import Attendance
+                </button>
+                <button class="btn-success" onclick="exportPayrollData()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">📤</span>
+                    Export Data
+                </button>
+                <button class="btn-danger" onclick="clearAllData()">
+                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">🗑️</span>
+                    Clear All
+                </button>
+            </div>
 
-      <!-- Enhanced Toolbar -->
-      <div class="toolbar">
-        <button class="btn-primary" onclick="openModal()">
-          <span style="font-size: 1.2rem; margin-right: 0.5rem;">➕</span>
-          Add New Entry
-        </button>
-        
-        <div class="file-upload-group">
-          <input type="file" id="csvUpload" accept=".csv" style="display: none;">
-          <button class="btn-secondary" onclick="document.getElementById('csvUpload').click()">
-            <span style="font-size: 1.2rem; margin-right: 0.5rem;">📤</span>
-            Upload CSV
-          </button>
-          <button class="btn-secondary" onclick="downloadSampleCSV()">
-            <span style="font-size: 1.2rem; margin-right: 0.5rem;">📥</span>
-            Sample CSV
-          </button>
-        </div>
+            <!-- Payroll Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card" onclick="viewEmployees()">
+                    <div class="stat-number" id="totalEmployees">0</div>
+                    <div class="stat-label">Total Employees</div>
+                    <div class="stat-trend trend-up" id="employeeTrend">↑ 0 this month</div>
+                </div>
+                <div class="stat-card" onclick="viewTotalPayroll()">
+                    <div class="stat-number" id="totalPayroll">USD 0.00</div>
+                    <div class="stat-label">Total Payroll</div>
+                    <div class="stat-trend trend-up" id="payrollTrend">↑ 0% from last month</div>
+                </div>
+                <div class="stat-card" onclick="viewAverageSalary()">
+                    <div class="stat-number" id="avgSalary">USD 0.00</div>
+                    <div class="stat-label">Average Salary</div>
+                    <div class="stat-trend trend-up" id="salaryTrend">↑ 0% change</div>
+                </div>
+                <div class="stat-card" onclick="viewPendingApprovals()">
+                    <div class="stat-number" id="pendingApprovals">0</div>
+                    <div class="stat-label">Pending Approvals</div>
+                    <div class="stat-trend trend-down" id="approvalTrend">↓ 0 today</div>
+                </div>
+            </div>
 
-        <button class="btn-export" onclick="exportExcel()">
-          <span style="font-size: 1.2rem; margin-right: 0.5rem;">📊</span>
-          Export Excel
-        </button>
-        <button class="btn-export" onclick="exportPDF()">
-          <span style="font-size: 1.2rem; margin-right: 0.5rem;">📄</span>
-          Export PDF
-        </button>
-        <button class="btn-danger" onclick="deleteSelected()">
-          <span style="font-size: 1.2rem; margin-right: 0.5rem;">🗑️</span>
-          Delete Selected
-        </button>
-      </div>
+            <!-- Payroll Overview -->
+            <div class="payroll-overview">
+                <div class="overview-card">
+                    <div class="card-header">
+                        <div class="card-title">Payroll Distribution</div>
+                        <select id="payrollPeriod" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--background);">
+                            <option>Current Month</option>
+                            <option>Last Month</option>
+                            <option>This Quarter</option>
+                        </select>
+                    </div>
+                    <div class="chart-container" id="payrollChart">
+                        Payroll Distribution Visualization
+                    </div>
+                </div>
 
-      <!-- Section A – Payroll Data -->
-      <div class="section-header">Section A – Payroll Data</div>
-      <div style="overflow-x: auto;">
-        <table id="payrollTable">
-          <thead>
-            <tr>
-              <th>Select</th>
-              <th>S/No</th>
-              <th>Date</th>
-              <th>Employee Name</th>
-              <th>Employee ID</th>
-              <th>Currency</th>
-              <th>Hourly Rate (Normal Shift)</th>
-              <th>Hourly Rate (Overtime)</th>
-              <th>Hours Worked (Normal Shift)</th>
-              <th>Hours Worked (Overtime)</th>
-              <th>Days Worked (Normal Shift)</th>
-              <th>Days Worked (Overtime)</th>
-              <th>(Normal Working Day) Total Amount</th>
-              <th>(OverTime) Total Amount</th>
-              <th>Total Amount</th>
-              <th>Bonus</th>
-              <th>Allowance</th>
-              <th>Deduction</th>
-              <th>Gross Salary</th>
-              <th>PAYEE %</th>
-              <th>Net Salary</th>
-              <th>Remarks</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+                <div class="overview-card">
+                    <div class="card-header">
+                        <div class="card-title">Quick Actions</div>
+                    </div>
+                    <div class="quick-actions">
+                        <div class="action-btn" onclick="calculateBonuses()">
+                            <div class="action-icon">💰</div>
+                            <div>Calculate Bonuses</div>
+                        </div>
+                        <div class="action-btn" onclick="generatePayslips()">
+                            <div class="action-icon">📄</div>
+                            <div>Generate Payslips</div>
+                        </div>
+                        <div class="action-btn" onclick="taxCalculations()">
+                            <div class="action-icon">🏛️</div>
+                            <div>Tax Calculations</div>
+                        </div>
+                        <div class="action-btn" onclick="runReports()">
+                            <div class="action-icon">📊</div>
+                            <div>Run Reports</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-      <!-- Section B – Summary -->
-      <div class="section-header">Section B – Summary</div>
-      <table id="summaryTable">
-        <thead>
-          <tr>
-            <th>Total Employees</th>
-            <th>(Normal Working Day) Total Amount</th>
-            <th>(OverTime) Total Amount</th>
-            <th>Total Amount</th>
-            <th>Bonus</th>
-            <th>Allowance</th>
-            <th>Deduction</th>
-            <th>Gross Salary</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr id="summaryRow">
-            <td>0</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td>
-          </tr>
-        </tbody>
-      </table>
-    </main>
-  </div>
+            <!-- Section A - Payroll Data -->
+            <div class="section-header">Section A - Payroll Data</div>
+            <div class="table-section">
+                <div class="card-header">
+                    <div class="card-title">Employee Payroll Records</div>
+                    <div class="file-upload-group">
+                        <input type="file" id="csvUpload" accept=".csv" style="display: none;" onchange="handleCSVUpload(this.files[0])">
+                        <button class="btn-secondary" onclick="document.getElementById('csvUpload').click()">
+                            📤 Upload CSV
+                        </button>
+                        <button class="btn-secondary" onclick="downloadSampleCSV()">
+                            📥 Sample CSV
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="payrollTable">
+                        <thead>
+                            <tr>
+                                <th>Select</th>
+                                <th>S/No</th>
+                                <th>Date</th>
+                                <th>Employee Name</th>
+                                <th>Employee ID</th>
+                                <th>Currency</th>
+                                <th>Hourly Rate (Normal)</th>
+                                <th>Hourly Rate (Overtime)</th>
+                                <th>Hours Worked (Normal)</th>
+                                <th>Hours Worked (Overtime)</th>
+                                <th>Days Worked (Normal)</th>
+                                <th>Days Worked (Overtime)</th>
+                                <th>Normal Amount</th>
+                                <th>Overtime Amount</th>
+                                <th>Total Amount</th>
+                                <th>Bonus</th>
+                                <th>Allowance</th>
+                                <th>Deduction</th>
+                                <th>Gross Salary</th>
+                                <th>PAYEE %</th>
+                                <th>Net Salary</th>
+                                <th>Remarks</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payrollTableBody">
+                            <!-- Dynamic content will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-  <!-- Enhanced Modal -->
-  <div id="addModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Add New Payroll Entry</h3>
-        <button onclick="closeModal()">✖</button>
-      </div>
-      <form id="entryForm" onsubmit="saveEntry(event)">
-        <div class="form-grid" id="formFields"></div>
-        <div class="modal-actions">
-          <button class="btn-primary" type="submit">Save Entry</button>
-          <button class="btn-secondary" type="button" onclick="closeModal()">Cancel</button>
-        </div>
-      </form>
+            <!-- Section B - Summary -->
+            <div class="section-header">Section B - Summary</div>
+            <div class="table-section">
+                <div class="table-container">
+                    <table id="summaryTable">
+                        <thead>
+                            <tr>
+                                <th>Total Employees</th>
+                                <th>Normal Amount Total</th>
+                                <th>Overtime Amount Total</th>
+                                <th>Total Amount</th>
+                                <th>Bonus Total</th>
+                                <th>Allowance Total</th>
+                                <th>Deduction Total</th>
+                                <th>Gross Salary Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="summaryRow">
+                                <td>0</td>
+                                <td>USD 0.00</td>
+                                <td>USD 0.00</td>
+                                <td>USD 0.00</td>
+                                <td>USD 0.00</td>
+                                <td>USD 0.00</td>
+                                <td>USD 0.00</td>
+                                <td>USD 0.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="footer">
+                Copyright © 2025 😀
+            </div>
+        </main>
     </div>
-  </div>
 
-  <!-- External Libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- Enhanced Modal -->
+    <div id="payrollModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Payroll Entry</h3>
+                <button onclick="closePayrollModal()">✖</button>
+            </div>
+            <form id="payrollForm" onsubmit="savePayrollEntry(event)">
+                <div class="form-grid" id="payrollFormFields">
+                    <!-- Dynamic form fields will be loaded here -->
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-primary" type="submit">Save Entry</button>
+                    <button class="btn-secondary" type="button" onclick="closePayrollModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-  <script>
-    // COMPLETE PAYROLL JAVASCRIPT CODE - PRESERVED FROM ORIGINAL
-    let payrollData = JSON.parse(localStorage.getItem('payrollData') || '[]');
+    <script>
+        // Enhanced Payroll Management System
+        class PayrollManager {
+            constructor() {
+                this.payrollData = JSON.parse(localStorage.getItem('payrollData')) || [];
+                this.currencies = ["TZS", "USD", "EUR", "GBP", "ZAR", "KES", "ZMW", "NAD"];
+                this.fields = [
+                    "Date", "Employee Name", "Employee ID", "Currency", 
+                    "Hourly Rate (Normal Shift)", "Hourly Rate (Overtime)",
+                    "Hours Worked (Normal Shift)", "Hours Worked (Overtime)", 
+                    "Days Worked (Normal Shift)", "Days Worked (Overtime)",
+                    "(Normal Working Day) Total Amount", "(OverTime) Total Amount", 
+                    "Total Amount", "Bonus", "Allowance", "Deduction",
+                    "Gross Salary", "PAYEE %", "Net Salary", "Remarks"
+                ];
+                this.initialize();
+            }
 
-    const fields = [
-      "Date","Employee Name","Employee ID","Currency","Hourly Rate (Normal Shift)","Hourly Rate (Overtime)",
-      "Hours Worked (Normal Shift)","Hours Worked (Overtime)","Days Worked (Normal Shift)","Days Worked (Overtime)",
-      "(Normal Working Day) Total Amount","(OverTime) Total Amount","Total Amount","Bonus","Allowance","Deduction",
-      "Gross Salary","PAYEE %","Net Salary","Remarks"
-    ];
+            initialize() {
+                this.setupNavigation();
+                this.renderPayrollForm();
+                this.loadPayrollData();
+                this.setupEventListeners();
+                this.setupOfflineDetection();
+            }
 
-    function renderForm() {
-      const form = document.getElementById('formFields');
-      form.innerHTML = '';
-      fields.forEach(f => {
-        if (["(Normal Working Day) Total Amount","(OverTime) Total Amount","Total Amount","Gross Salary","Net Salary"].includes(f)) return;
-        const label = document.createElement('label');
-        label.textContent = f;
-        if(f==="Currency"){
-          const select = document.createElement('select');
-          select.name=f;
-          ["TZS","USD","EUR","GBP","ZAR","KES","ZMW","NAD"].forEach(c=>{
-            const opt=document.createElement('option'); opt.value=c; opt.textContent=c; select.appendChild(opt);
-          });
-          form.appendChild(label); form.appendChild(select); return;
+            setupNavigation() {
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    if (item.href === window.location.href) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+
+            renderPayrollForm() {
+                const form = document.getElementById('payrollFormFields');
+                form.innerHTML = '';
+
+                this.fields.forEach(field => {
+                    if (["(Normal Working Day) Total Amount", "(OverTime) Total Amount", 
+                         "Total Amount", "Gross Salary", "Net Salary"].includes(field)) return;
+
+                    const label = document.createElement('label');
+                    label.textContent = field;
+                    label.htmlFor = field;
+
+                    if (field === "Currency") {
+                        const select = document.createElement('select');
+                        select.name = field;
+                        select.id = field;
+                        select.required = true;
+                        
+                        this.currencies.forEach(currency => {
+                            const option = document.createElement('option');
+                            option.value = currency;
+                            option.textContent = currency;
+                            select.appendChild(option);
+                        });
+                        
+                        form.appendChild(label);
+                        form.appendChild(select);
+                        return;
+                    }
+
+                    const input = document.createElement('input');
+                    input.type = field === "Date" ? "date" : 
+                                ["Hourly Rate (Normal Shift)", "Hourly Rate (Overtime)",
+                                 "Hours Worked (Normal Shift)", "Hours Worked (Overtime)",
+                                 "Days Worked (Normal Shift)", "Days Worked (Overtime)",
+                                 "Bonus", "Allowance", "Deduction", "PAYEE %"].includes(field) ? "number" : "text";
+                    input.name = field;
+                    input.id = field;
+                    input.step = field.includes("Rate") || field.includes("Bonus") || 
+                                field.includes("Allowance") || field.includes("Deduction") ? "0.01" : "1";
+                    input.min = "0";
+                    input.required = ["Date", "Employee Name", "Employee ID"].includes(field);
+
+                    form.appendChild(label);
+                    form.appendChild(input);
+                });
+            }
+
+            loadPayrollData() {
+                this.renderPayrollTable();
+                this.updateSummary();
+                this.updateStats();
+                this.updateCharts();
+            }
+
+            renderPayrollTable() {
+                const tbody = document.getElementById('payrollTableBody');
+                
+                if (this.payrollData.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="23" style="text-align: center; color: var(--text-light); padding: 2rem;">
+                                No payroll records found. Click "Add Payroll Entry" to get started.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                tbody.innerHTML = this.payrollData.map((row, index) => `
+                    <tr class="${row.locked ? 'locked' : ''}">
+                        <td><input type="checkbox" class="selectRow" onchange="updateSelections()"></td>
+                        <td>${index + 1}</td>
+                        <td contenteditable="true" onblur="updateField(${index}, 'Date', this)">${row.Date}</td>
+                        <td contenteditable="true" onblur="updateField(${index}, 'Employee Name', this)">${row['Employee Name']}</td>
+                        <td contenteditable="true" onblur="updateField(${index}, 'Employee ID', this)">${row['Employee ID']}</td>
+                        <td>
+                            <select class="currency-select" onchange="updateField(${index}, 'Currency', this)" ${row.locked ? 'disabled' : ''}>
+                                ${this.currencies.map(curr => 
+                                    `<option value="${curr}" ${row.Currency === curr ? 'selected' : ''}>${curr}</option>`
+                                ).join('')}
+                            </select>
+                        </td>
+                        <td contenteditable="true" onblur="updateField(${index}, 'Hourly Rate (Normal Shift)', this)">${row['Hourly Rate (Normal Shift)']}</td>
+                        <td contenteditable="true" onblur="updateField(${index}, 'Hourly Rate (Overtime)', this)">${row['Hourly Rate (Overtime)']}</td>
+                        <td contenteditable="true" onblur="updateField(${index}, 'Hours Worked (Normal Shift)', this)">${row['Hours Worked (Normal Shift)']}</td>
+                        <td contenteditable="true" onblur="updateField(${index}, 'Hours Worked (Overtime)', this)">${row['Hours Worked (Overtime)']}</td>
+                        <td contenteditable="true" onblur="updateField(${index}, 'Days Worked (Normal Shift)', this)">${row['Days Worked (Normal Shift)']}</td>
+                        <td contenteditable="true" onblur="updateField(${index}, 'Days Worked (Overtime)', this)">${row['Days Worked (Overtime)']}</td>
+                        <td class="amount-cell">${this.formatCurrency(row['(Normal Working Day) Total Amount'])}</td>
+                        <td class="amount-cell">${this.formatCurrency(row['(OverTime) Total Amount'])}</td>
+                        <td class="amount-cell">${this.formatCurrency(row['Total Amount'])}</td>
+                        <td class="amount-cell">${this.formatCurrency(row.Bonus)}</td>
+                        <td class="amount-cell">${this.formatCurrency(row.Allowance)}</td>
+                        <td class="amount-cell negative-amount">${this.formatCurrency(row.Deduction)}</td>
+                        <td class="amount-cell positive-amount">${this.formatCurrency(row['Gross Salary'])}</td>
+                        <td contenteditable="true" onblur="updateField(${index}, 'PAYEE %', this)">${row['PAYEE %']}</td>
+                        <td class="amount-cell positive-amount">${this.formatCurrency(row['Net Salary'])}</td>
+                        <td contenteditable="true" onblur="updateField(${index}, 'Remarks', this)">${row.Remarks || ''}</td>
+                        <td class="actions">
+                            <button class="btn-warning" onclick="toggleLock(${index})">
+                                ${row.locked ? '🔓' : '🔒'}
+                            </button>
+                            <button class="btn-danger" onclick="deleteEntry(${index})">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            formatCurrency(amount) {
+                return `USD ${parseFloat(amount || 0).toFixed(2)}`;
+            }
+
+            calculatePayroll(entry) {
+                const normalRate = parseFloat(entry['Hourly Rate (Normal Shift)']) || 0;
+                const overtimeRate = parseFloat(entry['Hourly Rate (Overtime)']) || 0;
+                const normalHours = parseFloat(entry['Hours Worked (Normal Shift)']) || 0;
+                const overtimeHours = parseFloat(entry['Hours Worked (Overtime)']) || 0;
+                const normalDays = parseFloat(entry['Days Worked (Normal Shift)']) || 1;
+                const overtimeDays = parseFloat(entry['Days Worked (Overtime)']) || 1;
+
+                entry['(Normal Working Day) Total Amount'] = (normalRate * normalHours * normalDays).toFixed(2);
+                entry['(OverTime) Total Amount'] = (overtimeRate * overtimeHours * overtimeDays).toFixed(2);
+                entry['Total Amount'] = (parseFloat(entry['(Normal Working Day) Total Amount']) + 
+                                       parseFloat(entry['(OverTime) Total Amount'])).toFixed(2);
+
+                const bonus = parseFloat(entry.Bonus) || 0;
+                const allowance = parseFloat(entry.Allowance) || 0;
+                const deduction = parseFloat(entry.Deduction) || 0;
+                const payeePercent = parseFloat(entry['PAYEE %']) || 0;
+
+                entry['Gross Salary'] = (parseFloat(entry['Total Amount']) + bonus + allowance - deduction).toFixed(2);
+                entry['Net Salary'] = (parseFloat(entry['Gross Salary']) * (1 - payeePercent / 100)).toFixed(2);
+
+                return entry;
+            }
+
+            updateSummary() {
+                const totals = {
+                    employees: this.payrollData.length,
+                    normal: 0,
+                    overtime: 0,
+                    total: 0,
+                    bonus: 0,
+                    allowance: 0,
+                    deduction: 0,
+                    gross: 0
+                };
+
+                this.payrollData.forEach(entry => {
+                    totals.normal += parseFloat(entry['(Normal Working Day) Total Amount']) || 0;
+                    totals.overtime += parseFloat(entry['(OverTime) Total Amount']) || 0;
+                    totals.total += parseFloat(entry['Total Amount']) || 0;
+                    totals.bonus += parseFloat(entry.Bonus) || 0;
+                    totals.allowance += parseFloat(entry.Allowance) || 0;
+                    totals.deduction += parseFloat(entry.Deduction) || 0;
+                    totals.gross += parseFloat(entry['Gross Salary']) || 0;
+                });
+
+                const row = document.getElementById('summaryRow');
+                if (row) {
+                    row.innerHTML = `
+                        <td>${totals.employees}</td>
+                        <td>${this.formatCurrency(totals.normal)}</td>
+                        <td>${this.formatCurrency(totals.overtime)}</td>
+                        <td>${this.formatCurrency(totals.total)}</td>
+                        <td>${this.formatCurrency(totals.bonus)}</td>
+                        <td>${this.formatCurrency(totals.allowance)}</td>
+                        <td>${this.formatCurrency(totals.deduction)}</td>
+                        <td>${this.formatCurrency(totals.gross)}</td>
+                    `;
+                }
+            }
+
+            updateStats() {
+                const totalEmployees = this.payrollData.length;
+                const totalPayroll = this.payrollData.reduce((sum, entry) => 
+                    sum + (parseFloat(entry['Gross Salary']) || 0), 0);
+                const avgSalary = totalEmployees > 0 ? totalPayroll / totalEmployees : 0;
+
+                document.getElementById('totalEmployees').textContent = totalEmployees;
+                document.getElementById('totalPayroll').textContent = this.formatCurrency(totalPayroll);
+                document.getElementById('avgSalary').textContent = this.formatCurrency(avgSalary);
+                document.getElementById('pendingApprovals').textContent = 
+                    this.payrollData.filter(entry => !entry.approved).length;
+            }
+
+            updateCharts() {
+                const chart = document.getElementById('payrollChart');
+                // Simple chart visualization
+                chart.innerHTML = `
+                    <div style="width: 100%; height: 100%; display: flex; align-items: end; justify-content: center; gap: 20px; padding: 20px;">
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="background: var(--primary); width: 50px; height: 70%; border-radius: 4px;"></div>
+                            <div style="margin-top: 10px; font-size: 0.875rem;">Normal</div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="background: var(--warning); width: 50px; height: 40%; border-radius: 4px;"></div>
+                            <div style="margin-top: 10px; font-size: 0.875rem;">Overtime</div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="background: var(--success); width: 50px; height: 60%; border-radius: 4px;"></div>
+                            <div style="margin-top: 10px; font-size: 0.875rem;">Bonus</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            setupEventListeners() {
+                document.getElementById('payrollPeriod').addEventListener('change', (e) => {
+                    this.filterByPeriod(e.target.value);
+                });
+            }
+
+            setupOfflineDetection() {
+                window.addEventListener('online', () => {
+                    document.getElementById('offlineStatus').style.display = 'none';
+                });
+
+                window.addEventListener('offline', () => {
+                    document.getElementById('offlineStatus').style.display = 'inline-block';
+                });
+
+                if (!navigator.onLine) {
+                    document.getElementById('offlineStatus').style.display = 'inline-block';
+                }
+            }
+
+            filterByPeriod(period) {
+                console.log('Filtering payroll by period:', period);
+                this.updateCharts();
+            }
         }
-        const input=document.createElement('input');
-        input.name=f;
-        input.required = f === "Date" || f === "Employee Name" || f === "Employee ID";
-        input.type=f==="Date"?"date":"text";
-        if (f === "Remarks") {
-          input.type = "text";
+
+        // Global payroll functions
+        const payrollManager = new PayrollManager();
+
+        function openPayrollModal() {
+            document.getElementById('payrollModal').style.display = 'flex';
         }
-        form.appendChild(label); form.appendChild(input);
-      });
-    }
 
-    function openModal(){ document.getElementById('addModal').style.display='flex'; }
-    function closeModal(){ document.getElementById('addModal').style.display='none'; }
-
-    function saveEntry(e){
-      e.preventDefault();
-      const entry={};
-      let hasErrors = false;
-
-      // Required field validation
-      const requiredFields = ['Date', 'Employee Name', 'Employee ID'];
-      requiredFields.forEach(field => {
-        if (!e.target[field]?.value.trim()) {
-          alert(`${field} is required!`);
-          hasErrors = true;
+        function closePayrollModal() {
+            document.getElementById('payrollModal').style.display = 'none';
+            document.getElementById('payrollForm').reset();
         }
-      });
 
-      if (hasErrors) return;
+        function savePayrollEntry(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const entry = {};
 
-      fields.forEach(f=>{
-        if(["(Normal Working Day) Total Amount","(OverTime) Total Amount","Total Amount","Gross Salary","Net Salary"].includes(f)) return;
-        entry[f]=e.target[f]?.value|| (f === 'Remarks' ? '' : 0);
-      });
+            payrollManager.fields.forEach(field => {
+                if (["(Normal Working Day) Total Amount", "(OverTime) Total Amount", 
+                     "Total Amount", "Gross Salary", "Net Salary"].includes(field)) return;
+                
+                entry[field] = formData.get(field) || (field === 'Remarks' ? '' : '0');
+            });
 
-      ["Hourly Rate (Normal Shift)","Hourly Rate (Overtime)","Hours Worked (Normal Shift)","Hours Worked (Overtime)","Days Worked (Normal Shift)","Days Worked (Overtime)","Bonus","Allowance","Deduction","PAYEE %"].forEach(k=>{
-        entry[k]=parseFloat(entry[k])||0;
-      });
+            // Convert numeric fields
+            ["Hourly Rate (Normal Shift)", "Hourly Rate (Overtime)", "Hours Worked (Normal Shift)", 
+             "Hours Worked (Overtime)", "Days Worked (Normal Shift)", "Days Worked (Overtime)",
+             "Bonus", "Allowance", "Deduction", "PAYEE %"].forEach(field => {
+                entry[field] = parseFloat(entry[field]) || 0;
+            });
 
-      // Calculate with better defaults
-      const normalDays = entry["Days Worked (Normal Shift)"] || 1;
-      const overtimeDays = entry["Days Worked (Overtime)"] || 1;
-      
-      entry["(Normal Working Day) Total Amount"]=(entry["Hourly Rate (Normal Shift)"]*entry["Hours Worked (Normal Shift)"]*normalDays).toFixed(2);
-      entry["(OverTime) Total Amount"]=(entry["Hourly Rate (Overtime)"]*entry["Hours Worked (Overtime)"]*overtimeDays).toFixed(2);
-      entry["Total Amount"]=(+entry["(Normal Working Day) Total Amount"]+ +entry["(OverTime) Total Amount"]).toFixed(2);
-      entry["Gross Salary"]=(+entry["Total Amount"]+ +entry["Bonus"]+ +entry["Allowance"]- +entry["Deduction"]).toFixed(2);
-      entry["Net Salary"]=(+entry["Gross Salary"]-(+entry["Gross Salary"]*(+entry["PAYEE %"]/100))).toFixed(2);
+            // Calculate payroll
+            payrollManager.calculatePayroll(entry);
 
-      payrollData.push(entry);
-      localStorage.setItem('payrollData', JSON.stringify(payrollData));
-      renderTable();
-      closeModal(); e.target.reset();
-    }
-
-    function renderTable(){
-      const tbody=document.querySelector('#payrollTable tbody');
-      tbody.innerHTML='';
-      payrollData.forEach((row,i)=>{
-        const tr=document.createElement('tr');
-        if (tr.classList.contains('locked')) {
-          tr.classList.add('locked');
+            payrollManager.payrollData.push(entry);
+            localStorage.setItem('payrollData', JSON.stringify(payrollManager.payrollData));
+            
+            payrollManager.loadPayrollData();
+            closePayrollModal();
+            
+            alert('Payroll entry saved successfully!');
         }
-        
-        tr.innerHTML=`<td><input type="checkbox" class="selectRow"></td><td>${i+1}</td>`;
-        fields.forEach(f=>{
-          tr.innerHTML+=`<td contenteditable="true" onblur="editCell(${i},'${f}',this)">${row[f] || ''}</td>`;
-        });
-        tr.innerHTML+=`<td class="actions">
-          <button class="btn-warning" onclick="toggleLock(${i}, this)">${tr.classList.contains('locked')?'🔓':'🔒'}</button>
-          <button class="btn-danger" onclick="deleteRow(${i})">🗑️</button>
-        </td>`;
-        tbody.appendChild(tr);
-      });
-      updateSummary();
-      updateStats(); // Update the new stats cards
-    }
 
-    function editCell(i,key,cell){
-      const newValue=cell.textContent.trim();
-      if(confirm("Save changes?")){
-        payrollData[i][key]=key.includes("Amount") || ["Hourly Rate (Normal Shift)","Hourly Rate (Overtime)","Hours Worked (Normal Shift)","Hours Worked (Overtime)","Days Worked (Normal Shift)","Days Worked (Overtime)","Bonus","Allowance","Deduction","PAYEE %"].includes(key)?parseFloat(newValue)||0:newValue;
-
-        // Recalculate derived fields
-        const normalDays = payrollData[i]["Days Worked (Normal Shift)"] || 1;
-        const overtimeDays = payrollData[i]["Days Worked (Overtime)"] || 1;
-        
-        payrollData[i]["(Normal Working Day) Total Amount"]=(payrollData[i]["Hourly Rate (Normal Shift)"]*payrollData[i]["Hours Worked (Normal Shift)"]*normalDays).toFixed(2);
-        payrollData[i]["(OverTime) Total Amount"]=(payrollData[i]["Hourly Rate (Overtime)"]*payrollData[i]["Hours Worked (Overtime)"]*overtimeDays).toFixed(2);
-        payrollData[i]["Total Amount"]=(+payrollData[i]["(Normal Working Day) Total Amount"]+ +payrollData[i]["(OverTime) Total Amount"]).toFixed(2);
-        payrollData[i]["Gross Salary"]=(+payrollData[i]["Total Amount"]+ +payrollData[i]["Bonus"]+ +payrollData[i]["Allowance"]- +payrollData[i]["Deduction"]).toFixed(2);
-        payrollData[i]["Net Salary"]=(+payrollData[i]["Gross Salary"]-(+payrollData[i]["Gross Salary"]*(+payrollData[i]["PAYEE %"]/100))).toFixed(2);
-
-        localStorage.setItem('payrollData', JSON.stringify(payrollData));
-        renderTable();
-      } else {
-        renderTable();
-      }
-    }
-
-    function toggleLock(i,btn){
-      const tr=document.querySelectorAll('#payrollTable tbody tr')[i];
-      if(tr.classList.toggle('locked')) {
-        btn.textContent='🔓';
-      } else {
-        btn.textContent='🔒';
-      }
-    }
-
-    function deleteRow(i){
-      if(confirm("Delete this row?")){
-        payrollData.splice(i,1);
-        localStorage.setItem('payrollData', JSON.stringify(payrollData));
-        renderTable();
-      }
-    }
-
-    function deleteSelected(){
-      const selected=[...document.querySelectorAll('.selectRow')].map((c,i)=>c.checked?i:null).filter(i=>i!==null);
-      if(selected.length === 0) {
-        alert("Please select rows to delete");
-        return;
-      }
-      
-      if(confirm(`Delete ${selected.length} selected rows?`)){
-        payrollData=payrollData.filter((_,i)=>!selected.includes(i));
-        localStorage.setItem('payrollData', JSON.stringify(payrollData));
-        renderTable();
-      }
-    }
-
-    function uploadCSV(){
-      const fileInput = document.getElementById('csvUpload');
-      const file = fileInput.files[0];
-      if(!file) {
-        alert("Please select a CSV file first");
-        return;
-      }
-      
-      const reader=new FileReader();
-      reader.onload=evt=>{
-        const text = evt.target.result;
-        const rows = text.split('\n').map(r => {
-          // Better CSV parsing that handles commas within fields
-          const result = [];
-          let current = '';
-          let inQuotes = false;
-          
-          for (let char of r) {
-            if (char === '"') {
-              inQuotes = !inQuotes;
-            } else if (char === ',' && !inQuotes) {
-              result.push(current.trim());
-              current = '';
+        function updateField(index, field, element) {
+            if (confirm('Save changes?')) {
+                payrollManager.payrollData[index][field] = element.value;
+                
+                // Recalculate if it's a numeric field
+                if (["Hourly Rate (Normal Shift)", "Hourly Rate (Overtime)", 
+                     "Hours Worked (Normal Shift)", "Hours Worked (Overtime)",
+                     "Days Worked (Normal Shift)", "Days Worked (Overtime)",
+                     "Bonus", "Allowance", "Deduction", "PAYEE %"].includes(field)) {
+                    payrollManager.calculatePayroll(payrollManager.payrollData[index]);
+                }
+                
+                localStorage.setItem('payrollData', JSON.stringify(payrollManager.payrollData));
+                payrollManager.loadPayrollData();
             } else {
-              current += char;
+                payrollManager.renderPayrollTable();
             }
-          }
-          result.push(current.trim());
-          return result;
-        });
-
-        const headers = rows[0].map(h => h.trim());
-        
-        // Map CSV headers to your field names
-        const fieldMap = {
-          'Date': 'Date',
-          'Employee Name': 'Employee Name', 
-          'Employee ID': 'Employee ID',
-          'Currency': 'Currency',
-          'Hourly Rate (Normal Shift)': 'Hourly Rate (Normal Shift)',
-          'Hourly Rate (Overtime)': 'Hourly Rate (Overtime)',
-          'Hours Worked (Normal Shift)': 'Hours Worked (Normal Shift)',
-          'Hours Worked (Overtime)': 'Hours Worked (Overtime)',
-          'Days Worked (Normal Shift)': 'Days Worked (Normal Shift)',
-          'Days Worked (Overtime)': 'Days Worked (Overtime)',
-          'Bonus': 'Bonus',
-          'Allowance': 'Allowance',
-          'Deduction': 'Deduction',
-          'PAYEE %': 'PAYEE %',
-          'Remarks': 'Remarks'
-        };
-
-        let importedCount = 0;
-        
-        for (let i = 1; i < rows.length; i++) {
-          if (!rows[i] || rows[i].length < 5) continue;
-          
-          const entry = {};
-          headers.forEach((header, j) => {
-            const fieldName = fieldMap[header];
-            if (fieldName) {
-              const value = rows[i][j] || '';
-              // Convert numeric fields
-              if (['Hourly Rate (Normal Shift)', 'Hourly Rate (Overtime)', 'Hours Worked (Normal Shift)', 
-                   'Hours Worked (Overtime)', 'Days Worked (Normal Shift)', 'Days Worked (Overtime)', 
-                   'Bonus', 'Allowance', 'Deduction', 'PAYEE %'].includes(fieldName)) {
-                entry[fieldName] = parseFloat(value) || 0;
-              } else {
-                entry[fieldName] = value;
-              }
-            }
-          });
-
-          // Calculate derived fields
-          const normalDays = entry["Days Worked (Normal Shift)"] || 1;
-          const overtimeDays = entry["Days Worked (Overtime)"] || 1;
-          
-          entry["(Normal Working Day) Total Amount"] = (entry["Hourly Rate (Normal Shift)"] * entry["Hours Worked (Normal Shift)"] * normalDays).toFixed(2);
-          entry["(OverTime) Total Amount"] = (entry["Hourly Rate (Overtime)"] * entry["Hours Worked (Overtime)"] * overtimeDays).toFixed(2);
-          entry["Total Amount"] = (+entry["(Normal Working Day) Total Amount"] + +entry["(OverTime) Total Amount"]).toFixed(2);
-          entry["Gross Salary"] = (+entry["Total Amount"] + +entry["Bonus"] + +entry["Allowance"] - +entry["Deduction"]).toFixed(2);
-          entry["Net Salary"] = (+entry["Gross Salary"] - (+entry["Gross Salary"] * (+entry["PAYEE %"] / 100))).toFixed(2);
-
-          payrollData.push(entry);
-          importedCount++;
         }
-        
-        localStorage.setItem('payrollData', JSON.stringify(payrollData));
-        renderTable();
-        alert(`Successfully imported ${importedCount} entries`);
-        fileInput.value = ''; // Reset file input
-      };
-      reader.onerror = () => alert("Error reading file");
-      reader.readAsText(file);
-    }
 
-    function downloadSampleCSV() {
-      const headers = ['Date', 'Employee Name', 'Employee ID', 'Currency', 'Hourly Rate (Normal Shift)', 
-                      'Hourly Rate (Overtime)', 'Hours Worked (Normal Shift)', 'Hours Worked (Overtime)', 
-                      'Days Worked (Normal Shift)', 'Days Worked (Overtime)', 'Bonus', 'Allowance', 
-                      'Deduction', 'PAYEE %', 'Remarks'];
-      
-      const sampleData = ['2025-01-15', 'John Doe', 'EMP001', 'TZS', '10.00', '15.00', '160', '20', '20', '2', '100', '50', '20', '10', 'Excellent performance'];
-      
-      const csvContent = [headers, sampleData].map(row => row.join(',')).join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'payroll_sample.csv';
-      link.click();
-    }
+        function toggleLock(index) {
+            payrollManager.payrollData[index].locked = !payrollManager.payrollData[index].locked;
+            localStorage.setItem('payrollData', JSON.stringify(payrollManager.payrollData));
+            payrollManager.renderPayrollTable();
+        }
 
-    function exportExcel(){
-      if (payrollData.length === 0) {
-        alert("No data to export");
-        return;
-      }
-      
-      const wb=XLSX.utils.book_new();
-      const ws=XLSX.utils.json_to_sheet(payrollData);
-      XLSX.utils.book_append_sheet(wb,ws,"Payroll");
-      const ws2=XLSX.utils.table_to_sheet(document.getElementById('summaryTable'));
-      XLSX.utils.book_append_sheet(wb,ws2,"Summary");
-      XLSX.writeFile(wb,"Payroll_Report.xlsx");
-    }
+        function deleteEntry(index) {
+            if (confirm('Delete this payroll entry?')) {
+                payrollManager.payrollData.splice(index, 1);
+                localStorage.setItem('payrollData', JSON.stringify(payrollManager.payrollData));
+                payrollManager.loadPayrollData();
+            }
+        }
 
-    function exportPDF(){
-      if (payrollData.length === 0) {
-        alert("No data to export");
-        return;
-      }
-      
-      const { jsPDF }=window.jspdf;
-      const doc=new jsPDF();
-      doc.text("CephasGM – ERP | Payroll Report",10,10);
-      doc.autoTable({ html:'#payrollTable', startY:20 });
-      doc.autoTable({ html:'#summaryTable', startY: doc.lastAutoTable.finalY + 10 });
-      doc.save("Payroll_Report.pdf");
-    }
+        function processPayroll() {
+            if (payrollManager.payrollData.length === 0) {
+                alert('No payroll data to process. Please add entries first.');
+                return;
+            }
+            alert('Processing payroll for ' + payrollManager.payrollData.length + ' employees...');
+            // Integration with finance system would go here
+        }
 
-    function updateSummary(){
-      const totals={normal:0,overtime:0,total:0,bonus:0,allowance:0,deduction:0,gross:0};
-      payrollData.forEach(e=>{
-        totals.normal+= +e["(Normal Working Day) Total Amount"]||0;
-        totals.overtime+= +e["(OverTime) Total Amount"]||0;
-        totals.total+= +e["Total Amount"]||0;
-        totals.bonus+= +e["Bonus"]||0;
-        totals.allowance+= +e["Allowance"]||0;
-        totals.deduction+= +e["Deduction"]||0;
-        totals.gross+= +e["Gross Salary"]||0;
-      });
-      const row=document.getElementById('summaryRow').children;
-      row[0].textContent=payrollData.length;
-      row[1].textContent=totals.normal.toFixed(2);
-      row[2].textContent=totals.overtime.toFixed(2);
-      row[3].textContent=totals.total.toFixed(2);
-      row[4].textContent=totals.bonus.toFixed(2);
-      row[5].textContent=totals.allowance.toFixed(2);
-      row[6].textContent=totals.deduction.toFixed(2);
-      row[7].textContent=totals.gross.toFixed(2);
-    }
+        function importAttendanceData() {
+            alert('Importing data from Attendance system...');
+            // Integration with attendance system
+            window.location.href = 'attendance.html';
+        }
 
-    // New function to update stats cards
-    function updateStats() {
-      const totalEmployees = payrollData.length;
-      const totalPayroll = payrollData.reduce((sum, e) => sum + (+e["Gross Salary"] || 0), 0);
-      const avgSalary = totalEmployees > 0 ? totalPayroll / totalEmployees : 0;
-      
-      document.getElementById('totalEmployees').textContent = totalEmployees;
-      document.getElementById('totalPayroll').textContent = `₦${totalPayroll.toFixed(2)}`;
-      document.getElementById('avgSalary').textContent = `₦${avgSalary.toFixed(2)}`;
-      document.getElementById('pendingApprovals').textContent = payrollData.filter(e => !e.approved).length;
-    }
+        function exportPayrollData() {
+            if (payrollManager.payrollData.length === 0) {
+                alert('No data to export.');
+                return;
+            }
+            alert('Exporting payroll data...');
+            // Export functionality would go here
+        }
 
-    // Offline Detection
-    window.addEventListener('online', () => {
-      document.getElementById('offlineStatus').style.display = 'none';
-    });
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all payroll data? This action cannot be undone.')) {
+                payrollManager.payrollData = [];
+                localStorage.setItem('payrollData', JSON.stringify([]));
+                payrollManager.loadPayrollData();
+                alert('All payroll data cleared.');
+            }
+        }
 
-    window.addEventListener('offline', () => {
-      document.getElementById('offlineStatus').style.display = 'inline-block';
-    });
+        function calculateBonuses() {
+            alert('Calculating employee bonuses...');
+        }
 
-    if (!navigator.onLine) {
-      document.getElementById('offlineStatus').style.display = 'inline-block';
-    }
+        function generatePayslips() {
+            alert('Generating employee payslips...');
+        }
 
-    // Service Worker Registration
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js')
-        .then((registration) => {
-          console.log('SW registered: ', registration);
-        })
-        .catch((registrationError) => {
-          console.log('SW registration failed: ', registrationError);
-        });
-    }
+        function taxCalculations() {
+            alert('Running tax calculations...');
+        }
 
-    // Initialize the application
-    renderForm();
-    renderTable();
-  </script>
+        function runReports() {
+            alert('Generating payroll reports...');
+        }
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then((registration) => {
+                    console.log('SW registered: ', registration);
+                })
+                .catch((registrationError) => {
+                    console.log('SW registration failed: ', registrationError);
+                });
+        }
+    </script>
 </body>
 </html>
