@@ -1,1223 +1,666 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Service - CephasGM ERP</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #64748b;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --background: #f8fafc;
-            --surface: #ffffff;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --service-purple: #8b5cf6;
-            --service-pink: #ec4899;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            padding: 2rem 1rem;
-            position: fixed;
-            width: 280px;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-            padding: 0 1rem;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.25rem;
-        }
-
-        .nav-section {
-            margin-bottom: 2rem;
-        }
-
-        .nav-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--text-light);
-            margin-bottom: 1rem;
-            padding: 0 1rem;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            color: var(--text-light);
-            text-decoration: none;
-            transition: all 0.2s;
-            margin-bottom: 0.25rem;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-            font-size: 0.95rem;
-            position: relative;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .nav-icon {
-            font-size: 1.25rem;
-            width: 24px;
-            text-align: center;
-        }
-
-        .main-content {
-            grid-column: 2;
-            padding: 2rem;
-            margin-left: 280px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .header h1 {
-            font-size: 1.875rem;
-            font-weight: 700;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-secondary {
-            background: var(--surface);
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            background: var(--background);
-        }
-
-        .btn-service {
-            background: linear-gradient(135deg, var(--service-purple), var(--service-pink));
-            color: white;
-        }
-
-        .btn-service:hover {
-            background: linear-gradient(135deg, #7c3aed, #db2777);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            text-align: center;
-            box-shadow: var(--shadow);
-            transition: transform 0.2s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-        /* AI Chat Assistant */
-        .ai-chat-container {
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            margin-bottom: 2rem;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-        }
-
-        .chat-header {
-            background: linear-gradient(135deg, var(--service-purple), var(--service-pink));
-            color: white;
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .chat-icon {
-            font-size: 1.5rem;
-        }
-
-        .chat-messages {
-            height: 300px;
-            overflow-y: auto;
-            padding: 1.5rem;
-            background: var(--background);
-        }
-
-        .message {
-            margin-bottom: 1rem;
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .message.ai {
-            flex-direction: row;
-        }
-
-        .message.user {
-            flex-direction: row-reverse;
-        }
-
-        .message-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .message.ai .message-avatar {
-            background: var(--service-purple);
-            color: white;
-        }
-
-        .message.user .message-avatar {
-            background: var(--success);
-            color: white;
-        }
-
-        .message-content {
-            background: var(--surface);
-            padding: 0.75rem 1rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            max-width: 70%;
-            box-shadow: var(--shadow);
-        }
-
-        .message.ai .message-content {
-            border-bottom-left-radius: 4px;
-        }
-
-        .message.user .message-content {
-            border-bottom-right-radius: 4px;
-            background: var(--primary);
-            color: white;
-        }
-
-        .chat-input {
-            display: flex;
-            padding: 1rem;
-            border-top: 1px solid var(--border);
-            background: var(--surface);
-        }
-
-        .chat-input input {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-right: 0.75rem;
-            font-size: 0.95rem;
-        }
-
-        .chat-input button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        /* Support Tickets */
-        .tickets-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .ticket-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            transition: transform 0.2s;
-        }
-
-        .ticket-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .ticket-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .ticket-id {
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .ticket-status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .status-open {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-in-progress {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .status-resolved {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .ticket-info {
-            margin-bottom: 1rem;
-        }
-
-        .ticket-customer {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .ticket-issue {
-            color: var(--text-light);
-            font-size: 0.875rem;
-        }
-
-        .ticket-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .ticket-btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: var(--background);
-            cursor: pointer;
-            font-size: 0.875rem;
-            transition: all 0.2s;
-        }
-
-        .ticket-btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .ticket-btn.primary {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        /* QA Feedback Form */
-        .qa-form {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
-
-        .form-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-        }
-
-        .rating-stars {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .star {
-            font-size: 2rem;
-            color: #d1d5db;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .star.active {
-            color: #f59e0b;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .form-input, .form-textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: border-color 0.2s;
-        }
-
-        .form-input:focus, .form-textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .form-textarea {
-            height: 100px;
-            resize: vertical;
-        }
-
-        .submit-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-
-        .submit-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .module-card {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            box-shadow: var(--shadow);
-            position: relative;
-        }
-
-        .module-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--service-purple);
-        }
-
-        .module-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--service-purple), var(--service-pink));
-            color: white;
-        }
-
-        .module-card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .module-card p {
-            color: var(--text-light);
-            font-size: 0.95rem;
-        }
-
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-
-        .tooltip .tooltip-text {
-            visibility: hidden;
-            width: 200px;
-            background-color: var(--text);
-            color: white;
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.875rem;
-        }
-
-        .tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            color: var(--text-light);
-            border-top: 1px solid var(--border);
-        }
-
-        /* Language Selector */
-        .language-selector {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .language-selector select {
-            padding: 0.5rem;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text);
-        }
-
-        /* Mobile Navigation */
-        .mobile-nav-toggle {
-            display: none;
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 1000;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            width: 40px;
-            height: 40px;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        /* Dark Mode Toggle */
-        .dark-mode-toggle {
-            background: none;
-            border: none;
-            font-size: 1.25rem;
-            cursor: pointer;
-            color: var(--text-light);
-            padding: 0.5rem;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-
-        .dark-mode-toggle:hover {
-            background: var(--background);
-            color: var(--text);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 0;
-                grid-column: 1;
-                padding: 1rem;
-            }
-            .mobile-nav-toggle {
-                display: flex;
-            }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .header-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .module-grid {
-                grid-template-columns: 1fr;
-            }
-            .tickets-grid {
-                grid-template-columns: 1fr;
-            }
-            .message-content {
-                max-width: 85%;
-            }
-        }
-
-        /* Dark Mode Support */
-        .dark-mode {
-            --background: #0f172a;
-            --surface: #1e293b;
-            --text: #f1f5f9;
-            --text-light: #94a3b8;
-            --border: #334155;
-        }
-
-        /* Accessibility */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        /* Focus styles for keyboard navigation */
-        button:focus, a:focus, select:focus {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-
-        /* Customer Satisfaction Chart */
-        .satisfaction-chart {
-            background: var(--surface);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-        }
-
-        .chart-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-        .chart-placeholder {
-            height: 200px;
-            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-light);
-            font-size: 1.1rem;
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Customer Service - CephasGM ERP</title>
+
+<!-- icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<style>
+  :root{
+    --bg:#f4f7fb; --card:#fff; --muted:#64748b; --text:#0f172a;
+    --primary:#2563eb; --accent:#7c3aed; --border:#e6eef8;
+    --shadow: 0 10px 30px rgba(2,6,23,0.06);
+    --radius:12px;
+  }
+  *{box-sizing:border-box}
+  body{font-family:"Segoe UI",system-ui, -apple-system, Roboto; background:var(--bg); color:var(--text); margin:0; -webkit-font-smoothing:antialiased;}
+  /* Top navigation */
+  header{background:#063970;color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 6px rgba(0,0,0,0.08)}
+  header .brand{display:flex;gap:10px;align-items:center}
+  .brand .logo{background:var(--primary);padding:10px;border-radius:8px;color:#fff;font-weight:700}
+  header h1{font-size:1.05rem;margin:0}
+  header .nav-actions{display:flex;gap:10px;align-items:center}
+  header button{background:#fff;color:#063970;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700}
+  header button:hover{opacity:0.95}
+
+  /* Layout */
+  .container{max-width:1200px;margin:20px auto;padding:0 18px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+  .card{background:var(--card);padding:18px;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);cursor:pointer;transition:transform .18s,box-shadow .18s}
+  .card:hover{transform:translateY(-6px)}
+  .card.active{border-color:var(--primary);box-shadow:0 12px 30px rgba(37,99,235,0.12)}
+  .card .icon{font-size:1.8rem;margin-bottom:10px;color:var(--primary)}
+  .card h3{margin:0 0 6px 0}
+  .card p{margin:0;color:var(--muted);font-size:0.95rem}
+
+  /* split view */
+  .split{display:flex;gap:18px;margin-top:20px;align-items:flex-start}
+  .left{flex:1}
+  .right{width:360px;display:flex;flex-direction:column;gap:12px}
+  .panel{background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--border);box-shadow:var(--shadow)}
+  .panel h2{margin:0 0 8px 0}
+  .small{color:var(--muted);font-size:0.92rem}
+
+  /* tickets table */
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left;font-size:0.95rem}
+  .chip{display:inline-block;padding:6px 8px;border-radius:999px;font-weight:700;font-size:0.82rem}
+  .status-open{background:#fffbeb;color:#92400e}
+  .status-progress{background:#eef2ff;color:#3730a3}
+  .status-resolved{background:#ecfdf5;color:#166534}
+
+  /* chat area (right side) */
+  .chat-box{display:flex;flex-direction:column;height:420px}
+  .chat-header{background:linear-gradient(90deg,var(--primary),var(--accent));color:#fff;padding:10px;border-radius:10px 10px 0 0;font-weight:700}
+  .chat-body{flex:1;padding:10px;overflow:auto;background:linear-gradient(180deg,#fbfdff,#f8fafc)}
+  .chat-input{display:flex;border-top:1px solid var(--border);padding:10px;background:var(--card);border-radius:0 0 10px 10px}
+  .chat-input input{flex:1;padding:8px;border-radius:8px;border:1px solid var(--border)}
+  .chat-input button{margin-left:8px;padding:8px 12px;border-radius:8px;border:none;background:var(--primary);color:#fff;cursor:pointer;font-weight:700}
+
+  .msg{margin-bottom:8px;display:flex}
+  .bubble{padding:8px 12px;border-radius:10px;max-width:75%;font-size:0.95rem}
+  .bubble.ai{background:#eef2ff;align-self:flex-start}
+  .bubble.user{background:var(--primary);color:#fff;align-self:flex-end}
+
+  /* input/form style small */
+  .form-row{display:flex;gap:8px}
+  input,select,textarea{padding:8px;border-radius:8px;border:1px solid var(--border);width:100%;font-size:0.95rem}
+  textarea{min-height:100px;resize:vertical}
+
+  /* footer */
+  footer{background:#063970;color:#fff;padding:12px 0;margin-top:20px;text-align:center;font-weight:700}
+
+  @media (max-width:980px){
+    .split{flex-direction:column}
+    .right{width:100%}
+  }
+</style>
 </head>
 <body>
-    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
-        <i class="fas fa-bars"></i>
-    </button>
 
-    <div class="dashboard">
-        <nav class="sidebar" id="sidebar">
-            <div class="logo">
-                <div class="logo-icon">CG</div>
-                <div>
-                    <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
-                    <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
-                </div>
-            </div>
+<header>
+  <div class="brand">
+    <div class="logo">CG</div>
+    <h1>CephasGM — Customer Service</h1>
+  </div>
+  <div class="nav-actions">
+    <button id="dashboardBtn">📊 Dashboard</button>
+    <button id="newTicketTop">+ New Ticket</button>
+  </div>
+</header>
 
-            <div class="nav-section">
-                <div class="nav-title">Customer Relations</div>
-                <a href="customer-service.html" class="nav-item active">
-                    <span class="nav-icon">🎯</span>
-                    Customer Service
-                </a>
-                <a href="sales.html" class="nav-item">
-                    <span class="nav-icon">💰</span>
-                    Sales & CRM
-                </a>
-                <a href="marketing.html" class="nav-item">
-                    <span class="nav-icon">📢</span>
-                    Marketing
-                </a>
-            </div>
+<main class="container">
+  <!-- CARDS TOP -->
+  <section class="cards" id="cards">
+    <div class="card" data-key="ticket"><div class="icon">🎫</div><h3>Ticket Management</h3><p>Create, assign, and track customer support tickets with SLA monitoring.</p></div>
+    <div class="card" data-key="livechat"><div class="icon">💬</div><h3>Live Chat Support</h3><p>Real-time customer support with agent assignment and chat history.</p></div>
+    <div class="card" data-key="feedback"><div class="icon">⭐</div><h3>Customer Feedback</h3><p>Collect and analyze customer satisfaction scores and feedback.</p></div>
+    <div class="card" data-key="kb"><div class="icon">📚</div><h3>Knowledge Base</h3><p>Self-service help articles, FAQs, and troubleshooting guides.</p></div>
+    <div class="card" data-key="analytics"><div class="icon">📈</div><h3>Service Analytics</h3><p>Performance metrics, response times, and customer satisfaction trends.</p></div>
+    <div class="card" data-key="crm"><div class="icon">👥</div><h3>CRM Integration</h3><p>Seamless integration with customer relationship management system.</p></div>
+  </section>
 
-            <div class="nav-section">
-                <div class="nav-title">Support</div>
-                <a href="tickets.html" class="nav-item">
-                    <span class="nav-icon">🎫</span>
-                    Support Tickets
-                </a>
-                <a href="feedback.html" class="nav-item">
-                    <span class="nav-icon">💬</span>
-                    Customer Feedback
-                </a>
-                <a href="knowledge-base.html" class="nav-item">
-                    <span class="nav-icon">📚</span>
-                    Knowledge Base
-                </a>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-title">Operations</div>
-                <a href="index.html" class="nav-item">
-                    <span class="nav-icon">📊</span>
-                    Dashboard
-                </a>
-                <a href="projects.html" class="nav-item">
-                    <span class="nav-icon">📁</span>
-                    Projects
-                </a>
-                <a href="finance.html" class="nav-item">
-                    <span class="nav-icon">💳</span>
-                    Finance
-                </a>
-                <a href="payroll.html" class="nav-item">
-                    <span class="nav-icon">💰</span>
-                    Payroll
-                </a>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-title">User</div>
-                <div class="nav-item">
-                    <span class="nav-icon">👤</span>
-                    <span id="userRole">Support Agent</span>
-                </div>
-                <button class="nav-item" id="logoutBtn">
-                    <span class="nav-icon">🚪</span>
-                    Logout
-                </button>
-            </div>
-        </nav>
-
-        <main class="main-content">
-            <div class="header">
-                <div>
-                    <h1>Customer Service Center</h1>
-                    <div style="color: var(--text-light);">AI-powered support, ticket management, and customer satisfaction tracking</div>
-                </div>
-                <div class="header-actions">
-                    <div class="language-selector">
-                        <span>Language:</span>
-                        <select id="languageSelect">
-                            <option value="en">English</option>
-                            <option value="sw">Swahili</option>
-                        </select>
-                    </div>
-                    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    <button class="btn btn-service" id="newTicketBtn">
-                        <i class="fas fa-plus"></i> New Ticket
-                    </button>
-                </div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number">42</div>
-                    <div class="stat-label">Open Tickets</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">15m</div>
-                    <div class="stat-label">Avg Response Time</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">96%</div>
-                    <div class="stat-label">Satisfaction Rate</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">8</div>
-                    <div class="stat-label">Active Agents</div>
-                </div>
-            </div>
-
-            <!-- Customer Satisfaction Chart -->
-            <div class="satisfaction-chart">
-                <div class="chart-title">Customer Satisfaction Trends</div>
-                <div class="chart-placeholder">
-                    <i class="fas fa-chart-line" style="margin-right: 0.5rem;"></i>
-                    Customer Satisfaction Analytics
-                </div>
-            </div>
-
-            <!-- AI Chat Assistant -->
-            <div class="ai-chat-container">
-                <div class="chat-header">
-                    <div class="chat-icon">🤖</div>
-                    <div>
-                        <div style="font-weight: 600;">CephasAI Support Assistant</div>
-                        <div style="font-size: 0.875rem; opacity: 0.9;">Ask me anything about our products and services</div>
-                    </div>
-                </div>
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message ai">
-                        <div class="message-avatar">AI</div>
-                        <div class="message-content">
-                            Hello! I'm CephasAI, your virtual support assistant. How can I help you today?
-                        </div>
-                    </div>
-                </div>
-                <div class="chat-input">
-                    <input type="text" id="chatInput" placeholder="Type your question here...">
-                    <button onclick="sendMessage()">
-                        <i class="fas fa-paper-plane"></i> Send
-                    </button>
-                </div>
-            </div>
-
-            <!-- Support Tickets Queue -->
-            <div class="tickets-grid">
-                <div class="ticket-card">
-                    <div class="ticket-header">
-                        <span class="ticket-id">#CS-7824</span>
-                        <span class="ticket-status status-open">Open</span>
-                    </div>
-                    <div class="ticket-info">
-                        <div class="ticket-customer">John M. - Premium Customer</div>
-                        <div class="ticket-issue">Product delivery delayed by 2 days, needs urgent update</div>
-                    </div>
-                    <div class="ticket-actions">
-                        <button class="ticket-btn primary">
-                            <i class="fas fa-user-check"></i> Assign to Me
-                        </button>
-                        <button class="ticket-btn">
-                            <i class="fas fa-eye"></i> View Details
-                        </button>
-                    </div>
-                </div>
-
-                <div class="ticket-card">
-                    <div class="ticket-header">
-                        <span class="ticket-id">#CS-7819</span>
-                        <span class="ticket-status status-in-progress">In Progress</span>
-                    </div>
-                    <div class="ticket-info">
-                        <div class="ticket-customer">Sarah K. - Business Client</div>
-                        <div class="ticket-issue">Technical issue with software integration, requires developer</div>
-                    </div>
-                    <div class="ticket-actions">
-                        <button class="ticket-btn primary">
-                            <i class="fas fa-check-circle"></i> Resolve
-                        </button>
-                        <button class="ticket-btn">
-                            <i class="fas fa-level-up-alt"></i> Escalate
-                        </button>
-                    </div>
-                </div>
-
-                <div class="ticket-card">
-                    <div class="ticket-header">
-                        <span class="ticket-id">#CS-7815</span>
-                        <span class="ticket-status status-resolved">Resolved</span>
-                    </div>
-                    <div class="ticket-info">
-                        <div class="ticket-customer">David T. - New Customer</div>
-                        <div class="ticket-issue">Billing inquiry resolved, customer satisfied with explanation</div>
-                    </div>
-                    <div class="ticket-actions">
-                        <button class="ticket-btn">
-                            <i class="fas fa-comment"></i> View Feedback
-                        </button>
-                        <button class="ticket-btn">
-                            <i class="fas fa-times"></i> Close Ticket
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quality Assurance Feedback Form -->
-            <div class="qa-form">
-                <div class="form-title">Service Quality Assessment</div>
-                <div class="rating-stars" id="ratingStars">
-                    <span class="star" data-rating="1">★</span>
-                    <span class="star" data-rating="2">★</span>
-                    <span class="star" data-rating="3">★</span>
-                    <span class="star" data-rating="4">★</span>
-                    <span class="star" data-rating="5">★</span>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">How would you rate our service?</label>
-                    <select class="form-input">
-                        <option>Excellent</option>
-                        <option>Good</option>
-                        <option>Average</option>
-                        <option>Poor</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">What could we improve?</label>
-                    <textarea class="form-textarea" placeholder="Please share your suggestions..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Would you recommend our service?</label>
-                    <select class="form-input">
-                        <option>Definitely yes</option>
-                        <option>Probably yes</option>
-                        <option>Not sure</option>
-                        <option>Probably not</option>
-                    </select>
-                </div>
-                <button class="submit-btn">
-                    <i class="fas fa-paper-plane"></i> Submit Feedback
-                </button>
-            </div>
-
-            <!-- Customer Service Modules -->
-            <div class="module-grid">
-                <div class="module-card tooltip" onclick="openModule('ticket-management')">
-                    <div class="module-icon">🎫</div>
-                    <h3>Ticket Management</h3>
-                    <p>Create, assign, and track customer support tickets with SLA monitoring</p>
-                    <span class="tooltip-text">Advanced ticket routing and SLA tracking</span>
-                </div>
-
-                <div class="module-card tooltip" onclick="openModule('live-chat')">
-                    <div class="module-icon">💬</div>
-                    <h3>Live Chat Support</h3>
-                    <p>Real-time customer support with agent assignment and chat history</p>
-                    <span class="tooltip-text">Multi-agent live chat with file sharing</span>
-                </div>
-
-                <div class="module-card tooltip" onclick="openModule('customer-feedback')">
-                    <div class="module-icon">⭐</div>
-                    <h3>Customer Feedback</h3>
-                    <p>Collect and analyze customer satisfaction scores and feedback</p>
-                    <span class="tooltip-text">NPS and CSAT score tracking</span>
-                </div>
-
-                <div class="module-card tooltip" onclick="openModule('knowledge-base')">
-                    <div class="module-icon">📚</div>
-                    <h3>Knowledge Base</h3>
-                    <p>Self-service help articles, FAQs, and troubleshooting guides</p>
-                    <span class="tooltip-text">AI-powered search and article analytics</span>
-                </div>
-
-                <div class="module-card tooltip" onclick="openModule('service-analytics')">
-                    <div class="module-icon">📊</div>
-                    <h3>Service Analytics</h3>
-                    <p>Performance metrics, response times, and customer satisfaction trends</p>
-                    <span class="tooltip-text">Real-time dashboard with predictive analytics</span>
-                </div>
-
-                <div class="module-card tooltip" onclick="openModule('crm-integration')">
-                    <div class="module-icon">👥</div>
-                    <h3>CRM Integration</h3>
-                    <p>Seamless integration with customer relationship management system</p>
-                    <span class="tooltip-text">Customer history and interaction tracking</span>
-                </div>
-            </div>
-
-            <div class="footer">
-                Copyright © 2025 😀
-            </div>
-        </main>
+  <!-- SPLIT VIEW: left contains panels, right contains AI + quick stats -->
+  <section class="split">
+    <div class="left">
+      <!-- Panel container where modules render -->
+      <div id="panelContainer" class="panel">
+        <!-- default welcome content -->
+        <h2>Welcome to Customer Service</h2>
+        <p class="small">Click any module card above to open the module panel below. Modules remain embedded so you can keep cards visible — perfect for an ERP workflow.</p>
+        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn-primary btn" id="openTicketsQuick" style="background:var(--primary);color:#fff;border:none;padding:10px 12px;border-radius:8px;cursor:pointer;font-weight:700">Open Tickets</button>
+          <button class="btn-ghost btn" id="openChatQuick" style="border:1px solid var(--border);padding:10px 12px;border-radius:8px;cursor:pointer">Open Live Chat</button>
+        </div>
+      </div>
     </div>
 
-    <script>
-        // Mobile navigation toggle
-        document.getElementById('mobileNavToggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('active');
-        });
+    <aside class="right">
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:700">Quick Stats</div>
+            <div class="small">Snapshot of service metrics</div>
+          </div>
+          <div style="text-align:right">
+            <div id="statOpen" style="font-weight:800;font-size:1.25rem;color:var(--primary)">0</div>
+            <div class="small">Open</div>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:10px 0">
+        <div style="display:flex;gap:8px">
+          <div style="flex:1;text-align:center">
+            <div class="small">Avg Response</div><div id="statAvg" style="font-weight:700">0m</div>
+          </div>
+          <div style="flex:1;text-align:center">
+            <div class="small">Satisfaction</div><div id="statSat" style="font-weight:700">0%</div>
+          </div>
+        </div>
+      </div>
 
-        // Active navigation highlighting
-        document.querySelectorAll('.nav-item').forEach(item => {
-            if (item.href === window.location.href) {
-                item.classList.add('active');
-            }
-        });
+      <div class="panel chat-box" id="aiPanel" aria-live="polite">
+        <div class="chat-header">🤖 CephasAI Support Assistant</div>
+        <div class="chat-body" id="aiBody">
+          <div class="msg"><div class="bubble ai">Hello — I'm CephasAI. Ask me about tickets, chat, KB, analytics, or CRM. (Offline demo available)</div></div>
+        </div>
+        <div class="chat-input">
+          <input id="aiInput" placeholder="Ask CephasAI (ex: 'open ticket', 'show SLA breaches')">
+          <button id="aiSend">Ask</button>
+        </div>
+      </div>
+    </aside>
+  </section>
+</main>
 
-        // Module card hover effects
-        document.querySelectorAll('.module-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-4px)';
-            });
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
+<footer>Copyright © 2025 😀</footer>
 
-        // Language selector
-        document.getElementById('languageSelect').addEventListener('change', function() {
-            const selectedLanguage = this.value;
-            if (selectedLanguage === 'sw') {
-                alert('Lugha imebadilishwa kuwa Kiswahili');
-                // In a real implementation, this would change all text to Swahili
-            } else {
-                alert('Language changed to English');
-                // In a real implementation, this would change all text to English
-            }
-        });
+<!-- Socket.io client - OPTIONAL: only used if you run a socket.io server -->
+<script>
+/* ================= CONFIG =================
+   If you have a Socket.io backend, set SOCKET_SERVER_URL to its origin (including protocol)
+   e.g. const SOCKET_SERVER_URL = "https://your-server.com";
+   If left null, client uses local fallback logic.
+*/
+const SOCKET_SERVER_URL = null; // <-- set to your socket server origin if available
+const DASHBOARD_URL = 'index.html'; // what Dashboard button does
+/* ========================================== */
 
-        // Dark mode toggle
-        document.getElementById('darkModeToggle').addEventListener('click', function() {
-            document.body.classList.toggle('dark-mode');
-            const icon = this.querySelector('i');
-            if (document.body.classList.contains('dark-mode')) {
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-            } else {
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-            }
-        });
+/* Utilities */
+const uid = (p='id') => p+'-'+Math.random().toString(36).slice(2,9);
+const nowISO = () => new Date().toISOString();
+const qs = s => document.querySelector(s);
+const qsa = s => Array.from(document.querySelectorAll(s));
 
-        // AI Chat Functionality
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (message) {
-                // Add user message
-                const chatMessages = document.getElementById('chatMessages');
-                const userMessage = document.createElement('div');
-                userMessage.className = 'message user';
-                userMessage.innerHTML = `
-                    <div class="message-avatar">You</div>
-                    <div class="message-content">${message}</div>
-                `;
-                chatMessages.appendChild(userMessage);
-                
-                // Clear input
-                input.value = '';
-                
-                // Simulate AI response
-                setTimeout(() => {
-                    const aiResponse = document.createElement('div');
-                    aiResponse.className = 'message ai';
-                    
-                    const responses = [
-                        "I understand your concern. Let me check that for you.",
-                        "Thank you for your question. Here's what I can tell you...",
-                        "I can help with that! Based on our records...",
-                        "That's a great question. Let me provide you with the information..."
-                    ];
-                    
-                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                    
-                    aiResponse.innerHTML = `
-                        <div class="message-avatar">AI</div>
-                        <div class="message-content">${randomResponse}</div>
-                    `;
-                    chatMessages.appendChild(aiResponse);
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                }, 1000);
-                
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-        }
+/* Local storage keys */
+const K_TICKETS = 'cgm_tickets_v2';
+const K_CUSTOMERS = 'cgm_customers_v2';
+const K_CHATS = 'cgm_chats_v2';
+const K_KB = 'cgm_kb_v2';
+const K_FEEDBACK = 'cgm_feedback_v2';
 
-        // Star rating functionality
-        const stars = document.querySelectorAll('.star');
-        stars.forEach(star => {
-            star.addEventListener('click', function() {
-                const rating = this.getAttribute('data-rating');
-                stars.forEach(s => {
-                    if (s.getAttribute('data-rating') <= rating) {
-                        s.classList.add('active');
-                    } else {
-                        s.classList.remove('active');
-                    }
-                });
-            });
-        });
+/* ======= seed data if missing ======= */
+function seedIfEmpty(){
+  if(!localStorage.getItem(K_CUSTOMERS)){
+    localStorage.setItem(K_CUSTOMERS, JSON.stringify([
+      {id:'cust-1',name:'John M',email:'john.m@client.com',phone:'+255700000001'},
+      {id:'cust-2',name:'Sarah K',email:'sarah.k@biz.co',phone:'+255700000002'}
+    ]));
+  }
+  if(!localStorage.getItem(K_TICKETS)){
+    localStorage.setItem(K_TICKETS, JSON.stringify([
+      {id:'T-1001',title:'Delivery delayed',customerId:'cust-1',priority:'High',status:'open',assignee:null,created:nowISO(),slaHours:48,desc:'Package behind schedule',logs:[{at:nowISO(),text:'Created'}]},
+      {id:'T-1002',title:'Integration error',customerId:'cust-2',priority:'High',status:'inprogress',assignee:'Alice',created:nowISO(),slaHours:72,desc:'API 500 error',logs:[{at:nowISO(),text:'Assigned to Alice'}]}
+    ]));
+  }
+  if(!localStorage.getItem(K_CHATS)){
+    localStorage.setItem(K_CHATS, JSON.stringify([
+      {id:'chat-1',customerId:'cust-1',messages:[{from:'customer',text:'Is my order shipped?',at:nowISO()},{from:'agent',text:'Checking now',at:nowISO()}],status:'open'}
+    ]));
+  }
+  if(!localStorage.getItem(K_KB)){
+    localStorage.setItem(K_KB, JSON.stringify([
+      {id:'kb-1',title:'Track Order',body:'Go to Orders > Track and enter the number.'},
+      {id:'kb-2',title:'Refund Policy',body:'Refunds processed within 14 days.'}
+    ]));
+  }
+  if(!localStorage.getItem(K_FEEDBACK)){
+    localStorage.setItem(K_FEEDBACK, JSON.stringify([]));
+  }
+}
 
-        // Enter key for chat
-        document.getElementById('chatInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
+/* ======= storage helpers ======= */
+const load = (k) => JSON.parse(localStorage.getItem(k) || '[]');
+const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
 
-        // Module opening function
-        function openModule(module) {
-            const moduleNames = {
-                'ticket-management': 'Ticket Management',
-                'live-chat': 'Live Chat Support',
-                'customer-feedback': 'Customer Feedback',
-                'knowledge-base': 'Knowledge Base',
-                'service-analytics': 'Service Analytics',
-                'crm-integration': 'CRM Integration'
-            };
-            
-            alert(`${moduleNames[module]} opening...`);
-            // In a real implementation, this would navigate to the specific module page
-        }
+/* ======= UI wiring ======= */
+const cardEls = qsa('.card');
+let activeCard = null;
 
-        // New ticket button
-        document.getElementById('newTicketBtn').addEventListener('click', function() {
-            alert('Creating new support ticket...');
-            // In a real implementation, this would open a ticket creation form
-        });
+function setActiveCard(key){
+  cardEls.forEach(c => c.classList.toggle('active', c.dataset.key === key));
+  activeCard = key;
+}
 
-        // Logout functionality
-        document.getElementById('logoutBtn').addEventListener('click', function() {
-            if (confirm('Are you sure you want to logout?')) {
-                alert('Logging out...');
-                // In a real implementation, this would redirect to login page
-            }
-        });
+cardEls.forEach(c => c.addEventListener('click', ()=> {
+  const key = c.dataset.key;
+  setActiveCard(key);
+  renderModule(key);
+}));
 
-        // PWA initialization
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(function(registration) {
-                        console.log('ServiceWorker registration successful');
-                    })
-                    .catch(function(err) {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
+/* Dashboard button */
+qs('#dashboardBtn').addEventListener('click', ()=> location.href = DASHBOARD_URL);
+qs('#newTicketTop').addEventListener('click', ()=> { setActiveCard('ticket'); renderModule('ticket', {focusNew:true}); });
 
-        // Check for PWA update
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.ready.then(registration => {
-                registration.addEventListener('updatefound', () => {
-                    const newWorker = registration.installing;
-                    console.log('New service worker found...');
-                    
-                    newWorker.addEventListener('statechange', () => {
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            // New update available
-                            if (confirm('A new version is available. Refresh to update?')) {
-                                window.location.reload();
-                            }
-                        }
-                    });
-                });
-            });
-        }
-    </script>
+/* shortcuts */
+qs('#openTicketsQuick').addEventListener('click', ()=> { setActiveCard('ticket'); renderModule('ticket'); });
+qs('#openChatQuick').addEventListener('click', ()=> { setActiveCard('livechat'); renderModule('livechat'); });
+
+/* ======= RENDER MODULES (single-page tabs under cards) ======= */
+const panel = qs('#panelContainer');
+
+function renderModule(key, opts={}){
+  if(key === 'ticket') return renderTickets();
+  if(key === 'livechat') return renderLiveChat();
+  if(key === 'feedback') return renderFeedback();
+  if(key === 'kb') return renderKB();
+  if(key === 'analytics') return renderAnalytics();
+  if(key === 'crm') return renderCRM();
+}
+
+/* ----------------- TICKETS ----------------- */
+function renderTickets(){
+  const tickets = load(K_TICKETS);
+  const customers = load(K_CUSTOMERS);
+  panel.innerHTML = `
+    <h2>Ticket Management</h2>
+    <p class="small">Create, assign and track tickets. SLA calculated from creation time.</p>
+    <div style="display:flex;gap:12px;margin-top:12px">
+      <div style="flex:1">
+        <label>Filter</label>
+        <select id="filterTicket" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border);margin-bottom:8px">
+          <option value="all">All</option><option value="open">Open</option><option value="inprogress">In Progress</option><option value="resolved">Resolved</option>
+        </select>
+        <div style="border:1px solid var(--border);border-radius:8px;padding:8px;background:var(--card);max-height:420px;overflow:auto">
+          <table id="ticketsTable"><thead><tr><th>ID</th><th>Title</th><th>Customer</th><th>Status</th><th>Assignee</th><th>SLA</th><th></th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+      <div style="width:360px">
+        <div style="background:var(--card);border:1px solid var(--border);padding:10px;border-radius:8px">
+          <h3 style="margin:0 0 8px 0">Create Ticket</h3>
+          <label>Title</label><input id="t_title" placeholder="Short summary" />
+          <label>Customer</label><select id="t_customer"></select>
+          <label>Priority</label><select id="t_priority"><option>Low</option><option>Medium</option><option selected>High</option></select>
+          <label>Description</label><textarea id="t_desc"></textarea>
+          <label>SLA (hours)</label><input id="t_sla" type="number" value="24" min="1" />
+          <div style="display:flex;gap:8px;margin-top:8px"><button id="createTicket" class="btn" style="background:var(--primary);color:#fff;border:none;padding:8px 10px;border-radius:8px">Create</button><button id="resetTicket" class="btn" style="border:1px solid var(--border);padding:8px 10px;border-radius:8px">Reset</button></div>
+        </div>
+        <div style="margin-top:10px;font-size:0.95rem;color:var(--muted)"><strong>Note:</strong> This demo persists data to localStorage. Replace with API calls for a real ERP.</div>
+      </div>
+    </div>
+  `;
+  // populate customers
+  const custSel = qs('#t_customer'); custSel.innerHTML = ''; customers.forEach(c=> custSel.insertAdjacentHTML('beforeend', `<option value="${c.id}">${c.name} (${c.email||''})</option>`));
+  // listeners
+  qs('#createTicket').addEventListener('click', ()=>{
+    const title = qs('#t_title').value.trim(); const cid = qs('#t_customer').value; const pr = qs('#t_priority').value;
+    const desc = qs('#t_desc').value.trim(); const sla = Number(qs('#t_sla').value)||24;
+    if(!title || !cid) return alert('Title and customer required');
+    const list = load(K_TICKETS); const t = {id: uid('T'),title,customerId:cid,priority:pr,status:'open',assignee:null,created:nowISO(),slaHours:sla,desc,logs:[{at:nowISO(),text:'Created'}]};
+    list.unshift(t); save(K_TICKETS, list); renderTickets(); updateStats(); alert('Ticket created (demo).');
+  });
+  qs('#resetTicket').addEventListener('click', ()=> { qs('#t_title').value=''; qs('#t_desc').value=''; qs('#t_sla').value='24'; });
+
+  qs('#filterTicket').addEventListener('change', renderTicketsTable);
+  renderTicketsTable();
+}
+
+function renderTicketsTable(){
+  const filter = qs('#filterTicket')?.value || 'all'; let list = load(K_TICKETS);
+  if(filter === 'open') list = list.filter(t=>t.status==='open');
+  if(filter === 'inprogress') list = list.filter(t=>t.status==='inprogress');
+  if(filter === 'resolved') list = list.filter(t=>t.status==='resolved');
+  const tbody = qs('#ticketsTable tbody'); tbody.innerHTML = '';
+  const customers = load(K_CUSTOMERS);
+  list.forEach(t=>{
+    const cust = customers.find(c=>c.id===t.customerId) || {name:'Unknown'};
+    const sla = calcSlaRemaining(t);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${t.id}</td><td>${t.title}</td><td>${cust.name}</td><td><span class="chip ${t.status==='open'?'status-open':t.status==='inprogress'?'status-progress':'status-resolved'}">${t.status}</span></td><td>${t.assignee||'—'}</td><td style="font-size:0.9rem">${sla}</td><td><button class="btn viewTicket" data-id="${t.id}" style="border:1px solid var(--border);padding:6px;border-radius:6px">View</button></td>`;
+    tbody.appendChild(tr);
+  });
+  qsa('.viewTicket').forEach(b => b.addEventListener('click', ()=> viewTicketDetail(b.dataset.id)));
+}
+
+function calcSlaRemaining(ticket){
+  const created = new Date(ticket.created); const deadline = new Date(created.getTime() + (ticket.slaHours||24)*3600000);
+  const diff = (deadline - new Date())/3600000;
+  if(diff < 0) return 'BREACHED';
+  return Math.round(diff) + 'h left';
+}
+
+function viewTicketDetail(id){
+  const t = load(K_TICKETS).find(x=>x.id===id);
+  if(!t) return alert('Ticket not found');
+  // render a modal-like detail in the right-side create area (reuse the create panel area)
+  const rightPanel = panel.querySelector('div[style*="width:360px"]') || panel; // gracefully fallback
+  // For simplicity, show details in an alert-like overlay
+  const cust = load(K_CUSTOMERS).find(c=>c.id===t.customerId) || {name:'Unknown'};
+  const detail = `ID: ${t.id}\nTitle: ${t.title}\nCustomer: ${cust.name}\nPriority: ${t.priority}\nStatus: ${t.status}\nAssignee: ${t.assignee||'—'}\nSLA: ${calcSlaRemaining(t)}\n\nDescription:\n${t.desc||'(none)'}\n\nActivity:\n${t.logs.map(l=>`${new Date(l.at).toLocaleString()} • ${l.text}`).join('\n')}`;
+  if(confirm('Open ticket detail?')) {
+    // show a simple prompt to allow assign / resolve (demo)
+    const action = prompt(detail + '\n\nType: assign:<agent>  OR resolve  OR cancel', '');
+    if(!action) return;
+    if(action.toLowerCase().startsWith('assign:')) {
+      const agent = action.split(':')[1].trim();
+      t.assignee = agent; t.status = 'inprogress'; t.logs.push({at:nowISO(),text:`Assigned to ${agent}`});
+      save(K_TICKETS, load(K_TICKETS).map(x=> x.id===t.id ? t : x)); renderTicketsTable(); updateStats(); alert('Assigned.');
+    } else if(action.toLowerCase().includes('resolve')) {
+      t.status = 'resolved'; t.logs.push({at:nowISO(),text:'Resolved via UI'}); save(K_TICKETS, load(K_TICKETS).map(x=> x.id===t.id ? t : x)); renderTicketsTable(); updateStats(); alert('Marked resolved.');
+    }
+  }
+}
+
+/* ----------------- LIVE CHAT ----------------- */
+function renderLiveChat(){
+  const chats = load(K_CHATS);
+  panel.innerHTML = `
+    <h2>Live Chat Support</h2>
+    <p class="small">Active conversations and chat window. Use the Send button to post as agent.</p>
+    <div style="display:flex;gap:12px;margin-top:12px">
+      <div style="width:320px">
+        <label>Conversations</label>
+        <div id="convList" style="border:1px solid var(--border);padding:8px;border-radius:8px;background:var(--card);max-height:420px;overflow:auto"></div>
+      </div>
+      <div style="flex:1">
+        <label>Conversation</label>
+        <div id="convWindow" style="border:1px solid var(--border);padding:10px;border-radius:8px;background:var(--card);display:flex;flex-direction:column;height:420px">
+          <div id="convMessages" style="flex:1;overflow:auto;padding:6px"></div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <input id="convInput" placeholder="Type message..." style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border)"/>
+            <button id="convSend" style="padding:8px;border-radius:8px;border:none;background:var(--primary);color:#fff;font-weight:700">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  renderConversationList();
+}
+
+let activeConversationId = null;
+function renderConversationList(){
+  const list = load(K_CHATS);
+  const wrap = qs('#convList'); wrap.innerHTML = '';
+  list.forEach(c=>{
+    const cust = load(K_CUSTOMERS).find(x=>x.id===c.customerId) || {name:'Unknown'};
+    const el = document.createElement('div'); el.style.padding='8px'; el.style.border='1px solid var(--border)'; el.style.borderRadius='8px'; el.style.marginBottom='8px';
+    el.innerHTML = `<strong>${cust.name}</strong><div class="small" style="color:var(--muted)">${c.messages[c.messages.length-1]?.text || ''}</div><div style="margin-top:8px"><button data-id="${c.id}" class="openConv" style="padding:6px;border-radius:6px;border:1px solid var(--border)">Open</button></div>`;
+    wrap.appendChild(el);
+  });
+  qsa('.openConv').forEach(b => b.addEventListener('click', ()=> { activeConversationId = b.dataset.id; renderActiveConversation(); }));
+  // if any conversation exists, open first by default
+  if(list.length && !activeConversationId){ activeConversationId = list[0].id; renderActiveConversation(); }
+}
+
+function renderActiveConversation(){
+  const conv = load(K_CHATS).find(c=>c.id===activeConversationId);
+  const box = qs('#convMessages'); if(!conv){ if(box) box.innerHTML = '<div class="small">No conversation selected.</div>'; return; }
+  box.innerHTML = '';
+  conv.messages.forEach(m => {
+    const d = document.createElement('div'); d.style.marginBottom='8px';
+    d.innerHTML = `<div class="bubble ${m.from==='agent'?'user':'ai'}">${m.text} <div style="font-size:11px;color:var(--muted);margin-top:4px">${new Date(m.at).toLocaleTimeString()}</div></div>`;
+    box.appendChild(d);
+  });
+  box.scrollTop = box.scrollHeight;
+  qs('#convSend').onclick = sendConvMessage;
+  qs('#convInput').addEventListener('keypress', e=>{ if(e.key==='Enter') sendConvMessage(); });
+}
+
+function sendConvMessage(){
+  const txt = qs('#convInput').value.trim(); if(!txt) return;
+  const chats = load(K_CHATS); const conv = chats.find(c=>c.id===activeConversationId); if(!conv) return alert('No conversation open');
+  conv.messages.push({from:'agent',text:txt,at:nowISO()}); save(K_CHATS, chats); qs('#convInput').value=''; renderActiveConversation();
+  // simulate customer reply or route to socket
+  if(socketConnected){ socket.emit('chat:message', {convId:conv.id, text:txt}); }
+  else { setTimeout(()=> { conv.messages.push({from:'customer',text:'Thanks — noted. Please follow up.',at:nowISO()}); save(K_CHATS, chats); renderActiveConversation(); }, 900); }
+}
+
+/* ----------------- FEEDBACK ----------------- */
+function renderFeedback(){
+  panel.innerHTML = `
+    <h2>Customer Feedback</h2>
+    <p class="small">Collect feedback, rate service, and view summary.</p>
+    <div style="display:flex;gap:12px;margin-top:12px">
+      <div style="flex:1">
+        <div id="feedbackList" style="border:1px solid var(--border);padding:8px;border-radius:8px;background:var(--card);max-height:420px;overflow:auto"></div>
+      </div>
+      <div style="width:360px">
+        <div style="background:var(--card);padding:10px;border-radius:8px;border:1px solid var(--border)">
+          <label>Customer</label><select id="fb_customer"></select>
+          <label>Score (1-5)</label><select id="fb_score"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option></select>
+          <label>Comments</label><textarea id="fb_comment"></textarea>
+          <div style="margin-top:8px"><button id="fb_submit" style="background:var(--primary);color:#fff;padding:8px;border-radius:8px;border:none;font-weight:700">Submit</button></div>
+        </div>
+        <div style="margin-top:12px;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--card)">
+          <div class="small">Average Score</div><div id="fb_avg" style="font-weight:700;font-size:1.4rem">0</div><div class="small">Responses: <span id="fb_count">0</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+  const cs = load(K_CUSTOMERS); qs('#fb_customer').innerHTML = cs.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  qs('#fb_submit').addEventListener('click', ()=> {
+    const cid = qs('#fb_customer').value; const score = Number(qs('#fb_score').value); const comment = qs('#fb_comment').value.trim();
+    const list = load(K_FEEDBACK); list.unshift({id:uid('fb'),customerId:cid,score,comment,at:nowISO()}); save(K_FEEDBACK, list); qs('#fb_comment').value=''; renderFeedbackList();
+  });
+  renderFeedbackList();
+}
+
+function renderFeedbackList(){
+  const list = load(K_FEEDBACK); const wrap = qs('#feedbackList'); wrap.innerHTML = '';
+  list.forEach(f=>{
+    const c = load(K_CUSTOMERS).find(x=>x.id===f.customerId) || {name:'Unknown'};
+    const el = document.createElement('div'); el.style.padding='8px'; el.style.border='1px solid var(--border)'; el.style.borderRadius='8px'; el.style.marginBottom='8px';
+    el.innerHTML = `<strong>${c.name}</strong><div class="small">${f.comment||''}</div><div style="margin-top:6px" class="small">Score: ${f.score} • ${new Date(f.at).toLocaleString()}</div>`;
+    wrap.appendChild(el);
+  });
+  const avg = list.length ? (list.reduce((s,i)=>s+i.score,0)/list.length).toFixed(2) : 0;
+  qs('#fb_avg') && (qs('#fb_avg').textContent = avg); qs('#fb_count') && (qs('#fb_count').textContent = list.length);
+}
+
+/* ----------------- KNOWLEDGE BASE ----------------- */
+function renderKB(){
+  panel.innerHTML = `
+    <h2>Knowledge Base</h2>
+    <p class="small">Search, create, and manage KB articles.</p>
+    <div style="display:flex;gap:12px;margin-top:12px">
+      <div style="flex:1">
+        <input id="kb_search" placeholder="Search articles..." style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border)"/>
+        <div id="kbList" style="margin-top:8px;border:1px solid var(--border);padding:8px;border-radius:8px;background:var(--card);max-height:420px;overflow:auto"></div>
+      </div>
+      <div style="width:360px">
+        <label>Title</label><input id="kb_title" />
+        <label>Content</label><textarea id="kb_body"></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px"><button id="kb_save" style="background:var(--primary);color:#fff;padding:8px;border-radius:8px;border:none">Save</button><button id="kb_cancel" style="border:1px solid var(--border);padding:8px;border-radius:8px">Cancel</button></div>
+      </div>
+    </div>
+  `;
+  qs('#kb_search').addEventListener('input', renderKBList);
+  qs('#kb_save').addEventListener('click', ()=> {
+    const title = qs('#kb_title').value.trim(); const body = qs('#kb_body').value.trim(); if(!title || !body) return alert('Title & content required');
+    const kb = load(K_KB); kb.unshift({id:uid('kb'),title,body}); save(K_KB,kb); qs('#kb_title').value=''; qs('#kb_body').value=''; renderKBList(); alert('Saved (demo).');
+  });
+  qs('#kb_cancel').addEventListener('click', ()=> { qs('#kb_title').value=''; qs('#kb_body').value=''; });
+  renderKBList();
+}
+
+function renderKBList(){
+  const q = qs('#kb_search').value.trim().toLowerCase();
+  const list = load(K_KB); const wrap = qs('#kbList'); wrap.innerHTML = '';
+  list.filter(a=> a.title.toLowerCase().includes(q) || a.body.toLowerCase().includes(q)).forEach(a=>{
+    const el = document.createElement('div'); el.style.padding='8px'; el.style.border='1px solid var(--border)'; el.style.borderRadius='8px'; el.style.marginBottom='8px';
+    el.innerHTML = `<strong>${a.title}</strong><div class="small" style="color:var(--muted);margin-top:6px">${a.body.slice(0,180)}${a.body.length>180?'...':''}</div><div style="margin-top:8px"><button data-id="${a.id}" class="kb-open" style="padding:6px;border-radius:6px;border:1px solid var(--border)">Open</button> <button data-del="${a.id}" class="kb-del" style="padding:6px;border-radius:6px;border:1px solid var(--border)">Delete</button></div>`;
+    wrap.appendChild(el);
+  });
+  qsa('.kb-open').forEach(b => b.addEventListener('click', ()=> {
+    const a = load(K_KB).find(x=>x.id===b.dataset.id); if(!a) return; alert(a.title + "\n\n" + a.body);
+  }));
+  qsa('.kb-del').forEach(b => b.addEventListener('click', ()=> {
+    if(!confirm('Delete article?')) return; save(K_KB, load(K_KB).filter(x=>x.id!==b.dataset.del)); renderKBList();
+  }));
+}
+
+/* ----------------- ANALYTICS ----------------- */
+function renderAnalytics(){
+  panel.innerHTML = `
+    <h2>Service Analytics</h2>
+    <p class="small">Quick charts and SLA insights (simple demo graph).</p>
+    <div style="display:flex;gap:12px;margin-top:12px">
+      <div style="flex:1;padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--card)">
+        <canvas id="analyticsChart" width="600" height="220" style="width:100%;height:220px"></canvas>
+      </div>
+      <div style="width:360px;padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--card)">
+        <div class="small">Resolved (30 days)</div><div id="resolvedCount" style="font-weight:800;font-size:1.4rem;margin-top:8px">0</div>
+        <div style="margin-top:12px" class="small">SLA breaches</div><div id="slaBreach" style="font-weight:800;font-size:1.4rem;margin-top:8px">0%</div>
+      </div>
+    </div>
+  `;
+  computeAnalytics();
+}
+
+function computeAnalytics(){
+  const tickets = load(K_TICKETS);
+  const open = tickets.filter(t=>t.status==='open').length;
+  const inprog = tickets.filter(t=>t.status==='inprogress').length;
+  const resolved = tickets.filter(t=>t.status==='resolved').length;
+  const breached = tickets.filter(t=>calcSlaRemaining(t)==='BREACHED').length;
+  const breachPct = tickets.length ? Math.round((breached / tickets.length)*100) : 0;
+  qs('#resolvedCount').textContent = resolved;
+  qs('#slaBreach').textContent = breachPct + '%';
+  // draw bar chart simple
+  const canvas = qs('#analyticsChart'); const ctx = canvas.getContext('2d');
+  canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const vals = [open,inprog,resolved]; const labels = ['Open','In Prog','Resolved']; const total = Math.max(vals.reduce((s,v)=>s+v,0),1);
+  const barW = (canvas.width - 40) / vals.length;
+  vals.forEach((v,i)=>{
+    const h = (v/total)*(canvas.height-60);
+    const x = 20 + i*(barW);
+    const y = canvas.height - 30 - h;
+    ctx.fillStyle = i===0? '#f59e0b': i===1? '#60a5fa':'#34d399';
+    ctx.fillRect(x, y, barW*0.6, h);
+    ctx.fillStyle = '#102a43'; ctx.font = '12px system-ui'; ctx.fillText(labels[i], x, canvas.height-10); ctx.fillText(v, x, y-6);
+  });
+}
+
+/* ----------------- CRM ----------------- */
+function renderCRM(){
+  panel.innerHTML = `
+    <h2>CRM Integration</h2>
+    <p class="small">Manage customer profiles. Add a customer or create a ticket for them.</p>
+    <div style="display:flex;gap:12px;margin-top:12px">
+      <div style="flex:1">
+        <div id="custList" style="border:1px solid var(--border);padding:8px;border-radius:8px;background:var(--card);max-height:420px;overflow:auto"></div>
+      </div>
+      <div style="width:360px">
+        <div style="background:var(--card);padding:10px;border-radius:8px;border:1px solid var(--border)">
+          <label>Name</label><input id="cust_name" />
+          <label>Email</label><input id="cust_email" />
+          <label>Phone</label><input id="cust_phone" />
+          <div style="display:flex;gap:8px;margin-top:8px"><button id="cust_save" style="background:var(--primary);color:#fff;padding:8px;border-radius:8px;border:none">Save</button><button id="cust_cancel" style="border:1px solid var(--border);padding:8px;border-radius:8px">Cancel</button></div>
+        </div>
+      </div>
+    </div>
+  `;
+  renderCustomerList();
+  qs('#cust_save').addEventListener('click', ()=> {
+    const name = qs('#cust_name').value.trim(); const email = qs('#cust_email').value.trim(); const phone = qs('#cust_phone').value.trim();
+    if(!name) return alert('Name required');
+    const list = load(K_CUSTOMERS); list.unshift({id:uid('cust'),name,email,phone}); save(K_CUSTOMERS, list); renderCustomerList(); qs('#cust_name').value=''; qs('#cust_email').value=''; qs('#cust_phone').value=''; alert('Customer saved (demo).');
+  });
+  qs('#cust_cancel').addEventListener('click', ()=> { qs('#cust_name').value=''; qs('#cust_email').value=''; qs('#cust_phone').value=''; });
+}
+
+function renderCustomerList(){
+  const wrap = qs('#custList'); wrap.innerHTML=''; load(K_CUSTOMERS).forEach(c=>{
+    const el = document.createElement('div'); el.style.padding='8px'; el.style.border='1px solid var(--border)'; el.style.marginBottom='8px'; el.style.borderRadius='8px';
+    el.innerHTML = `<strong>${c.name}</strong><div class="small" style="color:var(--muted)">${c.email||''} • ${c.phone||''}</div><div style="margin-top:8px"><button data-id="${c.id}" class="cust-ticket" style="padding:6px;border-radius:6px;border:1px solid var(--border)">Create Ticket</button></div>`;
+    wrap.appendChild(el);
+  });
+  qsa('.cust-ticket').forEach(b => b.addEventListener('click', ()=> { startTicketFor(b.dataset.id); setActiveCard('ticket'); renderModule('ticket'); }));
+}
+
+function startTicketFor(customerId){
+  // open ticket module and populate create form
+  setTimeout(()=> {
+    // wait render
+    const sel = qs('#t_customer'); if(sel) sel.value = customerId;
+    if(qs('#t_title')) qs('#t_title').focus();
+  },120);
+}
+
+/* ================== AI ASSISTANT (Socket.io optional) ================== */
+let socket = null; let socketConnected = false;
+const SOCKET_URL = SOCKET_SERVER_URL; // set earlier
+
+function initSocket(){
+  if(!SOCKET_URL) return; // no remote server configured
+  const s = document.createElement('script'); s.src = SOCKET_URL.replace(/\/$/,'') + '/socket.io/socket.io.js';
+  s.onload = ()=> {
+    try {
+      socket = io(SOCKET_URL, {transports:['websocket']});
+      socket.on('connect', ()=> { socketConnected = true; appendAi('ai','[Connected to CephasAI server]'); });
+      socket.on('disconnect', ()=> { socketConnected = false; appendAi('ai','[Disconnected]'); });
+      socket.on('ai:response', data => { appendAi('ai', data.reply || data); });
+      socket.on('chat:message', data => { /* handle server chat events if needed */ });
+    } catch(e){ console.warn('Socket init failed', e); }
+  };
+  s.onerror = ()=> console.warn('Failed to load socket client from server');
+  document.head.appendChild(s);
+}
+
+/* AI message helpers */
+function appendAi(who, text){
+  const container = qs('#aiBody');
+  const el = document.createElement('div'); el.className = 'msg';
+  const bubble = document.createElement('div'); bubble.className = 'bubble ' + (who==='user'?'user':'ai'); bubble.textContent = text;
+  el.appendChild(bubble); container.appendChild(el); container.scrollTop = container.scrollHeight;
+}
+
+/* local fallback AI logic */
+function localAiReply(text){
+  const t = text.toLowerCase();
+  if(t.includes('ticket') || t.includes('create ticket')) { setActiveCard('ticket'); renderModule('ticket'); return 'Opened Ticket Management. Use create ticket form on the right.'; }
+  if(t.includes('live chat') || t.includes('chat')) { setActiveCard('livechat'); renderModule('livechat'); return 'Opened Live Chat module.'; }
+  if(t.includes('feedback') || t.includes('csat')) { setActiveCard('feedback'); renderModule('feedback'); return 'Opened Customer Feedback module.'; }
+  if(t.includes('knowledge') || t.includes('kb') || t.includes('article')) { setActiveCard('kb'); renderModule('kb'); return 'Opened Knowledge Base module.'; }
+  if(t.includes('analytics') || t.includes('sla') || t.includes('breach')) { setActiveCard('analytics'); renderModule('analytics'); return 'Opened Service Analytics module.'; }
+  if(t.includes('crm') || t.includes('customer')) { setActiveCard('crm'); renderModule('crm'); return 'Opened CRM module.'; }
+  const tid = text.match(/t-?\d{3,}/i);
+  if(tid){ const id = tid[0].toUpperCase().replace('T-','T-'); const tObj = load(K_TICKETS).find(x=>x.id.toUpperCase()===id.toUpperCase()); if(tObj) return `Ticket ${tObj.id} • ${tObj.title} • Status: ${tObj.status}`; }
+  return "I can help: 'Open ticket', 'Start chat', 'Show analytics', 'Find KB'.";
+}
+
+/* hook UI */
+qs('#aiSend').addEventListener('click', ()=> handleAiSend());
+qs('#aiInput').addEventListener('keypress', e=> { if(e.key==='Enter') handleAiSend(); });
+
+function handleAiSend(){
+  const txt = qs('#aiInput').value.trim(); if(!txt) return; qs('#aiInput').value='';
+  appendAi('user', txt);
+  if(socket && socketConnected){
+    socket.emit('ai:query', {prompt:txt});
+    appendAi('ai','Thinking...');
+    return;
+  }
+  // local fallback
+  setTimeout(()=> appendAi('ai', localAiReply(txt)), 300);
+}
+
+/* init socket if configured */
+initSocket();
+
+/* ================== misc helpers ================== */
+function updateStats(){
+  const tickets = load(K_TICKETS);
+  qs('#statOpen').textContent = tickets.filter(t=>t.status==='open').length;
+  qs('#statAvg').textContent = Math.floor(Math.random()*20)+3 + 'm';
+  const fb = load(K_FEEDBACK); const avg = fb.length ? (fb.reduce((s,i)=>s+i.score,0)/fb.length) : 0;
+  qs('#statSat').textContent = Math.round(avg*20) + '%';
+}
+
+/* calculate sla remaining used earlier */
+function calcSlaRemaining(ticket){
+  const created = new Date(ticket.created); const deadline = new Date(created.getTime() + (ticket.slaHours||24)*3600000);
+  const diff = (deadline - new Date())/3600000; if(diff < 0) return 'BREACHED'; return Math.round(diff) + 'h left';
+}
+
+/* initial boot */
+seedIfEmpty();
+updateStats();
+/* ensure first card doesn't auto-open; user clicks intentionally */
+
+</script>
 </body>
 </html>
