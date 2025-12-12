@@ -153,6 +153,7 @@
       text-decoration: none;
       transition: all 0.3s ease;
       position: relative;
+      cursor: pointer;
     }
 
     .nav-link:hover,
@@ -204,6 +205,21 @@
       display: flex;
       gap: 1rem;
       align-items: center;
+    }
+
+    /* Module Container */
+    .module-container {
+      display: none;
+    }
+
+    .module-container.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* ===== CURRENCY SELECTOR ===== */
@@ -555,6 +571,7 @@
       transition: all 0.3s ease;
       box-shadow: var(--shadow);
       border: 1px solid transparent;
+      cursor: pointer;
     }
 
     .module-card:hover {
@@ -588,14 +605,37 @@
       line-height: 1.5;
     }
 
-    /* ===== FOOTER ===== */
-    .finance-footer {
+    /* ===== MODULE CONTENT STYLES ===== */
+    .module-toolbar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .module-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .module-stat {
+      background: var(--primary-light);
+      padding: 1rem;
+      border-radius: var(--radius);
       text-align: center;
-      padding: 2rem;
-      margin-top: 2rem;
-      color: var(--muted);
+    }
+
+    .module-stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .module-stat-label {
       font-size: 0.875rem;
-      border-top: 1px solid var(--primary-light);
+      color: var(--muted);
     }
 
     /* ===== MODAL ===== */
@@ -617,7 +657,7 @@
       background: var(--card);
       border-radius: var(--radius);
       width: 90%;
-      max-width: 500px;
+      max-width: 600px;
       max-height: 90vh;
       overflow-y: auto;
       animation: modalSlideIn 0.3s ease;
@@ -771,6 +811,10 @@
       .module-grid {
         grid-template-columns: 1fr;
       }
+
+      .module-toolbar {
+        flex-direction: column;
+      }
     }
 
     /* Mobile Menu Toggle */
@@ -839,7 +883,7 @@
       <nav class="sidebar-nav" aria-label="Main navigation">
         <div class="nav-section">
           <div class="nav-section-title">Finance Core</div>
-          <a href="finance.html" class="nav-link active">
+          <a class="nav-link active" data-module="overview">
             <span class="nav-link-icon"><i class="fas fa-chart-line"></i></span>
             <span>Financial Overview</span>
           </a>
@@ -847,7 +891,7 @@
             <span class="nav-link-icon"><i class="fas fa-money-check-alt"></i></span>
             <span>Payroll</span>
           </a>
-          <a href="#" class="nav-link" onclick="openModule('accounting')">
+          <a class="nav-link" data-module="accounting">
             <span class="nav-link-icon"><i class="fas fa-calculator"></i></span>
             <span>Accounting</span>
           </a>
@@ -855,17 +899,33 @@
 
         <div class="nav-section">
           <div class="nav-section-title">Financial Modules</div>
-          <a href="#" class="nav-link" onclick="openModule('invoicing')">
+          <a class="nav-link" data-module="invoicing">
             <span class="nav-link-icon"><i class="fas fa-file-invoice-dollar"></i></span>
             <span>Invoicing</span>
           </a>
-          <a href="#" class="nav-link" onclick="openModule('expenses')">
+          <a class="nav-link" data-module="expenses">
             <span class="nav-link-icon"><i class="fas fa-receipt"></i></span>
             <span>Expenses</span>
           </a>
-          <a href="#" class="nav-link" onclick="openModule('budgeting')">
+          <a class="nav-link" data-module="budgeting">
             <span class="nav-link-icon"><i class="fas fa-chart-pie"></i></span>
             <span>Budgeting</span>
+          </a>
+          <a class="nav-link" data-module="tax">
+            <span class="nav-link-icon"><i class="fas fa-balance-scale"></i></span>
+            <span>Tax Management</span>
+          </a>
+          <a class="nav-link" data-module="reports">
+            <span class="nav-link-icon"><i class="fas fa-chart-bar"></i></span>
+            <span>Financial Reports</span>
+          </a>
+          <a class="nav-link" data-module="audit">
+            <span class="nav-link-icon"><i class="fas fa-search"></i></span>
+            <span>Audit Trail</span>
+          </a>
+          <a class="nav-link" data-module="multi-currency">
+            <span class="nav-link-icon"><i class="fas fa-globe"></i></span>
+            <span>Multi-Currency</span>
           </a>
         </div>
 
@@ -891,15 +951,15 @@
 
         <div class="nav-section">
           <div class="nav-section-title">Quick Actions</div>
-          <a href="#" class="nav-link" onclick="createInvoice()">
+          <a class="nav-link" onclick="createInvoice()">
             <span class="nav-link-icon"><i class="fas fa-plus-circle"></i></span>
             <span>Create Invoice</span>
           </a>
-          <a href="#" class="nav-link" onclick="recordExpense()">
+          <a class="nav-link" onclick="recordExpense()">
             <span class="nav-link-icon"><i class="fas fa-money-bill-wave"></i></span>
             <span>Record Expense</span>
           </a>
-          <a href="#" class="nav-link" onclick="generateReport()">
+          <a class="nav-link" onclick="generateReport()">
             <span class="nav-link-icon"><i class="fas fa-file-pdf"></i></span>
             <span>Generate Report</span>
           </a>
@@ -909,7 +969,7 @@
       <div style="padding: 1.5rem; margin-top: auto; border-top: 1px solid var(--primary-light);">
         <div class="currency-selector">
           <label for="currencySelect" style="font-size: 0.875rem; color: var(--muted);">Currency:</label>
-          <select id="currencySelect" class="currency-select" onchange="changeCurrency(this.value)">
+          <select id="currencySelect" class="currency-select">
             <option value="TZS">TZS</option>
             <option value="USD">USD</option>
             <option value="EUR">EUR</option>
@@ -924,11 +984,11 @@
       <!-- Header -->
       <header class="finance-header">
         <div>
-          <h1 class="finance-title">
+          <h1 class="finance-title" id="moduleTitle">
             <i class="fas fa-chart-line"></i>
             Financial Management
           </h1>
-          <p class="text-muted">Comprehensive financial overview, accounting, and financial analytics with multi-currency support</p>
+          <p class="text-muted" id="moduleDescription">Comprehensive financial overview, accounting, and financial analytics with multi-currency support</p>
         </div>
 
         <div class="finance-actions">
@@ -941,205 +1001,720 @@
         </div>
       </header>
 
-      <!-- Toolbar -->
-      <div class="toolbar">
-        <button class="btn btn-primary" onclick="createInvoice()">
-          <i class="fas fa-file-invoice-dollar"></i> Create Invoice
-        </button>
-        <button class="btn btn-primary" onclick="recordExpense()">
-          <i class="fas fa-receipt"></i> Record Expense
-        </button>
-        <button class="btn btn-success" onclick="generateReport()">
-          <i class="fas fa-chart-bar"></i> Financial Reports
-        </button>
-        <button class="btn btn-warning" onclick="syncPayroll()">
-          <i class="fas fa-sync-alt"></i> Sync Payroll
-        </button>
-        <button class="btn btn-primary" onclick="runAnalysis()">
-          <i class="fas fa-chart-pie"></i> Budget Analysis
-        </button>
-      </div>
-
-      <!-- Financial Statistics -->
-      <div class="stats-grid">
-        <div class="stat-card" onclick="viewDetails('revenue')">
-          <div class="stat-header">
-            <h3 class="stat-title">Total Revenue</h3>
-            <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
-          </div>
-          <div class="stat-value" id="revenueValue">TZS 24.8M</div>
-          <div class="stat-change trend-up">
-            <i class="fas fa-arrow-up"></i> 12.4% from last month
-          </div>
-        </div>
-
-        <div class="stat-card" onclick="viewDetails('expenses')">
-          <div class="stat-header">
-            <h3 class="stat-title">Total Expenses</h3>
-            <div class="stat-icon"><i class="fas fa-receipt"></i></div>
-          </div>
-          <div class="stat-value" id="expensesValue">TZS 8.7M</div>
-          <div class="stat-change trend-down">
-            <i class="fas fa-arrow-down"></i> 3.2% from last month
-          </div>
-        </div>
-
-        <div class="stat-card" onclick="viewDetails('profit')">
-          <div class="stat-header">
-            <h3 class="stat-title">Net Profit</h3>
-            <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
-          </div>
-          <div class="stat-value" id="profitValue">TZS 16.1M</div>
-          <div class="stat-change trend-up">
-            <i class="fas fa-arrow-up"></i> 18.7% from last month
-          </div>
-        </div>
-
-        <div class="stat-card" onclick="viewDetails('budget')">
-          <div class="stat-header">
-            <h3 class="stat-title">Budget Utilization</h3>
-            <div class="stat-icon"><i class="fas fa-percentage"></i></div>
-          </div>
-          <div class="stat-value" id="budgetValue">94%</div>
-          <div class="stat-change trend-up">
-            <i class="fas fa-arrow-up"></i> 2.1% from target
-          </div>
-        </div>
-      </div>
-
-      <!-- Financial Overview -->
-      <div class="financial-overview">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Financial Performance</div>
-            <select id="timeRange" class="form-control" style="width: auto;" onchange="updateChart(this.value)">
-              <option value="30">Last 30 Days</option>
-              <option value="90">Last Quarter</option>
-              <option value="365">Last Year</option>
-            </select>
-          </div>
-          <div class="chart-container" id="performanceChart">
-            <!-- Chart will be rendered here -->
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Quick Actions</div>
-          </div>
-          <div class="quick-actions">
-            <button class="action-btn" onclick="createInvoice()">
-              <div class="action-icon"><i class="fas fa-file-invoice-dollar"></i></div>
-              <div>New Invoice</div>
-            </button>
-            <button class="action-btn" onclick="recordExpense()">
-              <div class="action-icon"><i class="fas fa-receipt"></i></div>
-              <div>Record Expense</div>
-            </button>
-            <button class="action-btn" onclick="processPayment()">
-              <div class="action-icon"><i class="fas fa-credit-card"></i></div>
-              <div>Process Payment</div>
-            </button>
-            <button class="action-btn" onclick="generateReport()">
-              <div class="action-icon"><i class="fas fa-chart-bar"></i></div>
-              <div>Generate Report</div>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Budget Progress -->
-      <div class="budget-section card">
-        <div class="card-header">
-          <div class="card-title">Budget Progress</div>
-          <button class="btn btn-primary" onclick="manageBudgets()">
-            <i class="fas fa-cog"></i> Manage Budgets
+      <!-- Overview Module -->
+      <div id="overviewModule" class="module-container active">
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="createInvoice()">
+            <i class="fas fa-file-invoice-dollar"></i> Create Invoice
+          </button>
+          <button class="btn btn-primary" onclick="recordExpense()">
+            <i class="fas fa-receipt"></i> Record Expense
+          </button>
+          <button class="btn btn-success" onclick="generateReport()">
+            <i class="fas fa-chart-bar"></i> Financial Reports
+          </button>
+          <button class="btn btn-warning" onclick="syncPayroll()">
+            <i class="fas fa-sync-alt"></i> Sync Payroll
+          </button>
+          <button class="btn btn-primary" onclick="runAnalysis()">
+            <i class="fas fa-chart-pie"></i> Budget Analysis
           </button>
         </div>
-        <div id="budgetList">
-          <!-- Budget items will be loaded here -->
+
+        <!-- Financial Statistics -->
+        <div class="stats-grid">
+          <div class="stat-card" onclick="viewDetails('revenue')">
+            <div class="stat-header">
+              <h3 class="stat-title">Total Revenue</h3>
+              <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+            </div>
+            <div class="stat-value" id="revenueValue">TZS 24.8M</div>
+            <div class="stat-change trend-up">
+              <i class="fas fa-arrow-up"></i> 12.4% from last month
+            </div>
+          </div>
+
+          <div class="stat-card" onclick="viewDetails('expenses')">
+            <div class="stat-header">
+              <h3 class="stat-title">Total Expenses</h3>
+              <div class="stat-icon"><i class="fas fa-receipt"></i></div>
+            </div>
+            <div class="stat-value" id="expensesValue">TZS 8.7M</div>
+            <div class="stat-change trend-down">
+              <i class="fas fa-arrow-down"></i> 3.2% from last month
+            </div>
+          </div>
+
+          <div class="stat-card" onclick="viewDetails('profit')">
+            <div class="stat-header">
+              <h3 class="stat-title">Net Profit</h3>
+              <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+            </div>
+            <div class="stat-value" id="profitValue">TZS 16.1M</div>
+            <div class="stat-change trend-up">
+              <i class="fas fa-arrow-up"></i> 18.7% from last month
+            </div>
+          </div>
+
+          <div class="stat-card" onclick="viewDetails('budget')">
+            <div class="stat-header">
+              <h3 class="stat-title">Budget Utilization</h3>
+              <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+            </div>
+            <div class="stat-value" id="budgetValue">94%</div>
+            <div class="stat-change trend-up">
+              <i class="fas fa-arrow-up"></i> 2.1% from target
+            </div>
+          </div>
+        </div>
+
+        <!-- Financial Overview -->
+        <div class="financial-overview">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Financial Performance</div>
+              <select id="timeRange" class="form-control" style="width: auto;">
+                <option value="30">Last 30 Days</option>
+                <option value="90">Last Quarter</option>
+                <option value="365">Last Year</option>
+              </select>
+            </div>
+            <div class="chart-container" id="performanceChart">
+              <!-- Chart will be rendered here -->
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Quick Actions</div>
+            </div>
+            <div class="quick-actions">
+              <button class="action-btn" onclick="createInvoice()">
+                <div class="action-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                <div>New Invoice</div>
+              </button>
+              <button class="action-btn" onclick="recordExpense()">
+                <div class="action-icon"><i class="fas fa-receipt"></i></div>
+                <div>Record Expense</div>
+              </button>
+              <button class="action-btn" onclick="processPayment()">
+                <div class="action-icon"><i class="fas fa-credit-card"></i></div>
+                <div>Process Payment</div>
+              </button>
+              <button class="action-btn" onclick="generateReport()">
+                <div class="action-icon"><i class="fas fa-chart-bar"></i></div>
+                <div>Generate Report</div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Budget Progress -->
+        <div class="budget-section card">
+          <div class="card-header">
+            <div class="card-title">Budget Progress</div>
+            <button class="btn btn-primary" onclick="openModule('budgeting')">
+              <i class="fas fa-cog"></i> Manage Budgets
+            </button>
+          </div>
+          <div id="budgetList">
+            <!-- Budget items will be loaded here -->
+          </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="transactions-section card">
+          <div class="card-header">
+            <div class="card-title">Recent Transactions</div>
+            <button class="btn btn-primary" onclick="viewAllTransactions()">
+              <i class="fas fa-list"></i> View All
+            </button>
+          </div>
+          <div class="table-container">
+            <table class="finance-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="transactionsList">
+                <!-- Transactions will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Financial Management Modules -->
+        <div class="module-grid">
+          <div class="module-card" data-module="accounting">
+            <div class="module-icon"><i class="fas fa-calculator"></i></div>
+            <div class="module-title">Accounting</div>
+            <div class="module-description">General ledger, chart of accounts, journal entries, and financial statements with audit trails</div>
+          </div>
+          <div class="module-card" data-module="budgeting">
+            <div class="module-icon"><i class="fas fa-chart-pie"></i></div>
+            <div class="module-title">Budgeting & Forecasting</div>
+            <div class="module-description">Create budgets, financial forecasts, and variance analysis with scenario planning</div>
+          </div>
+          <div class="module-card" data-module="invoicing">
+            <div class="module-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+            <div class="module-title">Invoicing & Billing</div>
+            <div class="module-description">Create and manage invoices, track payments, and automate billing processes</div>
+          </div>
+          <div class="module-card" data-module="expenses">
+            <div class="module-icon"><i class="fas fa-receipt"></i></div>
+            <div class="module-title">Expense Tracking</div>
+            <div class="module-description">Track and categorize expenses, manage receipts, and monitor spending</div>
+          </div>
+          <div class="module-card" data-module="tax">
+            <div class="module-icon"><i class="fas fa-balance-scale"></i></div>
+            <div class="module-title">Tax Management</div>
+            <div class="module-description">Tax calculations, compliance tracking, regulatory reporting, and filings</div>
+          </div>
+          <div class="module-card" data-module="reports">
+            <div class="module-icon"><i class="fas fa-chart-bar"></i></div>
+            <div class="module-title">Financial Reporting</div>
+            <div class="module-description">Generate balance sheets, income statements, cash flow reports, and analytics</div>
+          </div>
+          <div class="module-card" data-module="audit">
+            <div class="module-icon"><i class="fas fa-search"></i></div>
+            <div class="module-title">Audit Trail</div>
+            <div class="module-description">Complete financial transaction history and compliance tracking</div>
+          </div>
+          <div class="module-card" data-module="multi-currency">
+            <div class="module-icon"><i class="fas fa-globe"></i></div>
+            <div class="module-title">Multi-Currency</div>
+            <div class="module-description">Manage transactions in multiple currencies with real-time exchange rates</div>
+          </div>
+          <a href="payroll.html" class="module-card">
+            <div class="module-icon"><i class="fas fa-money-check-alt"></i></div>
+            <div class="module-title">Payroll Integration</div>
+            <div class="module-description">Seamless integration with payroll system for automated salary processing</div>
+          </a>
+          <a href="hr.html" class="module-card">
+            <div class="module-icon"><i class="fas fa-users"></i></div>
+            <div class="module-title">HR Integration</div>
+            <div class="module-description">Connect with HR system for employee expense management and benefits</div>
+          </a>
         </div>
       </div>
 
-      <!-- Recent Transactions -->
-      <div class="transactions-section card">
-        <div class="card-header">
-          <div class="card-title">Recent Transactions</div>
-          <button class="btn btn-primary" onclick="viewAllTransactions()">
-            <i class="fas fa-list"></i> View All
+      <!-- Accounting Module -->
+      <div id="accountingModule" class="module-container">
+        <div class="module-toolbar">
+          <button class="btn btn-primary" onclick="addJournalEntry()">
+            <i class="fas fa-plus"></i> Add Journal Entry
+          </button>
+          <button class="btn btn-success" onclick="viewGeneralLedger()">
+            <i class="fas fa-book"></i> View General Ledger
+          </button>
+          <button class="btn btn-warning" onclick="runTrialBalance()">
+            <i class="fas fa-balance-scale"></i> Trial Balance
+          </button>
+          <button class="btn btn-primary" onclick="viewFinancialStatements()">
+            <i class="fas fa-file-invoice-dollar"></i> Financial Statements
           </button>
         </div>
-        <div class="table-container">
-          <table class="finance-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="transactionsList">
-              <!-- Transactions will be loaded here -->
-            </tbody>
-          </table>
+
+        <div class="module-stats">
+          <div class="module-stat">
+            <div class="module-stat-value" id="totalAssets">TZS 125M</div>
+            <div class="module-stat-label">Total Assets</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="totalLiabilities">TZS 45M</div>
+            <div class="module-stat-label">Total Liabilities</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="totalEquity">TZS 80M</div>
+            <div class="module-stat-label">Total Equity</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="cashBalance">TZS 25M</div>
+            <div class="module-stat-label">Cash Balance</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Recent Journal Entries</div>
+            <button class="btn btn-primary" onclick="viewAllEntries()">
+              <i class="fas fa-list"></i> View All
+            </button>
+          </div>
+          <div class="table-container">
+            <table class="finance-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Entry #</th>
+                  <th>Description</th>
+                  <th>Debit</th>
+                  <th>Credit</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="journalEntries">
+                <!-- Journal entries will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Chart of Accounts</div>
+            <button class="btn btn-primary" onclick="addAccount()">
+              <i class="fas fa-plus"></i> Add Account
+            </button>
+          </div>
+          <div class="table-container">
+            <table class="finance-table">
+              <thead>
+                <tr>
+                  <th>Account Code</th>
+                  <th>Account Name</th>
+                  <th>Type</th>
+                  <th>Balance</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="chartOfAccounts">
+                <!-- Accounts will be loaded here -->
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
-      <!-- Financial Management Modules -->
-      <div class="module-grid">
-        <a href="#" class="module-card" onclick="openModule('accounting')">
-          <div class="module-icon"><i class="fas fa-calculator"></i></div>
-          <div class="module-title">Accounting</div>
-          <div class="module-description">General ledger, chart of accounts, journal entries, and financial statements with audit trails</div>
-        </a>
-        <a href="#" class="module-card" onclick="openModule('budgeting')">
-          <div class="module-icon"><i class="fas fa-chart-pie"></i></div>
-          <div class="module-title">Budgeting & Forecasting</div>
-          <div class="module-description">Create budgets, financial forecasts, and variance analysis with scenario planning</div>
-        </a>
-        <a href="#" class="module-card" onclick="openModule('invoicing')">
-          <div class="module-icon"><i class="fas fa-file-invoice-dollar"></i></div>
-          <div class="module-title">Invoicing & Billing</div>
-          <div class="module-description">Create and manage invoices, track payments, and automate billing processes</div>
-        </a>
-        <a href="#" class="module-card" onclick="openModule('expense-tracking')">
-          <div class="module-icon"><i class="fas fa-receipt"></i></div>
-          <div class="module-title">Expense Tracking</div>
-          <div class="module-description">Track and categorize expenses, manage receipts, and monitor spending</div>
-        </a>
-        <a href="#" class="module-card" onclick="openModule('tax-management')">
-          <div class="module-icon"><i class="fas fa-balance-scale"></i></div>
-          <div class="module-title">Tax Management</div>
-          <div class="module-description">Tax calculations, compliance tracking, regulatory reporting, and filings</div>
-        </a>
-        <a href="#" class="module-card" onclick="openModule('financial-reporting')">
-          <div class="module-icon"><i class="fas fa-chart-bar"></i></div>
-          <div class="module-title">Financial Reporting</div>
-          <div class="module-description">Generate balance sheets, income statements, cash flow reports, and analytics</div>
-        </a>
-        <a href="#" class="module-card" onclick="openModule('audit-trail')">
-          <div class="module-icon"><i class="fas fa-search"></i></div>
-          <div class="module-title">Audit Trail</div>
-          <div class="module-description">Complete financial transaction history and compliance tracking</div>
-        </a>
-        <a href="#" class="module-card" onclick="openModule('multi-currency')">
-          <div class="module-icon"><i class="fas fa-globe"></i></div>
-          <div class="module-title">Multi-Currency</div>
-          <div class="module-description">Manage transactions in multiple currencies with real-time exchange rates</div>
-        </a>
-        <a href="payroll.html" class="module-card">
-          <div class="module-icon"><i class="fas fa-money-check-alt"></i></div>
-          <div class="module-title">Payroll Integration</div>
-          <div class="module-description">Seamless integration with payroll system for automated salary processing</div>
-        </a>
-        <a href="hr.html" class="module-card">
-          <div class="module-icon"><i class="fas fa-users"></i></div>
-          <div class="module-title">HR Integration</div>
-          <div class="module-description">Connect with HR system for employee expense management and benefits</div>
-        </a>
+      <!-- Invoicing Module -->
+      <div id="invoicingModule" class="module-container">
+        <div class="module-toolbar">
+          <button class="btn btn-primary" onclick="createInvoice()">
+            <i class="fas fa-plus"></i> Create Invoice
+          </button>
+          <button class="btn btn-success" onclick="viewAllInvoices()">
+            <i class="fas fa-list"></i> View All Invoices
+          </button>
+          <button class="btn btn-warning" onclick="sendReminders()">
+            <i class="fas fa-bell"></i> Send Reminders
+          </button>
+          <button class="btn btn-primary" onclick="runInvoicingReport()">
+            <i class="fas fa-chart-bar"></i> Invoicing Report
+          </button>
+        </div>
+
+        <div class="module-stats">
+          <div class="module-stat">
+            <div class="module-stat-value" id="totalInvoices">142</div>
+            <div class="module-stat-label">Total Invoices</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="unpaidInvoices">18</div>
+            <div class="module-stat-label">Unpaid Invoices</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="overdueInvoices">5</div>
+            <div class="module-stat-label">Overdue Invoices</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="avgCollectionDays">24</div>
+            <div class="module-stat-label">Avg Collection Days</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Recent Invoices</div>
+            <button class="btn btn-primary" onclick="createInvoice()">
+              <i class="fas fa-plus"></i> New Invoice
+            </button>
+          </div>
+          <div class="table-container">
+            <table class="finance-table">
+              <thead>
+                <tr>
+                  <th>Invoice #</th>
+                  <th>Client</th>
+                  <th>Date</th>
+                  <th>Due Date</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="invoiceList">
+                <!-- Invoices will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Expense Module -->
+      <div id="expensesModule" class="module-container">
+        <div class="module-toolbar">
+          <button class="btn btn-primary" onclick="recordExpense()">
+            <i class="fas fa-plus"></i> Record Expense
+          </button>
+          <button class="btn btn-success" onclick="uploadReceipt()">
+            <i class="fas fa-upload"></i> Upload Receipt
+          </button>
+          <button class="btn btn-warning" onclick="categorizeExpenses()">
+            <i class="fas fa-tags"></i> Categorize Expenses
+          </button>
+          <button class="btn btn-primary" onclick="runExpenseReport()">
+            <i class="fas fa-chart-pie"></i> Expense Report
+          </button>
+        </div>
+
+        <div class="module-stats">
+          <div class="module-stat">
+            <div class="module-stat-value" id="monthlyExpenses">TZS 8.7M</div>
+            <div class="module-stat-label">Monthly Expenses</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="ytdExpenses">TZS 78.3M</div>
+            <div class="module-stat-label">YTD Expenses</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="largestCategory">Marketing</div>
+            <div class="module-stat-label">Largest Category</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="avgDailyExpense">TZS 290K</div>
+            <div class="module-stat-label">Avg Daily Expense</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Recent Expenses</div>
+            <button class="btn btn-primary" onclick="recordExpense()">
+              <i class="fas fa-plus"></i> New Expense
+            </button>
+          </div>
+          <div class="table-container">
+            <table class="finance-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Amount</th>
+                  <th>Payment Method</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="expenseList">
+                <!-- Expenses will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Budgeting Module -->
+      <div id="budgetingModule" class="module-container">
+        <div class="module-toolbar">
+          <button class="btn btn-primary" onclick="createBudget()">
+            <i class="fas fa-plus"></i> Create Budget
+          </button>
+          <button class="btn btn-success" onclick="runForecast()">
+            <i class="fas fa-chart-line"></i> Run Forecast
+          </button>
+          <button class="btn btn-warning" onclick="analyzeVariance()">
+            <i class="fas fa-chart-bar"></i> Variance Analysis
+          </button>
+          <button class="btn btn-primary" onclick="compareScenarios()">
+            <i class="fas fa-exchange-alt"></i> Compare Scenarios
+          </button>
+        </div>
+
+        <div class="module-stats">
+          <div class="module-stat">
+            <div class="module-stat-value" id="totalBudget">TZS 150M</div>
+            <div class="module-stat-label">Total Budget</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="budgetUsed">94%</div>
+            <div class="module-stat-label">Budget Used</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="budgetVariance">+2.1%</div>
+            <div class="module-stat-label">Variance</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="forecastAccuracy">92%</div>
+            <div class="module-stat-label">Forecast Accuracy</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Current Budgets</div>
+            <button class="btn btn-primary" onclick="createBudget()">
+              <i class="fas fa-plus"></i> New Budget
+            </button>
+          </div>
+          <div class="table-container">
+            <table class="finance-table">
+              <thead>
+                <tr>
+                  <th>Budget Name</th>
+                  <th>Period</th>
+                  <th>Allocated</th>
+                  <th>Spent</th>
+                  <th>Remaining</th>
+                  <th>Utilization</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="budgetTable">
+                <!-- Budgets will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tax Management Module -->
+      <div id="taxModule" class="module-container">
+        <div class="module-toolbar">
+          <button class="btn btn-primary" onclick="calculateTax()">
+            <i class="fas fa-calculator"></i> Calculate Tax
+          </button>
+          <button class="btn btn-success" onclick="prepareFiling()">
+            <i class="fas fa-file-alt"></i> Prepare Filing
+          </button>
+          <button class="btn btn-warning" onclick="checkCompliance()">
+            <i class="fas fa-check-circle"></i> Check Compliance
+          </button>
+          <button class="btn btn-primary" onclick="viewTaxReports()">
+            <i class="fas fa-chart-bar"></i> Tax Reports
+          </button>
+        </div>
+
+        <div class="module-stats">
+          <div class="module-stat">
+            <div class="module-stat-value" id="taxDue">TZS 4.2M</div>
+            <div class="module-stat-label">Tax Due</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="taxPaid">TZS 3.8M</div>
+            <div class="module-stat-label">Tax Paid</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="taxCredits">TZS 420K</div>
+            <div class="module-stat-label">Tax Credits</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="complianceScore">95%</div>
+            <div class="module-stat-label">Compliance Score</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Tax Obligations</div>
+            <button class="btn btn-primary" onclick="addTaxObligation()">
+              <i class="fas fa-plus"></i> Add Obligation
+            </button>
+          </div>
+          <div class="table-container">
+            <table class="finance-table">
+              <thead>
+                <tr>
+                  <th>Tax Type</th>
+                  <th>Period</th>
+                  <th>Amount Due</th>
+                  <th>Due Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="taxObligations">
+                <!-- Tax obligations will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Reports Module -->
+      <div id="reportsModule" class="module-container">
+        <div class="module-toolbar">
+          <button class="btn btn-primary" onclick="generateBalanceSheet()">
+            <i class="fas fa-balance-scale"></i> Balance Sheet
+          </button>
+          <button class="btn btn-success" onclick="generateIncomeStatement()">
+            <i class="fas fa-chart-line"></i> Income Statement
+          </button>
+          <button class="btn btn-warning" onclick="generateCashFlow()">
+            <i class="fas fa-money-bill-wave"></i> Cash Flow
+          </button>
+          <button class="btn btn-primary" onclick="generateCustomReport()">
+            <i class="fas fa-file-alt"></i> Custom Report
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Available Reports</div>
+            <button class="btn btn-success" onclick="generateAllReports()">
+              <i class="fas fa-download"></i> Generate All
+            </button>
+          </div>
+          <div class="module-grid">
+            <div class="module-card" onclick="generateBalanceSheet()">
+              <div class="module-icon"><i class="fas fa-balance-scale"></i></div>
+              <div class="module-title">Balance Sheet</div>
+              <div class="module-description">Assets, liabilities, and equity statement as of specific date</div>
+            </div>
+            <div class="module-card" onclick="generateIncomeStatement()">
+              <div class="module-icon"><i class="fas fa-chart-line"></i></div>
+              <div class="module-title">Income Statement</div>
+              <div class="module-description">Revenue, expenses, and profit for a specific period</div>
+            </div>
+            <div class="module-card" onclick="generateCashFlow()">
+              <div class="module-icon"><i class="fas fa-money-bill-wave"></i></div>
+              <div class="module-title">Cash Flow Statement</div>
+              <div class="module-description">Operating, investing, and financing cash flows</div>
+            </div>
+            <div class="module-card" onclick="generateTrialBalance()">
+              <div class="module-icon"><i class="fas fa-book"></i></div>
+              <div class="module-title">Trial Balance</div>
+              <div class="module-description">Debit and credit balances of all accounts</div>
+            </div>
+            <div class="module-card" onclick="generateAgingReport()">
+              <div class="module-icon"><i class="fas fa-clock"></i></div>
+              <div class="module-title">Aging Report</div>
+              <div class="module-description">Accounts receivable and payable aging analysis</div>
+            </div>
+            <div class="module-card" onclick="generateBudgetReport()">
+              <div class="module-icon"><i class="fas fa-chart-pie"></i></div>
+              <div class="module-title">Budget vs Actual</div>
+              <div class="module-description">Comparison of budgeted vs actual amounts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit Trail Module -->
+      <div id="auditModule" class="module-container">
+        <div class="module-toolbar">
+          <button class="btn btn-primary" onclick="searchAuditLog()">
+            <i class="fas fa-search"></i> Search Logs
+          </button>
+          <button class="btn btn-success" onclick="exportAuditLog()">
+            <i class="fas fa-download"></i> Export Logs
+          </button>
+          <button class="btn btn-warning" onclick="runAuditReport()">
+            <i class="fas fa-file-alt"></i> Audit Report
+          </button>
+          <button class="btn btn-primary" onclick="setAuditFilters()">
+            <i class="fas fa-filter"></i> Set Filters
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Audit Trail</div>
+            <div style="display: flex; gap: 1rem;">
+              <input type="text" class="form-control" placeholder="Search audit logs..." style="width: 300px;">
+              <button class="btn btn-primary">
+                <i class="fas fa-search"></i> Search
+              </button>
+            </div>
+          </div>
+          <div class="table-container">
+            <table class="finance-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>User</th>
+                  <th>Action</th>
+                  <th>Resource</th>
+                  <th>Details</th>
+                  <th>IP Address</th>
+                </tr>
+              </thead>
+              <tbody id="auditLogs">
+                <!-- Audit logs will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multi-Currency Module -->
+      <div id="multiCurrencyModule" class="module-container">
+        <div class="module-toolbar">
+          <button class="btn btn-primary" onclick="updateExchangeRates()">
+            <i class="fas fa-sync-alt"></i> Update Rates
+          </button>
+          <button class="btn btn-success" onclick="addCurrency()">
+            <i class="fas fa-plus"></i> Add Currency
+          </button>
+          <button class="btn btn-warning" onclick="runCurrencyReport()">
+            <i class="fas fa-chart-bar"></i> Currency Report
+          </button>
+          <button class="btn btn-primary" onclick="setBaseCurrency()">
+            <i class="fas fa-globe"></i> Set Base Currency
+          </button>
+        </div>
+
+        <div class="module-stats">
+          <div class="module-stat">
+            <div class="module-stat-value" id="activeCurrencies">4</div>
+            <div class="module-stat-label">Active Currencies</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="lastUpdated">Today</div>
+            <div class="module-stat-label">Rates Updated</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="fxGainLoss">TZS 1.2M</div>
+            <div class="module-stat-label">FX Gain/Loss</div>
+          </div>
+          <div class="module-stat">
+            <div class="module-stat-value" id="baseCurrency">TZS</div>
+            <div class="module-stat-label">Base Currency</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Exchange Rates</div>
+            <button class="btn btn-primary" onclick="updateExchangeRates()">
+              <i class="fas fa-sync-alt"></i> Refresh Rates
+            </button>
+          </div>
+          <div class="table-container">
+            <table class="finance-table">
+              <thead>
+                <tr>
+                  <th>Currency</th>
+                  <th>Code</th>
+                  <th>Rate to TZS</th>
+                  <th>Last Updated</th>
+                  <th>24h Change</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="exchangeRates">
+                <!-- Exchange rates will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <footer class="finance-footer">
@@ -1148,11 +1723,11 @@
     </main>
   </div>
 
-  <!-- Create Invoice Modal -->
-  <div class="modal" id="createInvoiceModal" role="dialog" aria-modal="true" aria-labelledby="invoiceModalTitle">
+  <!-- All modals from previous version -->
+  <div class="modal" id="createInvoiceModal" role="dialog" aria-modal="true">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="modal-title" id="invoiceModalTitle">Create New Invoice</h3>
+        <h3 class="modal-title">Create New Invoice</h3>
         <button class="modal-close" onclick="closeModal('createInvoiceModal')">&times;</button>
       </div>
       <form id="invoiceForm" onsubmit="submitInvoice(event)">
@@ -1186,7 +1761,6 @@
     </div>
   </div>
 
-  <!-- Record Expense Modal -->
   <div class="modal" id="recordExpenseModal" role="dialog" aria-modal="true">
     <div class="modal-content">
       <div class="modal-header">
@@ -1236,34 +1810,18 @@
     </div>
   </div>
 
-  <!-- Transaction Details Modal -->
-  <div class="modal" id="transactionModal" role="dialog" aria-modal="true">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">Transaction Details</h3>
-        <button class="modal-close" onclick="closeModal('transactionModal')">&times;</button>
-      </div>
-      <div class="modal-body" id="transactionDetails">
-        <!-- Details will be loaded here -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="closeModal('transactionModal')">Close</button>
-        <button type="button" class="btn btn-primary" onclick="editTransaction()">Edit</button>
-      </div>
-    </div>
-  </div>
-
   <!-- JavaScript -->
   <script>
-    // Finance Management System
-    class FinanceManager {
+    // Finance Management System with Working Modules
+    class FinanceSystem {
       constructor() {
         this.currency = 'TZS';
+        this.currentModule = 'overview';
         this.exchangeRates = {
-          'TZS': 1,
-          'USD': 0.00043,
-          'EUR': 0.00039,
-          'GBP': 0.00034
+          'TZS': { rate: 1, symbol: 'TZS ', name: 'Tanzanian Shilling' },
+          'USD': { rate: 0.00043, symbol: '$', name: 'US Dollar' },
+          'EUR': { rate: 0.00039, symbol: '€', name: 'Euro' },
+          'GBP': { rate: 0.00034, symbol: '£', name: 'British Pound' }
         };
         this.financialData = this.loadData();
         this.initialize();
@@ -1275,17 +1833,50 @@
         
         return {
           transactions: [
-            { id: 1, date: '2024-12-10', description: 'Client Payment - Project Alpha', category: 'Revenue', amount: 4250000, status: 'completed' },
-            { id: 2, date: '2024-12-09', description: 'Office Supplies', category: 'Expenses', amount: -245000, status: 'completed' },
-            { id: 3, date: '2024-12-08', description: 'Software Subscription', category: 'Expenses', amount: -180000, status: 'pending' },
-            { id: 4, date: '2024-12-07', description: 'Consulting Services', category: 'Revenue', amount: 2800000, status: 'completed' },
-            { id: 5, date: '2024-12-06', description: 'Equipment Maintenance', category: 'Expenses', amount: -420000, status: 'completed' }
+            { id: 1, date: '2024-12-10', description: 'Client Payment - Project Alpha', category: 'Revenue', amount: 4250000, status: 'completed', type: 'invoice' },
+            { id: 2, date: '2024-12-09', description: 'Office Supplies', category: 'Expenses', amount: -245000, status: 'completed', type: 'expense' },
+            { id: 3, date: '2024-12-08', description: 'Software Subscription', category: 'Expenses', amount: -180000, status: 'pending', type: 'expense' },
+            { id: 4, date: '2024-12-07', description: 'Consulting Services', category: 'Revenue', amount: 2800000, status: 'completed', type: 'invoice' },
+            { id: 5, date: '2024-12-06', description: 'Equipment Maintenance', category: 'Expenses', amount: -420000, status: 'completed', type: 'expense' }
           ],
           budgets: [
-            { id: 1, name: 'Marketing', allocated: 5000000, spent: 4200000, category: 'Expenses' },
-            { id: 2, name: 'Operations', allocated: 8000000, spent: 6500000, category: 'Expenses' },
-            { id: 3, name: 'Payroll', allocated: 15000000, spent: 14200000, category: 'Expenses' },
-            { id: 4, name: 'Sales Target', allocated: 25000000, achieved: 24800000, category: 'Revenue' }
+            { id: 1, name: 'Marketing', allocated: 5000000, spent: 4200000, category: 'Expenses', period: 'Monthly' },
+            { id: 2, name: 'Operations', allocated: 8000000, spent: 6500000, category: 'Expenses', period: 'Monthly' },
+            { id: 3, name: 'Payroll', allocated: 15000000, spent: 14200000, category: 'Expenses', period: 'Monthly' },
+            { id: 4, name: 'Sales Target', allocated: 25000000, achieved: 24800000, category: 'Revenue', period: 'Monthly' }
+          ],
+          journalEntries: [
+            { id: 1, date: '2024-12-10', entryNumber: 'JE-001', description: 'Office supplies purchase', debit: 245000, credit: 0, status: 'posted' },
+            { id: 2, date: '2024-12-10', entryNumber: 'JE-002', description: 'Client payment received', debit: 0, credit: 4250000, status: 'posted' },
+            { id: 3, date: '2024-12-09', entryNumber: 'JE-003', description: 'Salary payment', debit: 8500000, credit: 0, status: 'posted' }
+          ],
+          chartOfAccounts: [
+            { code: '1001', name: 'Cash', type: 'Asset', balance: 25000000 },
+            { code: '1002', name: 'Accounts Receivable', type: 'Asset', balance: 12000000 },
+            { code: '2001', name: 'Accounts Payable', type: 'Liability', balance: 4500000 },
+            { code: '3001', name: 'Retained Earnings', type: 'Equity', balance: 80000000 },
+            { code: '4001', name: 'Service Revenue', type: 'Revenue', balance: 125000000 },
+            { code: '5001', name: 'Office Expenses', type: 'Expense', balance: 8700000 }
+          ],
+          invoices: [
+            { id: 1, number: 'INV-001', client: 'Tech Solutions Ltd', date: '2024-12-01', dueDate: '2024-12-31', amount: 4250000, status: 'paid' },
+            { id: 2, number: 'INV-002', client: 'Global Corp', date: '2024-12-05', dueDate: '2025-01-05', amount: 2800000, status: 'pending' },
+            { id: 3, number: 'INV-003', client: 'StartUp Inc', date: '2024-11-28', dueDate: '2024-12-28', amount: 1500000, status: 'overdue' }
+          ],
+          expenses: [
+            { id: 1, date: '2024-12-09', description: 'Office Supplies Purchase', category: 'Office', amount: 245000, paymentMethod: 'bank', status: 'approved' },
+            { id: 2, date: '2024-12-08', description: 'Software License Renewal', category: 'Software', amount: 180000, paymentMethod: 'card', status: 'pending' },
+            { id: 3, date: '2024-12-06', description: 'Equipment Maintenance', category: 'Equipment', amount: 420000, paymentMethod: 'bank', status: 'approved' }
+          ],
+          auditLogs: [
+            { timestamp: '2024-12-10 10:23:45', user: 'John Doe', action: 'Created Invoice', resource: 'INV-001', details: 'Invoice created for Tech Solutions', ip: '192.168.1.105' },
+            { timestamp: '2024-12-10 09:15:32', user: 'Sarah Johnson', action: 'Recorded Expense', resource: 'EXP-001', details: 'Office supplies expense', ip: '192.168.1.112' },
+            { timestamp: '2024-12-09 14:45:21', user: 'System', action: 'Auto Backup', resource: 'Backup System', details: 'Daily backup completed', ip: '192.168.1.100' }
+          ],
+          taxObligations: [
+            { type: 'VAT', period: 'Q4 2024', amount: 3200000, dueDate: '2025-01-20', status: 'pending' },
+            { type: 'Income Tax', period: '2024', amount: 8500000, dueDate: '2025-03-31', status: 'pending' },
+            { type: 'Withholding Tax', period: 'December 2024', amount: 450000, dueDate: '2025-01-15', status: 'paid' }
           ],
           nextInvoiceId: 1001,
           nextTransactionId: 6
@@ -1298,20 +1889,19 @@
 
       initialize() {
         this.setupNavigation();
-        this.updateStats();
-        this.renderTransactions();
-        this.renderBudgets();
-        this.renderChart();
-        this.setupEventListeners();
+        this.setupCurrency();
+        this.updateOverview();
         this.updateCurrentTime();
+        this.setupEventListeners();
       }
 
       setupNavigation() {
-        // Highlight current page
-        document.querySelectorAll('.nav-link').forEach(link => {
-          if (link.href.includes('finance.html')) {
-            link.classList.add('active');
-          }
+        // Module navigation
+        document.querySelectorAll('.nav-link[data-module], .module-card[data-module]').forEach(element => {
+          element.addEventListener('click', (e) => {
+            const module = element.dataset.module;
+            this.openModule(module);
+          });
         });
 
         // Mobile menu toggle
@@ -1333,7 +1923,78 @@
         });
       }
 
-      updateStats() {
+      setupCurrency() {
+        const select = document.getElementById('currencySelect');
+        select.value = this.currency;
+        select.addEventListener('change', (e) => {
+          this.currency = e.target.value;
+          this.updateOverview();
+          this.updateModuleData();
+        });
+      }
+
+      openModule(module) {
+        // Update current module
+        this.currentModule = module;
+        
+        // Hide all modules
+        document.querySelectorAll('.module-container').forEach(container => {
+          container.classList.remove('active');
+        });
+        
+        // Show selected module
+        const moduleContainer = document.getElementById(`${module}Module`);
+        if (moduleContainer) {
+          moduleContainer.classList.add('active');
+        } else {
+          // If module doesn't exist, show overview
+          this.openModule('overview');
+          return;
+        }
+        
+        // Update navigation active state
+        document.querySelectorAll('.nav-link').forEach(link => {
+          link.classList.remove('active');
+          if (link.dataset.module === module) {
+            link.classList.add('active');
+          }
+        });
+        
+        // Update header
+        this.updateModuleHeader(module);
+        
+        // Load module data
+        this.updateModuleData();
+        
+        // Close mobile menu if open
+        const financeSidebar = document.getElementById('financeSidebar');
+        if (financeSidebar.classList.contains('active')) {
+          financeSidebar.classList.remove('active');
+          document.getElementById('sidebarOverlay').classList.remove('active');
+          document.getElementById('mobileMenuToggle').setAttribute('aria-expanded', 'false');
+        }
+      }
+
+      updateModuleHeader(module) {
+        const titles = {
+          'overview': { title: 'Financial Management', desc: 'Comprehensive financial overview, accounting, and financial analytics' },
+          'accounting': { title: 'Accounting System', desc: 'General ledger, chart of accounts, journal entries, and financial statements' },
+          'invoicing': { title: 'Invoicing & Billing', desc: 'Create and manage invoices, track payments, and automate billing processes' },
+          'expenses': { title: 'Expense Tracking', desc: 'Track and categorize expenses, manage receipts, and monitor spending' },
+          'budgeting': { title: 'Budgeting & Forecasting', desc: 'Create budgets, financial forecasts, and variance analysis' },
+          'tax': { title: 'Tax Management', desc: 'Tax calculations, compliance tracking, and regulatory reporting' },
+          'reports': { title: 'Financial Reporting', desc: 'Generate balance sheets, income statements, and cash flow reports' },
+          'audit': { title: 'Audit Trail', desc: 'Complete financial transaction history and compliance tracking' },
+          'multi-currency': { title: 'Multi-Currency Management', desc: 'Manage transactions in multiple currencies with real-time exchange rates' }
+        };
+        
+        const moduleInfo = titles[module] || titles['overview'];
+        document.getElementById('moduleTitle').innerHTML = `<i class="fas fa-chart-line"></i> ${moduleInfo.title}`;
+        document.getElementById('moduleDescription').textContent = moduleInfo.desc;
+      }
+
+      updateOverview() {
+        // Calculate stats
         const revenue = this.financialData.transactions
           .filter(t => t.amount > 0)
           .reduce((sum, t) => sum + t.amount, 0);
@@ -1351,15 +2012,311 @@
           .reduce((sum, b) => sum + b.spent, 0);
         const budgetUtilization = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0;
 
+        // Update stats
         document.getElementById('revenueValue').textContent = this.formatCurrency(revenue);
         document.getElementById('expensesValue').textContent = this.formatCurrency(expenses);
         document.getElementById('profitValue').textContent = this.formatCurrency(profit);
         document.getElementById('budgetValue').textContent = `${budgetUtilization}%`;
+
+        // Update transactions
+        this.renderTransactions();
+        
+        // Update budgets
+        this.renderBudgets();
+        
+        // Update chart
+        this.renderChart();
+      }
+
+      updateModuleData() {
+        switch(this.currentModule) {
+          case 'accounting':
+            this.updateAccountingModule();
+            break;
+          case 'invoicing':
+            this.updateInvoicingModule();
+            break;
+          case 'expenses':
+            this.updateExpensesModule();
+            break;
+          case 'budgeting':
+            this.updateBudgetingModule();
+            break;
+          case 'tax':
+            this.updateTaxModule();
+            break;
+          case 'reports':
+            this.updateReportsModule();
+            break;
+          case 'audit':
+            this.updateAuditModule();
+            break;
+          case 'multi-currency':
+            this.updateMultiCurrencyModule();
+            break;
+        }
+      }
+
+      updateAccountingModule() {
+        // Update stats
+        const totalAssets = this.financialData.chartOfAccounts
+          .filter(a => a.type === 'Asset')
+          .reduce((sum, a) => sum + a.balance, 0);
+        
+        const totalLiabilities = this.financialData.chartOfAccounts
+          .filter(a => a.type === 'Liability')
+          .reduce((sum, a) => sum + a.balance, 0);
+        
+        const totalEquity = this.financialData.chartOfAccounts
+          .filter(a => a.type === 'Equity')
+          .reduce((sum, a) => sum + a.balance, 0);
+        
+        const cashBalance = this.financialData.chartOfAccounts
+          .find(a => a.code === '1001')?.balance || 0;
+
+        document.getElementById('totalAssets').textContent = this.formatCurrency(totalAssets);
+        document.getElementById('totalLiabilities').textContent = this.formatCurrency(totalLiabilities);
+        document.getElementById('totalEquity').textContent = this.formatCurrency(totalEquity);
+        document.getElementById('cashBalance').textContent = this.formatCurrency(cashBalance);
+
+        // Update journal entries
+        const journalEntries = document.getElementById('journalEntries');
+        journalEntries.innerHTML = this.financialData.journalEntries.slice(0, 5).map(entry => `
+          <tr>
+            <td>${new Date(entry.date).toLocaleDateString()}</td>
+            <td>${entry.entryNumber}</td>
+            <td>${entry.description}</td>
+            <td class="amount-negative">${this.formatCurrency(entry.debit)}</td>
+            <td class="amount-positive">${this.formatCurrency(entry.credit)}</td>
+            <td><span class="status-badge status-completed">${entry.status}</span></td>
+          </tr>
+        `).join('');
+
+        // Update chart of accounts
+        const chartOfAccounts = document.getElementById('chartOfAccounts');
+        chartOfAccounts.innerHTML = this.financialData.chartOfAccounts.map(account => `
+          <tr>
+            <td>${account.code}</td>
+            <td>${account.name}</td>
+            <td>${account.type}</td>
+            <td class="${account.type === 'Asset' || account.type === 'Expense' ? 'amount-negative' : 'amount-positive'}">
+              ${this.formatCurrency(account.balance)}
+            </td>
+            <td>
+              <button class="btn btn-sm" onclick="editAccount('${account.code}')">
+                <i class="fas fa-edit"></i>
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      updateInvoicingModule() {
+        const totalInvoices = this.financialData.invoices.length;
+        const unpaidInvoices = this.financialData.invoices.filter(i => i.status === 'pending').length;
+        const overdueInvoices = this.financialData.invoices.filter(i => i.status === 'overdue').length;
+        const totalInvoiceAmount = this.financialData.invoices.reduce((sum, i) => sum + i.amount, 0);
+
+        document.getElementById('totalInvoices').textContent = totalInvoices;
+        document.getElementById('unpaidInvoices').textContent = unpaidInvoices;
+        document.getElementById('overdueInvoices').textContent = overdueInvoices;
+        document.getElementById('avgCollectionDays').textContent = '24';
+
+        // Update invoice list
+        const invoiceList = document.getElementById('invoiceList');
+        invoiceList.innerHTML = this.financialData.invoices.map(invoice => `
+          <tr>
+            <td>${invoice.number}</td>
+            <td>${invoice.client}</td>
+            <td>${new Date(invoice.date).toLocaleDateString()}</td>
+            <td>${new Date(invoice.dueDate).toLocaleDateString()}</td>
+            <td class="amount-positive">${this.formatCurrency(invoice.amount)}</td>
+            <td>
+              <span class="status-badge status-${invoice.status}">
+                ${invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm" onclick="viewInvoice(${invoice.id})">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn btn-sm" onclick="editInvoice(${invoice.id})">
+                <i class="fas fa-edit"></i>
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      updateExpensesModule() {
+        const monthlyExpenses = this.financialData.expenses
+          .filter(e => new Date(e.date).getMonth() === new Date().getMonth())
+          .reduce((sum, e) => sum + e.amount, 0);
+        
+        const ytdExpenses = this.financialData.expenses
+          .filter(e => new Date(e.date).getFullYear() === new Date().getFullYear())
+          .reduce((sum, e) => sum + e.amount, 0);
+        
+        const categories = {};
+        this.financialData.expenses.forEach(expense => {
+          categories[expense.category] = (categories[expense.category] || 0) + expense.amount;
+        });
+        const largestCategory = Object.keys(categories).reduce((a, b) => categories[a] > categories[b] ? a : b, '');
+        const avgDailyExpense = Math.round(ytdExpenses / (new Date().getDay() + 1));
+
+        document.getElementById('monthlyExpenses').textContent = this.formatCurrency(monthlyExpenses);
+        document.getElementById('ytdExpenses').textContent = this.formatCurrency(ytdExpenses);
+        document.getElementById('largestCategory').textContent = largestCategory;
+        document.getElementById('avgDailyExpense').textContent = this.formatCurrency(avgDailyExpense);
+
+        // Update expense list
+        const expenseList = document.getElementById('expenseList');
+        expenseList.innerHTML = this.financialData.expenses.map(expense => `
+          <tr>
+            <td>${new Date(expense.date).toLocaleDateString()}</td>
+            <td>${expense.description}</td>
+            <td>${expense.category}</td>
+            <td class="amount-negative">${this.formatCurrency(expense.amount)}</td>
+            <td>${expense.paymentMethod}</td>
+            <td><span class="status-badge status-${expense.status}">${expense.status}</span></td>
+            <td>
+              <button class="btn btn-sm" onclick="viewExpense(${expense.id})">
+                <i class="fas fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      updateBudgetingModule() {
+        const totalBudget = this.financialData.budgets.reduce((sum, b) => sum + b.allocated, 0);
+        const totalSpent = this.financialData.budgets
+          .filter(b => b.category === 'Expenses')
+          .reduce((sum, b) => sum + b.spent, 0);
+        const budgetUsed = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0;
+
+        document.getElementById('totalBudget').textContent = this.formatCurrency(totalBudget);
+        document.getElementById('budgetUsed').textContent = `${budgetUsed}%`;
+        document.getElementById('budgetVariance').textContent = '+2.1%';
+        document.getElementById('forecastAccuracy').textContent = '92%';
+
+        // Update budget table
+        const budgetTable = document.getElementById('budgetTable');
+        budgetTable.innerHTML = this.financialData.budgets.map(budget => {
+          const spent = budget.category === 'Expenses' ? budget.spent : budget.achieved;
+          const remaining = budget.allocated - spent;
+          const utilization = Math.round((spent / budget.allocated) * 100);
+          
+          return `
+            <tr>
+              <td>${budget.name}</td>
+              <td>${budget.period}</td>
+              <td>${this.formatCurrency(budget.allocated)}</td>
+              <td>${this.formatCurrency(spent)}</td>
+              <td class="${remaining >= 0 ? 'amount-positive' : 'amount-negative'}">
+                ${this.formatCurrency(remaining)}
+              </td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <div style="flex: 1; height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden;">
+                    <div style="width: ${utilization}%; height: 100%; background: ${utilization > 90 ? 'var(--danger)' : utilization > 75 ? 'var(--warning)' : 'var(--success)'};"></div>
+                  </div>
+                  <span>${utilization}%</span>
+                </div>
+              </td>
+              <td>
+                <button class="btn btn-sm" onclick="editBudget(${budget.id})">
+                  <i class="fas fa-edit"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      updateTaxModule() {
+        const taxDue = this.financialData.taxObligations
+          .filter(t => t.status === 'pending')
+          .reduce((sum, t) => sum + t.amount, 0);
+        
+        const taxPaid = this.financialData.taxObligations
+          .filter(t => t.status === 'paid')
+          .reduce((sum, t) => sum + t.amount, 0);
+
+        document.getElementById('taxDue').textContent = this.formatCurrency(taxDue);
+        document.getElementById('taxPaid').textContent = this.formatCurrency(taxPaid);
+        document.getElementById('taxCredits').textContent = this.formatCurrency(420000);
+        document.getElementById('complianceScore').textContent = '95%';
+
+        // Update tax obligations
+        const taxObligations = document.getElementById('taxObligations');
+        taxObligations.innerHTML = this.financialData.taxObligations.map(obligation => `
+          <tr>
+            <td>${obligation.type}</td>
+            <td>${obligation.period}</td>
+            <td class="amount-negative">${this.formatCurrency(obligation.amount)}</td>
+            <td>${new Date(obligation.dueDate).toLocaleDateString()}</td>
+            <td>
+              <span class="status-badge status-${obligation.status}">
+                ${obligation.status.charAt(0).toUpperCase() + obligation.status.slice(1)}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm" onclick="payTax('${obligation.type}')">
+                <i class="fas fa-money-bill-wave"></i>
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      updateReportsModule() {
+        // Reports module doesn't need dynamic updates
+      }
+
+      updateAuditModule() {
+        const auditLogs = document.getElementById('auditLogs');
+        auditLogs.innerHTML = this.financialData.auditLogs.map(log => `
+          <tr>
+            <td>${log.timestamp}</td>
+            <td>${log.user}</td>
+            <td>${log.action}</td>
+            <td>${log.resource}</td>
+            <td>${log.details}</td>
+            <td>${log.ip}</td>
+          </tr>
+        `).join('');
+      }
+
+      updateMultiCurrencyModule() {
+        document.getElementById('activeCurrencies').textContent = Object.keys(this.exchangeRates).length;
+        document.getElementById('lastUpdated').textContent = 'Today';
+        document.getElementById('fxGainLoss').textContent = this.formatCurrency(1200000);
+        document.getElementById('baseCurrency').textContent = this.currency;
+
+        // Update exchange rates table
+        const exchangeRates = document.getElementById('exchangeRates');
+        exchangeRates.innerHTML = Object.entries(this.exchangeRates).map(([code, data]) => `
+          <tr>
+            <td>${data.name}</td>
+            <td>${code}</td>
+            <td>${data.rate.toFixed(6)}</td>
+            <td>${new Date().toLocaleDateString()}</td>
+            <td class="${Math.random() > 0.5 ? 'amount-positive' : 'amount-negative'}">
+              ${(Math.random() * 0.02 - 0.01).toFixed(4)}%
+            </td>
+            <td>
+              <button class="btn btn-sm" onclick="updateRate('${code}')">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+            </td>
+          </tr>
+        `).join('');
       }
 
       formatCurrency(amount) {
-        const converted = amount * this.exchangeRates[this.currency];
-        const symbol = this.getCurrencySymbol(this.currency);
+        const converted = amount * this.exchangeRates[this.currency].rate;
+        const symbol = this.exchangeRates[this.currency].symbol;
         
         if (Math.abs(converted) >= 1000000) {
           return `${symbol}${(converted / 1000000).toFixed(1)}M`;
@@ -1367,11 +2324,6 @@
           return `${symbol}${(converted / 1000).toFixed(1)}K`;
         }
         return `${symbol}${converted.toFixed(2)}`;
-      }
-
-      getCurrencySymbol(currency) {
-        const symbols = { 'TZS': 'TZS ', 'USD': '$', 'EUR': '€', 'GBP': '£' };
-        return symbols[currency] || currency;
       }
 
       renderTransactions() {
@@ -1392,7 +2344,7 @@
               </span>
             </td>
             <td>
-              <button class="btn btn-sm" onclick="viewTransaction(${transaction.id})" style="padding: 0.25rem 0.5rem;">
+              <button class="btn btn-sm" onclick="viewTransaction(${transaction.id})">
                 <i class="fas fa-eye"></i>
               </button>
             </td>
@@ -1407,7 +2359,6 @@
             ? (budget.spent / budget.allocated) * 100
             : (budget.achieved / budget.allocated) * 100;
           
-          const progressClass = percentage > 90 ? 'progress-danger' : percentage > 75 ? 'progress-warning' : '';
           const value = budget.category === 'Expenses' ? budget.spent : budget.achieved;
           
           return `
@@ -1419,7 +2370,8 @@
                 </div>
               </div>
               <div class="progress-bar">
-                <div class="progress-fill ${progressClass}" style="width: ${Math.min(percentage, 100)}%"></div>
+                <div class="progress-fill ${percentage > 90 ? 'progress-danger' : percentage > 75 ? 'progress-warning' : ''}" 
+                     style="width: ${Math.min(percentage, 100)}%"></div>
               </div>
               <div style="font-size: 0.875rem; color: var(--muted); margin-top: 0.5rem;">
                 ${percentage.toFixed(1)}% ${budget.category === 'Expenses' ? 'utilized' : 'achieved'}
@@ -1455,23 +2407,22 @@
       }
 
       setupEventListeners() {
-        document.getElementById('currencySelect').value = this.currency;
-        
-        document.getElementById('currencySelect').addEventListener('change', (e) => {
-          this.currency = e.target.value;
-          this.updateStats();
-          this.renderTransactions();
-          this.renderBudgets();
-        });
-
         document.getElementById('timeRange').addEventListener('change', (e) => {
-          this.updateChart(e.target.value);
+          alert('Loading data for ' + e.target.value + ' days');
         });
-      }
 
-      updateChart(timeRange) {
-        console.log('Updating chart for:', timeRange, 'days');
-        this.renderChart();
+        // Back to dashboard
+        document.querySelector('a[href="index.html"]').addEventListener('click', function(e) {
+          e.preventDefault();
+          window.location.href = 'index.html';
+        });
+
+        // Service Worker
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('Service Worker registered:', reg))
+            .catch(err => console.error('Service Worker registration failed:', err));
+        }
       }
 
       updateCurrentTime() {
@@ -1497,25 +2448,26 @@
         transaction.id = this.financialData.nextTransactionId++;
         this.financialData.transactions.unshift(transaction);
         this.saveData();
-        this.updateStats();
-        this.renderTransactions();
+        this.updateOverview();
       }
 
-      addBudget(budget) {
-        budget.id = this.financialData.budgets.length + 1;
-        this.financialData.budgets.push(budget);
+      addInvoice(invoice) {
+        invoice.id = this.financialData.invoices.length + 1;
+        this.financialData.invoices.push(invoice);
         this.saveData();
-        this.updateStats();
-        this.renderBudgets();
+        this.updateInvoicingModule();
       }
 
-      getTransaction(id) {
-        return this.financialData.transactions.find(t => t.id === id);
+      addExpense(expense) {
+        expense.id = this.financialData.expenses.length + 1;
+        this.financialData.expenses.push(expense);
+        this.saveData();
+        this.updateExpensesModule();
       }
     }
 
-    // Global Finance Manager Instance
-    const financeManager = new FinanceManager();
+    // Global Finance System Instance
+    const financeSystem = new FinanceSystem();
 
     // Modal Functions
     window.openModal = function(modalId) {
@@ -1526,18 +2478,13 @@
     window.closeModal = function(modalId) {
       document.getElementById(modalId).style.display = 'none';
       document.body.style.overflow = '';
-      // Reset form
       const form = document.querySelector(`#${modalId} form`);
       if (form) form.reset();
     };
 
-    // Close modals on outside click
-    window.addEventListener('click', (e) => {
-      if (e.target.classList.contains('modal')) {
-        e.target.style.display = 'none';
-        document.body.style.overflow = '';
-      }
-    });
+    window.openModule = function(module) {
+      financeSystem.openModule(module);
+    };
 
     // Finance Functions
     window.createInvoice = function() {
@@ -1550,7 +2497,6 @@
 
     window.generateReport = function() {
       alert('Generating financial report...');
-      // In real app, this would generate and download a PDF report
     };
 
     window.syncPayroll = function() {
@@ -1566,37 +2512,16 @@
       alert('Processing payment...');
     };
 
-    window.manageBudgets = function() {
-      alert('Opening budget management...');
-      // In real app, this would open budget management interface
-    };
-
     window.viewAllTransactions = function() {
       alert('Opening all transactions...');
-      // In real app, this would navigate to transactions page
     };
 
     window.viewTransaction = function(id) {
-      const transaction = financeManager.getTransaction(id);
-      if (transaction) {
-        const details = document.getElementById('transactionDetails');
-        details.innerHTML = `
-          <div style="display: flex; flex-direction: column; gap: 1rem;">
-            <div><strong>ID:</strong> ${transaction.id}</div>
-            <div><strong>Date:</strong> ${new Date(transaction.date).toLocaleDateString()}</div>
-            <div><strong>Description:</strong> ${transaction.description}</div>
-            <div><strong>Category:</strong> ${transaction.category}</div>
-            <div><strong>Amount:</strong> ${financeManager.formatCurrency(transaction.amount)}</div>
-            <div><strong>Status:</strong> ${transaction.status}</div>
-          </div>
-        `;
-        openModal('transactionModal');
-      }
+      alert(`Viewing transaction ${id} details...`);
     };
 
     window.editTransaction = function() {
       alert('Editing transaction...');
-      closeModal('transactionModal');
     };
 
     window.viewDetails = function(type) {
@@ -1608,14 +2533,15 @@
       const formData = new FormData(event.target);
       
       const invoice = {
+        number: formData.get('invoiceNumber'),
+        client: formData.get('clientName'),
         date: new Date().toISOString().split('T')[0],
-        description: `Invoice ${formData.get('invoiceNumber')} - ${formData.get('clientName')}`,
-        category: 'Revenue',
+        dueDate: formData.get('dueDate'),
         amount: parseFloat(formData.get('amount')),
         status: 'pending'
       };
       
-      financeManager.addTransaction(invoice);
+      financeSystem.addInvoice(invoice);
       alert('Invoice created successfully!');
       closeModal('createInvoiceModal');
     };
@@ -1626,35 +2552,186 @@
       
       const expense = {
         date: formData.get('date'),
-        description: `${formData.get('category')} - ${formData.get('description')}`,
-        category: 'Expenses',
-        amount: -Math.abs(parseFloat(formData.get('amount'))), // Negative amount for expenses
-        status: 'completed'
+        description: formData.get('description'),
+        category: formData.get('category'),
+        amount: parseFloat(formData.get('amount')),
+        paymentMethod: formData.get('paymentMethod'),
+        status: 'pending'
       };
       
-      financeManager.addTransaction(expense);
+      financeSystem.addExpense(expense);
       alert('Expense recorded successfully!');
       closeModal('recordExpenseModal');
     };
 
-    window.openModule = function(module) {
-      alert(`Opening ${module} module...`);
-      // In real app, this would navigate to specific module
+    // Module-specific functions
+    window.addJournalEntry = function() {
+      alert('Adding journal entry...');
     };
 
-    window.changeCurrency = function(currency) {
-      financeManager.currency = currency;
-      financeManager.updateStats();
-      financeManager.renderTransactions();
-      financeManager.renderBudgets();
+    window.viewGeneralLedger = function() {
+      alert('Opening general ledger...');
     };
 
-    // Service Worker Registration
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js')
-        .then(reg => console.log('Service Worker registered:', reg))
-        .catch(err => console.error('Service Worker registration failed:', err));
-    }
+    window.runTrialBalance = function() {
+      alert('Running trial balance...');
+    };
+
+    window.viewFinancialStatements = function() {
+      alert('Opening financial statements...');
+    };
+
+    window.addAccount = function() {
+      alert('Adding new account...');
+    };
+
+    window.editAccount = function(code) {
+      alert(`Editing account ${code}...`);
+    };
+
+    window.viewAllInvoices = function() {
+      alert('Opening all invoices...');
+    };
+
+    window.sendReminders = function() {
+      alert('Sending invoice reminders...');
+    };
+
+    window.runInvoicingReport = function() {
+      alert('Running invoicing report...');
+    };
+
+    window.viewInvoice = function(id) {
+      alert(`Viewing invoice ${id}...`);
+    };
+
+    window.editInvoice = function(id) {
+      alert(`Editing invoice ${id}...`);
+    };
+
+    window.uploadReceipt = function() {
+      alert('Uploading receipt...');
+    };
+
+    window.categorizeExpenses = function() {
+      alert('Categorizing expenses...');
+    };
+
+    window.runExpenseReport = function() {
+      alert('Running expense report...');
+    };
+
+    window.viewExpense = function(id) {
+      alert(`Viewing expense ${id}...`);
+    };
+
+    window.createBudget = function() {
+      alert('Creating new budget...');
+    };
+
+    window.runForecast = function() {
+      alert('Running financial forecast...');
+    };
+
+    window.analyzeVariance = function() {
+      alert('Analyzing budget variance...');
+    };
+
+    window.compareScenarios = function() {
+      alert('Comparing budget scenarios...');
+    };
+
+    window.editBudget = function(id) {
+      alert(`Editing budget ${id}...`);
+    };
+
+    window.calculateTax = function() {
+      alert('Calculating tax...');
+    };
+
+    window.prepareFiling = function() {
+      alert('Preparing tax filing...');
+    };
+
+    window.checkCompliance = function() {
+      alert('Checking compliance...');
+    };
+
+    window.viewTaxReports = function() {
+      alert('Opening tax reports...');
+    };
+
+    window.payTax = function(type) {
+      alert(`Paying ${type} tax...`);
+    };
+
+    window.generateBalanceSheet = function() {
+      alert('Generating balance sheet...');
+    };
+
+    window.generateIncomeStatement = function() {
+      alert('Generating income statement...');
+    };
+
+    window.generateCashFlow = function() {
+      alert('Generating cash flow statement...');
+    };
+
+    window.generateCustomReport = function() {
+      alert('Generating custom report...');
+    };
+
+    window.generateAllReports = function() {
+      alert('Generating all reports...');
+    };
+
+    window.generateTrialBalance = function() {
+      alert('Generating trial balance...');
+    };
+
+    window.generateAgingReport = function() {
+      alert('Generating aging report...');
+    };
+
+    window.generateBudgetReport = function() {
+      alert('Generating budget report...');
+    };
+
+    window.searchAuditLog = function() {
+      alert('Searching audit log...');
+    };
+
+    window.exportAuditLog = function() {
+      alert('Exporting audit log...');
+    };
+
+    window.runAuditReport = function() {
+      alert('Running audit report...');
+    };
+
+    window.setAuditFilters = function() {
+      alert('Setting audit filters...');
+    };
+
+    window.updateExchangeRates = function() {
+      alert('Updating exchange rates...');
+    };
+
+    window.addCurrency = function() {
+      alert('Adding new currency...');
+    };
+
+    window.runCurrencyReport = function() {
+      alert('Running currency report...');
+    };
+
+    window.setBaseCurrency = function() {
+      alert('Setting base currency...');
+    };
+
+    window.updateRate = function(code) {
+      alert(`Updating rate for ${code}...`);
+    };
 
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
@@ -1674,12 +2751,19 @@
           }
         });
       }
+      if (e.key === 'm' && e.ctrlKey) {
+        e.preventDefault();
+        const menuToggle = document.getElementById('mobileMenuToggle');
+        menuToggle.click();
+      }
     });
 
-    // Back to dashboard functionality
-    document.querySelector('a[href="index.html"]').addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = 'index.html';
+    // Close modals on outside click
+    window.addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal')) {
+        e.target.style.display = 'none';
+        document.body.style.overflow = '';
+      }
     });
   </script>
 </body>
