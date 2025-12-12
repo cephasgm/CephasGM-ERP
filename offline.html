@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offline – CephasGM ERP</title>
+
+<!-- Minimal styling (fast for PWA load) -->
+<style>
+    :root {
+        --bg-light: #f5f7fa;
+        --bg-dark: #0f172a;
+        --text-light: #1e293b;
+        --text-dark: #e2e8f0;
+        --primary: #2563eb;
+        --card-light: #ffffff;
+        --card-dark: #1e293b;
+    }
+
+    body {
+        margin: 0;
+        padding: 40px 20px;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: var(--bg-light);
+        color: var(--text-light);
+        transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark {
+        background-color: var(--bg-dark);
+        color: var(--text-dark);
+    }
+
+    .card {
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 30px;
+        border-radius: 16px;
+        background: var(--card-light);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: background 0.3s;
+    }
+
+    body.dark .card {
+        background: var(--card-dark);
+        box-shadow: 0 4px 12px rgba(255,255,255,0.05);
+    }
+
+    img {
+        width: 100px;
+        opacity: 0.9;
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    p {
+        font-size: 16px;
+        margin-bottom: 20px;
+        opacity: 0.85;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 12px 20px;
+        border-radius: 8px;
+        background: var(--primary);
+        color: white;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .small {
+        margin-top: 20px;
+        font-size: 13px;
+        opacity: 0.7;
+    }
+</style>
+</head>
+<body>
+
+<div class="card">
+    <img src="icon-192.png" alt="CephasGM ERP Logo">
+
+    <h1>You’re Offline</h1>
+    <p>CephasGM ERP cannot load this page because your device is not connected to the internet.</p>
+
+    <a class="btn" onclick="retry()">Retry Connection</a>
+
+    <div class="small">
+        We’ll automatically reconnect once your internet is restored.
+    </div>
+</div>
+
+<script>
+    // Restore dark mode if user had selected it
+    if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+    }
+
+    // Retry function: try reloading the original request
+    function retry() {
+        window.location.reload();
+    }
+
+    // Auto-refresh when connection returns
+    window.addEventListener("online", () => {
+        window.location.reload();
+    });
+</script>
+
+</body>
+</html>
