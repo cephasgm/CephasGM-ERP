@@ -169,6 +169,16 @@
     color: white;
   }
   
+  .btn-info {
+    background: #17a2b8;
+    color: white;
+  }
+  
+  .btn-sm {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+  }
+  
   .btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
@@ -194,6 +204,7 @@
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
   }
   
   table {
@@ -215,6 +226,12 @@
   
   tr:hover {
     background: #f8f9fa;
+  }
+  
+  .action-buttons-cell {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
   }
   
   .status-badge {
@@ -344,6 +361,10 @@
     z-index: 1000;
   }
   
+  .modal.active {
+    display: flex;
+  }
+  
   .modal-content {
     background: white;
     padding: 30px;
@@ -352,6 +373,12 @@
     max-width: 500px;
     max-height: 90vh;
     overflow-y: auto;
+    animation: modalFadeIn 0.3s ease;
+  }
+  
+  @keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
   }
   
   .modal-header {
@@ -369,6 +396,10 @@
     color: #7f8c8d;
   }
   
+  .close:hover {
+    color: #e74c3c;
+  }
+  
   .form-group {
     margin-bottom: 15px;
   }
@@ -380,7 +411,7 @@
     color: #2c3e50;
   }
   
-  .form-group input, .form-group select {
+  .form-group input, .form-group select, .form-group textarea {
     width: 100%;
     padding: 10px;
     border: 2px solid #e9ecef;
@@ -388,9 +419,31 @@
     font-size: 1rem;
   }
   
-  .form-group input:focus, .form-group select:focus {
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
     border-color: #3498db;
     outline: none;
+  }
+  
+  /* View Details Modal */
+  .details-grid {
+    display: grid;
+    gap: 15px;
+  }
+  
+  .detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .detail-label {
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  
+  .detail-value {
+    color: #7f8c8d;
   }
   
   /* Animations */
@@ -430,6 +483,7 @@
               <option value="price">Price</option>
               <option value="location">Location</option>
               <option value="category">Category</option>
+              <option value="status">Status</option>
             </select>
           </div>
           <div style="flex: 1;">
@@ -447,6 +501,7 @@
         <button class="inventory-tab active" data-tab="items">Items</button>
         <button class="inventory-tab" data-tab="containers">Containers</button>
         <button class="inventory-tab" data-tab="batches">Batches</button>
+        <button class="inventory-tab" data-tab="reports">Reports</button>
       </div>
       
       <!-- Items Tab -->
@@ -457,6 +512,7 @@
           <button class="btn btn-warning" id="exportCSV">Export CSV</button>
           <button class="btn btn-danger" id="bulkDeleteBtn" style="display:none;">Delete Selected</button>
           <button class="btn btn-warning" id="batchUpdateBtn">Batch Update</button>
+          <button class="btn btn-info" id="refreshItems">Refresh</button>
         </div>
         
         <div class="table-container">
@@ -479,6 +535,26 @@
             </tbody>
           </table>
         </div>
+        
+        <div class="table-container">
+          <div style="padding: 15px; background: #f8f9fa; border-radius: 8px;">
+            <h4 style="margin-bottom: 10px;">Quick Summary</h4>
+            <div style="display: flex; gap: 20px;">
+              <div>
+                <strong>Total Items:</strong> <span id="totalItemsCount">0</span>
+              </div>
+              <div>
+                <strong>Low Stock Items:</strong> <span id="lowStockCount">0</span>
+              </div>
+              <div>
+                <strong>Out of Stock:</strong> <span id="outOfStockCount">0</span>
+              </div>
+              <div>
+                <strong>Total Value:</strong> <span id="totalValue">$0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       
       <!-- Containers Tab -->
@@ -486,6 +562,7 @@
         <div class="action-buttons">
           <button class="btn btn-primary" id="addContainerBtn">Add Container</button>
           <button class="btn btn-success" id="trackContainerBtn">Track Container</button>
+          <button class="btn btn-info" id="refreshContainers">Refresh</button>
         </div>
         
         <div class="table-container">
@@ -513,6 +590,8 @@
         <div class="action-buttons">
           <button class="btn btn-primary" id="addBatchBtn">Add Batch</button>
           <button class="btn btn-success" id="qualityCheckBtn">Quality Check</button>
+          <button class="btn btn-warning" id="exportBatchesBtn">Export Batches</button>
+          <button class="btn btn-info" id="refreshBatches">Refresh</button>
         </div>
         
         <div class="table-container">
@@ -534,6 +613,38 @@
           </table>
         </div>
       </div>
+      
+      <!-- Reports Tab -->
+      <div id="reports-tab" class="tab-content">
+        <div class="action-buttons">
+          <button class="btn btn-primary" id="generateReportBtn">Generate Report</button>
+          <button class="btn btn-success" id="exportReportBtn">Export Report</button>
+          <button class="btn btn-warning" id="viewAnalyticsBtn">View Analytics</button>
+        </div>
+        
+        <div class="table-container">
+          <div style="padding: 20px;">
+            <h4 style="margin-bottom: 15px;">Inventory Reports</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+              <div style="background: #e3f2fd; padding: 15px; border-radius: 8px;">
+                <h5 style="margin-bottom: 10px;">Stock Level Report</h5>
+                <p>View current stock levels and identify items that need reordering.</p>
+                <button class="btn btn-sm btn-primary" onclick="generateStockReport()">Generate</button>
+              </div>
+              <div style="background: #e8f5e9; padding: 15px; border-radius: 8px;">
+                <h5 style="margin-bottom: 10px;">Expiry Report</h5>
+                <p>Check items approaching expiry date.</p>
+                <button class="btn btn-sm btn-primary" onclick="generateExpiryReport()">Generate</button>
+              </div>
+              <div style="background: #fff3e0; padding: 15px; border-radius: 8px;">
+                <h5 style="margin-bottom: 10px;">Value Report</h5>
+                <p>Calculate total inventory value by category.</p>
+                <button class="btn btn-sm btn-primary" onclick="generateValueReport()">Generate</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Warehouse Section -->
@@ -545,6 +656,7 @@
         <button class="btn btn-success" id="addStorageBtn">Add Storage Unit</button>
         <button class="btn btn-warning" id="addZoneBtn">Add Zone</button>
         <button class="btn btn-danger" id="optimizeLayoutBtn">Optimize Layout</button>
+        <button class="btn btn-info" id="refreshWarehouse">Refresh</button>
       </div>
       
       <div class="warehouse-grid" id="storageContainer">
@@ -584,23 +696,72 @@
         <input type="text" id="itemName" required>
       </div>
       <div class="form-group">
+        <label for="itemSku">SKU:</label>
+        <input type="text" id="itemSku" required>
+      </div>
+      <div class="form-group">
         <label for="itemCategory">Category:</label>
-        <input type="text" id="itemCategory" required>
+        <select id="itemCategory" required>
+          <option value="">Select Category</option>
+          <option value="Raw Materials">Raw Materials</option>
+          <option value="Components">Components</option>
+          <option value="Finished Goods">Finished Goods</option>
+          <option value="Packaging">Packaging</option>
+          <option value="MRO">MRO (Maintenance, Repair, Operations)</option>
+          <option value="Office Supplies">Office Supplies</option>
+        </select>
       </div>
       <div class="form-group">
         <label for="itemQuantity">Quantity:</label>
-        <input type="number" id="itemQuantity" required>
+        <input type="number" id="itemQuantity" min="0" required>
       </div>
       <div class="form-group">
-        <label for="itemPrice">Price:</label>
-        <input type="number" id="itemPrice" step="0.01" required>
+        <label for="itemUnit">Unit:</label>
+        <select id="itemUnit" required>
+          <option value="pcs">Pieces</option>
+          <option value="kg">Kilograms</option>
+          <option value="liters">Liters</option>
+          <option value="meters">Meters</option>
+          <option value="boxes">Boxes</option>
+          <option value="pallets">Pallets</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="itemPrice">Price (per unit):</label>
+        <input type="number" id="itemPrice" step="0.01" min="0" required>
       </div>
       <div class="form-group">
         <label for="itemLocation">Location:</label>
-        <input type="text" id="itemLocation">
+        <input type="text" id="itemLocation" required>
+      </div>
+      <div class="form-group">
+        <label for="itemDescription">Description:</label>
+        <textarea id="itemDescription" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="itemMinQuantity">Minimum Quantity:</label>
+        <input type="number" id="itemMinQuantity" min="0">
       </div>
       <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 15px;">Save Item</button>
     </form>
+  </div>
+</div>
+
+<!-- View Item Details Modal -->
+<div id="viewItemModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Item Details</h3>
+      <button class="close">&times;</button>
+    </div>
+    <div class="details-grid" id="itemDetailsContent">
+      <!-- Details will be populated here -->
+    </div>
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+      <button class="btn btn-primary" id="editFromViewBtn">Edit Item</button>
+      <button class="btn btn-danger" id="deleteFromViewBtn">Delete Item</button>
+      <button class="btn btn-secondary" onclick="closeModal('viewItemModal')">Close</button>
+    </div>
   </div>
 </div>
 
@@ -628,15 +789,132 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="storageCapacity">Capacity:</label>
-        <input type="number" id="storageCapacity" required>
+        <label for="storageCapacity">Capacity (units):</label>
+        <input type="number" id="storageCapacity" required min="1">
       </div>
       <div class="form-group">
-        <label for="storageLocation">Location:</label>
+        <label for="storageLocation">Location (Zone):</label>
         <input type="text" id="storageLocation" required>
+      </div>
+      <div class="form-group">
+        <label for="storageUtilization">Current Utilization (%):</label>
+        <input type="number" id="storageUtilization" min="0" max="100" required>
       </div>
       <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 15px;">Save Storage Unit</button>
     </form>
+  </div>
+</div>
+
+<!-- Container Modal -->
+<div id="containerModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="containerModalTitle">Add Container</h3>
+      <button class="close">&times;</button>
+    </div>
+    <form id="containerForm">
+      <input type="hidden" id="containerIndex">
+      <div class="form-group">
+        <label for="containerId">Container ID:</label>
+        <input type="text" id="containerId" required>
+      </div>
+      <div class="form-group">
+        <label for="containerType">Type:</label>
+        <select id="containerType">
+          <option value="20ft Standard">20ft Standard</option>
+          <option value="40ft Standard">40ft Standard</option>
+          <option value="40ft High Cube">40ft High Cube</option>
+          <option value="Reefer">Reefer</option>
+          <option value="Tank">Tank</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="containerStatus">Status:</label>
+        <select id="containerStatus">
+          <option value="loaded">Loaded</option>
+          <option value="empty">Empty</option>
+          <option value="in-transit">In Transit</option>
+          <option value="customs">Customs Hold</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="containerLocation">Current Location:</label>
+        <input type="text" id="containerLocation" required>
+      </div>
+      <div class="form-group">
+        <label for="containerContents">Contents:</label>
+        <textarea id="containerContents" rows="3" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="containerETA">ETA (Estimated Time of Arrival):</label>
+        <input type="date" id="containerETA">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 15px;">Save Container</button>
+    </form>
+  </div>
+</div>
+
+<!-- Batch Modal -->
+<div id="batchModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="batchModalTitle">Add Batch</h3>
+      <button class="close">&times;</button>
+    </div>
+    <form id="batchForm">
+      <input type="hidden" id="batchIndex">
+      <div class="form-group">
+        <label for="batchId">Batch ID:</label>
+        <input type="text" id="batchId" required>
+      </div>
+      <div class="form-group">
+        <label for="batchProduct">Product Name:</label>
+        <input type="text" id="batchProduct" required>
+      </div>
+      <div class="form-group">
+        <label for="batchQuantity">Quantity:</label>
+        <input type="number" id="batchQuantity" min="1" required>
+      </div>
+      <div class="form-group">
+        <label for="batchProductionDate">Production Date:</label>
+        <input type="date" id="batchProductionDate" required>
+      </div>
+      <div class="form-group">
+        <label for="batchExpiryDate">Expiry Date:</label>
+        <input type="date" id="batchExpiryDate">
+      </div>
+      <div class="form-group">
+        <label for="batchQualityStatus">Quality Status:</label>
+        <select id="batchQualityStatus">
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+          <option value="on-hold">On Hold</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="batchStorageLocation">Storage Location:</label>
+        <input type="text" id="batchStorageLocation" required>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 15px;">Save Batch</button>
+    </form>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div id="confirmModal" class="modal">
+  <div class="modal-content" style="max-width: 400px;">
+    <div class="modal-header">
+      <h3 id="confirmTitle">Confirm Action</h3>
+      <button class="close">&times;</button>
+    </div>
+    <div style="padding: 20px;">
+      <p id="confirmMessage">Are you sure you want to perform this action?</p>
+    </div>
+    <div style="display: flex; gap: 10px; padding: 20px; border-top: 1px solid #e9ecef;">
+      <button class="btn btn-danger" id="confirmYes">Yes</button>
+      <button class="btn btn-secondary" id="confirmNo">No</button>
+    </div>
   </div>
 </div>
 
@@ -647,26 +925,9 @@
   let batches = JSON.parse(localStorage.getItem('batches')) || [];
   let storageUnits = JSON.parse(localStorage.getItem('storageUnits')) || [];
 
-  // DOM Elements
-  const inventoryTableBody = document.getElementById('inventoryTableBody');
-  const containerTableBody = document.getElementById('containerTableBody');
-  const batchTableBody = document.getElementById('batchTableBody');
-  const storageContainer = document.getElementById('storageContainer');
-  const itemModal = document.getElementById('itemModal');
-  const storageModal = document.getElementById('storageModal');
-  const batchUpdateSection = document.getElementById('batchUpdateSection');
-
-  // Navigation functions
-  function goToHome() {
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelector('[data-target="inventory"]').classList.add('active');
-    document.getElementById('inventory').classList.add('active');
-  }
-
-  function goToMainERP() {
-    window.location.href = 'https://cephasgm.github.io/CephasGM-ERP/';
-  }
+  // Current editing item
+  let currentEditIndex = null;
+  let currentEditType = null;
 
   // Initialize the application
   function init() {
@@ -674,11 +935,7 @@
     if (inventory.length === 0) loadSampleData();
     
     // Render initial data
-    renderInventory();
-    renderContainers();
-    renderBatches();
-    renderStorageUnits();
-    updateStorageUtilization();
+    renderAllData();
     
     // Set up event listeners
     setupEventListeners();
@@ -688,41 +945,148 @@
   function loadSampleData() {
     // Sample inventory items
     inventory = [
-      { id: 'ITEM-001', name: 'Steel Plates', category: 'Raw Materials', quantity: 500, price: 45.50, location: 'Zone A, Rack 1', status: 'available' },
-      { id: 'ITEM-002', name: 'Industrial Valves', category: 'Components', quantity: 3, price: 120.00, location: 'Zone B, Rack 3', status: 'low' },
-      { id: 'ITEM-003', name: 'Crude Oil', category: 'Petroleum', quantity: 0, price: 75.30, location: 'Tank Farm', status: 'critical' },
-      { id: 'ITEM-004', name: 'Wheat Flour', category: 'Agriculture', quantity: 200, price: 0.85, location: 'Silo A', status: 'available' }
+      { 
+        id: 'ITEM-001', 
+        name: 'Steel Plates', 
+        sku: 'STL-PLT-001',
+        category: 'Raw Materials', 
+        quantity: 500, 
+        unit: 'pcs',
+        price: 45.50, 
+        location: 'Zone A, Rack 1', 
+        status: 'available',
+        description: 'Industrial grade steel plates',
+        minQuantity: 100
+      },
+      { 
+        id: 'ITEM-002', 
+        name: 'Industrial Valves', 
+        sku: 'IND-VLV-002',
+        category: 'Components', 
+        quantity: 3, 
+        unit: 'pcs',
+        price: 120.00, 
+        location: 'Zone B, Rack 3', 
+        status: 'low',
+        description: 'High pressure industrial valves',
+        minQuantity: 10
+      },
+      { 
+        id: 'ITEM-003', 
+        name: 'Crude Oil', 
+        sku: 'OIL-CRD-003',
+        category: 'Petroleum', 
+        quantity: 0, 
+        unit: 'liters',
+        price: 75.30, 
+        location: 'Tank Farm', 
+        status: 'critical',
+        description: 'Crude oil for refining',
+        minQuantity: 10000
+      },
+      { 
+        id: 'ITEM-004', 
+        name: 'Wheat Flour', 
+        sku: 'AGR-FLR-004',
+        category: 'Agriculture', 
+        quantity: 200, 
+        unit: 'kg',
+        price: 0.85, 
+        location: 'Silo A', 
+        status: 'available',
+        description: 'Premium quality wheat flour',
+        minQuantity: 50
+      }
     ];
     
     // Sample containers
     containers = [
-      { id: 'CONT-001', type: '40ft Standard', status: 'loaded', location: 'Port of Shanghai', contents: 'Electronics, Textiles', eta: '2025-04-15' },
-      { id: 'CONT-002', type: '20ft Standard', status: 'empty', location: 'ICD Delhi', contents: 'Empty', eta: 'N/A' }
+      { 
+        id: 'CONT-001', 
+        type: '40ft Standard', 
+        status: 'loaded', 
+        location: 'Port of Shanghai', 
+        contents: 'Electronics, Textiles', 
+        eta: '2025-04-15' 
+      },
+      { 
+        id: 'CONT-002', 
+        type: '20ft Standard', 
+        status: 'empty', 
+        location: 'ICD Delhi', 
+        contents: 'Empty', 
+        eta: 'N/A' 
+      }
     ];
     
     // Sample batches
     batches = [
-      { id: 'BATCH-001', product: 'Wheat Flour', quantity: 1000, productionDate: '2025-03-01', expiryDate: '2025-09-01', qualityStatus: 'approved' },
-      { id: 'BATCH-002', product: 'Steel Beams', quantity: 500, productionDate: '2025-02-15', expiryDate: 'N/A', qualityStatus: 'pending' }
+      { 
+        id: 'BATCH-001', 
+        product: 'Wheat Flour', 
+        quantity: 1000, 
+        productionDate: '2025-03-01', 
+        expiryDate: '2025-09-01', 
+        qualityStatus: 'approved',
+        storageLocation: 'Silo A'
+      },
+      { 
+        id: 'BATCH-002', 
+        product: 'Steel Beams', 
+        quantity: 500, 
+        productionDate: '2025-02-15', 
+        expiryDate: 'N/A', 
+        qualityStatus: 'pending',
+        storageLocation: 'Zone C'
+      }
     ];
     
     // Sample storage units
     storageUnits = [
-      { id: 'STOR-001', name: 'Main Storage Rack', type: 'pallet-rack', capacity: 100, location: 'Zone A', utilization: 65 },
-      { id: 'STOR-002', name: 'Cold Storage Unit', type: 'cold-storage', capacity: 50, location: 'Zone B', utilization: 40 },
-      { id: 'STOR-003', name: 'Bulk Storage Area', type: 'bulk-storage', capacity: 500, location: 'Zone C', utilization: 30 }
+      { 
+        id: 'STOR-001', 
+        name: 'Main Storage Rack', 
+        type: 'pallet-rack', 
+        capacity: 100, 
+        location: 'Zone A', 
+        utilization: 65 
+      },
+      { 
+        id: 'STOR-002', 
+        name: 'Cold Storage Unit', 
+        type: 'cold-storage', 
+        capacity: 50, 
+        location: 'Zone B', 
+        utilization: 40 
+      },
+      { 
+        id: 'STOR-003', 
+        name: 'Bulk Storage Area', 
+        type: 'bulk-storage', 
+        capacity: 500, 
+        location: 'Zone C', 
+        utilization: 30 
+      }
     ];
     
     // Save to localStorage
-    localStorage.setItem('inventory', JSON.stringify(inventory));
-    localStorage.setItem('containers', JSON.stringify(containers));
-    localStorage.setItem('batches', JSON.stringify(batches));
-    localStorage.setItem('storageUnits', JSON.stringify(storageUnits));
+    saveAllData();
+  }
+
+  // Render all data
+  function renderAllData() {
+    renderInventory();
+    renderContainers();
+    renderBatches();
+    renderStorageUnits();
+    updateStorageUtilization();
+    updateInventorySummary();
   }
 
   // Render inventory table
   function renderInventory() {
-    inventoryTableBody.innerHTML = '';
+    const tbody = document.getElementById('inventoryTableBody');
+    tbody.innerHTML = '';
     
     inventory.forEach((item, index) => {
       const tr = document.createElement('tr');
@@ -733,86 +1097,281 @@
       if (item.quantity === 0) {
         statusText = 'Out of Stock';
         statusClass = 'status-critical';
-      } else if (item.quantity <= 5) {
+      } else if (item.quantity <= (item.minQuantity || 5)) {
         statusText = 'Low Stock';
         statusClass = 'status-low';
       }
       
       tr.innerHTML = `
         <td><input type="checkbox" class="selectItem" data-index="${index}"></td>
-        <td>${item.id}</td>
+        <td><strong>${item.sku || item.id}</strong></td>
         <td>${item.name}</td>
         <td>${item.category}</td>
         <td>${item.quantity}</td>
-        <td>pcs</td>
+        <td>${item.unit || 'pcs'}</td>
         <td><span class="status-badge ${statusClass}">${statusText}</span></td>
         <td>${item.location}</td>
         <td>
-          <button class="btn btn-primary" onclick="editItem(${index})">Edit</button>
-          <button class="btn btn-danger" onclick="deleteItem(${index})">Delete</button>
+          <div class="action-buttons-cell">
+            <button class="btn btn-sm btn-info" onclick="viewItem(${index})">View</button>
+            <button class="btn btn-sm btn-primary" onclick="editItem(${index})">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteItem(${index})">Delete</button>
+          </div>
         </td>
       `;
       
-      inventoryTableBody.appendChild(tr);
+      tbody.appendChild(tr);
     });
     
     updateBulkDeleteButton();
   }
 
+  // Update inventory summary
+  function updateInventorySummary() {
+    const totalItems = inventory.length;
+    const lowStock = inventory.filter(item => item.quantity > 0 && item.quantity <= (item.minQuantity || 5)).length;
+    const outOfStock = inventory.filter(item => item.quantity === 0).length;
+    const totalValue = inventory.reduce((sum, item) => sum + (item.quantity * (item.price || 0)), 0);
+    
+    document.getElementById('totalItemsCount').textContent = totalItems;
+    document.getElementById('lowStockCount').textContent = lowStock;
+    document.getElementById('outOfStockCount').textContent = outOfStock;
+    document.getElementById('totalValue').textContent = `$${totalValue.toFixed(2)}`;
+  }
+
+  // View item details
+  function viewItem(index) {
+    const item = inventory[index];
+    const content = document.getElementById('itemDetailsContent');
+    
+    content.innerHTML = `
+      <div class="detail-item">
+        <span class="detail-label">Item Name:</span>
+        <span class="detail-value">${item.name}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">SKU:</span>
+        <span class="detail-value">${item.sku || item.id}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Category:</span>
+        <span class="detail-value">${item.category}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Quantity:</span>
+        <span class="detail-value">${item.quantity} ${item.unit || 'pcs'}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Unit Price:</span>
+        <span class="detail-value">$${item.price?.toFixed(2) || '0.00'}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Total Value:</span>
+        <span class="detail-value">$${(item.quantity * (item.price || 0)).toFixed(2)}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Location:</span>
+        <span class="detail-value">${item.location}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Minimum Quantity:</span>
+        <span class="detail-value">${item.minQuantity || 'Not set'}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Description:</span>
+        <span class="detail-value">${item.description || 'No description'}</span>
+      </div>
+    `;
+    
+    // Set up edit and delete buttons
+    document.getElementById('editFromViewBtn').onclick = function() {
+      closeModal('viewItemModal');
+      editItem(index);
+    };
+    
+    document.getElementById('deleteFromViewBtn').onclick = function() {
+      closeModal('viewItemModal');
+      deleteItem(index);
+    };
+    
+    openModal('viewItemModal');
+  }
+
+  // Edit item
+  function editItem(index) {
+    const item = inventory[index];
+    currentEditIndex = index;
+    currentEditType = 'item';
+    
+    document.getElementById('modalTitle').textContent = 'Edit Inventory Item';
+    document.getElementById('itemIndex').value = index;
+    document.getElementById('itemName').value = item.name;
+    document.getElementById('itemSku').value = item.sku || '';
+    document.getElementById('itemCategory').value = item.category || '';
+    document.getElementById('itemQuantity').value = item.quantity;
+    document.getElementById('itemUnit').value = item.unit || 'pcs';
+    document.getElementById('itemPrice').value = item.price || 0;
+    document.getElementById('itemLocation').value = item.location || '';
+    document.getElementById('itemDescription').value = item.description || '';
+    document.getElementById('itemMinQuantity').value = item.minQuantity || '';
+    
+    openModal('itemModal');
+  }
+
+  // Delete item with confirmation
+  function deleteItem(index) {
+    showConfirmation(
+      'Delete Item',
+      `Are you sure you want to delete "${inventory[index].name}"?`,
+      function() {
+        inventory.splice(index, 1);
+        saveAllData();
+        renderAllData();
+        showNotification('Item deleted successfully!', 'success');
+      }
+    );
+  }
+
   // Render containers table
   function renderContainers() {
-    containerTableBody.innerHTML = '';
+    const tbody = document.getElementById('containerTableBody');
+    tbody.innerHTML = '';
     
     containers.forEach((container, index) => {
       const tr = document.createElement('tr');
       
       tr.innerHTML = `
-        <td>${container.id}</td>
+        <td><strong>${container.id}</strong></td>
         <td>${container.type}</td>
         <td><span class="status-badge status-available">${container.status}</span></td>
         <td>${container.location}</td>
         <td>${container.contents}</td>
         <td>${container.eta}</td>
         <td>
-          <button class="btn btn-primary" onclick="editContainer(${index})">Edit</button>
-          <button class="btn btn-danger" onclick="deleteContainer(${index})">Delete</button>
+          <div class="action-buttons-cell">
+            <button class="btn btn-sm btn-info" onclick="viewContainer(${index})">View</button>
+            <button class="btn btn-sm btn-primary" onclick="editContainer(${index})">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteContainer(${index})">Delete</button>
+          </div>
         </td>
       `;
       
-      containerTableBody.appendChild(tr);
+      tbody.appendChild(tr);
     });
+  }
+
+  // View container details
+  function viewContainer(index) {
+    const container = containers[index];
+    showNotification(`Container ${container.id} details:\nType: ${container.type}\nStatus: ${container.status}\nLocation: ${container.location}\nContents: ${container.contents}\nETA: ${container.eta}`, 'info');
+  }
+
+  // Edit container
+  function editContainer(index) {
+    const container = containers[index];
+    currentEditIndex = index;
+    currentEditType = 'container';
+    
+    document.getElementById('containerModalTitle').textContent = 'Edit Container';
+    document.getElementById('containerIndex').value = index;
+    document.getElementById('containerId').value = container.id;
+    document.getElementById('containerType').value = container.type;
+    document.getElementById('containerStatus').value = container.status;
+    document.getElementById('containerLocation').value = container.location;
+    document.getElementById('containerContents').value = container.contents;
+    document.getElementById('containerETA').value = container.eta || '';
+    
+    openModal('containerModal');
+  }
+
+  // Delete container
+  function deleteContainer(index) {
+    showConfirmation(
+      'Delete Container',
+      `Are you sure you want to delete container "${containers[index].id}"?`,
+      function() {
+        containers.splice(index, 1);
+        saveAllData();
+        renderAllData();
+        showNotification('Container deleted successfully!', 'success');
+      }
+    );
   }
 
   // Render batches table
   function renderBatches() {
-    batchTableBody.innerHTML = '';
+    const tbody = document.getElementById('batchTableBody');
+    tbody.innerHTML = '';
     
     batches.forEach((batch, index) => {
       const tr = document.createElement('tr');
       
       tr.innerHTML = `
-        <td>${batch.id}</td>
+        <td><strong>${batch.id}</strong></td>
         <td>${batch.product}</td>
         <td>${batch.quantity}</td>
         <td>${batch.productionDate}</td>
-        <td>${batch.expiryDate}</td>
+        <td>${batch.expiryDate || 'N/A'}</td>
         <td><span class="status-badge status-available">${batch.qualityStatus}</span></td>
         <td>
-          <button class="btn btn-primary" onclick="editBatch(${index})">Edit</button>
-          <button class="btn btn-danger" onclick="deleteBatch(${index})">Delete</button>
+          <div class="action-buttons-cell">
+            <button class="btn btn-sm btn-info" onclick="viewBatch(${index})">View</button>
+            <button class="btn btn-sm btn-primary" onclick="editBatch(${index})">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteBatch(${index})">Delete</button>
+          </div>
         </td>
       `;
       
-      batchTableBody.appendChild(tr);
+      tbody.appendChild(tr);
     });
+  }
+
+  // View batch details
+  function viewBatch(index) {
+    const batch = batches[index];
+    showNotification(`Batch ${batch.id} details:\nProduct: ${batch.product}\nQuantity: ${batch.quantity}\nProduction Date: ${batch.productionDate}\nExpiry Date: ${batch.expiryDate || 'N/A'}\nQuality Status: ${batch.qualityStatus}\nStorage: ${batch.storageLocation}`, 'info');
+  }
+
+  // Edit batch
+  function editBatch(index) {
+    const batch = batches[index];
+    currentEditIndex = index;
+    currentEditType = 'batch';
+    
+    document.getElementById('batchModalTitle').textContent = 'Edit Batch';
+    document.getElementById('batchIndex').value = index;
+    document.getElementById('batchId').value = batch.id;
+    document.getElementById('batchProduct').value = batch.product;
+    document.getElementById('batchQuantity').value = batch.quantity;
+    document.getElementById('batchProductionDate').value = batch.productionDate;
+    document.getElementById('batchExpiryDate').value = batch.expiryDate || '';
+    document.getElementById('batchQualityStatus').value = batch.qualityStatus;
+    document.getElementById('batchStorageLocation').value = batch.storageLocation || '';
+    
+    openModal('batchModal');
+  }
+
+  // Delete batch
+  function deleteBatch(index) {
+    showConfirmation(
+      'Delete Batch',
+      `Are you sure you want to delete batch "${batches[index].id}"?`,
+      function() {
+        batches.splice(index, 1);
+        saveAllData();
+        renderAllData();
+        showNotification('Batch deleted successfully!', 'success');
+      }
+    );
   }
 
   // Render storage units
   function renderStorageUnits() {
-    storageContainer.innerHTML = '';
+    const container = document.getElementById('storageContainer');
+    container.innerHTML = '';
     
     if (storageUnits.length === 0) {
-      storageContainer.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 20px; color: #7f8c8d;">No storage units configured. Click "Build Storage Units" to create some.</p>';
+      container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 20px; color: #7f8c8d;">No storage units configured. Click "Build Storage Units" to create some.</p>';
       return;
     }
     
@@ -827,8 +1386,8 @@
             <div class="storage-id">${unit.id}</div>
           </div>
           <div class="storage-actions">
-            <button onclick="editStorageUnit(${index})">✏️</button>
-            <button onclick="deleteStorageUnit(${index})">🗑️</button>
+            <button onclick="editStorageUnit(${index})" title="Edit">✏️</button>
+            <button onclick="deleteStorageUnit(${index})" title="Delete">🗑️</button>
           </div>
         </div>
         
@@ -855,12 +1414,51 @@
           <div class="utilization-bar">
             <div class="utilization-fill" style="width: ${unit.utilization}%"></div>
           </div>
-          <span>${unit.utilization}% Used</span>
+          <div>
+            <button class="btn btn-sm btn-info" onclick="viewStorageUnit(${index})">View</button>
+          </div>
         </div>
       `;
       
-      storageContainer.appendChild(card);
+      container.appendChild(card);
     });
+  }
+
+  // View storage unit details
+  function viewStorageUnit(index) {
+    const unit = storageUnits[index];
+    showNotification(`Storage Unit ${unit.id} details:\nName: ${unit.name}\nType: ${unit.type}\nCapacity: ${unit.capacity} units\nLocation: ${unit.location}\nUtilization: ${unit.utilization}%`, 'info');
+  }
+
+  // Edit storage unit
+  function editStorageUnit(index) {
+    const unit = storageUnits[index];
+    currentEditIndex = index;
+    currentEditType = 'storage';
+    
+    document.getElementById('storageModalTitle').textContent = 'Edit Storage Unit';
+    document.getElementById('storageIndex').value = index;
+    document.getElementById('storageName').value = unit.name;
+    document.getElementById('storageType').value = unit.type;
+    document.getElementById('storageCapacity').value = unit.capacity;
+    document.getElementById('storageLocation').value = unit.location;
+    document.getElementById('storageUtilization').value = unit.utilization;
+    
+    openModal('storageModal');
+  }
+
+  // Delete storage unit
+  function deleteStorageUnit(index) {
+    showConfirmation(
+      'Delete Storage Unit',
+      `Are you sure you want to delete storage unit "${storageUnits[index].name}"?`,
+      function() {
+        storageUnits.splice(index, 1);
+        saveAllData();
+        renderAllData();
+        showNotification('Storage unit deleted successfully!', 'success');
+      }
+    );
   }
 
   // Update storage utilization display
@@ -884,6 +1482,14 @@
     const checkedItems = document.querySelectorAll('.selectItem:checked');
     document.getElementById('bulkDeleteBtn').style.display = 
       checkedItems.length > 0 ? 'inline-block' : 'none';
+  }
+
+  // Save all data to localStorage
+  function saveAllData() {
+    localStorage.setItem('inventory', JSON.stringify(inventory));
+    localStorage.setItem('containers', JSON.stringify(containers));
+    localStorage.setItem('batches', JSON.stringify(batches));
+    localStorage.setItem('storageUnits', JSON.stringify(storageUnits));
   }
 
   // Setup all event listeners
@@ -927,21 +1533,47 @@
     
     // Add item button
     document.getElementById('addItemBtn').addEventListener('click', () => {
+      currentEditIndex = null;
+      currentEditType = 'item';
       document.getElementById('modalTitle').textContent = 'Add Inventory Item';
       document.getElementById('itemForm').reset();
-      document.getElementById('itemIndex').value = '';
-      itemModal.style.display = 'flex';
+      document.getElementById('itemSku').value = 'ITEM-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+      openModal('itemModal');
+    });
+    
+    // Add container button
+    document.getElementById('addContainerBtn').addEventListener('click', () => {
+      currentEditIndex = null;
+      currentEditType = 'container';
+      document.getElementById('containerModalTitle').textContent = 'Add Container';
+      document.getElementById('containerForm').reset();
+      document.getElementById('containerId').value = 'CONT-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+      openModal('containerModal');
+    });
+    
+    // Add batch button
+    document.getElementById('addBatchBtn').addEventListener('click', () => {
+      currentEditIndex = null;
+      currentEditType = 'batch';
+      document.getElementById('batchModalTitle').textContent = 'Add Batch';
+      document.getElementById('batchForm').reset();
+      document.getElementById('batchId').value = 'BATCH-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('batchProductionDate').value = today;
+      openModal('batchModal');
     });
     
     // Add storage unit button
     document.getElementById('addStorageBtn').addEventListener('click', () => {
+      currentEditIndex = null;
+      currentEditType = 'storage';
       document.getElementById('storageModalTitle').textContent = 'Add Storage Unit';
       document.getElementById('storageForm').reset();
-      document.getElementById('storageIndex').value = '';
-      storageModal.style.display = 'flex';
+      document.getElementById('storageUtilization').value = 0;
+      openModal('storageModal');
     });
     
-    // Build storage units button - WORKING
+    // Build storage units button
     document.getElementById('buildStorageBtn').addEventListener('click', () => {
       if (storageUnits.length === 0) {
         // Create default storage units
@@ -951,16 +1583,12 @@
           { id: 'STOR-003', name: 'Bulk Storage Area', type: 'bulk-storage', capacity: 500, location: 'Zone C', utilization: 30 }
         ];
         
-        defaultStorage.forEach(unit => {
-          storageUnits.push(unit);
-        });
-        
-        localStorage.setItem('storageUnits', JSON.stringify(storageUnits));
-        renderStorageUnits();
-        updateStorageUtilization();
-        alert('✓ Storage units built successfully!');
+        storageUnits.push(...defaultStorage);
+        saveAllData();
+        renderAllData();
+        showNotification('Storage units built successfully!', 'success');
       } else {
-        alert('Storage units already exist. Use "Add Storage Unit" to create more.');
+        showNotification('Storage units already exist. Use "Add Storage Unit" to create more.', 'warning');
       }
     });
     
@@ -968,11 +1596,11 @@
     document.getElementById('addZoneBtn').addEventListener('click', () => {
       const zoneName = prompt('Enter zone name:');
       if (zoneName) {
-        alert(`✓ Zone "${zoneName}" added successfully`);
+        showNotification(`Zone "${zoneName}" added successfully`, 'success');
       }
     });
     
-    // Optimize layout button - WORKING
+    // Optimize layout button
     document.getElementById('optimizeLayoutBtn').addEventListener('click', () => {
       // Simulate layout optimization
       storageUnits.forEach(unit => {
@@ -981,13 +1609,12 @@
         unit.utilization = Math.min(100, unit.utilization + improvement);
       });
       
-      localStorage.setItem('storageUnits', JSON.stringify(storageUnits));
-      renderStorageUnits();
-      updateStorageUtilization();
-      alert('✓ Warehouse layout optimized successfully! Storage utilization improved.');
+      saveAllData();
+      renderAllData();
+      showNotification('Warehouse layout optimized successfully! Storage utilization improved.', 'success');
     });
     
-    // Import CSV button - WORKING
+    // Import CSV button
     document.getElementById('importCSV').addEventListener('click', () => {
       // Create file input
       const fileInput = document.createElement('input');
@@ -999,11 +1626,10 @@
         if (file) {
           const reader = new FileReader();
           reader.onload = (event) => {
-            // Parse CSV data (simplified)
             const csvData = event.target.result;
             const lines = csvData.split('\n');
+            let importedCount = 0;
             
-            // Skip header row and process data
             for (let i = 1; i < lines.length; i++) {
               const line = lines[i].trim();
               if (line) {
@@ -1012,20 +1638,23 @@
                 if (name && category) {
                   inventory.push({
                     id: 'ITEM-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+                    sku: 'IMP-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
                     name: name.trim(),
                     category: category.trim(),
                     quantity: parseInt(quantity) || 0,
                     price: parseFloat(price) || 0,
                     location: location?.trim() || 'Unknown',
-                    status: 'available'
+                    status: 'available',
+                    unit: 'pcs'
                   });
+                  importedCount++;
                 }
               }
             }
             
-            localStorage.setItem('inventory', JSON.stringify(inventory));
-            renderInventory();
-            alert(`✓ CSV imported successfully! Added ${lines.length - 1} items.`);
+            saveAllData();
+            renderAllData();
+            showNotification(`CSV imported successfully! Added ${importedCount} items.`, 'success');
           };
           reader.readAsText(file);
         }
@@ -1037,9 +1666,11 @@
     // Export CSV button
     document.getElementById('exportCSV').addEventListener('click', () => {
       // Create CSV content
-      let csv = 'Name,Category,Quantity,Price,Location\n';
+      let csv = 'Name,Category,Quantity,Price,Location,Status\n';
       inventory.forEach(item => {
-        csv += `${item.name},${item.category},${item.quantity},${item.price},${item.location}\n`;
+        const status = item.quantity === 0 ? 'Out of Stock' : 
+                      item.quantity <= (item.minQuantity || 5) ? 'Low Stock' : 'Available';
+        csv += `${item.name},${item.category},${item.quantity},${item.price},${item.location},${status}\n`;
       });
       
       // Create download link
@@ -1047,32 +1678,32 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'inventory_export.csv';
+      a.download = `inventory_export_${new Date().toISOString().split('T')[0]}.csv`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       
-      alert('✓ Inventory exported to CSV successfully');
+      showNotification('Inventory exported to CSV successfully', 'success');
     });
     
-    // Batch Update button - WORKING
+    // Batch Update button
     document.getElementById('batchUpdateBtn').addEventListener('click', () => {
       const checkedItems = document.querySelectorAll('.selectItem:checked');
       if (checkedItems.length === 0) {
-        alert('Please select at least one item to update');
+        showNotification('Please select at least one item to update', 'warning');
         return;
       }
-      batchUpdateSection.classList.add('active');
+      document.getElementById('batchUpdateSection').classList.add('active');
     });
     
-    // Apply Batch Update button - WORKING
+    // Apply Batch Update button
     document.getElementById('applyBatchUpdate').addEventListener('click', () => {
       const field = document.getElementById('batchField').value;
       const value = document.getElementById('batchValue').value;
       
       if (!value) {
-        alert('Please enter a value for the batch update');
+        showNotification('Please enter a value for the batch update', 'warning');
         return;
       }
       
@@ -1094,20 +1725,23 @@
         } else if (field === 'category') {
           inventory[index].category = value;
           updateCount++;
+        } else if (field === 'status') {
+          inventory[index].status = value;
+          updateCount++;
         }
       });
       
-      localStorage.setItem('inventory', JSON.stringify(inventory));
-      renderInventory();
-      batchUpdateSection.classList.remove('active');
+      saveAllData();
+      renderAllData();
+      document.getElementById('batchUpdateSection').classList.remove('active');
       document.getElementById('batchValue').value = '';
       
-      alert(`✓ Batch update completed! ${updateCount} items updated.`);
+      showNotification(`Batch update completed! ${updateCount} items updated.`, 'success');
     });
     
     // Cancel Batch Update button
     document.getElementById('cancelBatchUpdate').addEventListener('click', () => {
-      batchUpdateSection.classList.remove('active');
+      document.getElementById('batchUpdateSection').classList.remove('active');
       document.getElementById('batchValue').value = '';
     });
     
@@ -1116,161 +1750,329 @@
       const checkedItems = document.querySelectorAll('.selectItem:checked');
       if (checkedItems.length === 0) return;
       
-      if (confirm(`Are you sure you want to delete ${checkedItems.length} item(s)?`)) {
-        const indices = Array.from(checkedItems).map(item => 
-          parseInt(item.dataset.index)).sort((a, b) => b - a);
-        
-        indices.forEach(index => {
-          inventory.splice(index, 1);
-        });
-        
-        localStorage.setItem('inventory', JSON.stringify(inventory));
-        renderInventory();
-        document.getElementById('selectAll').checked = false;
-        
-        alert(`✓ ${indices.length} items deleted successfully`);
-      }
+      showConfirmation(
+        'Delete Items',
+        `Are you sure you want to delete ${checkedItems.length} selected item(s)?`,
+        () => {
+          const indices = Array.from(checkedItems).map(item => 
+            parseInt(item.dataset.index)).sort((a, b) => b - a);
+          
+          indices.forEach(index => {
+            inventory.splice(index, 1);
+          });
+          
+          saveAllData();
+          renderAllData();
+          document.getElementById('selectAll').checked = false;
+          
+          showNotification(`${indices.length} items deleted successfully`, 'success');
+        }
+      );
     });
     
     // Item form submission
     document.getElementById('itemForm').addEventListener('submit', e => {
       e.preventDefault();
-      const index = document.getElementById('itemIndex').value;
       const newItem = {
         id: 'ITEM-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
         name: document.getElementById('itemName').value,
+        sku: document.getElementById('itemSku').value,
         category: document.getElementById('itemCategory').value,
         quantity: parseInt(document.getElementById('itemQuantity').value),
+        unit: document.getElementById('itemUnit').value,
         price: parseFloat(document.getElementById('itemPrice').value),
         location: document.getElementById('itemLocation').value,
+        description: document.getElementById('itemDescription').value,
+        minQuantity: document.getElementById('itemMinQuantity').value ? parseInt(document.getElementById('itemMinQuantity').value) : null,
         status: 'available'
       };
       
-      if (index === '') {
-        inventory.push(newItem);
+      if (currentEditIndex !== null && currentEditType === 'item') {
+        inventory[currentEditIndex] = newItem;
+        showNotification('Item updated successfully!', 'success');
       } else {
-        inventory[index] = newItem;
+        inventory.push(newItem);
+        showNotification('Item added successfully!', 'success');
       }
       
-      localStorage.setItem('inventory', JSON.stringify(inventory));
-      renderInventory();
-      itemModal.style.display = 'none';
-      
-      alert('✓ Item saved successfully');
+      saveAllData();
+      renderAllData();
+      closeModal('itemModal');
     });
     
     // Storage form submission
     document.getElementById('storageForm').addEventListener('submit', e => {
       e.preventDefault();
-      const index = document.getElementById('storageIndex').value;
       const newUnit = {
         id: 'STOR-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
         name: document.getElementById('storageName').value,
         type: document.getElementById('storageType').value,
         capacity: parseInt(document.getElementById('storageCapacity').value),
         location: document.getElementById('storageLocation').value,
-        utilization: Math.floor(Math.random() * 100)
+        utilization: parseInt(document.getElementById('storageUtilization').value)
       };
       
-      if (index === '') {
-        storageUnits.push(newUnit);
+      if (currentEditIndex !== null && currentEditType === 'storage') {
+        storageUnits[currentEditIndex] = newUnit;
+        showNotification('Storage unit updated successfully!', 'success');
       } else {
-        storageUnits[index] = newUnit;
+        storageUnits.push(newUnit);
+        showNotification('Storage unit added successfully!', 'success');
       }
       
-      localStorage.setItem('storageUnits', JSON.stringify(storageUnits));
-      renderStorageUnits();
-      updateStorageUtilization();
-      storageModal.style.display = 'none';
+      saveAllData();
+      renderAllData();
+      closeModal('storageModal');
+    });
+    
+    // Container form submission
+    document.getElementById('containerForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const newContainer = {
+        id: document.getElementById('containerId').value,
+        type: document.getElementById('containerType').value,
+        status: document.getElementById('containerStatus').value,
+        location: document.getElementById('containerLocation').value,
+        contents: document.getElementById('containerContents').value,
+        eta: document.getElementById('containerETA').value || 'N/A'
+      };
       
-      alert('✓ Storage unit saved successfully');
+      if (currentEditIndex !== null && currentEditType === 'container') {
+        containers[currentEditIndex] = newContainer;
+        showNotification('Container updated successfully!', 'success');
+      } else {
+        containers.push(newContainer);
+        showNotification('Container added successfully!', 'success');
+      }
+      
+      saveAllData();
+      renderAllData();
+      closeModal('containerModal');
+    });
+    
+    // Batch form submission
+    document.getElementById('batchForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const newBatch = {
+        id: document.getElementById('batchId').value,
+        product: document.getElementById('batchProduct').value,
+        quantity: parseInt(document.getElementById('batchQuantity').value),
+        productionDate: document.getElementById('batchProductionDate').value,
+        expiryDate: document.getElementById('batchExpiryDate').value || 'N/A',
+        qualityStatus: document.getElementById('batchQualityStatus').value,
+        storageLocation: document.getElementById('batchStorageLocation').value
+      };
+      
+      if (currentEditIndex !== null && currentEditType === 'batch') {
+        batches[currentEditIndex] = newBatch;
+        showNotification('Batch updated successfully!', 'success');
+      } else {
+        batches.push(newBatch);
+        showNotification('Batch added successfully!', 'success');
+      }
+      
+      saveAllData();
+      renderAllData();
+      closeModal('batchModal');
     });
     
     // Close modals
     document.querySelectorAll('.close').forEach(closeBtn => {
       closeBtn.addEventListener('click', function() {
-        this.closest('.modal').style.display = 'none';
+        const modal = this.closest('.modal');
+        modal.classList.remove('active');
       });
     });
     
     // Close modals when clicking outside
     window.addEventListener('click', (e) => {
       if (e.target.classList.contains('modal')) {
-        e.target.style.display = 'none';
+        e.target.classList.remove('active');
       }
+    });
+    
+    // Refresh buttons
+    document.getElementById('refreshItems').addEventListener('click', () => {
+      renderAllData();
+      showNotification('Inventory data refreshed!', 'info');
+    });
+    
+    document.getElementById('refreshContainers').addEventListener('click', () => {
+      renderContainers();
+      showNotification('Containers data refreshed!', 'info');
+    });
+    
+    document.getElementById('refreshBatches').addEventListener('click', () => {
+      renderBatches();
+      showNotification('Batches data refreshed!', 'info');
+    });
+    
+    document.getElementById('refreshWarehouse').addEventListener('click', () => {
+      renderStorageUnits();
+      updateStorageUtilization();
+      showNotification('Warehouse data refreshed!', 'info');
+    });
+    
+    // Track container button
+    document.getElementById('trackContainerBtn').addEventListener('click', () => {
+      if (containers.length === 0) {
+        showNotification('No containers available to track', 'warning');
+        return;
+      }
+      
+      let trackingInfo = 'Container Tracking Status:\n\n';
+      containers.forEach(container => {
+        trackingInfo += `${container.id}: ${container.status} at ${container.location}\n`;
+      });
+      
+      showNotification(trackingInfo, 'info');
+    });
+    
+    // Quality check button
+    document.getElementById('qualityCheckBtn').addEventListener('click', () => {
+      if (batches.length === 0) {
+        showNotification('No batches available for quality check', 'warning');
+        return;
+      }
+      
+      let qualityReport = 'Quality Check Report:\n\n';
+      batches.forEach(batch => {
+        qualityReport += `${batch.id}: ${batch.qualityStatus}\n`;
+      });
+      
+      showNotification(qualityReport, 'info');
+    });
+    
+    // Export batches button
+    document.getElementById('exportBatchesBtn').addEventListener('click', () => {
+      // Create CSV content for batches
+      let csv = 'Batch ID,Product,Quantity,Production Date,Expiry Date,Quality Status\n';
+      batches.forEach(batch => {
+        csv += `${batch.id},${batch.product},${batch.quantity},${batch.productionDate},${batch.expiryDate},${batch.qualityStatus}\n`;
+      });
+      
+      // Create download link
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `batches_export_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      showNotification('Batches exported to CSV successfully', 'success');
+    });
+    
+    // Report generation functions
+    window.generateStockReport = function() {
+      const lowStock = inventory.filter(item => item.quantity <= (item.minQuantity || 5));
+      let report = 'Stock Level Report:\n\n';
+      
+      if (lowStock.length === 0) {
+        report += 'All items have sufficient stock levels.';
+      } else {
+        report += 'Items with low stock:\n';
+        lowStock.forEach(item => {
+          report += `${item.name} (${item.sku}): ${item.quantity} ${item.unit} - Minimum: ${item.minQuantity || 5}\n`;
+        });
+      }
+      
+      showNotification(report, 'info');
+    };
+    
+    window.generateExpiryReport = function() {
+      const today = new Date();
+      const upcomingBatches = batches.filter(batch => {
+        if (batch.expiryDate === 'N/A') return false;
+        const expiryDate = new Date(batch.expiryDate);
+        const daysDiff = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+        return daysDiff <= 30; // Items expiring within 30 days
+      });
+      
+      let report = 'Expiry Report:\n\n';
+      
+      if (upcomingBatches.length === 0) {
+        report += 'No items expiring within the next 30 days.';
+      } else {
+        report += 'Items expiring soon:\n';
+        upcomingBatches.forEach(batch => {
+          report += `${batch.product} (${batch.id}): Expires ${batch.expiryDate}\n`;
+        });
+      }
+      
+      showNotification(report, 'info');
+    };
+    
+    window.generateValueReport = function() {
+      const categoryValue = {};
+      inventory.forEach(item => {
+        const value = item.quantity * (item.price || 0);
+        categoryValue[item.category] = (categoryValue[item.category] || 0) + value;
+      });
+      
+      let report = 'Inventory Value Report:\n\n';
+      Object.entries(categoryValue).forEach(([category, value]) => {
+        report += `${category}: $${value.toFixed(2)}\n`;
+      });
+      
+      const totalValue = Object.values(categoryValue).reduce((sum, val) => sum + val, 0);
+      report += `\nTotal Inventory Value: $${totalValue.toFixed(2)}`;
+      
+      showNotification(report, 'info');
+    };
+    
+    // Confirm modal
+    document.getElementById('confirmYes').addEventListener('click', function() {
+      const action = this.dataset.action;
+      if (action && window[action]) {
+        window[action]();
+      }
+      closeModal('confirmModal');
+    });
+    
+    document.getElementById('confirmNo').addEventListener('click', function() {
+      closeModal('confirmModal');
     });
   }
 
-  // Item management functions
-  function editItem(index) {
-    const item = inventory[index];
-    document.getElementById('modalTitle').textContent = 'Edit Inventory Item';
-    document.getElementById('itemIndex').value = index;
-    document.getElementById('itemName').value = item.name;
-    document.getElementById('itemCategory').value = item.category;
-    document.getElementById('itemQuantity').value = item.quantity;
-    document.getElementById('itemPrice').value = item.price;
-    document.getElementById('itemLocation').value = item.location;
-    itemModal.style.display = 'flex';
+  // Modal functions
+  function openModal(modalId) {
+    document.getElementById(modalId).classList.add('active');
   }
 
-  function deleteItem(index) {
-    if (confirm('Are you sure you want to delete this item?')) {
-      inventory.splice(index, 1);
-      localStorage.setItem('inventory', JSON.stringify(inventory));
-      renderInventory();
-      alert('✓ Item deleted successfully');
-    }
+  function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
   }
 
-  // Container management functions
-  function editContainer(index) {
-    alert('Container editing functionality would be implemented here');
+  // Show confirmation dialog
+  function showConfirmation(title, message, yesCallback) {
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmMessage').textContent = message;
+    document.getElementById('confirmYes').dataset.action = 'tempAction';
+    
+    // Create temporary function for the yes callback
+    window.tempAction = yesCallback;
+    
+    openModal('confirmModal');
   }
 
-  function deleteContainer(index) {
-    if (confirm('Are you sure you want to delete this container?')) {
-      containers.splice(index, 1);
-      localStorage.setItem('containers', JSON.stringify(containers));
-      renderContainers();
-      alert('✓ Container deleted successfully');
-    }
+  // Show notification
+  function showNotification(message, type = 'info') {
+    alert(message);
   }
 
-  // Batch management functions
-  function editBatch(index) {
-    alert('Batch editing functionality would be implemented here');
+  // Navigation functions
+  function goToHome() {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelector('[data-target="inventory"]').classList.add('active');
+    document.getElementById('inventory').classList.add('active');
   }
 
-  function deleteBatch(index) {
-    if (confirm('Are you sure you want to delete this batch?')) {
-      batches.splice(index, 1);
-      localStorage.setItem('batches', JSON.stringify(batches));
-      renderBatches();
-      alert('✓ Batch deleted successfully');
-    }
-  }
-
-  // Storage unit management functions
-  function editStorageUnit(index) {
-    const unit = storageUnits[index];
-    document.getElementById('storageModalTitle').textContent = 'Edit Storage Unit';
-    document.getElementById('storageIndex').value = index;
-    document.getElementById('storageName').value = unit.name;
-    document.getElementById('storageType').value = unit.type;
-    document.getElementById('storageCapacity').value = unit.capacity;
-    document.getElementById('storageLocation').value = unit.location;
-    storageModal.style.display = 'flex';
-  }
-
-  function deleteStorageUnit(index) {
-    if (confirm('Are you sure you want to delete this storage unit?')) {
-      storageUnits.splice(index, 1);
-      localStorage.setItem('storageUnits', JSON.stringify(storageUnits));
-      renderStorageUnits();
-      updateStorageUtilization();
-      alert('✓ Storage unit deleted successfully');
-    }
+  function goToMainERP() {
+    window.location.href = 'https://cephasgm.github.io/CephasGM-ERP/';
   }
 
   // Initialize the application when the page loads
