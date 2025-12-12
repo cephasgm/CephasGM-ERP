@@ -1,11 +1,11 @@
-// pwa-init.js - Enhanced PWA Initialization for CephasGM ERP
-
+// pwa-init.js - Robust PWA initializer for CephasGM ERP
 class PWAInitializer {
-  constructor() {
+  constructor(options = {}) {
     this.deferredPrompt = null;
     this.isOnline = navigator.onLine;
     this.isInstalled = false;
-    
+    this.swRegistration = null;
+    this.options = options;
     this.init();
   }
 
@@ -19,436 +19,282 @@ class PWAInitializer {
 
   // Register Service Worker
   async registerServiceWorker() {
-    if ('serviceWorker' in navigator) {
-      try {
-        const registration = await navigator.worker.register('./sw.js', {
-          scope: './'
-        });
-        
-        console.log('✅ Service Worker registered successfully:', registration);
-        
-        // Check for updates
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          console.log('🔄 New Service Worker found:', newWorker);
-          
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+    if (!('serviceWorker' in navigator)) {
+      console.warn('⚠️ Service Workers are not supported in this browser');
+      return;
+    }
+
+    try {
+      // register with proper scope
+      const registration = await navigator.serviceWorker.register('/sw.js', {
+        scope: '/'
+      });
+      this.swRegistration = registration;
+      console.log('✅ Service Worker registered:', registration);
+
+      // handle updatefound — show update UI when new SW installs
+      registration.addEventListener('updatefound', () => {
+        const newWorker = registration.installing;
+        if (!newWorker) return;
+        console.log('🔄 New service worker found:', newWorker);
+
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed') {
+            // If there's an active controller, this is an update
+            if (navigator.serviceWorker.controller) {
               this.showUpdateNotification();
+            } else {
+              console.log('✅ Service worker installed for the first time');
             }
-          });
+          }
         });
-        
-      } catch (error) {
-        console.error('❌ Service Worker registration failed:', error);
-      }
-    } else {
-      console.warn('⚠️ Service Workers are not supported');
+      });
+    } catch (err) {
+      console.error('❌ Service Worker registration failed:', err);
     }
   }
 
-  // Handle PWA Installation
+  // Setup beforeinstallprompt and appinstalled handlers
   setupInstallPrompt() {
     window.addEventListener('beforeinstallprompt', (e) => {
-      console.log('📱 PWA install prompt available');
-      
-      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      // Prevent automatic mini-infobar on some browsers
       e.preventDefault();
-      
-      // Stash the event so it can be triggered later
       this.deferredPrompt = e;
-      
-      // Show install banner
+      console.log('📱 beforeinstallprompt captured');
       this.showInstallBanner();
     });
 
-    window.addEventListener('appinstalled', (e) => {
-      console.log('🎉 PWA installed successfully');
+    window.addEventListener('appinstalled', (evt) => {
+      console.log('🎉 App installed', evt);
       this.isInstalled = true;
-      this.hideInstallBanner();
       this.deferredPrompt = null;
-      
-      // Show success message
-      this.showToast('CephasGM ERP installed successfully!', 'success');
+      this.hideInstallBanner();
+      this.showToast('CephasGM ERP installed', 'success');
     });
 
-    // Setup install button
-    const installButton = document.getElementById('pwaInstallButton');
-    const dismissButton = document.getElementById('pwaInstallDismiss');
-    
-    if (installButton) {
-      installButton.addEventListener('click', () => this.installPWA());
+    // install button handlers (if present in DOM)
+    document.addEventListener('click', (ev) => {
+      const target = ev.target.closest?.('#pwaInstallButton, #pwaInstallDismiss');
+      if (!target) return;
+
+      if (target.id === 'pwaInstallButton') {
+        this.installPWA();
+      } else if (target.id === 'pwaInstallDismiss') {
+        this.hideInstallBanner();
+      }
+    });
+  }
+
+  // Prompt the saved beforeinstallprompt event
+  async installPWA() {
+    if (!this.deferredPrompt) {
+      this.showToast('Install not available', 'warning');
+      return;
     }
-    
-    if (dismissButton) {
-      dismissButton.addEventListener('click', () => this.hideInstallBanner());
+    try {
+      this.deferredPrompt.prompt();
+      const { outcome } = await this.deferredPrompt.userChoice;
+      console.log('PWA install result:', outcome);
+      if (outcome === 'accepted') {
+        this.showToast('Installation accepted', 'success');
+      } else {
+        this.showToast('Installation dismissed', 'info');
+      }
+      this.deferredPrompt = null;
+      this.hideInstallBanner();
+    } catch (err) {
+      console.error('Install failed:', err);
+      this.showToast('Installation failed', 'error');
     }
   }
 
-  // Show PWA Install Banner
   showInstallBanner() {
-    // Don't show if already installed or in standalone mode
-    if (this.isInstalled || window.matchMedia('(display-mode: standalone)').matches) {
-      return;
-    }
-    
+    // don't show if already installed or in standalone
+    const standalone = window.matchMedia('(display-mode: standalone)').matches ||
+                       window.navigator.standalone === true;
+    if (this.isInstalled || standalone) return;
+
     const banner = document.getElementById('pwaInstallBanner');
     if (banner) {
-      // Show after a delay to not interrupt initial experience
-      setTimeout(() => {
-        banner.classList.add('show');
-      }, 3000);
+      banner.classList.add('show');
     }
   }
 
   hideInstallBanner() {
     const banner = document.getElementById('pwaInstallBanner');
-    if (banner) {
-      banner.classList.remove('show');
-    }
+    if (banner) banner.classList.remove('show');
   }
 
-  // Install PWA
-  async installPWA() {
-    if (!this.deferredPrompt) {
-      this.showToast('Installation not available', 'error');
-      return;
-    }
-
-    try {
-      // Show the install prompt
-      this.deferredPrompt.prompt();
-      
-      // Wait for the user to respond to the prompt
-      const { outcome } = await this.deferredPrompt.userChoice;
-      
-      console.log(`User response to the install prompt: ${outcome}`);
-      
-      if (outcome === 'accepted') {
-        this.showToast('Installing CephasGM ERP...', 'info');
-      } else {
-        this.showToast('Installation cancelled', 'warning');
-      }
-      
-      // Clear the saved prompt since it can't be used again
-      this.deferredPrompt = null;
-      
-      // Hide the install banner regardless of outcome
-      this.hideInstallBanner();
-      
-    } catch (error) {
-      console.error('❌ PWA installation failed:', error);
-      this.showToast('Installation failed', 'error');
-    }
-  }
-
-  // Online/Offline Status Management
+  // Online/offline handling
   setupOnlineOfflineListeners() {
     window.addEventListener('online', () => {
-      console.log('🌐 App is online');
       this.isOnline = true;
       this.hideOfflineIndicator();
       this.showToast('Connection restored', 'success');
-      
-      // Sync any pending operations
       this.syncPendingOperations();
     });
 
     window.addEventListener('offline', () => {
-      console.log('📴 App is offline');
       this.isOnline = false;
       this.showOfflineIndicator();
       this.showToast('You are offline', 'warning');
     });
 
-    // Initial status check
-    if (!this.isOnline) {
-      this.showOfflineIndicator();
-    }
+    // initial
+    if (!this.isOnline) this.showOfflineIndicator();
   }
 
   showOfflineIndicator() {
-    const indicator = document.getElementById('offlineIndicator');
-    if (indicator) {
-      indicator.classList.add('show');
-    }
+    const el = document.getElementById('offlineIndicator');
+    if (el) el.classList.add('show');
   }
-
   hideOfflineIndicator() {
-    const indicator = document.getElementById('offlineIndicator');
-    if (indicator) {
-      indicator.classList.remove('show');
-    }
+    const el = document.getElementById('offlineIndicator');
+    if (el) el.classList.remove('show');
   }
 
-  // Enhanced Navigation Management
+  // navigation handler - only intercept same-origin navigations
   setupNavigationHandler() {
-    // Handle internal navigation within PWA scope
     document.addEventListener('click', (e) => {
-      const link = e.target.closest('a');
-      
-      if (link && link.href && this.isInternalLink(link.href)) {
-        e.preventDefault();
-        this.navigateTo(link.href);
-      }
+      const a = e.target.closest?.('a');
+      if (!a || !a.href) return;
+      // allow native (external) links, tel:, mailto:, target=_blank, or explicit external param
+      if (a.target === '_blank' || a.hasAttribute('download') || a.dataset.external !== undefined) return;
+      if (a.href.startsWith('mailto:') || a.href.startsWith('tel:')) return;
+
+      // only intercept same-origin links
+      const linkUrl = new URL(a.href, window.location.href);
+      if (linkUrl.origin !== location.origin) return;
+
+      // intercept navigations that look like page loads (no fragment-only)
+      e.preventDefault();
+      this.navigateTo(linkUrl.pathname + linkUrl.search + linkUrl.hash);
     });
 
-    // Handle browser navigation (back/forward)
+    // popstate
     window.addEventListener('popstate', () => {
-      this.handleNavigation(window.location.href);
+      this.navigateTo(window.location.pathname + window.location.search + window.location.hash);
     });
   }
 
-  isInternalLink(href) {
-    const currentOrigin = window.location.origin;
-    const linkUrl = new URL(href, window.location.href);
-    
-    return linkUrl.origin === currentOrigin && 
-           !href.startsWith('tel:') && 
-           !href.startsWith('mailto:') &&
-           !href.includes('.pdf') &&
-           !linkUrl.searchParams.has('external');
-  }
+  // Client-side navigation with partial replacement
+  async navigateTo(path) {
+    // if path equals current path, do nothing
+    if (path === window.location.pathname + window.location.search + window.location.hash) return;
 
-  async navigateTo(url) {
+    this.showLoading();
     try {
-      // Show loading state
-      this.showLoading();
-      
-      // Use fetch API to get the page content
-      const response = await fetch(url);
-      const html = await response.text();
-      
-      // Parse the HTML and extract main content
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-      const newContent = doc.querySelector('.main-content') || doc.body;
-      
-      // Update the page content
-      const currentContent = document.querySelector('.main-content');
-      if (currentContent && newContent) {
-        currentContent.innerHTML = newContent.innerHTML;
+      const res = await fetch(path, { credentials: 'same-origin' });
+      if (!res.ok) {
+        throw new Error('Navigation fetch failed');
       }
-      
-      // Update URL without page reload
-      window.history.pushState({}, '', url);
-      
-      // Update page title
-      document.title = doc.title;
-      
-      // Re-initialize any page-specific scripts
+      const text = await res.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(text, 'text/html');
+      const newMain = doc.querySelector('.main-content') || doc.body;
+      const currentMain = document.querySelector('.main-content') || document.body;
+
+      if (currentMain && newMain) {
+        currentMain.innerHTML = newMain.innerHTML;
+      }
+
+      // Update title and history
+      document.title = doc.title || document.title;
+      window.history.pushState({}, '', path);
+
+      // Re-run page scripts if needed
       this.initializePageScripts();
-      
-      // Hide loading state
+    } catch (err) {
+      console.warn('Navigation fallback to full load due to:', err);
+      window.location.href = path; // fallback
+    } finally {
       this.hideLoading();
-      
-      console.log('🧭 Navigation completed:', url);
-      
-    } catch (error) {
-      console.error('❌ Navigation failed:', error);
-      this.hideLoading();
-      
-      // Fallback to traditional navigation
-      window.location.href = url;
     }
   }
 
-  handleNavigation(url) {
-    // Handle browser back/forward navigation
-    this.navigateTo(url);
-  }
-
-  // PWA Status Checking
+  // Check PWA installation / display-mode
   checkPWAStatus() {
-    // Check if app is running in standalone mode
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
       this.isInstalled = true;
-      console.log('📱 Running in standalone PWA mode');
-    }
-    
-    // Check display mode support
-    if ('displayMode' in window) {
-      console.log('🖥️ Display mode:', window.displayMode);
+      console.log('📱 Running as standalone PWA');
     }
   }
 
-  // Update Notification
   showUpdateNotification() {
-    if (confirm('A new version of CephasGM ERP is available. Reload to update?')) {
+    // non-blocking update toast
+    if (confirm('A new version is available. Reload now to update?')) {
       window.location.reload();
     }
   }
 
-  // Toast Notifications
+  // Basic toast helper
   showToast(message, type = 'info') {
-    // Create toast element
+    // simple implementation - keep concise
     const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.innerHTML = `
-      <div class="toast-content">
-        <span class="toast-message">${message}</span>
-        <button class="toast-close">&times;</button>
-      </div>
-    `;
-    
-    // Add styles if not already added
-    if (!document.querySelector('#toast-styles')) {
-      const styles = document.createElement('style');
-      styles.id = 'toast-styles';
-      styles.textContent = `
-        .toast {
-          position: fixed;
-          top: 100px;
-          right: 20px;
-          background: white;
-          padding: 1rem;
-          border-radius: 8px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-          z-index: 10000;
-          max-width: 300px;
-          transform: translateX(400px);
-          transition: transform 0.3s ease;
-        }
-        .toast.show {
-          transform: translateX(0);
-        }
-        .toast-success { border-left: 4px solid #10b981; }
-        .toast-error { border-left: 4px solid #ef4444; }
-        .toast-warning { border-left: 4px solid #f59e0b; }
-        .toast-info { border-left: 4px solid #3b82f6; }
-        .toast-content {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 1rem;
-        }
-        .toast-close {
-          background: none;
-          border: none;
-          font-size: 1.25rem;
-          cursor: pointer;
-          color: #64748b;
-        }
-      `;
-      document.head.appendChild(styles);
-    }
-    
+    toast.className = `ce-toast ce-toast-${type}`;
+    toast.textContent = message;
     document.body.appendChild(toast);
-    
-    // Show toast
-    setTimeout(() => toast.classList.add('show'), 100);
-    
-    // Auto remove after 5 seconds
+    setTimeout(() => toast.classList.add('show'), 50);
     setTimeout(() => {
       toast.classList.remove('show');
-      setTimeout(() => {
-        if (toast.parentNode) {
-          toast.parentNode.removeChild(toast);
-        }
-      }, 300);
-    }, 5000);
-    
-    // Close button
-    toast.querySelector('.toast-close').addEventListener('click', () => {
-      toast.classList.remove('show');
-      setTimeout(() => {
-        if (toast.parentNode) {
-          toast.parentNode.removeChild(toast);
-        }
-      }, 300);
-    });
+      setTimeout(() => toast.remove(), 300);
+    }, 4500);
   }
 
-  // Loading State Management
+  // Loading UI (lightweight)
   showLoading() {
-    // Create or show loading indicator
-    let loader = document.querySelector('.global-loader');
-    
-    if (!loader) {
-      loader = document.createElement('div');
-      loader.className = 'global-loader';
-      loader.innerHTML = `
-        <div class="loader-content">
-          <div class="loader-spinner"></div>
-          <div class="loader-text">Loading...</div>
-        </div>
-      `;
-      
-      // Add loader styles
-      const styles = document.createElement('style');
-      styles.textContent = `
-        .global-loader {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(255,255,255,0.9);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 9999;
-        }
-        .loader-content {
-          text-align: center;
-        }
-        .loader-spinner {
-          width: 40px;
-          height: 40px;
-          border: 4px solid #e2e8f0;
-          border-top: 4px solid #2563eb;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-          margin: 0 auto 1rem;
-        }
-        .loader-text {
-          color: #64748b;
-          font-weight: 500;
-        }
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `;
-      document.head.appendChild(styles);
-      document.body.appendChild(loader);
+    if (document.querySelector('.ce-global-loader')) {
+      document.querySelector('.ce-global-loader').style.display = 'flex';
+      return;
     }
-    
-    loader.style.display = 'flex';
+    const el = document.createElement('div');
+    el.className = 'ce-global-loader';
+    el.innerHTML = `<div class="ce-loader-inner"><div class="ce-spinner" aria-hidden="true"></div><div class="ce-loader-text">Loading...</div></div>`;
+    document.body.appendChild(el);
+    // minimal styles appended once
+    if (!document.getElementById('ce-pwa-styles')) {
+      const s = document.createElement('style');
+      s.id = 'ce-pwa-styles';
+      s.textContent = `
+        .ce-global-loader{position:fixed;inset:0;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;z-index:9999}
+        .ce-loader-inner{text-align:center}
+        .ce-spinner{width:36px;height:36px;border:4px solid #e6eefb;border-top-color:#2563eb;border-radius:50%;animation:ce-spin 1s linear infinite;margin:0 auto 8px}
+        @keyframes ce-spin{to{transform:rotate(360deg)}}
+        .ce-loader-text{color:#334155;font-weight:500}
+        .ce-toast{position:fixed;right:20px;top:70px;background:#fff;padding:10px 14px;border-radius:8px;box-shadow:0 8px 24px rgba(2,6,23,0.12);opacity:0;transform:translateY(-8px);transition:opacity .25s,transform .25s;z-index:10000}
+        .ce-toast.show{opacity:1;transform:translateY(0)}
+        .ce-toast-info{border-left:4px solid #3b82f6}
+        .ce-toast-success{border-left:4px solid #10b981}
+        .ce-toast-warning{border-left:4px solid #f59e0b}
+        .ce-toast-error{border-left:4px solid #ef4444}
+      `;
+      document.head.appendChild(s);
+    }
   }
 
   hideLoading() {
-    const loader = document.querySelector('.global-loader');
-    if (loader) {
-      loader.style.display = 'none';
-    }
+    const el = document.querySelector('.ce-global-loader');
+    if (el) el.style.display = 'none';
   }
 
-  // Sync Pending Operations
+  // Placeholder sync function
   async syncPendingOperations() {
-    // This would sync any operations that were queued while offline
-    console.log('🔄 Syncing pending operations...');
-    
-    // Example: Sync form submissions, data updates, etc.
-    // Implementation would depend on specific app requirements
+    // Implement app-specific pending sync logic here
+    console.log('🔄 Attempting to sync pending operations...');
+    // Example: read from IndexedDB and push to API
   }
 
-  // Initialize Page-specific Scripts
   initializePageScripts() {
-    // Re-initialize any scripts that need to run after navigation
-    // This is a placeholder for page-specific initialization logic
-    
-    // Example: Re-attach event listeners, initialize components, etc.
-    console.log('🔄 Initializing page scripts...');
+    // Reinitialize any JS components after a partial navigation
+    console.log('🔁 Re-initializing page scripts');
   }
 }
 
-// Initialize PWA when DOM is loaded
+// instantiate on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   window.pwaInitializer = new PWAInitializer();
 });
 
-// Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = PWAInitializer;
 }
