@@ -72,35 +72,98 @@
       min-height:100vh;
     }
 
-    /* PWA Install Banner */
+    /* PWA Install Banner - Modern popup style */
     .pwa-banner{
       position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      background: #1e293b;
-      color: white;
-      padding:1rem;
-      display:none;
-      align-items:center;
-      justify-content:space-between;
+      bottom:20px;
+      left:20px;
+      right:20px;
+      max-width:500px;
+      margin:0 auto;
+      background:var(--card);
+      color:var(--text);
+      padding:1.25rem;
+      border-radius:16px;
+      box-shadow:0 10px 40px rgba(0,0,0,0.2);
       z-index:10000;
-      box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+      display:none;
+      flex-direction:column;
+      gap:1rem;
+      border:2px solid var(--primary);
+      animation:slideUp 0.5s ease-out;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity:0;
+        transform:translateY(100px);
+      }
+      to {
+        opacity:1;
+        transform:translateY(0);
+      }
     }
     
     .pwa-banner.show{
       display:flex;
     }
     
-    .pwa-content{
+    .pwa-header{
       display:flex;
       align-items:center;
       gap:1rem;
     }
     
+    .pwa-icon{
+      width:60px;
+      height:60px;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--primary),var(--success));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.5rem;
+      color:white;
+      flex-shrink:0;
+    }
+    
+    .pwa-info h3{
+      margin:0 0 0.25rem;
+      font-size:1.1rem;
+    }
+    
+    .pwa-info p{
+      margin:0;
+      color:var(--muted);
+      font-size:0.9rem;
+    }
+    
     .pwa-actions{
       display:flex;
-      gap:0.5rem;
+      gap:0.75rem;
+      justify-content:flex-end;
+    }
+    
+    .close-banner{
+      position:absolute;
+      top:10px;
+      right:10px;
+      background:none;
+      border:none;
+      color:var(--muted);
+      cursor:pointer;
+      font-size:1.25rem;
+      width:30px;
+      height:30px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    
+    .close-banner:hover{
+      background:var(--primary-light);
+      color:var(--primary);
     }
 
     /* Offline Indicator */
@@ -112,10 +175,22 @@
       background:var(--warning);
       color:white;
       text-align:center;
-      padding:0.5rem;
+      padding:0.75rem;
       font-weight:600;
       z-index:10001;
       display:none;
+      animation:slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity:0;
+        transform:translateY(-100%);
+      }
+      to {
+        opacity:1;
+        transform:translateY(0);
+      }
     }
     
     .offline-indicator.show{
@@ -129,7 +204,7 @@
       z-index:1000;
       background: rgba(255,255,255,0.98);
       backdrop-filter:blur(20px);
-      padding:1rem 2rem;
+      padding:0.75rem 2rem;
       box-shadow:var(--shadow);
       display:flex;
       justify-content:space-between;
@@ -187,7 +262,7 @@
     /* Navigation */
     .site-nav{
       display:flex;
-      gap:1rem;
+      gap:0.5rem;
       align-items:center;
     }
     
@@ -195,10 +270,14 @@
       text-decoration:none;
       color:var(--muted);
       font-weight:600;
-      padding:0.75rem 1.5rem;
+      padding:0.75rem 1.25rem;
       border-radius:var(--radius);
       transition:all 0.3s ease;
       position:relative;
+      display:flex;
+      align-items:center;
+      gap:0.5rem;
+      font-size:0.9rem;
     }
     
     .nav-link:hover{
@@ -222,10 +301,45 @@
       background:var(--primary);
       border-radius:50%;
     }
+    
+    .nav-link.install-link{
+      background:linear-gradient(135deg,var(--primary),var(--success));
+      color:white;
+      box-shadow:var(--shadow);
+    }
+    
+    .nav-link.install-link:hover{
+      transform:translateY(-2px);
+      box-shadow:var(--shadow-lg);
+    }
+
+    /* Install button in controls */
+    .install-btn{
+      background:linear-gradient(135deg,var(--primary),var(--success));
+      color:white;
+      border:none;
+      padding:0.5rem 1rem;
+      border-radius:8px;
+      font-weight:600;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:0.5rem;
+      box-shadow:var(--shadow);
+    }
+    
+    .install-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:var(--shadow-lg);
+    }
+    
+    .install-btn.hidden{
+      display:none;
+    }
 
     /* Main Content */
     .main-content{
-      margin-top:100px;
+      margin-top:80px;
       padding:2rem;
       max-width:var(--max-width);
       margin-left:auto;
@@ -294,6 +408,21 @@
       font-size:0.875rem;
       color:var(--muted);
       font-weight:500;
+    }
+
+    /* Install CTA in Hero */
+    .install-cta{
+      margin-top:2rem;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:1rem;
+      flex-wrap:wrap;
+    }
+    
+    .install-cta-text{
+      color:var(--muted);
+      font-size:0.9rem;
     }
 
     /* Modules Grid */
@@ -434,7 +563,7 @@
       background:rgba(255,255,255,0.1);
     }
 
-    /* Footer */
+    /* Footer with Install Link */
     .site-footer{
       background:rgba(255,255,255,0.95);
       backdrop-filter:blur(20px);
@@ -444,10 +573,39 @@
       border-top:1px solid rgba(255,255,255,0.3);
     }
     
+    .footer-content{
+      max-width:var(--max-width);
+      margin:0 auto;
+      display:flex;
+      flex-direction:column;
+      gap:1rem;
+    }
+    
+    .footer-install{
+      margin-bottom:1rem;
+    }
+    
     .copyright{
       color:var(--muted);
       font-size:0.875rem;
       font-weight:500;
+    }
+    
+    .footer-links{
+      display:flex;
+      justify-content:center;
+      gap:1.5rem;
+      margin-top:1rem;
+    }
+    
+    .footer-link{
+      color:var(--primary);
+      text-decoration:none;
+      font-weight:500;
+    }
+    
+    .footer-link:hover{
+      text-decoration:underline;
     }
 
     /* Responsive Design */
@@ -459,20 +617,22 @@
     
     @media (max-width:768px){
       .app-header{
-        padding:1rem;
+        padding:0.75rem 1rem;
         flex-direction:column;
         gap:1rem;
+        height:auto;
       }
       
       .site-nav{
-        gap:0.5rem;
+        gap:0.25rem;
         flex-wrap:wrap;
         justify-content:center;
+        width:100%;
       }
       
       .nav-link{
         padding:0.5rem 1rem;
-        font-size:0.875rem;
+        font-size:0.85rem;
       }
       
       .hero-title{
@@ -490,17 +650,18 @@
       
       .main-content{
         padding:1rem;
-        margin-top:140px;
+        margin-top:120px;
       }
       
       .pwa-banner{
-        flex-direction:column;
-        text-align:center;
-        gap:1rem;
+        left:10px;
+        right:10px;
+        bottom:10px;
       }
       
-      .pwa-content{
+      .footer-links{
         flex-direction:column;
+        gap:0.75rem;
       }
     }
 
@@ -535,6 +696,11 @@
     :root[data-theme='dark'] .logo-text h1{
       color:#f1f5f9;
     }
+    
+    :root[data-theme='dark'] .pwa-banner{
+      background:var(--card);
+      border-color:var(--primary);
+    }
   </style>
 </head>
 <body>
@@ -543,18 +709,19 @@
     ⚠️ You are currently offline. Some features may be limited.
   </div>
 
-  <!-- PWA Install Banner -->
+  <!-- PWA Install Banner - Modern Popup -->
   <div class="pwa-banner" id="pwaInstallBanner">
-    <div class="pwa-content">
-      <div style="font-size:1.5rem">📱</div>
-      <div>
-        <h3 style="margin-bottom:0.25rem">Install CephasGM ERP</h3>
-        <p style="opacity:0.8">Get the full app experience with offline access</p>
+    <button class="close-banner" id="closeBanner" aria-label="Close banner">×</button>
+    <div class="pwa-header">
+      <div class="pwa-icon">📱</div>
+      <div class="pwa-info">
+        <h3>Install CephasGM ERP App</h3>
+        <p>Get the full experience with offline access, fast loading, and home screen access</p>
       </div>
     </div>
     <div class="pwa-actions">
-      <button class="btn btn-outline" id="pwaInstallDismiss">Not Now</button>
-      <button class="btn btn-primary" id="pwaInstallButton">Install</button>
+      <button class="btn btn-outline" id="pwaInstallLater">Not Now</button>
+      <button class="btn btn-primary" id="pwaInstallButton">Install App</button>
     </div>
   </div>
 
@@ -575,11 +742,20 @@
         <a href="#administration" class="nav-link">Administration</a>
         <a href="#support" class="nav-link">Support</a>
         <a href="#modules" class="nav-link">All Modules</a>
+        <!-- PWA Install link in navigation -->
+        <a href="#" class="nav-link install-link" id="navInstallLink">
+          📱 Install App
+        </a>
       </nav>
 
       <div class="controls">
         <button id="themeToggle" class="btn btn-outline" aria-label="Toggle theme">
           🌓
+        </button>
+        <!-- Additional install button -->
+        <button id="headerInstallBtn" class="install-btn hidden">
+          <span>📱</span>
+          <span>Install</span>
         </button>
       </div>
     </div>
@@ -591,6 +767,15 @@
     <section class="hero" id="home">
       <h1 class="hero-title">CephasGM ERP System</h1>
       <p class="hero-subtitle">Complete Business Management Solution - Streamline your operations with our comprehensive ERP platform</p>
+      
+      <!-- Install CTA in Hero -->
+      <div class="install-cta">
+        <span class="install-cta-text">Available as a Progressive Web App:</span>
+        <button id="heroInstallBtn" class="btn btn-primary">
+          📱 Install for Offline Use
+        </button>
+      </div>
+      
       <div class="hero-stats">
         <div class="stat">
           <span class="n">18</span>
@@ -836,31 +1021,252 @@
     </section>
   </main>
 
-  <!-- Footer -->
+  <!-- Footer with Install Link -->
   <footer class="site-footer">
-    <div class="copyright">
-      Copyright © 2025 CephasGM ERP. All rights reserved.
+    <div class="footer-content">
+      <div class="footer-install">
+        <button id="footerInstallBtn" class="btn btn-outline">
+          📱 Install App for Better Experience
+        </button>
+      </div>
+      
+      <div class="footer-links">
+        <a href="#home" class="footer-link">Dashboard</a>
+        <a href="#operations" class="footer-link">Operations</a>
+        <a href="#administration" class="footer-link">Administration</a>
+        <a href="#support" class="footer-link">Support</a>
+        <a href="#" id="footerInstallLink" class="footer-link">Install PWA</a>
+      </div>
+      
+      <div class="copyright">
+        Copyright © 2025 CephasGM ERP. All rights reserved.
+      </div>
     </div>
   </footer>
 
   <script>
-    // Smooth scrolling for navigation
-    document.querySelectorAll('.nav-link, .brand').forEach(link => {
-      link.addEventListener('click', function(e) {
-        if (this.getAttribute('href').startsWith('#')) {
+    // PWA Installation Manager
+    class PWAInstallManager {
+      constructor() {
+        this.deferredPrompt = null;
+        this.isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        this.isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                           window.navigator.standalone || 
+                           document.referrer.includes('android-app://');
+        
+        // Elements
+        this.banner = document.getElementById('pwaInstallBanner');
+        this.installButton = document.getElementById('pwaInstallButton');
+        this.installLaterBtn = document.getElementById('pwaInstallLater');
+        this.closeBannerBtn = document.getElementById('closeBanner');
+        this.navInstallLink = document.getElementById('navInstallLink');
+        this.headerInstallBtn = document.getElementById('headerInstallBtn');
+        this.heroInstallBtn = document.getElementById('heroInstallBtn');
+        this.footerInstallBtn = document.getElementById('footerInstallBtn');
+        this.footerInstallLink = document.getElementById('footerInstallLink');
+        
+        this.init();
+      }
+      
+      init() {
+        // Listen for beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
           e.preventDefault();
-          const targetId = this.getAttribute('href');
+          this.deferredPrompt = e;
+          this.showInstallOptions();
+        });
+        
+        // If already installed or iOS, handle differently
+        if (this.isStandalone) {
+          this.hideAllInstallOptions();
+          console.log('App is already installed');
+          return;
+        }
+        
+        if (this.isIOS) {
+          this.showIOSInstructions();
+        }
+        
+        // Set up event listeners
+        this.setupEventListeners();
+        
+        // Show banner after delay if install is available
+        if (this.deferredPrompt || this.isIOS) {
+          setTimeout(() => {
+            this.showBanner();
+          }, 3000);
+        }
+      }
+      
+      setupEventListeners() {
+        // Install button in banner
+        this.installButton.addEventListener('click', () => this.installApp());
+        
+        // Later button
+        this.installLaterBtn.addEventListener('click', () => this.hideBanner());
+        this.closeBannerBtn.addEventListener('click', () => this.hideBanner());
+        
+        // Nav install link
+        this.navInstallLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (this.deferredPrompt) {
+            this.installApp();
+          } else {
+            this.showBanner();
+          }
+        });
+        
+        // Header install button
+        this.headerInstallBtn.addEventListener('click', () => {
+          if (this.deferredPrompt) {
+            this.installApp();
+          } else {
+            this.showBanner();
+          }
+        });
+        
+        // Hero install button
+        this.heroInstallBtn.addEventListener('click', () => {
+          if (this.deferredPrompt) {
+            this.installApp();
+          } else {
+            this.showBanner();
+          }
+        });
+        
+        // Footer install button
+        this.footerInstallBtn.addEventListener('click', () => {
+          if (this.deferredPrompt) {
+            this.installApp();
+          } else {
+            this.showBanner();
+          }
+        });
+        
+        // Footer install link
+        this.footerInstallLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (this.deferredPrompt) {
+            this.installApp();
+          } else {
+            this.showBanner();
+          }
+        });
+      }
+      
+      showInstallOptions() {
+        // Show header install button
+        this.headerInstallBtn.classList.remove('hidden');
+        
+        // Show install link in nav
+        this.navInstallLink.style.display = 'flex';
+      }
+      
+      hideAllInstallOptions() {
+        this.headerInstallBtn.classList.add('hidden');
+        this.navInstallLink.style.display = 'none';
+        this.heroInstallBtn.style.display = 'none';
+        this.footerInstallBtn.style.display = 'none';
+        this.footerInstallLink.style.display = 'none';
+      }
+      
+      showBanner() {
+        if (this.banner) {
+          this.banner.classList.add('show');
+          // Auto-hide after 30 seconds
+          setTimeout(() => {
+            this.hideBanner();
+          }, 30000);
+        }
+      }
+      
+      hideBanner() {
+        if (this.banner) {
+          this.banner.classList.remove('show');
+          // Store in localStorage that user dismissed
+          localStorage.setItem('pwaBannerDismissed', 'true');
+        }
+      }
+      
+      async installApp() {
+        if (this.deferredPrompt) {
+          this.deferredPrompt.prompt();
+          const { outcome } = await this.deferredPrompt.userChoice;
+          
+          if (outcome === 'accepted') {
+            console.log('User accepted the install prompt');
+            this.hideAllInstallOptions();
+            this.hideBanner();
+          } else {
+            console.log('User dismissed the install prompt');
+          }
+          
+          this.deferredPrompt = null;
+        } else if (this.isIOS) {
+          this.showIOSInstructions();
+        }
+      }
+      
+      showIOSInstructions() {
+        const instructions = `
+          <div style="background: white; padding: 20px; border-radius: 10px; max-width: 400px; margin: 20px auto;">
+            <h3>Install on iOS</h3>
+            <p>To install this app on your iOS device:</p>
+            <ol>
+              <li>Tap the Share button <span style="font-size: 1.2em;">⎋</span></li>
+              <li>Scroll down and tap "Add to Home Screen"</li>
+              <li>Tap "Add" in the top right corner</li>
+            </ol>
+            <button onclick="this.parentElement.style.display='none'">Close</button>
+          </div>
+        `;
+        
+        // Create modal for iOS instructions
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0,0,0,0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 20000;
+        `;
+        modal.innerHTML = instructions;
+        document.body.appendChild(modal);
+        
+        // Close on background click
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            document.body.removeChild(modal);
+          }
+        });
+      }
+    }
+    
+    // Initialize PWA Install Manager
+    let pwaManager;
+    
+    // Smooth scrolling for navigation
+    document.querySelectorAll('.nav-link, .brand, .footer-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href && href.startsWith('#')) {
+          e.preventDefault();
+          const targetId = href;
           const targetSection = document.querySelector(targetId);
           
           if (targetSection) {
             // Update active nav link
-            document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
-            if (this.classList.contains('nav-link')) {
-              this.classList.add('active');
-            } else {
-              // If brand/logo clicked, activate home link
-              document.querySelector('.nav-link[href="#home"]').classList.add('active');
-            }
+            document.querySelectorAll('.nav-link').forEach(nav => {
+              nav.classList.remove('active');
+              if (nav.getAttribute('href') === href) {
+                nav.classList.add('active');
+              }
+            });
             
             // Smooth scroll to section
             targetSection.scrollIntoView({
@@ -872,11 +1278,11 @@
         // If href is a file link (like finance.html), it will navigate normally
       });
     });
-
+    
     // Update active nav link on scroll
     window.addEventListener('scroll', () => {
       const sections = document.querySelectorAll('.hero, .modules');
-      const navLinks = document.querySelectorAll('.nav-link');
+      const navLinks = document.querySelectorAll('.nav-link:not(.install-link)');
       let currentSection = '';
       
       sections.forEach(section => {
@@ -893,54 +1299,27 @@
         }
       });
     });
-
+    
     // Add loading animation to module cards
     document.addEventListener('DOMContentLoaded', () => {
       const cards = document.querySelectorAll('.module');
       cards.forEach((card, index) => {
         card.style.animationDelay = `${index * 0.1}s`;
       });
+      
+      // Initialize PWA Manager
+      pwaManager = new PWAInstallManager();
     });
-
-    // PWA Installation
-    let deferredPrompt;
-    const pwaInstallBanner = document.getElementById('pwaInstallBanner');
-    const pwaInstallButton = document.getElementById('pwaInstallButton');
-    const pwaInstallDismiss = document.getElementById('pwaInstallDismiss');
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      // Show the banner after a short delay
-      setTimeout(() => {
-        pwaInstallBanner.classList.add('show');
-      }, 2000);
-    });
-
-    pwaInstallButton.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          pwaInstallBanner.classList.remove('show');
-        }
-        deferredPrompt = null;
-      }
-    });
-
-    pwaInstallDismiss.addEventListener('click', () => {
-      pwaInstallBanner.classList.remove('show');
-    });
-
+    
     // Offline detection
     window.addEventListener('online', () => {
       document.getElementById('offlineIndicator').classList.remove('show');
     });
-
+    
     window.addEventListener('offline', () => {
       document.getElementById('offlineIndicator').classList.add('show');
     });
-
+    
     // Theme toggle
     (function() {
       const root = document.documentElement;
@@ -968,18 +1347,18 @@
       const currentTheme = root.getAttribute('data-theme') || 'light';
       toggleBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌓';
     })();
-
+    
     // Service Worker Registration
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').then(registration => {
-          console.log('ServiceWorker registration successful');
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
         }).catch(err => {
           console.log('ServiceWorker registration failed: ', err);
         });
       });
     }
-
+    
     console.log('🚀 CephasGM ERP System Loaded Successfully');
   </script>
 </body>
