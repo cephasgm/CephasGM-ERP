@@ -1,1188 +1,1686 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#2563eb">
-    <meta name="description" content="Finance Management - CephasGM ERP">
-    <title>Finance Management - CephasGM ERP</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="icon-192.png">
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #64748b;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --background: #f8fafc;
-            --surface: #ffffff;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-            --shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            padding: 2rem 1rem;
-            position: fixed;
-            width: 280px;
-            height: 100vh;
-            overflow-y: auto;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-            padding: 0 1rem;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.25rem;
-        }
-
-        .nav-section {
-            margin-bottom: 2rem;
-        }
-
-        .nav-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--text-light);
-            margin-bottom: 1rem;
-            padding: 0 1rem;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            color: var(--text-light);
-            text-decoration: none;
-            transition: all 0.2s;
-            margin-bottom: 0.25rem;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-            font-size: 0.95rem;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .nav-icon {
-            font-size: 1.25rem;
-            width: 24px;
-            text-align: center;
-        }
-
-        .main-content {
-            grid-column: 2;
-            padding: 2rem;
-            margin-left: 280px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .header h1 {
-            font-size: 1.875rem;
-            font-weight: 700;
-        }
-
-        /* Enhanced Toolbar */
-        .toolbar {
-            margin-bottom: 2rem;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            padding: 1.5rem;
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-success:hover {
-            background: #059669;
-            transform: translateY(-1px);
-        }
-
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-warning:hover {
-            background: #d97706;
-            transform: translateY(-1px);
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--primary);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-        .stat-trend {
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            font-weight: 600;
-        }
-
-        .trend-up {
-            color: var(--success);
-        }
-
-        .trend-down {
-            color: var(--error);
-        }
-
-        /* Financial Overview */
-        .financial-overview {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .overview-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .chart-container {
-            height: 300px;
-            background: var(--background);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-light);
-            position: relative;
-        }
-
-        /* Quick Actions */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-        }
-
-        .action-btn {
-            background: var(--background);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.5rem 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .action-btn:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .action-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Transactions Section */
-        .transactions-section {
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
-
-        .table-container {
-            overflow-x: auto;
-            margin-top: 1rem;
-        }
-
-        .transactions-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .transactions-table th,
-        .transactions-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .transactions-table th {
-            font-weight: 600;
-            color: var(--text-light);
-            font-size: 0.875rem;
-            background: var(--primary);
-            color: white;
-        }
-
-        .amount-positive {
-            color: var(--success);
-            font-weight: 600;
-        }
-
-        .amount-negative {
-            color: var(--error);
-            font-weight: 600;
-        }
-
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .status-completed {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-failed {
-            background: #fecaca;
-            color: #991b1b;
-        }
-
-        /* Budget Progress */
-        .budget-section {
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
-
-        .budget-item {
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background: var(--background);
-            border-radius: 8px;
-        }
-
-        .budget-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .budget-name {
-            font-weight: 600;
-        }
-
-        .budget-amount {
-            color: var(--text-light);
-            font-size: 0.875rem;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-
-        .progress-danger {
-            background: var(--error);
-        }
-
-        .progress-warning {
-            background: var(--warning);
-        }
-
-        /* Module Grid */
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .module-card {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            box-shadow: var(--shadow);
-        }
-
-        .module-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-color: var(--primary);
-        }
-
-        .module-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #059669, #10b981);
-            color: white;
-        }
-
-        .module-card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .module-card p {
-            color: var(--text-light);
-            font-size: 0.95rem;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            color: var(--text-light);
-            border-top: 1px solid var(--border);
-        }
-
-        /* Currency Selector */
-        .currency-selector {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-left: auto;
-        }
-
-        .currency-select {
-            padding: 0.5rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: var(--surface);
-            color: var(--text);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .main-content {
-                margin-left: 0;
-                grid-column: 1;
-            }
-            .financial-overview {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 1rem;
-            }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            .toolbar {
-                flex-direction: column;
-            }
-            .module-grid {
-                grid-template-columns: 1fr;
-            }
-            .currency-selector {
-                margin-left: 0;
-                margin-top: 1rem;
-            }
-        }
-
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --background: #0f172a;
-                --surface: #1e293b;
-                --text: #f1f5f9;
-                --text-light: #94a3b8;
-                --border: #334155;
-            }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CephasGM ERP">
+  
+  <title>Finance Management - CephasGM ERP</title>
+
+  <!-- SEO & Social -->
+  <meta name="description" content="CephasGM ERP Finance Module - Complete financial management, accounting, and reporting system" />
+  <meta name="keywords" content="ERP, Finance, Accounting, Budgeting, Invoicing, Financial Management, CephasGM" />
+  <meta name="author" content="CephasGM" />
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Finance Management - CephasGM ERP" />
+  <meta property="og:description" content="Complete financial management system for CephasGM ERP" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cephasgm.github.io/CephasGM-ERP/finance.html" />
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Icons -->
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Finance Module Styles -->
+  <style>
+    :root{
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-600: #1d4ed8;
+      --primary-light: #dbeafe;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --radius: 12px;
+      --gap: 1rem;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --max-width: 1400px;
+      --nav-height: 72px;
+      --sidebar-width: 280px;
+    }
+
+    /* Dark mode */
+    :root[data-theme='dark']{
+      --bg: linear-gradient(135deg,#0f172a,#071129);
+      --card: #0b1220;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --shadow: 0 10px 30px rgba(2,6,23,0.6);
+    }
+    
+    /* Base reset */
+    *{box-sizing:border-box; margin:0; padding:0}
+    html,body{height:100%}
+    body{
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      line-height:1.6;
+      min-height:100vh;
+    }
+
+    /* ===== LAYOUT ===== */
+    .finance-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+      min-height: 100vh;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .finance-sidebar {
+      background: var(--card);
+      border-right: 1px solid var(--primary-light);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+    .sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--primary-light);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .sidebar-brand-logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--success));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+
+    .sidebar-time {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0;
+    }
+
+    .nav-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .nav-section-title {
+      padding: 0 1.5rem 0.5rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .nav-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--primary);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .nav-link-icon {
+      width: 1.25rem;
+      text-align: center;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .finance-main {
+      padding: 2rem;
+      overflow-x: hidden;
+    }
+
+    .finance-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--primary-light);
+    }
+
+    .finance-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .finance-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    /* ===== CURRENCY SELECTOR ===== */
+    .currency-selector {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .currency-select {
+      padding: 0.5rem;
+      border: 1px solid var(--primary-light);
+      border-radius: var(--radius);
+      background: var(--card);
+      color: var(--text);
+    }
+
+    /* ===== TOOLBAR ===== */
+    .toolbar {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-600);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-success:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-warning {
+      background: var(--warning);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-warning:hover {
+      background: #d97706;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* ===== STATS GRID ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-left: 4px solid var(--primary);
+      cursor: pointer;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .stat-title {
+      font-size: 0.875rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-icon {
+      font-size: 1.5rem;
+      opacity: 0.7;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-change {
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .trend-up { color: var(--success); }
+    .trend-down { color: var(--danger); }
+
+    /* ===== FINANCIAL OVERVIEW ===== */
+    .financial-overview {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      .financial-overview {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    /* ===== CHART ===== */
+    .chart-container {
+      height: 300px;
+      background: var(--primary-light);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ===== QUICK ACTIONS ===== */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .action-btn {
+      background: var(--primary-light);
+      border: 1px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 1.5rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .action-btn:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .action-icon {
+      font-size: 2rem;
+    }
+
+    /* ===== BUDGET SECTION ===== */
+    .budget-section,
+    .transactions-section {
+      margin-bottom: 2rem;
+    }
+
+    .budget-item {
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: var(--primary-light);
+      border-radius: var(--radius);
+    }
+
+    .budget-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .budget-name {
+      font-weight: 600;
+    }
+
+    .budget-amount {
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--bg);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 0.5rem 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-danger { background: var(--danger); }
+    .progress-warning { background: var(--warning); }
+
+    /* ===== TABLES ===== */
+    .table-container {
+      overflow-x: auto;
+      margin-top: 1rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .finance-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+    }
+
+    .finance-table th {
+      background: var(--primary);
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .finance-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--primary-light);
+    }
+
+    .finance-table tr:hover {
+      background: var(--primary-light);
+    }
+
+    /* Status badges */
+    .status-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-completed {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-failed {
+      background: #fecaca;
+      color: #991b1b;
+    }
+
+    /* Amount styling */
+    .amount-positive {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .amount-negative {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    /* ===== MODULE GRID ===== */
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .module-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+      border: 1px solid transparent;
+    }
+
+    .module-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+    }
+
+    .module-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--success));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    .module-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .module-description {
+      color: var(--muted);
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    /* ===== FOOTER ===== */
+    .finance-footer {
+      text-align: center;
+      padding: 2rem;
+      margin-top: 2rem;
+      color: var(--muted);
+      font-size: 0.875rem;
+      border-top: 1px solid var(--primary-light);
+    }
+
+    /* ===== MODAL ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+      background: var(--card);
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--primary-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--muted);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+    }
+
+    .modal-close:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-footer {
+      padding: 1.5rem;
+      border-top: 1px solid var(--primary-light);
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+
+    /* ===== FORMS ===== */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--primary-light);
+      border-radius: var(--radius);
+      background: var(--card);
+      color: var(--text);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .finance-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .finance-sidebar {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        width: var(--sidebar-width);
+        transition: left 0.3s ease;
+        z-index: 1000;
+      }
+
+      .finance-sidebar.active {
+        left: 0;
+      }
+
+      .mobile-menu-toggle {
+        display: flex;
+      }
+
+      .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        backdrop-filter: blur(4px);
+      }
+
+      .sidebar-overlay.active {
+        display: block;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .finance-main {
+        padding: 1rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .financial-overview {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        flex-direction: column;
+      }
+
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .module-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      width: 48px;
+      height: 48px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: var(--shadow);
+    }
+
+    /* Accessibility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Focus styles */
+    :focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+  </style>
 </head>
 <body>
-    <div class="dashboard">
-        <nav class="sidebar">
-            <div class="logo">
-                <div class="logo-icon">CG</div>
-                <div>
-                    <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
-                    <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
-                </div>
-            </div>
+  <!-- Skip link -->
+  <a href="#main-content" class="sr-only">Skip to main content</a>
 
-            <div class="nav-section">
-                <div class="nav-title">Finance</div>
-                <a href="finance.html" class="nav-item active">
-                    <span class="nav-icon">💰</span>
-                    Financial Overview
-                </a>
-                <a href="payroll.html" class="nav-item">
-                    <span class="nav-icon">💳</span>
-                    Payroll
-                </a>
-                <a href="accounting.html" class="nav-item">
-                    <span class="nav-icon">📊</span>
-                    Accounting
-                </a>
-            </div>
+  <!-- Mobile Menu Toggle -->
+  <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu" aria-expanded="false">
+    <i class="fas fa-bars"></i>
+  </button>
 
-            <div class="nav-section">
-                <div class="nav-title">Financial Modules</div>
-                <a href="invoicing.html" class="nav-item">
-                    <span class="nav-icon">🧾</span>
-                    Invoicing
-                </a>
-                <a href="expenses.html" class="nav-item">
-                    <span class="nav-icon">📤</span>
-                    Expenses
-                </a>
-                <a href="budgeting.html" class="nav-item">
-                    <span class="nav-icon">📈</span>
-                    Budgeting
-                </a>
-            </div>
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-            <div class="nav-section">
-                <div class="nav-title">Operations</div>
-                <a href="index.html" class="nav-item">
-                    <span class="nav-icon">📊</span>
-                    Dashboard
-                </a>
-                <a href="sales.html" class="nav-item">
-                    <span class="nav-icon">📈</span>
-                    Sales
-                </a>
-                <a href="projects.html" class="nav-item">
-                    <span class="nav-icon">📁</span>
-                    Projects
-                </a>
-            </div>
+  <!-- Finance Layout -->
+  <div class="finance-layout">
+    <!-- Sidebar -->
+    <aside class="finance-sidebar" id="financeSidebar" aria-label="Finance navigation">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-brand">
+          <div class="sidebar-brand-logo" aria-hidden="true">CG</div>
+          <span>CephasGM ERP</span>
+        </a>
+        <div class="sidebar-time" id="current-time">Loading...</div>
+      </div>
 
-            <div class="nav-section">
-                <div class="nav-title">Integration</div>
-                <a href="hr.html" class="nav-item">
-                    <span class="nav-icon">👥</span>
-                    HR Management
-                </a>
-                <a href="attendance.html" class="nav-item">
-                    <span class="nav-icon">⏱️</span>
-                    Attendance
-                </a>
-                <a href="inventory.html" class="nav-item">
-                    <span class="nav-icon">📦</span>
-                    Inventory
-                </a>
-            </div>
-        </nav>
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        <div class="nav-section">
+          <div class="nav-section-title">Finance Core</div>
+          <a href="finance.html" class="nav-link active">
+            <span class="nav-link-icon"><i class="fas fa-chart-line"></i></span>
+            <span>Financial Overview</span>
+          </a>
+          <a href="payroll.html" class="nav-link">
+            <span class="nav-link-icon"><i class="fas fa-money-check-alt"></i></span>
+            <span>Payroll</span>
+          </a>
+          <a href="#" class="nav-link" onclick="openModule('accounting')">
+            <span class="nav-link-icon"><i class="fas fa-calculator"></i></span>
+            <span>Accounting</span>
+          </a>
+        </div>
 
-        <main class="main-content">
-            <div class="header">
-                <div>
-                    <h1>Financial Management</h1>
-                    <div style="color: var(--text-light);">Comprehensive financial overview, accounting, and financial analytics with multi-currency support</div>
-                </div>
-                <div class="currency-selector">
-                    <span>Currency:</span>
-                    <select class="currency-select" id="currencySelector" onchange="changeCurrency(this.value)">
-                        <option value="TZS">TZS</option>
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="GBP">GBP</option>
-                        <option value="ZAR">ZAR</option>
-                    </select>
-                </div>
-            </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Financial Modules</div>
+          <a href="#" class="nav-link" onclick="openModule('invoicing')">
+            <span class="nav-link-icon"><i class="fas fa-file-invoice-dollar"></i></span>
+            <span>Invoicing</span>
+          </a>
+          <a href="#" class="nav-link" onclick="openModule('expenses')">
+            <span class="nav-link-icon"><i class="fas fa-receipt"></i></span>
+            <span>Expenses</span>
+          </a>
+          <a href="#" class="nav-link" onclick="openModule('budgeting')">
+            <span class="nav-link-icon"><i class="fas fa-chart-pie"></i></span>
+            <span>Budgeting</span>
+          </a>
+        </div>
 
-            <!-- Enhanced Toolbar -->
-            <div class="toolbar">
-                <button class="btn-primary" onclick="createInvoice()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">🧾</span>
-                    Create Invoice
-                </button>
-                <button class="btn-primary" onclick="recordExpense()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">📤</span>
-                    Record Expense
-                </button>
-                <button class="btn-success" onclick="generateFinancialReports()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">📊</span>
-                    Generate Reports
-                </button>
-                <button class="btn-warning" onclick="syncPayrollData()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">💳</span>
-                    Sync Payroll
-                </button>
-                <button class="btn-primary" onclick="runBudgetAnalysis()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">📈</span>
-                    Budget Analysis
-                </button>
-            </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Operations</div>
+          <a href="index.html" class="nav-link">
+            <span class="nav-link-icon"><i class="fas fa-home"></i></span>
+            <span>Main Dashboard</span>
+          </a>
+          <a href="sales.html" class="nav-link">
+            <span class="nav-link-icon"><i class="fas fa-chart-bar"></i></span>
+            <span>Sales</span>
+          </a>
+          <a href="projects.html" class="nav-link">
+            <span class="nav-link-icon"><i class="fas fa-project-diagram"></i></span>
+            <span>Projects</span>
+          </a>
+          <a href="admin.html" class="nav-link">
+            <span class="nav-link-icon"><i class="fas fa-cog"></i></span>
+            <span>Admin</span>
+          </a>
+        </div>
 
-            <!-- Financial Statistics -->
-            <div class="stats-grid">
-                <div class="stat-card" onclick="viewRevenueDetails()">
-                    <div class="stat-number" id="totalRevenue">₦24.8M</div>
-                    <div class="stat-label">Total Revenue</div>
-                    <div class="stat-trend trend-up" id="revenueTrend">↑ 12.4% from last month</div>
-                </div>
-                <div class="stat-card" onclick="viewExpenseDetails()">
-                    <div class="stat-number" id="totalExpenses">₦8.7M</div>
-                    <div class="stat-label">Total Expenses</div>
-                    <div class="stat-trend trend-down" id="expenseTrend">↓ 3.2% from last month</div>
-                </div>
-                <div class="stat-card" onclick="viewProfitDetails()">
-                    <div class="stat-number" id="netProfit">₦16.1M</div>
-                    <div class="stat-label">Net Profit</div>
-                    <div class="stat-trend trend-up" id="profitTrend">↑ 18.7% from last month</div>
-                </div>
-                <div class="stat-card" onclick="viewBudgetDetails()">
-                    <div class="stat-number" id="budgetUtilization">94%</div>
-                    <div class="stat-label">Budget Utilization</div>
-                    <div class="stat-trend trend-up" id="budgetTrend">↑ 2.1% from target</div>
-                </div>
-            </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Quick Actions</div>
+          <a href="#" class="nav-link" onclick="createInvoice()">
+            <span class="nav-link-icon"><i class="fas fa-plus-circle"></i></span>
+            <span>Create Invoice</span>
+          </a>
+          <a href="#" class="nav-link" onclick="recordExpense()">
+            <span class="nav-link-icon"><i class="fas fa-money-bill-wave"></i></span>
+            <span>Record Expense</span>
+          </a>
+          <a href="#" class="nav-link" onclick="generateReport()">
+            <span class="nav-link-icon"><i class="fas fa-file-pdf"></i></span>
+            <span>Generate Report</span>
+          </a>
+        </div>
+      </nav>
 
-            <!-- Financial Overview -->
-            <div class="financial-overview">
-                <div class="overview-card">
-                    <div class="card-header">
-                        <div class="card-title">Financial Performance</div>
-                        <select id="timeRange" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--background);">
-                            <option>Last 30 Days</option>
-                            <option>Last Quarter</option>
-                            <option>Last Year</option>
-                        </select>
-                    </div>
-                    <div class="chart-container" id="financialChart">
-                        <div style="text-align: center;">
-                            <div style="font-size: 1.5rem; margin-bottom: 1rem;">📊</div>
-                            Revenue vs Expenses Chart
-                            <br><small style="opacity: 0.7;">Visual representation of financial performance</small>
-                        </div>
-                    </div>
-                </div>
+      <div style="padding: 1.5rem; margin-top: auto; border-top: 1px solid var(--primary-light);">
+        <div class="currency-selector">
+          <label for="currencySelect" style="font-size: 0.875rem; color: var(--muted);">Currency:</label>
+          <select id="currencySelect" class="currency-select" onchange="changeCurrency(this.value)">
+            <option value="TZS">TZS</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+          </select>
+        </div>
+      </div>
+    </aside>
 
-                <div class="overview-card">
-                    <div class="card-header">
-                        <div class="card-title">Quick Actions</div>
-                    </div>
-                    <div class="quick-actions">
-                        <div class="action-btn" onclick="createInvoice()">
-                            <div class="action-icon">🧾</div>
-                            <div>New Invoice</div>
-                        </div>
-                        <div class="action-btn" onclick="recordExpense()">
-                            <div class="action-icon">📤</div>
-                            <div>Record Expense</div>
-                        </div>
-                        <div class="action-btn" onclick="generateFinancialReports()">
-                            <div class="action-icon">📊</div>
-                            <div>Generate Report</div>
-                        </div>
-                        <div class="action-btn" onclick="processPayment()">
-                            <div class="action-icon">💸</div>
-                            <div>Process Payment</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Main Content -->
+    <main class="finance-main" id="main-content" tabindex="-1">
+      <!-- Header -->
+      <header class="finance-header">
+        <div>
+          <h1 class="finance-title">
+            <i class="fas fa-chart-line"></i>
+            Financial Management
+          </h1>
+          <p class="text-muted">Comprehensive financial overview, accounting, and financial analytics with multi-currency support</p>
+        </div>
 
-            <!-- Budget Progress -->
-            <div class="budget-section">
-                <div class="card-header">
-                    <div class="card-title">Budget Progress</div>
-                    <button class="btn-primary" onclick="manageBudgets()">
-                        Manage Budgets
-                    </button>
-                </div>
-                <div id="budgetList">
-                    <!-- Dynamic budget items will be loaded here -->
-                </div>
-            </div>
+        <div class="finance-actions">
+          <button class="btn btn-primary" onclick="createInvoice()">
+            <i class="fas fa-plus"></i> New Invoice
+          </button>
+          <button class="btn btn-success" onclick="generateReport()">
+            <i class="fas fa-file-export"></i> Export Report
+          </button>
+        </div>
+      </header>
 
-            <!-- Recent Transactions -->
-            <div class="transactions-section">
-                <div class="card-header">
-                    <div class="card-title">Recent Transactions</div>
-                    <button class="btn-primary" onclick="viewAllTransactions()">
-                        View All Transactions
-                    </button>
-                </div>
-                <div class="table-container">
-                    <table class="transactions-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Description</th>
-                                <th>Category</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transactionsList">
-                            <!-- Dynamic content will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <button class="btn btn-primary" onclick="createInvoice()">
+          <i class="fas fa-file-invoice-dollar"></i> Create Invoice
+        </button>
+        <button class="btn btn-primary" onclick="recordExpense()">
+          <i class="fas fa-receipt"></i> Record Expense
+        </button>
+        <button class="btn btn-success" onclick="generateReport()">
+          <i class="fas fa-chart-bar"></i> Financial Reports
+        </button>
+        <button class="btn btn-warning" onclick="syncPayroll()">
+          <i class="fas fa-sync-alt"></i> Sync Payroll
+        </button>
+        <button class="btn btn-primary" onclick="runAnalysis()">
+          <i class="fas fa-chart-pie"></i> Budget Analysis
+        </button>
+      </div>
 
-            <!-- Financial Management Modules -->
-            <div class="module-grid">
-                <a href="accounting.html" class="module-card">
-                    <div class="module-icon">📊</div>
-                    <h3>Accounting</h3>
-                    <p>General ledger, chart of accounts, journal entries, and financial statements with audit trails</p>
-                </a>
-                <a href="budgeting.html" class="module-card">
-                    <div class="module-icon">📈</div>
-                    <h3>Budgeting & Forecasting</h3>
-                    <p>Create budgets, financial forecasts, and variance analysis with scenario planning and KPI tracking</p>
-                </a>
-                <a href="invoicing.html" class="module-card">
-                    <div class="module-icon">🧾</div>
-                    <h3>Invoicing & Billing</h3>
-                    <p>Create and manage invoices, track payments, and automate billing processes with client portals</p>
-                </a>
-                <a href="expense-tracking.html" class="module-card">
-                    <div class="module-icon">📤</div>
-                    <h3>Expense Tracking</h3>
-                    <p>Track and categorize expenses, manage receipts, and monitor spending against budgets</p>
-                </a>
-                <a href="tax-management.html" class="module-card">
-                    <div class="module-icon">🏛️</div>
-                    <h3>Tax Management</h3>
-                    <p>Tax calculations, compliance tracking, regulatory reporting, and automated tax filings</p>
-                </a>
-                <a href="financial-reporting.html" class="module-card">
-                    <div class="module-icon">📑</div>
-                    <h3>Financial Reporting</h3>
-                    <p>Generate balance sheets, income statements, cash flow reports, and custom financial analytics</p>
-                </a>
-                <a href="audit-trail.html" class="module-card">
-                    <div class="module-icon">🔍</div>
-                    <h3>Audit Trail</h3>
-                    <p>Complete financial transaction history, compliance tracking, and automated audit reporting</p>
-                </a>
-                <a href="multi-currency.html" class="module-card">
-                    <div class="module-icon">🌍</div>
-                    <h3>Multi-Currency</h3>
-                    <p>Manage transactions in multiple currencies with real-time exchange rates and automated conversions</p>
-                </a>
-                <a href="payroll-integration.html" class="module-card">
-                    <div class="module-icon">💳</div>
-                    <h3>Payroll Integration</h3>
-                    <p>Seamless integration with payroll system for automated salary processing and expense allocation</p>
-                </a>
-                <a href="hr-integration.html" class="module-card">
-                    <div class="module-icon">👥</div>
-                    <h3>HR Integration</h3>
-                    <p>Connect with HR system for employee expense management, benefits administration, and cost tracking</p>
-                </a>
-            </div>
+      <!-- Financial Statistics -->
+      <div class="stats-grid">
+        <div class="stat-card" onclick="viewDetails('revenue')">
+          <div class="stat-header">
+            <h3 class="stat-title">Total Revenue</h3>
+            <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+          </div>
+          <div class="stat-value" id="revenueValue">TZS 24.8M</div>
+          <div class="stat-change trend-up">
+            <i class="fas fa-arrow-up"></i> 12.4% from last month
+          </div>
+        </div>
 
-            <div class="footer">
-                Copyright © 2025 😀
-            </div>
-        </main>
+        <div class="stat-card" onclick="viewDetails('expenses')">
+          <div class="stat-header">
+            <h3 class="stat-title">Total Expenses</h3>
+            <div class="stat-icon"><i class="fas fa-receipt"></i></div>
+          </div>
+          <div class="stat-value" id="expensesValue">TZS 8.7M</div>
+          <div class="stat-change trend-down">
+            <i class="fas fa-arrow-down"></i> 3.2% from last month
+          </div>
+        </div>
+
+        <div class="stat-card" onclick="viewDetails('profit')">
+          <div class="stat-header">
+            <h3 class="stat-title">Net Profit</h3>
+            <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+          </div>
+          <div class="stat-value" id="profitValue">TZS 16.1M</div>
+          <div class="stat-change trend-up">
+            <i class="fas fa-arrow-up"></i> 18.7% from last month
+          </div>
+        </div>
+
+        <div class="stat-card" onclick="viewDetails('budget')">
+          <div class="stat-header">
+            <h3 class="stat-title">Budget Utilization</h3>
+            <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+          </div>
+          <div class="stat-value" id="budgetValue">94%</div>
+          <div class="stat-change trend-up">
+            <i class="fas fa-arrow-up"></i> 2.1% from target
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Overview -->
+      <div class="financial-overview">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Financial Performance</div>
+            <select id="timeRange" class="form-control" style="width: auto;" onchange="updateChart(this.value)">
+              <option value="30">Last 30 Days</option>
+              <option value="90">Last Quarter</option>
+              <option value="365">Last Year</option>
+            </select>
+          </div>
+          <div class="chart-container" id="performanceChart">
+            <!-- Chart will be rendered here -->
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Quick Actions</div>
+          </div>
+          <div class="quick-actions">
+            <button class="action-btn" onclick="createInvoice()">
+              <div class="action-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+              <div>New Invoice</div>
+            </button>
+            <button class="action-btn" onclick="recordExpense()">
+              <div class="action-icon"><i class="fas fa-receipt"></i></div>
+              <div>Record Expense</div>
+            </button>
+            <button class="action-btn" onclick="processPayment()">
+              <div class="action-icon"><i class="fas fa-credit-card"></i></div>
+              <div>Process Payment</div>
+            </button>
+            <button class="action-btn" onclick="generateReport()">
+              <div class="action-icon"><i class="fas fa-chart-bar"></i></div>
+              <div>Generate Report</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Budget Progress -->
+      <div class="budget-section card">
+        <div class="card-header">
+          <div class="card-title">Budget Progress</div>
+          <button class="btn btn-primary" onclick="manageBudgets()">
+            <i class="fas fa-cog"></i> Manage Budgets
+          </button>
+        </div>
+        <div id="budgetList">
+          <!-- Budget items will be loaded here -->
+        </div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="transactions-section card">
+        <div class="card-header">
+          <div class="card-title">Recent Transactions</div>
+          <button class="btn btn-primary" onclick="viewAllTransactions()">
+            <i class="fas fa-list"></i> View All
+          </button>
+        </div>
+        <div class="table-container">
+          <table class="finance-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="transactionsList">
+              <!-- Transactions will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Financial Management Modules -->
+      <div class="module-grid">
+        <a href="#" class="module-card" onclick="openModule('accounting')">
+          <div class="module-icon"><i class="fas fa-calculator"></i></div>
+          <div class="module-title">Accounting</div>
+          <div class="module-description">General ledger, chart of accounts, journal entries, and financial statements with audit trails</div>
+        </a>
+        <a href="#" class="module-card" onclick="openModule('budgeting')">
+          <div class="module-icon"><i class="fas fa-chart-pie"></i></div>
+          <div class="module-title">Budgeting & Forecasting</div>
+          <div class="module-description">Create budgets, financial forecasts, and variance analysis with scenario planning</div>
+        </a>
+        <a href="#" class="module-card" onclick="openModule('invoicing')">
+          <div class="module-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+          <div class="module-title">Invoicing & Billing</div>
+          <div class="module-description">Create and manage invoices, track payments, and automate billing processes</div>
+        </a>
+        <a href="#" class="module-card" onclick="openModule('expense-tracking')">
+          <div class="module-icon"><i class="fas fa-receipt"></i></div>
+          <div class="module-title">Expense Tracking</div>
+          <div class="module-description">Track and categorize expenses, manage receipts, and monitor spending</div>
+        </a>
+        <a href="#" class="module-card" onclick="openModule('tax-management')">
+          <div class="module-icon"><i class="fas fa-balance-scale"></i></div>
+          <div class="module-title">Tax Management</div>
+          <div class="module-description">Tax calculations, compliance tracking, regulatory reporting, and filings</div>
+        </a>
+        <a href="#" class="module-card" onclick="openModule('financial-reporting')">
+          <div class="module-icon"><i class="fas fa-chart-bar"></i></div>
+          <div class="module-title">Financial Reporting</div>
+          <div class="module-description">Generate balance sheets, income statements, cash flow reports, and analytics</div>
+        </a>
+        <a href="#" class="module-card" onclick="openModule('audit-trail')">
+          <div class="module-icon"><i class="fas fa-search"></i></div>
+          <div class="module-title">Audit Trail</div>
+          <div class="module-description">Complete financial transaction history and compliance tracking</div>
+        </a>
+        <a href="#" class="module-card" onclick="openModule('multi-currency')">
+          <div class="module-icon"><i class="fas fa-globe"></i></div>
+          <div class="module-title">Multi-Currency</div>
+          <div class="module-description">Manage transactions in multiple currencies with real-time exchange rates</div>
+        </a>
+        <a href="payroll.html" class="module-card">
+          <div class="module-icon"><i class="fas fa-money-check-alt"></i></div>
+          <div class="module-title">Payroll Integration</div>
+          <div class="module-description">Seamless integration with payroll system for automated salary processing</div>
+        </a>
+        <a href="hr.html" class="module-card">
+          <div class="module-icon"><i class="fas fa-users"></i></div>
+          <div class="module-title">HR Integration</div>
+          <div class="module-description">Connect with HR system for employee expense management and benefits</div>
+        </a>
+      </div>
+
+      <footer class="finance-footer">
+        Copyright © 2025 CephasGM ERP. All rights reserved.
+      </footer>
+    </main>
+  </div>
+
+  <!-- Create Invoice Modal -->
+  <div class="modal" id="createInvoiceModal" role="dialog" aria-modal="true" aria-labelledby="invoiceModalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="invoiceModalTitle">Create New Invoice</h3>
+        <button class="modal-close" onclick="closeModal('createInvoiceModal')">&times;</button>
+      </div>
+      <form id="invoiceForm" onsubmit="submitInvoice(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Client Name</label>
+            <input type="text" class="form-control" name="clientName" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Invoice Number</label>
+            <input type="text" class="form-control" name="invoiceNumber" value="INV-001" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Amount</label>
+            <input type="number" class="form-control" name="amount" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Due Date</label>
+            <input type="date" class="form-control" name="dueDate" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="description" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('createInvoiceModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Invoice</button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <script>
-        // Enhanced Finance Management System
-        class FinanceManager {
-            constructor() {
-                this.financialData = JSON.parse(localStorage.getItem('financialData')) || this.getSampleData();
-                this.currentCurrency = 'TZS';
-                this.exchangeRates = {
-                    'TZS': 1,
-                    'USD': 0.00043,
-                    'EUR': 0.00039,
-                    'GBP': 0.00034,
-                    'ZAR': 0.0078
-                };
-                this.initialize();
-            }
+  <!-- Record Expense Modal -->
+  <div class="modal" id="recordExpenseModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Record Expense</h3>
+        <button class="modal-close" onclick="closeModal('recordExpenseModal')">&times;</button>
+      </div>
+      <form id="expenseForm" onsubmit="submitExpense(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Expense Category</label>
+            <select class="form-control" name="category" required>
+              <option value="">Select Category</option>
+              <option value="office">Office Supplies</option>
+              <option value="travel">Travel</option>
+              <option value="utilities">Utilities</option>
+              <option value="software">Software</option>
+              <option value="equipment">Equipment</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Amount</label>
+            <input type="number" class="form-control" name="amount" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input type="date" class="form-control" name="date" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="description" rows="3" required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment Method</label>
+            <select class="form-control" name="paymentMethod" required>
+              <option value="cash">Cash</option>
+              <option value="bank">Bank Transfer</option>
+              <option value="card">Credit Card</option>
+              <option value="mobile">Mobile Money</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('recordExpenseModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Record Expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-            initialize() {
-                this.setupNavigation();
-                this.loadFinancialData();
-                this.setupEventListeners();
-                this.startRealTimeUpdates();
-            }
+  <!-- Transaction Details Modal -->
+  <div class="modal" id="transactionModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Transaction Details</h3>
+        <button class="modal-close" onclick="closeModal('transactionModal')">&times;</button>
+      </div>
+      <div class="modal-body" id="transactionDetails">
+        <!-- Details will be loaded here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('transactionModal')">Close</button>
+        <button type="button" class="btn btn-primary" onclick="editTransaction()">Edit</button>
+      </div>
+    </div>
+  </div>
 
-            setupNavigation() {
-                document.querySelectorAll('.nav-item').forEach(item => {
-                    if (item.href === window.location.href) {
-                        item.classList.add('active');
-                    }
-                });
-            }
+  <!-- JavaScript -->
+  <script>
+    // Finance Management System
+    class FinanceManager {
+      constructor() {
+        this.currency = 'TZS';
+        this.exchangeRates = {
+          'TZS': 1,
+          'USD': 0.00043,
+          'EUR': 0.00039,
+          'GBP': 0.00034
+        };
+        this.financialData = this.loadData();
+        this.initialize();
+      }
 
-            getSampleData() {
-                return {
-                    transactions: [
-                        {
-                            id: 1,
-                            date: '2024-12-10',
-                            description: 'Client Payment - Project Alpha',
-                            category: 'Revenue',
-                            amount: 4250000,
-                            status: 'completed',
-                            currency: 'TZS'
-                        },
-                        {
-                            id: 2,
-                            date: '2024-12-09',
-                            description: 'Office Supplies Purchase',
-                            category: 'Expenses',
-                            amount: -245000,
-                            status: 'completed',
-                            currency: 'TZS'
-                        },
-                        {
-                            id: 3,
-                            date: '2024-12-08',
-                            description: 'Software Subscription Renewal',
-                            category: 'Expenses',
-                            amount: -180000,
-                            status: 'pending',
-                            currency: 'TZS'
-                        },
-                        {
-                            id: 4,
-                            date: '2024-12-07',
-                            description: 'Consulting Services - Client Beta',
-                            category: 'Revenue',
-                            amount: 2800000,
-                            status: 'completed',
-                            currency: 'TZS'
-                        },
-                        {
-                            id: 5,
-                            date: '2024-12-06',
-                            description: 'Equipment Maintenance',
-                            category: 'Expenses',
-                            amount: -420000,
-                            status: 'completed',
-                            currency: 'TZS'
-                        }
-                    ],
-                    budgets: [
-                        { name: 'Marketing', allocated: 5000000, spent: 4200000, category: 'Expenses' },
-                        { name: 'Operations', allocated: 8000000, spent: 6500000, category: 'Expenses' },
-                        { name: 'Payroll', allocated: 15000000, spent: 14200000, category: 'Expenses' },
-                        { name: 'Sales Target', allocated: 25000000, achieved: 24800000, category: 'Revenue' }
-                    ]
-                };
-            }
+      loadData() {
+        const saved = localStorage.getItem('cephasgm_finance_data');
+        if (saved) return JSON.parse(saved);
+        
+        return {
+          transactions: [
+            { id: 1, date: '2024-12-10', description: 'Client Payment - Project Alpha', category: 'Revenue', amount: 4250000, status: 'completed' },
+            { id: 2, date: '2024-12-09', description: 'Office Supplies', category: 'Expenses', amount: -245000, status: 'completed' },
+            { id: 3, date: '2024-12-08', description: 'Software Subscription', category: 'Expenses', amount: -180000, status: 'pending' },
+            { id: 4, date: '2024-12-07', description: 'Consulting Services', category: 'Revenue', amount: 2800000, status: 'completed' },
+            { id: 5, date: '2024-12-06', description: 'Equipment Maintenance', category: 'Expenses', amount: -420000, status: 'completed' }
+          ],
+          budgets: [
+            { id: 1, name: 'Marketing', allocated: 5000000, spent: 4200000, category: 'Expenses' },
+            { id: 2, name: 'Operations', allocated: 8000000, spent: 6500000, category: 'Expenses' },
+            { id: 3, name: 'Payroll', allocated: 15000000, spent: 14200000, category: 'Expenses' },
+            { id: 4, name: 'Sales Target', allocated: 25000000, achieved: 24800000, category: 'Revenue' }
+          ],
+          nextInvoiceId: 1001,
+          nextTransactionId: 6
+        };
+      }
 
-            loadFinancialData() {
-                this.updateStats();
-                this.renderTransactions();
-                this.renderBudgets();
-                this.updateCharts();
-            }
+      saveData() {
+        localStorage.setItem('cephasgm_finance_data', JSON.stringify(this.financialData));
+      }
 
-            updateStats() {
-                const revenue = this.financialData.transactions
-                    .filter(t => t.amount > 0)
-                    .reduce((sum, t) => sum + t.amount, 0);
-                
-                const expenses = this.financialData.transactions
-                    .filter(t => t.amount < 0)
-                    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-                
-                const profit = revenue - expenses;
-                const budgetUtilization = 94; // This would be calculated from budget data
+      initialize() {
+        this.setupNavigation();
+        this.updateStats();
+        this.renderTransactions();
+        this.renderBudgets();
+        this.renderChart();
+        this.setupEventListeners();
+        this.updateCurrentTime();
+      }
 
-                document.getElementById('totalRevenue').textContent = this.formatCurrency(revenue);
-                document.getElementById('totalExpenses').textContent = this.formatCurrency(expenses);
-                document.getElementById('netProfit').textContent = this.formatCurrency(profit);
-                document.getElementById('budgetUtilization').textContent = `${budgetUtilization}%`;
-            }
+      setupNavigation() {
+        // Highlight current page
+        document.querySelectorAll('.nav-link').forEach(link => {
+          if (link.href.includes('finance.html')) {
+            link.classList.add('active');
+          }
+        });
 
-            formatCurrency(amount) {
-                const convertedAmount = amount * this.exchangeRates[this.currentCurrency];
-                const symbol = this.getCurrencySymbol(this.currentCurrency);
-                
-                if (Math.abs(convertedAmount) >= 1000000) {
-                    return `${symbol}${(convertedAmount / 1000000).toFixed(1)}M`;
-                } else if (Math.abs(convertedAmount) >= 1000) {
-                    return `${symbol}${(convertedAmount / 1000).toFixed(1)}K`;
-                } else {
-                    return `${symbol}${convertedAmount.toFixed(0)}`;
-                }
-            }
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const financeSidebar = document.getElementById('financeSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        
+        mobileMenuToggle.addEventListener('click', () => {
+          const isExpanded = mobileMenuToggle.getAttribute('aria-expanded') === 'true';
+          mobileMenuToggle.setAttribute('aria-expanded', !isExpanded);
+          financeSidebar.classList.toggle('active');
+          sidebarOverlay.classList.toggle('active');
+        });
 
-            getCurrencySymbol(currency) {
-                const symbols = {
-                    'TZS': 'TZS ',
-                    'USD': '$',
-                    'EUR': '€',
-                    'GBP': '£',
-                    'ZAR': 'R'
-                };
-                return symbols[currency] || currency;
-            }
+        sidebarOverlay.addEventListener('click', () => {
+          financeSidebar.classList.remove('active');
+          sidebarOverlay.classList.remove('active');
+          mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        });
+      }
 
-            renderTransactions() {
-                const tbody = document.getElementById('transactionsList');
-                const recentTransactions = this.financialData.transactions.slice(0, 5);
+      updateStats() {
+        const revenue = this.financialData.transactions
+          .filter(t => t.amount > 0)
+          .reduce((sum, t) => sum + t.amount, 0);
+        
+        const expenses = this.financialData.transactions
+          .filter(t => t.amount < 0)
+          .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+        
+        const profit = revenue - expenses;
+        const totalBudget = this.financialData.budgets
+          .filter(b => b.category === 'Expenses')
+          .reduce((sum, b) => sum + b.allocated, 0);
+        const totalSpent = this.financialData.budgets
+          .filter(b => b.category === 'Expenses')
+          .reduce((sum, b) => sum + b.spent, 0);
+        const budgetUtilization = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0;
 
-                tbody.innerHTML = recentTransactions.map(transaction => `
-                    <tr>
-                        <td>${new Date(transaction.date).toLocaleDateString()}</td>
-                        <td>${transaction.description}</td>
-                        <td>${transaction.category}</td>
-                        <td class="${transaction.amount > 0 ? 'amount-positive' : 'amount-negative'}">
-                            ${transaction.amount > 0 ? '+' : ''}${this.formatCurrency(transaction.amount)}
-                        </td>
-                        <td>
-                            <span class="status-badge status-${transaction.status}">
-                                ${transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
-                            </span>
-                        </td>
-                        <td>
-                            <button style="background: var(--primary); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem;" onclick="viewTransaction(${transaction.id})">
-                                View
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
+        document.getElementById('revenueValue').textContent = this.formatCurrency(revenue);
+        document.getElementById('expensesValue').textContent = this.formatCurrency(expenses);
+        document.getElementById('profitValue').textContent = this.formatCurrency(profit);
+        document.getElementById('budgetValue').textContent = `${budgetUtilization}%`;
+      }
 
-            renderBudgets() {
-                const container = document.getElementById('budgetList');
-                container.innerHTML = this.financialData.budgets.map(budget => {
-                    const percentage = (budget.spent / budget.allocated) * 100;
-                    const progressClass = percentage > 90 ? 'progress-danger' : percentage > 75 ? 'progress-warning' : '';
-                    
-                    return `
-                        <div class="budget-item">
-                            <div class="budget-header">
-                                <div class="budget-name">${budget.name}</div>
-                                <div class="budget-amount">
-                                    ${this.formatCurrency(budget.spent)} / ${this.formatCurrency(budget.allocated)}
-                                </div>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill ${progressClass}" style="width: ${Math.min(percentage, 100)}%"></div>
-                            </div>
-                            <div style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.5rem;">
-                                ${percentage.toFixed(1)}% utilized
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-
-            updateCharts() {
-                const chart = document.getElementById('financialChart');
-                // Enhanced chart visualization
-                chart.innerHTML = `
-                    <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; padding: 20px;">
-                        <div style="display: flex; align-items: end; gap: 15px; height: 200px;">
-                            <div style="display: flex; flex-direction: column; align-items: center;">
-                                <div style="background: var(--success); width: 40px; height: 160px; border-radius: 4px;"></div>
-                                <div style="margin-top: 10px; font-size: 0.875rem;">Revenue</div>
-                            </div>
-                            <div style="display: flex; flex-direction: column; align-items: center;">
-                                <div style="background: var(--error); width: 40px; height: 60px; border-radius: 4px;"></div>
-                                <div style="margin-top: 10px; font-size: 0.875rem;">Expenses</div>
-                            </div>
-                            <div style="display: flex; flex-direction: column; align-items: center;">
-                                <div style="background: var(--primary); width: 40px; height: 100px; border-radius: 4px;"></div>
-                                <div style="margin-top: 10px; font-size: 0.875rem;">Profit</div>
-                            </div>
-                        </div>
-                        <div style="text-align: center; color: var(--text-light);">
-                            Monthly Financial Performance
-                        </div>
-                    </div>
-                `;
-            }
-
-            setupEventListeners() {
-                document.getElementById('timeRange').addEventListener('change', (e) => {
-                    this.filterByTimeRange(e.target.value);
-                });
-            }
-
-            filterByTimeRange(range) {
-                console.log('Filtering financial data by:', range);
-                this.updateCharts();
-            }
-
-            startRealTimeUpdates() {
-                // Simulate real-time financial data updates
-                setInterval(() => {
-                    this.simulateFinancialUpdates();
-                }, 60000);
-            }
-
-            simulateFinancialUpdates() {
-                // Simulate small changes in financial data for demo
-                const stats = ['totalRevenue', 'totalExpenses', 'netProfit'];
-                const randomStat = stats[Math.floor(Math.random() * stats.length)];
-                
-                // Small random fluctuations
-                const change = (Math.random() * 0.02) - 0.01; // -1% to +1%
-                this.updateStats();
-            }
-
-            changeCurrency(currency) {
-                this.currentCurrency = currency;
-                this.loadFinancialData();
-            }
+      formatCurrency(amount) {
+        const converted = amount * this.exchangeRates[this.currency];
+        const symbol = this.getCurrencySymbol(this.currency);
+        
+        if (Math.abs(converted) >= 1000000) {
+          return `${symbol}${(converted / 1000000).toFixed(1)}M`;
+        } else if (Math.abs(converted) >= 1000) {
+          return `${symbol}${(converted / 1000).toFixed(1)}K`;
         }
+        return `${symbol}${converted.toFixed(2)}`;
+      }
 
-        // Global finance functions
-        const financeManager = new FinanceManager();
+      getCurrencySymbol(currency) {
+        const symbols = { 'TZS': 'TZS ', 'USD': '$', 'EUR': '€', 'GBP': '£' };
+        return symbols[currency] || currency;
+      }
 
-        function changeCurrency(currency) {
-            financeManager.changeCurrency(currency);
-        }
+      renderTransactions() {
+        const tbody = document.getElementById('transactionsList');
+        const transactions = this.financialData.transactions.slice(0, 5);
 
-        function createInvoice() {
-            alert('Opening Invoice Creation...');
-            // Implementation for invoice creation
-        }
+        tbody.innerHTML = transactions.map(transaction => `
+          <tr>
+            <td>${new Date(transaction.date).toLocaleDateString()}</td>
+            <td>${transaction.description}</td>
+            <td>${transaction.category}</td>
+            <td class="${transaction.amount > 0 ? 'amount-positive' : 'amount-negative'}">
+              ${this.formatCurrency(transaction.amount)}
+            </td>
+            <td>
+              <span class="status-badge status-${transaction.status}">
+                ${transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm" onclick="viewTransaction(${transaction.id})" style="padding: 0.25rem 0.5rem;">
+                <i class="fas fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
 
-        function recordExpense() {
-            alert('Opening Expense Recording...');
-            // Implementation for expense recording
-        }
+      renderBudgets() {
+        const container = document.getElementById('budgetList');
+        container.innerHTML = this.financialData.budgets.map(budget => {
+          const percentage = budget.category === 'Expenses' 
+            ? (budget.spent / budget.allocated) * 100
+            : (budget.achieved / budget.allocated) * 100;
+          
+          const progressClass = percentage > 90 ? 'progress-danger' : percentage > 75 ? 'progress-warning' : '';
+          const value = budget.category === 'Expenses' ? budget.spent : budget.achieved;
+          
+          return `
+            <div class="budget-item">
+              <div class="budget-header">
+                <div class="budget-name">${budget.name}</div>
+                <div class="budget-amount">
+                  ${this.formatCurrency(value)} / ${this.formatCurrency(budget.allocated)}
+                </div>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill ${progressClass}" style="width: ${Math.min(percentage, 100)}%"></div>
+              </div>
+              <div style="font-size: 0.875rem; color: var(--muted); margin-top: 0.5rem;">
+                ${percentage.toFixed(1)}% ${budget.category === 'Expenses' ? 'utilized' : 'achieved'}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
 
-        function generateFinancialReports() {
-            alert('Generating Financial Reports...');
-            // Implementation for report generation
-        }
+      renderChart() {
+        const chart = document.getElementById('performanceChart');
+        chart.innerHTML = `
+          <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; padding: 20px;">
+            <div style="display: flex; align-items: end; gap: 15px; height: 200px;">
+              <div style="display: flex; flex-direction: column; align-items: center;">
+                <div style="background: var(--success); width: 40px; height: 160px; border-radius: 4px;"></div>
+                <div style="margin-top: 10px; font-size: 0.875rem;">Revenue</div>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center;">
+                <div style="background: var(--danger); width: 40px; height: 60px; border-radius: 4px;"></div>
+                <div style="margin-top: 10px; font-size: 0.875rem;">Expenses</div>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center;">
+                <div style="background: var(--primary); width: 40px; height: 100px; border-radius: 4px;"></div>
+                <div style="margin-top: 10px; font-size: 0.875rem;">Profit</div>
+              </div>
+            </div>
+            <div style="text-align: center; color: var(--muted);">
+              Monthly Financial Performance
+            </div>
+          </div>
+        `;
+      }
 
-        function syncPayrollData() {
-            alert('Syncing with Payroll System...');
-            // Integration with payroll system
-            window.location.href = 'payroll.html';
-        }
+      setupEventListeners() {
+        document.getElementById('currencySelect').value = this.currency;
+        
+        document.getElementById('currencySelect').addEventListener('change', (e) => {
+          this.currency = e.target.value;
+          this.updateStats();
+          this.renderTransactions();
+          this.renderBudgets();
+        });
 
-        function runBudgetAnalysis() {
-            alert('Running Budget Analysis...');
-            // Implementation for budget analysis
-        }
+        document.getElementById('timeRange').addEventListener('change', (e) => {
+          this.updateChart(e.target.value);
+        });
+      }
 
-        function processPayment() {
-            alert('Processing Payment...');
-        }
+      updateChart(timeRange) {
+        console.log('Updating chart for:', timeRange, 'days');
+        this.renderChart();
+      }
 
-        function manageBudgets() {
-            alert('Opening Budget Management...');
-        }
+      updateCurrentTime() {
+        const updateTime = () => {
+          const now = new Date();
+          const options = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          };
+          document.getElementById('current-time').textContent = 
+            now.toLocaleDateString('en-US', options);
+        };
+        
+        updateTime();
+        setInterval(updateTime, 60000);
+      }
 
-        function viewAllTransactions() {
-            alert('Opening All Transactions...');
-        }
+      addTransaction(transaction) {
+        transaction.id = this.financialData.nextTransactionId++;
+        this.financialData.transactions.unshift(transaction);
+        this.saveData();
+        this.updateStats();
+        this.renderTransactions();
+      }
 
-        function viewTransaction(id) {
-            alert(`Viewing Transaction: ${id}`);
-        }
+      addBudget(budget) {
+        budget.id = this.financialData.budgets.length + 1;
+        this.financialData.budgets.push(budget);
+        this.saveData();
+        this.updateStats();
+        this.renderBudgets();
+      }
 
-        function viewRevenueDetails() {
-            alert('Opening Revenue Details...');
-        }
+      getTransaction(id) {
+        return this.financialData.transactions.find(t => t.id === id);
+      }
+    }
 
-        function viewExpenseDetails() {
-            alert('Opening Expense Details...');
-        }
+    // Global Finance Manager Instance
+    const financeManager = new FinanceManager();
 
-        function viewProfitDetails() {
-            alert('Opening Profit Details...');
-        }
+    // Modal Functions
+    window.openModal = function(modalId) {
+      document.getElementById(modalId).style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    };
 
-        function viewBudgetDetails() {
-            alert('Opening Budget Details...');
-        }
+    window.closeModal = function(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+      document.body.style.overflow = '';
+      // Reset form
+      const form = document.querySelector(`#${modalId} form`);
+      if (form) form.reset();
+    };
 
-        // PWA Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js')
-                .then((registration) => {
-                    console.log('SW registered: ', registration);
-                })
-                .catch((registrationError) => {
-                    console.log('SW registration failed: ', registrationError);
-                });
-        }
-    </script>
+    // Close modals on outside click
+    window.addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal')) {
+        e.target.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Finance Functions
+    window.createInvoice = function() {
+      openModal('createInvoiceModal');
+    };
+
+    window.recordExpense = function() {
+      openModal('recordExpenseModal');
+    };
+
+    window.generateReport = function() {
+      alert('Generating financial report...');
+      // In real app, this would generate and download a PDF report
+    };
+
+    window.syncPayroll = function() {
+      alert('Syncing with payroll system...');
+      window.location.href = 'payroll.html';
+    };
+
+    window.runAnalysis = function() {
+      alert('Running budget analysis...');
+    };
+
+    window.processPayment = function() {
+      alert('Processing payment...');
+    };
+
+    window.manageBudgets = function() {
+      alert('Opening budget management...');
+      // In real app, this would open budget management interface
+    };
+
+    window.viewAllTransactions = function() {
+      alert('Opening all transactions...');
+      // In real app, this would navigate to transactions page
+    };
+
+    window.viewTransaction = function(id) {
+      const transaction = financeManager.getTransaction(id);
+      if (transaction) {
+        const details = document.getElementById('transactionDetails');
+        details.innerHTML = `
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div><strong>ID:</strong> ${transaction.id}</div>
+            <div><strong>Date:</strong> ${new Date(transaction.date).toLocaleDateString()}</div>
+            <div><strong>Description:</strong> ${transaction.description}</div>
+            <div><strong>Category:</strong> ${transaction.category}</div>
+            <div><strong>Amount:</strong> ${financeManager.formatCurrency(transaction.amount)}</div>
+            <div><strong>Status:</strong> ${transaction.status}</div>
+          </div>
+        `;
+        openModal('transactionModal');
+      }
+    };
+
+    window.editTransaction = function() {
+      alert('Editing transaction...');
+      closeModal('transactionModal');
+    };
+
+    window.viewDetails = function(type) {
+      alert(`Viewing ${type} details...`);
+    };
+
+    window.submitInvoice = function(event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      
+      const invoice = {
+        date: new Date().toISOString().split('T')[0],
+        description: `Invoice ${formData.get('invoiceNumber')} - ${formData.get('clientName')}`,
+        category: 'Revenue',
+        amount: parseFloat(formData.get('amount')),
+        status: 'pending'
+      };
+      
+      financeManager.addTransaction(invoice);
+      alert('Invoice created successfully!');
+      closeModal('createInvoiceModal');
+    };
+
+    window.submitExpense = function(event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      
+      const expense = {
+        date: formData.get('date'),
+        description: `${formData.get('category')} - ${formData.get('description')}`,
+        category: 'Expenses',
+        amount: -Math.abs(parseFloat(formData.get('amount'))), // Negative amount for expenses
+        status: 'completed'
+      };
+      
+      financeManager.addTransaction(expense);
+      alert('Expense recorded successfully!');
+      closeModal('recordExpenseModal');
+    };
+
+    window.openModule = function(module) {
+      alert(`Opening ${module} module...`);
+      // In real app, this would navigate to specific module
+    };
+
+    window.changeCurrency = function(currency) {
+      financeManager.currency = currency;
+      financeManager.updateStats();
+      financeManager.renderTransactions();
+      financeManager.renderBudgets();
+    };
+
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('Service Worker registered:', reg))
+        .catch(err => console.error('Service Worker registration failed:', err));
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        createInvoice();
+      }
+      if (e.ctrlKey && e.key === 'e') {
+        e.preventDefault();
+        recordExpense();
+      }
+      if (e.key === 'Escape') {
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+          if (modal.style.display === 'flex') {
+            closeModal(modal.id);
+          }
+        });
+      }
+    });
+
+    // Back to dashboard functionality
+    document.querySelector('a[href="index.html"]').addEventListener('click', function(e) {
+      e.preventDefault();
+      window.location.href = 'index.html';
+    });
+  </script>
 </body>
 </html>
