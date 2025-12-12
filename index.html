@@ -3,34 +3,34 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CephasGM ERP">
+  
   <title>CephasGM ERP — Enterprise Resource Planning</title>
 
-  <!-- Primary PWA / Theme -->
-  <meta name="theme-color" content="#2563eb" />
-  <link rel="manifest" href="/manifest.json" />
-
   <!-- SEO / Social -->
-  <meta name="description" content="CephasGM ERP — A lightweight PWA prototype for Finance, HR, Inventory, Projects and more." />
+  <meta name="description" content="CephasGM ERP — Complete Enterprise Resource Planning System" />
   <meta name="keywords" content="ERP, Finance, HR, Inventory, Projects, PWA, CephasGM" />
   <meta name="author" content="Cephas Gideon Mkama" />
+  
   <!-- Open Graph -->
   <meta property="og:title" content="CephasGM ERP" />
-  <meta property="og:description" content="A lightweight PWA prototype for Finance, HR, Inventory, Projects and more." />
+  <meta property="og:description" content="Complete Enterprise Resource Planning System" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="/screenshot-wide.png" />
   <meta property="og:url" content="https://cephasgm.github.io/CephasGM-ERP/" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:creator" content="@cephasgm" />
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
 
   <!-- Icons -->
-  <link rel="icon" href="/icon-192.png" />
-  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
 
-  <!-- Performance hints -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-  <!-- NOTE: we use system fonts by default; remove Google fonts to reduce request cost. -->
-
-  <!-- Lightweight CSS: variables, utilities, layout -->
+  <!-- Lightweight CSS -->
   <style>
     :root{
       --bg: #f8fafc;
@@ -39,17 +39,19 @@
       --muted: #64748b;
       --primary: #2563eb;
       --primary-600: #1d4ed8;
+      --primary-light: #dbeafe;
       --success: #10b981;
       --warning: #f59e0b;
       --danger: #ef4444;
       --radius: 12px;
       --gap: 1rem;
-      --shadow: 0 6px 18px rgba(2,6,23,0.06);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
       --max-width: 1200px;
       --nav-height: 72px;
     }
 
-    /* Theme tokens for dark & navy */
+    /* Dark mode */
     :root[data-theme='dark']{
       --bg: linear-gradient(135deg,#0f172a,#071129);
       --card: #0b1220;
@@ -57,530 +59,928 @@
       --muted: #94a3b8;
       --shadow: 0 10px 30px rgba(2,6,23,0.6);
     }
-    :root[data-theme='navy']{
-      --bg: linear-gradient(135deg,#071130,#071a2a);
-      --card: linear-gradient(180deg,#071a2a,#05213b);
-      --text: #e6f0ff;
-      --muted: #9fb6d9;
-    }
-
-    /* Base reset + layout */
-    *{box-sizing:border-box}
+    
+    /* Base reset */
+    *{box-sizing:border-box; margin:0; padding:0}
     html,body{height:100%}
     body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
       color:var(--text);
       -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      line-height:1.45;
+      line-height:1.6;
+      min-height:100vh;
     }
 
-    /* Accessibility: skip link */
-    .skip-link{
-      position: absolute;
-      left: -999px;
-      top: auto;
-      width:1px;
-      height:1px;
-      overflow:hidden;
+    /* PWA Install Banner */
+    .pwa-banner{
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      background: #1e293b;
+      color: white;
+      padding:1rem;
+      display:none;
+      align-items:center;
+      justify-content:space-between;
+      z-index:10000;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
     }
-    .skip-link:focus{
-      left: 1rem;
-      top: 1rem;
-      width: auto;
-      height: auto;
-      padding: .5rem .75rem;
-      background: #111827;
-      color: #fff;
-      border-radius:6px;
-      z-index: 9999;
+    
+    .pwa-banner.show{
+      display:flex;
     }
-
-    /* Header / nav */
-    header.app-header{
-      position:sticky;
-      top:0;
-      z-index: 1200;
-      backdrop-filter: blur(8px);
-      background: rgba(255,255,255,0.7);
+    
+    .pwa-content{
       display:flex;
       align-items:center;
-      height:var(--nav-height);
-      padding:0 1rem;
-      border-bottom: 1px solid rgba(0,0,0,0.04);
+      gap:1rem;
     }
-    header.app-header .container{display:flex;align-items:center;justify-content:space-between;max-width:var(--max-width);margin:0 auto;width:100%}
+    
+    .pwa-actions{
+      display:flex;
+      gap:0.5rem;
+    }
+
+    /* Offline Indicator */
+    .offline-indicator{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      background:var(--warning);
+      color:white;
+      text-align:center;
+      padding:0.5rem;
+      font-weight:600;
+      z-index:10001;
+      display:none;
+    }
+    
+    .offline-indicator.show{
+      display:block;
+    }
+
+    /* Header */
+    .app-header{
+      position:sticky;
+      top:0;
+      z-index:1000;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter:blur(20px);
+      padding:1rem 2rem;
+      box-shadow:var(--shadow);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    
+    .container{
+      max-width:var(--max-width);
+      margin:0 auto;
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
 
     /* Logo */
-    .brand{display:flex;align-items:center;gap:.75rem;text-decoration:none;color:var(--text)}
-    .brand .mark{
-      width:44px;height:44px;border-radius:10px;display:inline-grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--primary),var(--success));font-weight:700;box-shadow:var(--shadow)
-    }
-    .brand .title{display:flex;flex-direction:column;line-height:1}
-    .brand .title .title-main{font-weight:700;font-size:1.05rem}
-    .brand .title .title-sub{font-size:.75rem;color:var(--muted);margin-top:2px}
-
-    /* Nav links */
-    nav.site-nav{display:flex; gap: .5rem; align-items:center}
-    nav.site-nav a{
-      color:var(--muted);
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:1rem;
       text-decoration:none;
-      padding:.5rem .75rem;
-      border-radius:10px;
+      transition:transform 0.3s ease;
+    }
+    
+    .brand:hover{
+      transform:scale(1.05);
+    }
+    
+    .logo-icon{
+      font-size:1.5rem;
+      background:linear-gradient(135deg,var(--primary),var(--success));
+      color:white;
+      width:50px;
+      height:50px;
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:var(--shadow);
+    }
+    
+    .logo-text h1{
+      font-size:1.5rem;
+      font-weight:700;
+      color:#1e293b;
+      margin-bottom:0.25rem;
+    }
+    
+    .logo-text p{
+      font-size:0.875rem;
+      color:var(--muted);
+      font-weight:500;
+    }
+
+    /* Navigation */
+    .site-nav{
+      display:flex;
+      gap:1rem;
+      align-items:center;
+    }
+    
+    .nav-link{
+      text-decoration:none;
+      color:var(--muted);
       font-weight:600;
-      font-size:.9rem;
+      padding:0.75rem 1.5rem;
+      border-radius:var(--radius);
+      transition:all 0.3s ease;
+      position:relative;
     }
-    nav.site-nav a[aria-current="page"], nav.site-nav a:hover{
+    
+    .nav-link:hover{
       color:var(--primary);
-      background:rgba(37,99,235,0.06);
+      background:var(--primary-light);
+    }
+    
+    .nav-link.active{
+      color:var(--primary);
+      background:var(--primary-light);
+    }
+    
+    .nav-link.active::after{
+      content:'';
+      position:absolute;
+      bottom:-2px;
+      left:50%;
+      transform:translateX(-50%);
+      width:6px;
+      height:6px;
+      background:var(--primary);
+      border-radius:50%;
     }
 
-    /* Controls */
-    .controls{display:flex;align-items:center;gap:.5rem}
-    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem .8rem;border-radius:10px;border:0;background:transparent;cursor:pointer;font-weight:700}
-    .btn--primary{background:var(--primary);color:#fff}
-    .btn--ghost{background:transparent;border:1px solid rgba(0,0,0,0.04);color:var(--text)}
-    .icon{width:36px;height:36px;display:inline-grid;place-items:center;border-radius:8px}
+    /* Main Content */
+    .main-content{
+      margin-top:100px;
+      padding:2rem;
+      max-width:var(--max-width);
+      margin-left:auto;
+      margin-right:auto;
+    }
 
-    /* Main container */
-    main.container{max-width:var(--max-width);margin:1.25rem auto;padding:0 1rem}
+    /* Hero Section */
+    .hero{
+      text-align:center;
+      padding:3rem 2rem;
+      background:rgba(255,255,255,0.95);
+      backdrop-filter:blur(20px);
+      border-radius:20px;
+      margin-bottom:2rem;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(255,255,255,0.2);
+    }
+    
+    .hero-title{
+      font-size:2.5rem;
+      font-weight:700;
+      margin-bottom:1rem;
+      background:linear-gradient(135deg,var(--primary),var(--success));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+    
+    .hero-subtitle{
+      font-size:1.125rem;
+      margin-bottom:2rem;
+      color:var(--muted);
+      max-width:600px;
+      margin-left:auto;
+      margin-right:auto;
+    }
+    
+    .hero-stats{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:1.5rem;
+      max-width:800px;
+      margin:0 auto;
+    }
+    
+    .stat{
+      text-align:center;
+      padding:1.5rem;
+      background:var(--primary-light);
+      border-radius:var(--radius);
+      transition:transform 0.3s ease;
+    }
+    
+    .stat:hover{
+      transform:translateY(-5px);
+    }
+    
+    .stat .n{
+      font-size:2rem;
+      font-weight:700;
+      color:var(--primary);
+      display:block;
+      margin-bottom:0.5rem;
+    }
+    
+    .stat .l{
+      font-size:0.875rem;
+      color:var(--muted);
+      font-weight:500;
+    }
 
-    /* Hero */
-    .hero{background:var(--card);padding:1.5rem;border-radius:14px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center;margin-bottom:1.25rem}
-    .hero h1{margin:0;font-size:1.6rem}
-    .hero p{color:var(--muted);margin:0.35rem 0 0}
-
-    .hero-stats{display:flex;gap:.75rem;align-items:center}
-    .stat{padding:.6rem .9rem;border-radius:10px;background:linear-gradient(180deg,rgba(0,0,0,0.01),transparent);min-width:84px;text-align:center}
-    .stat .n{font-weight:800;color:var(--primary);display:block}
-    .stat .l{font-size:.8rem;color:var(--muted)}
-
-    /* Modules grid */
-    .modules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+    /* Modules Grid */
+    .modules{
+      margin-bottom:2rem;
+    }
+    
+    .section-header{
+      text-align:center;
+      margin-bottom:2rem;
+    }
+    
+    .section-title{
+      font-size:2rem;
+      font-weight:700;
+      color:var(--text);
+      margin-bottom:1rem;
+    }
+    
+    .section-subtitle{
+      font-size:1rem;
+      color:var(--muted);
+      max-width:600px;
+      margin:0 auto;
+    }
+    
+    .modules-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:1.5rem;
+      margin-bottom:2rem;
+    }
+    
     .module{
-      display:flex;flex-direction:column;justify-content:space-between;
-      background:var(--card);
-      padding:1rem;border-radius:12px;box-shadow:var(--shadow);text-decoration:none;color:inherit;border:1px solid rgba(0,0,0,0.03);
-      transition:transform .18s ease,box-shadow .18s ease;
-      min-height:150px;
+      background:rgba(255,255,255,0.95);
+      backdrop-filter:blur(20px);
+      border-radius:16px;
+      padding:1.5rem;
+      text-decoration:none;
+      color:inherit;
+      transition:all 0.3s ease;
+      border:1px solid rgba(255,255,255,0.3);
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+      height:100%;
+      display:flex;
+      flex-direction:column;
     }
-    .module:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(2,6,23,0.12)}
-    .module .head{display:flex;gap:.75rem;align-items:center}
-    .module .icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--primary),#34d399);color:#fff;font-weight:700}
-    .module h3{margin:.25rem 0;font-size:1.05rem}
-    .module p{color:var(--muted);font-size:.92rem;margin:0.4rem 0 0;flex:1}
-    .module .module-actions{margin-top:1rem;display:flex;justify-content:flex-end}
-    .module .module-actions button{padding:.45rem .75rem;border-radius:10px;border:0;background:var(--primary);color:#fff;font-weight:700;cursor:pointer}
+    
+    .module::before{
+      content:'';
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      height:4px;
+      background:linear-gradient(135deg,var(--primary),var(--success));
+    }
+    
+    .module:hover{
+      transform:translateY(-8px);
+      box-shadow:var(--shadow-lg);
+      border-color:var(--primary);
+    }
+    
+    .module-header{
+      display:flex;
+      align-items:center;
+      gap:1rem;
+      margin-bottom:1rem;
+    }
+    
+    .module-icon{
+      width:50px;
+      height:50px;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--primary-light),var(--primary));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.25rem;
+      color:white;
+      flex-shrink:0;
+    }
+    
+    .module-title{
+      font-size:1.25rem;
+      font-weight:600;
+      color:var(--text);
+      margin-bottom:0.5rem;
+    }
+    
+    .module-description{
+      color:var(--muted);
+      margin-bottom:1rem;
+      line-height:1.5;
+      flex-grow:1;
+    }
+    
+    .module-actions{
+      margin-top:auto;
+    }
+    
+    .btn{
+      padding:0.75rem 1.5rem;
+      border-radius:var(--radius);
+      font-weight:600;
+      text-decoration:none;
+      transition:all 0.3s ease;
+      border:none;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:0.5rem;
+      font-size:0.875rem;
+    }
+    
+    .btn-primary{
+      background:var(--primary);
+      color:white;
+      box-shadow:var(--shadow);
+    }
+    
+    .btn-primary:hover{
+      background:var(--primary-600);
+      transform:translateY(-2px);
+      box-shadow:var(--shadow-lg);
+    }
+    
+    .btn-outline{
+      background:transparent;
+      border:1px solid var(--muted);
+      color:var(--muted);
+    }
+    
+    .btn-outline:hover{
+      background:rgba(255,255,255,0.1);
+    }
 
     /* Footer */
-    footer.site-footer{margin-top:1.5rem;padding:1rem 0;text-align:center;color:var(--muted)}
-
-    /* Offline indicator & PWA banner */
-    .offline-indicator{
-      position:fixed;left:1rem;bottom:1rem;padding:.6rem .8rem;border-radius:10px;background:var(--warning);color:#fff;font-weight:700;z-index:1500;display:none;
+    .site-footer{
+      background:rgba(255,255,255,0.95);
+      backdrop-filter:blur(20px);
+      padding:2rem;
+      text-align:center;
+      margin-top:3rem;
+      border-top:1px solid rgba(255,255,255,0.3);
     }
-    .offline-indicator[aria-hidden="false"]{display:block}
-
-    .pwa-banner{
-      position:fixed;left:1rem;right:1rem;bottom:1rem;padding:1rem;border-radius:12px;background:var(--card);box-shadow:var(--shadow);display:flex;justify-content:space-between;gap:1rem;align-items:center;z-index:1500;
+    
+    .copyright{
+      color:var(--muted);
+      font-size:0.875rem;
+      font-weight:500;
     }
-    .pwa-banner.hidden{display:none}
 
-    /* Focus & accessibility */
-    a:focus, button:focus{outline:3px solid rgba(37,99,235,0.14);outline-offset:3px}
-    .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+    /* Responsive Design */
+    @media (max-width:1024px){
+      .hero-stats{
+        grid-template-columns:repeat(2,1fr);
+      }
+    }
+    
+    @media (max-width:768px){
+      .app-header{
+        padding:1rem;
+        flex-direction:column;
+        gap:1rem;
+      }
+      
+      .site-nav{
+        gap:0.5rem;
+        flex-wrap:wrap;
+        justify-content:center;
+      }
+      
+      .nav-link{
+        padding:0.5rem 1rem;
+        font-size:0.875rem;
+      }
+      
+      .hero-title{
+        font-size:2rem;
+      }
+      
+      .hero-stats{
+        grid-template-columns:1fr;
+        gap:1rem;
+      }
+      
+      .modules-grid{
+        grid-template-columns:1fr;
+      }
+      
+      .main-content{
+        padding:1rem;
+        margin-top:140px;
+      }
+      
+      .pwa-banner{
+        flex-direction:column;
+        text-align:center;
+        gap:1rem;
+      }
+      
+      .pwa-content{
+        flex-direction:column;
+      }
+    }
 
-    /* Responsive adjustments */
-    @media (max-width:800px){
-      header.app-header{height:auto;padding:.5rem}
-      .hero{grid-template-columns:1fr;gap:.5rem}
-      .hero-stats{flex-wrap:wrap}
-      .controls{gap:.35rem}
+    /* Animation */
+    @keyframes fadeInUp{
+      from{
+        opacity:0;
+        transform:translateY(30px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+    
+    .module{
+      animation:fadeInUp 0.6s ease-out;
+    }
+
+    /* Dark mode support */
+    :root[data-theme='dark'] .app-header,
+    :root[data-theme='dark'] .hero,
+    :root[data-theme='dark'] .module,
+    :root[data-theme='dark'] .site-footer{
+      background:rgba(30,41,59,0.95);
+    }
+    
+    :root[data-theme='dark'] .app-header{
+      background:rgba(30,41,59,0.98);
+    }
+    
+    :root[data-theme='dark'] .logo-text h1{
+      color:#f1f5f9;
     }
   </style>
 </head>
 <body>
-  <!-- Skip link for keyboard users -->
-  <a href="#main" class="skip-link">Skip to main content</a>
+  <!-- Offline Indicator -->
+  <div class="offline-indicator" id="offlineIndicator">
+    ⚠️ You are currently offline. Some features may be limited.
+  </div>
+
+  <!-- PWA Install Banner -->
+  <div class="pwa-banner" id="pwaInstallBanner">
+    <div class="pwa-content">
+      <div style="font-size:1.5rem">📱</div>
+      <div>
+        <h3 style="margin-bottom:0.25rem">Install CephasGM ERP</h3>
+        <p style="opacity:0.8">Get the full app experience with offline access</p>
+      </div>
+    </div>
+    <div class="pwa-actions">
+      <button class="btn btn-outline" id="pwaInstallDismiss">Not Now</button>
+      <button class="btn btn-primary" id="pwaInstallButton">Install</button>
+    </div>
+  </div>
 
   <!-- Header -->
-  <header class="app-header" role="banner" aria-label="Primary">
+  <header class="app-header">
     <div class="container">
-      <a class="brand" href="/" title="CephasGM ERP home">
-        <div class="mark" aria-hidden="true">CG</div>
-        <div class="title">
-          <span class="title-main">CephasGM ERP</span>
-          <span class="title-sub">Business Management</span>
+      <a href="#home" class="brand">
+        <div class="logo-icon">🏢</div>
+        <div class="logo-text">
+          <h1>CephasGM ERP</h1>
+          <p>Enterprise Resource Planning</p>
         </div>
       </a>
 
-      <nav class="site-nav" role="navigation" aria-label="Main">
-        <a href="#home" class="nav-link" aria-current="page">Dashboard</a>
+      <nav class="site-nav">
+        <a href="#home" class="nav-link active">Dashboard</a>
         <a href="#operations" class="nav-link">Operations</a>
         <a href="#administration" class="nav-link">Administration</a>
         <a href="#support" class="nav-link">Support</a>
-        <a href="#modules" class="nav-link">Modules</a>
+        <a href="#modules" class="nav-link">All Modules</a>
       </nav>
 
-      <div class="controls" role="region" aria-label="Controls">
-        <!-- Theme toggle -->
-        <button id="themeToggle" class="btn btn--ghost" aria-pressed="false" title="Toggle theme" aria-label="Toggle theme">
-          <span class="icon" aria-hidden="true">🌓</span>
+      <div class="controls">
+        <button id="themeToggle" class="btn btn-outline" aria-label="Toggle theme">
+          🌓
         </button>
-
-        <!-- Install button (if available; pwa-init.js also handles beforeinstallprompt) -->
-        <button id="installBtn" class="btn btn--primary" style="display:none" aria-hidden="true">Install</button>
       </div>
     </div>
   </header>
 
-  <!-- Main content -->
-  <main id="main" class="container" role="main" tabindex="-1">
-    <!-- Hero -->
-    <section id="home" class="hero" aria-labelledby="hero-title">
-      <div>
-        <h1 id="hero-title">CephasGM ERP System</h1>
-        <p>A progressive web app prototype for Finance, HR, Inventory, Projects and more — clean, fast, and offline-capable.</p>
-
-        <div style="margin-top:.9rem" class="hero-stats" aria-hidden="true">
-          <div class="stat"><span class="n">18</span><span class="l">Modules</span></div>
-          <div class="stat"><span class="n">1,247</span><span class="l">Daily Ops</span></div>
-          <div class="stat"><span class="n">99.8%</span><span class="l">Uptime</span></div>
-          <div class="stat"><span class="n">24/7</span><span class="l">Support</span></div>
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+      <h1 class="hero-title">CephasGM ERP System</h1>
+      <p class="hero-subtitle">Complete Business Management Solution - Streamline your operations with our comprehensive ERP platform</p>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="n">18</span>
+          <span class="l">System Modules</span>
+        </div>
+        <div class="stat">
+          <span class="n">1,247</span>
+          <span class="l">Daily Operations</span>
+        </div>
+        <div class="stat">
+          <span class="n">99.8%</span>
+          <span class="l">System Uptime</span>
+        </div>
+        <div class="stat">
+          <span class="n">24/7</span>
+          <span class="l">Support</span>
         </div>
       </div>
-
-      <div aria-hidden="true" style="text-align:right">
-        <img src="/screenshot-narrow.png" alt="" style="width:220px;max-width:40vw;border-radius:12px;box-shadow:var(--shadow)" />
-      </div>
     </section>
 
-    <!-- Operations -->
-    <section id="operations" class="modules" aria-labelledby="ops-title" style="margin-top:1rem">
-      <h2 id="ops-title">Core Business Operations</h2>
-      <p class="visually-hidden">Essential functions that drive daily business activities</p>
-
-      <div class="modules-grid" role="list">
-        <a class="module" href="/finance.html" role="listitem" aria-label="Open Finance module">
-          <div class="head">
-            <div class="icon" aria-hidden="true">📊</div>
-            <div>
-              <h3>Finance</h3>
-              <p>Accounting, budgeting, financial reporting, and cash flow management.</p>
-            </div>
+    <!-- Operations Section -->
+    <section class="modules" id="operations">
+      <div class="section-header">
+        <h2 class="section-title">Core Business Operations</h2>
+        <p class="section-subtitle">Essential functions that drive daily business activities</p>
+      </div>
+      <div class="modules-grid">
+        <!-- Using relative paths for module links -->
+        <a href="finance.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">📊</div>
+            <h3 class="module-title">Finance</h3>
           </div>
+          <p class="module-description">Accounting, budgeting, financial reporting, and cash flow management.</p>
           <div class="module-actions">
-            <button aria-label="Open Finance module">Open</button>
+            <span class="btn btn-primary">Open Module</span>
           </div>
         </a>
-
-        <a class="module" href="/sales.html" role="listitem" aria-label="Open Sales module">
-          <div class="head">
-            <div class="icon" aria-hidden="true">💰</div>
-            <div>
-              <h3>Sales</h3>
-              <p>Track sales performance, manage leads, and monitor revenue streams.</p>
-            </div>
+        
+        <a href="sales.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">💰</div>
+            <h3 class="module-title">Sales</h3>
           </div>
+          <p class="module-description">Track sales performance, manage leads, and monitor revenue streams.</p>
           <div class="module-actions">
-            <button aria-label="Open Sales module">Open</button>
+            <span class="btn btn-primary">Open Module</span>
           </div>
         </a>
-
-        <a class="module" href="/inventory.html" role="listitem" aria-label="Open Inventory module">
-          <div class="head">
-            <div class="icon" aria-hidden="true">📦</div>
-            <div>
-              <h3>Inventory</h3>
-              <p>Manage stock levels, track inventory movement, and optimize warehouse operations.</p>
-            </div>
+        
+        <a href="inventory.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">📦</div>
+            <h3 class="module-title">Inventory</h3>
           </div>
+          <p class="module-description">Manage stock levels, track inventory movement, and optimize warehouse operations.</p>
           <div class="module-actions">
-            <button aria-label="Open Inventory module">Open</button>
+            <span class="btn btn-primary">Open Module</span>
           </div>
         </a>
-
-        <a class="module" href="/projects.html" role="listitem" aria-label="Open Projects module">
-          <div class="head">
-            <div class="icon" aria-hidden="true">📋</div>
-            <div>
-              <h3>Projects</h3>
-              <p>Manage projects, timelines, resources and track progress across departments.</p>
-            </div>
+        
+        <a href="projects.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">📋</div>
+            <h3 class="module-title">Projects</h3>
           </div>
+          <p class="module-description">Manage projects, timelines, resources and track progress across departments.</p>
           <div class="module-actions">
-            <button aria-label="Open Projects module">Open</button>
+            <span class="btn btn-primary">Open Module</span>
           </div>
         </a>
-
-        <a class="module" href="/procurement.html" role="listitem" aria-label="Open Procurement module">
-          <div class="head">
-            <div class="icon" aria-hidden="true">🛒</div>
-            <div>
-              <h3>Procurement</h3>
-              <p>Handle purchase orders, supplier management, and procurement processes.</p>
-            </div>
+        
+        <a href="procurement.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">🛒</div>
+            <h3 class="module-title">Procurement</h3>
           </div>
+          <p class="module-description">Handle purchase orders, supplier management, and procurement processes.</p>
           <div class="module-actions">
-            <button aria-label="Open Procurement module">Open</button>
+            <span class="btn btn-primary">Open Module</span>
           </div>
         </a>
-
-        <a class="module" href="/transport.html" role="listitem" aria-label="Open Transport module">
-          <div class="head">
-            <div class="icon" aria-hidden="true">🚚</div>
-            <div>
-              <h3>Transport</h3>
-              <p>Manage logistics, fleet operations, and delivery schedules.</p>
-            </div>
+        
+        <a href="transport.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">🚚</div>
+            <h3 class="module-title">Transport</h3>
           </div>
+          <p class="module-description">Manage logistics, fleet operations, and delivery schedules.</p>
           <div class="module-actions">
-            <button aria-label="Open Transport module">Open</button>
+            <span class="btn btn-primary">Open Module</span>
           </div>
         </a>
       </div>
     </section>
 
-    <!-- Administration -->
-    <section id="administration" class="modules" aria-labelledby="admin-title" style="margin-top:1.25rem">
-      <h2 id="admin-title">Administration & Management</h2>
-
-      <div class="modules-grid" role="list">
-        <a class="module" href="/admin.html" role="listitem" aria-label="Open Admin module">
-          <div class="head">
-            <div class="icon" aria-hidden="true">⚙️</div>
-            <div>
-              <h3>System Admin</h3>
-              <p>System configuration, user management, and administrative controls.</p>
-            </div>
+    <!-- Administration Section -->
+    <section class="modules" id="administration">
+      <div class="section-header">
+        <h2 class="section-title">Administration & Management</h2>
+        <p class="section-subtitle">Organizational management and administrative functions</p>
+      </div>
+      <div class="modules-grid">
+        <a href="admin.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">⚙️</div>
+            <h3 class="module-title">System Admin</h3>
           </div>
+          <p class="module-description">System configuration, user management, and administrative controls.</p>
           <div class="module-actions">
-            <button aria-label="Open System Admin">Open</button>
+            <span class="btn btn-primary">Open Module</span>
           </div>
         </a>
-
-        <a class="module" href="/hr.html" role="listitem" aria-label="Open Human Resources module">
-          <div class="head">
-            <div class="icon" aria-hidden="true">👥</div>
-            <div>
-              <h3>Human Resources</h3>
-              <p>Employee management, recruitment, performance tracking, and HR policies.</p>
-            </div>
+        
+        <a href="hr.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">👥</div>
+            <h3 class="module-title">Human Resources</h3>
           </div>
+          <p class="module-description">Employee management, recruitment, performance tracking, and HR policies.</p>
           <div class="module-actions">
-            <button aria-label="Open HR module">Open</button>
+            <span class="btn btn-primary">Open Module</span>
           </div>
         </a>
-
-        <a class="module" href="/payroll.html" role="listitem" aria-label="Open Payroll module">
-          <div class="head">
-            <div class="icon" aria-hidden="true">💵</div>
-            <div>
-              <h3>Payroll</h3>
-              <p>Process salaries, manage deductions, and handle payroll compliance.</p>
-            </div>
+        
+        <a href="payroll.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">💵</div>
+            <h3 class="module-title">Payroll</h3>
           </div>
+          <p class="module-description">Process salaries, manage deductions, and handle payroll compliance.</p>
           <div class="module-actions">
-            <button aria-label="Open Payroll module">Open</button>
+            <span class="btn btn-primary">Open Module</span>
           </div>
         </a>
-
-        <a class="module" href="/attendance.html" role="listitem" aria-label="Open Attendance module">
-          <div class="head">
-            <div class="icon" aria-hidden="true">📅</div>
-            <div>
-              <h3>Attendance</h3>
-              <p>Track employee attendance, leaves, and time management.</p>
-            </div>
+        
+        <a href="attendance.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">📅</div>
+            <h3 class="module-title">Attendance</h3>
           </div>
+          <p class="module-description">Track employee attendance, leaves, and time management.</p>
           <div class="module-actions">
-            <button aria-label="Open Attendance module">Open</button>
+            <span class="btn btn-primary">Open Module</span>
           </div>
         </a>
       </div>
     </section>
 
-    <!-- Support & Additional Modules (shortened) -->
-    <section id="support" class="modules" aria-labelledby="support-title" style="margin-top:1.25rem">
-      <h2 id="support-title">Support & Services</h2>
-      <div class="modules-grid" role="list">
-        <a class="module" href="/customer-service.html" role="listitem"><div class="head"><div class="icon">🤝</div><div><h3>Customer Service</h3><p>Manage support tickets and SLAs.</p></div></div><div class="module-actions"><button>Open</button></div></a>
-
-        <a class="module" href="/marketing.html" role="listitem"><div class="head"><div class="icon">📢</div><div><h3>Marketing</h3><p>Campaigns, analytics and promotions.</p></div></div><div class="module-actions"><button>Open</button></div></a>
-
-        <a class="module" href="/legal.html" role="listitem"><div class="head"><div class="icon">⚖️</div><div><h3>Legal</h3><p>Contracts, compliance and documents.</p></div></div><div class="module-actions"><button>Open</button></div></a>
-
-        <a class="module" href="/safety.html" role="listitem"><div class="head"><div class="icon">🛡️</div><div><h3>Safety</h3><p>Incident reporting and training.</p></div></div><div class="module-actions"><button>Open</button></div></a>
+    <!-- Support Section -->
+    <section class="modules" id="support">
+      <div class="section-header">
+        <h2 class="section-title">Support & Services</h2>
+        <p class="section-subtitle">Business support tools and service management</p>
+      </div>
+      <div class="modules-grid">
+        <a href="customer-service.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">🤝</div>
+            <h3 class="module-title">Customer Service</h3>
+          </div>
+          <p class="module-description">Manage customer support, tickets, and service quality monitoring.</p>
+          <div class="module-actions">
+            <span class="btn btn-primary">Open Module</span>
+          </div>
+        </a>
+        
+        <a href="marketing.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">📢</div>
+            <h3 class="module-title">Marketing</h3>
+          </div>
+          <p class="module-description">Campaign management, marketing analytics, and promotional activities.</p>
+          <div class="module-actions">
+            <span class="btn btn-primary">Open Module</span>
+          </div>
+        </a>
+        
+        <a href="legal.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">⚖️</div>
+            <h3 class="module-title">Legal</h3>
+          </div>
+          <p class="module-description">Contract management, compliance tracking, and legal document repository.</p>
+          <div class="module-actions">
+            <span class="btn btn-primary">Open Module</span>
+          </div>
+        </a>
+        
+        <a href="safety.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">🛡️</div>
+            <h3 class="module-title">Safety</h3>
+          </div>
+          <p class="module-description">Workplace safety compliance, incident reporting, and safety training.</p>
+          <div class="module-actions">
+            <span class="btn btn-primary">Open Module</span>
+          </div>
+        </a>
       </div>
     </section>
 
-    <!-- Modules summary -->
-    <section id="modules" style="margin-top:1.25rem">
-      <h2>Additional Modules</h2>
-      <p class="visually-hidden">Training, meetings, community and other modules</p>
-      <div class="modules-grid" role="list">
-        <a class="module" href="/training.html" role="listitem"><div class="head"><div class="icon">🎓</div><div><h3>Training</h3><p>Programs, certifications, skill tracking.</p></div></div><div class="module-actions"><button>Open</button></div></a>
-        <a class="module" href="/meetings.html" role="listitem"><div class="head"><div class="icon">👥</div><div><h3>Meetings</h3><p>Schedule and agenda management.</p></div></div><div class="module-actions"><button>Open</button></div></a>
-        <a class="module" href="/community.html" role="listitem"><div class="head"><div class="icon">🌐</div><div><h3>Community</h3><p>Announcements and internal communications.</p></div></div><div class="module-actions"><button>Open</button></div></a>
+    <!-- All Modules Section -->
+    <section class="modules" id="modules">
+      <div class="section-header">
+        <h2 class="section-title">Additional Modules</h2>
+        <p class="section-subtitle">Specialized tools and supplementary functions</p>
+      </div>
+      <div class="modules-grid">
+        <a href="training.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">🎓</div>
+            <h3 class="module-title">Training</h3>
+          </div>
+          <p class="module-description">Employee training programs, skill development, and certification tracking.</p>
+          <div class="module-actions">
+            <span class="btn btn-primary">Open Module</span>
+          </div>
+        </a>
+        
+        <a href="meetings.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">👥</div>
+            <h3 class="module-title">Meetings</h3>
+          </div>
+          <p class="module-description">Schedule, organize and track meetings with agenda management.</p>
+          <div class="module-actions">
+            <span class="btn btn-primary">Open Module</span>
+          </div>
+        </a>
+        
+        <a href="community.html" class="module">
+          <div class="module-header">
+            <div class="module-icon">🌐</div>
+            <h3 class="module-title">Community</h3>
+          </div>
+          <p class="module-description">Internal communication, announcements, and employee engagement.</p>
+          <div class="module-actions">
+            <span class="btn btn-primary">Open Module</span>
+          </div>
+        </a>
       </div>
     </section>
   </main>
 
-  <!-- Offline indicator & PWA install banner (managed by pwa-init.js if present) -->
-  <div id="offlineIndicator" class="offline-indicator" role="status" aria-hidden="true" aria-live="polite">⚠️ You are currently offline</div>
-
-  <div id="pwaInstallBanner" class="pwa-banner hidden" role="dialog" aria-hidden="true" aria-label="Install CephasGM ERP">
-    <div style="display:flex;gap:.75rem;align-items:center">
-      <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--primary),#34d399);display:grid;place-items:center;color:#fff">📱</div>
-      <div>
-        <div style="font-weight:700">Install CephasGM ERP</div>
-        <div style="color:var(--muted);font-size:.9rem">Install the app for offline access and faster load.</div>
-      </div>
-    </div>
-    <div style="display:flex;gap:.5rem">
-      <button id="pwaInstallDismiss" class="btn">Not now</button>
-      <button id="pwaInstallButton" class="btn btn--primary">Install</button>
-    </div>
-  </div>
-
-  <footer class="site-footer" role="contentinfo">
-    <div class="container">
-      <small>Copyright © 2025 CephasGM ERP. All rights reserved.</small>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="copyright">
+      Copyright © 2025 CephasGM ERP. All rights reserved.
     </div>
   </footer>
 
-  <!-- Scripts -->
-  <!-- Register Service Worker & PWA init. pwa-init.js handles advanced behavior (install prompt, offline UI), but we include a fallback -->
-  <script defer src="/pwa-init.js"></script>
-
   <script>
-    // Theme toggle: stores "light" | "dark" | "navy" in localStorage (default respects prefers-color-scheme)
-    (function () {
-      const root = document.documentElement;
-      const stored = localStorage.getItem('cephas_theme');
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const initial = stored || (prefersDark ? 'dark' : 'light');
-      const toggleBtn = document.getElementById('themeToggle');
-
-      function applyTheme(t) {
-        if (t === 'light') root.removeAttribute('data-theme');
-        else root.setAttribute('data-theme', t);
-        toggleBtn.setAttribute('aria-pressed', String(t !== 'light'));
-      }
-
-      applyTheme(initial);
-
-      toggleBtn.addEventListener('click', () => {
-        const current = localStorage.getItem('cephas_theme') || (prefersDark ? 'dark' : 'light');
-        const next = current === 'light' ? 'dark' : current === 'dark' ? 'navy' : 'light';
-        localStorage.setItem('cephas_theme', next);
-        applyTheme(next);
-      });
-    })();
-
-    // Basic service worker registration fallback (pwa-init.js will register too; this ensures SW is active if not)
-    (function () {
-      if ('serviceWorker' in navigator) {
-        // wait for load to avoid blocking
-        window.addEventListener('load', async () => {
-          try {
-            // if pwa-init.js already registered, skip
-            if (!navigator.serviceWorker.controller) {
-              await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+    // Smooth scrolling for navigation
+    document.querySelectorAll('.nav-link, .brand').forEach(link => {
+      link.addEventListener('click', function(e) {
+        if (this.getAttribute('href').startsWith('#')) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          const targetSection = document.querySelector(targetId);
+          
+          if (targetSection) {
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+            if (this.classList.contains('nav-link')) {
+              this.classList.add('active');
+            } else {
+              // If brand/logo clicked, activate home link
+              document.querySelector('.nav-link[href="#home"]').classList.add('active');
             }
-          } catch (err) {
-            console.warn('ServiceWorker registration failed (index fallback):', err);
+            
+            // Smooth scroll to section
+            targetSection.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
           }
-        });
-      }
-    })();
-
-    // Simple focus handling for nav links (smooth scroll & active class)
-    (function () {
-      const navLinks = document.querySelectorAll('nav.site-nav a');
-      navLinks.forEach(a => {
-        a.addEventListener('click', (e) => {
-          const href = a.getAttribute('href');
-          if (href && href.startsWith('#')) {
-            e.preventDefault();
-            const target = document.querySelector(href);
-            if (target) {
-              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              navLinks.forEach(n => n.removeAttribute('aria-current'));
-              a.setAttribute('aria-current', 'page');
-              history.replaceState(null, '', href);
-            }
-          }
-        });
-      });
-    })();
-
-    // Inline install prompt wiring for browsers that don't use pwa-init
-    (function () {
-      let deferredPrompt;
-      const banner = document.getElementById('pwaInstallBanner');
-      const installBtn = document.getElementById('pwaInstallButton');
-      const dismissBtn = document.getElementById('pwaInstallDismiss');
-
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        banner.classList.remove('hidden');
-        banner.setAttribute('aria-hidden', 'false');
-      });
-
-      installBtn.addEventListener('click', async () => {
-        if (!deferredPrompt) return;
-        deferredPrompt.prompt();
-        const choice = await deferredPrompt.userChoice;
-        if (choice.outcome === 'accepted') {
-          banner.classList.add('hidden');
-          banner.setAttribute('aria-hidden', 'true');
         }
-        deferredPrompt = null;
+        // If href is a file link (like finance.html), it will navigate normally
       });
+    });
 
-      dismissBtn.addEventListener('click', () => {
-        banner.classList.add('hidden');
-        banner.setAttribute('aria-hidden', 'true');
+    // Update active nav link on scroll
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('.hero, .modules');
+      const navLinks = document.querySelectorAll('.nav-link');
+      let currentSection = '';
+      
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        if (window.scrollY >= sectionTop) {
+          currentSection = '#' + section.getAttribute('id');
+        }
       });
-
-      // show installBtn quickly if pwa-init exposes an install flow
-      // otherwise pwa-init.js will handle banner visibility and the id matches.
-    })();
-
-    // Offline indicator wiring - pwa-init also manages this if present
-    (function () {
-      const offlineEl = document.getElementById('offlineIndicator');
-      function update() {
-        const online = navigator.onLine;
-        offlineEl.setAttribute('aria-hidden', String(online));
-      }
-      window.addEventListener('online', update);
-      window.addEventListener('offline', update);
-      update();
-    })();
-
-    // Analytics hook (placeholder) — replace with your analytics snippet if desired
-    window.__CEPHASGM_ANALYTICS = {
-      track: function () { /* push events to your analytics backend here */ }
-    };
-
-    // Small a11y: allow module cards' inner button to navigate if clicked via keyboard
-    document.querySelectorAll('.module .module-actions button').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const card = e.target.closest('.module');
-        if (card && card.getAttribute('href')) {
-          window.location.href = card.getAttribute('href');
-        } else {
-          // fallback: trigger click on parent anchor (if structured differently)
-          const link = card.querySelector('a');
-          if (link) link.click();
+      
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === currentSection) {
+          link.classList.add('active');
         }
       });
     });
+
+    // Add loading animation to module cards
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.module');
+      cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+      });
+    });
+
+    // PWA Installation
+    let deferredPrompt;
+    const pwaInstallBanner = document.getElementById('pwaInstallBanner');
+    const pwaInstallButton = document.getElementById('pwaInstallButton');
+    const pwaInstallDismiss = document.getElementById('pwaInstallDismiss');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      // Show the banner after a short delay
+      setTimeout(() => {
+        pwaInstallBanner.classList.add('show');
+      }, 2000);
+    });
+
+    pwaInstallButton.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          pwaInstallBanner.classList.remove('show');
+        }
+        deferredPrompt = null;
+      }
+    });
+
+    pwaInstallDismiss.addEventListener('click', () => {
+      pwaInstallBanner.classList.remove('show');
+    });
+
+    // Offline detection
+    window.addEventListener('online', () => {
+      document.getElementById('offlineIndicator').classList.remove('show');
+    });
+
+    window.addEventListener('offline', () => {
+      document.getElementById('offlineIndicator').classList.add('show');
+    });
+
+    // Theme toggle
+    (function() {
+      const root = document.documentElement;
+      const toggleBtn = document.getElementById('themeToggle');
+      const storedTheme = localStorage.getItem('cephasgm-theme');
+      
+      // Apply stored theme or system preference
+      if (storedTheme) {
+        root.setAttribute('data-theme', storedTheme);
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        root.setAttribute('data-theme', 'dark');
+      }
+      
+      toggleBtn.addEventListener('click', () => {
+        const currentTheme = root.getAttribute('data-theme') || 'light';
+        const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+        root.setAttribute('data-theme', nextTheme);
+        localStorage.setItem('cephasgm-theme', nextTheme);
+        
+        // Update button text
+        toggleBtn.textContent = nextTheme === 'dark' ? '☀️' : '🌓';
+      });
+      
+      // Set initial button text
+      const currentTheme = root.getAttribute('data-theme') || 'light';
+      toggleBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌓';
+    })();
+
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').then(registration => {
+          console.log('ServiceWorker registration successful');
+        }).catch(err => {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+
+    console.log('🚀 CephasGM ERP System Loaded Successfully');
   </script>
 </body>
 </html>
