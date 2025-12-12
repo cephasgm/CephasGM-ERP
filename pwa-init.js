@@ -1,300 +1,282 @@
-// pwa-init.js - Robust PWA initializer for CephasGM ERP
+// PWA Initializer for CephasGM ERP
 class PWAInitializer {
-  constructor(options = {}) {
+  constructor() {
     this.deferredPrompt = null;
-    this.isOnline = navigator.onLine;
-    this.isInstalled = false;
-    this.swRegistration = null;
-    this.options = options;
+    this.isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    this.isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                       window.navigator.standalone;
+    
     this.init();
   }
-
+  
   init() {
     this.registerServiceWorker();
     this.setupInstallPrompt();
-    this.setupOnlineOfflineListeners();
-    this.setupNavigationHandler();
-    this.checkPWAStatus();
+    this.setupOfflineDetection();
+    this.setupEventListeners();
   }
-
-  // Register Service Worker
+  
   async registerServiceWorker() {
-    if (!('serviceWorker' in navigator)) {
-      console.warn('⚠️ Service Workers are not supported in this browser');
-      return;
-    }
-
-    try {
-      // register with proper scope
-      const registration = await navigator.serviceWorker.register('/sw.js', {
-        scope: '/'
-      });
-      this.swRegistration = registration;
-      console.log('✅ Service Worker registered:', registration);
-
-      // handle updatefound — show update UI when new SW installs
-      registration.addEventListener('updatefound', () => {
-        const newWorker = registration.installing;
-        if (!newWorker) return;
-        console.log('🔄 New service worker found:', newWorker);
-
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed') {
-            // If there's an active controller, this is an update
-            if (navigator.serviceWorker.controller) {
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.register('./sw.js');
+        console.log('Service Worker registered:', registration);
+        
+        // Check for updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
               this.showUpdateNotification();
-            } else {
-              console.log('✅ Service worker installed for the first time');
             }
-          }
+          });
         });
-      });
-    } catch (err) {
-      console.error('❌ Service Worker registration failed:', err);
+      } catch (error) {
+        console.error('Service Worker registration failed:', error);
+      }
     }
   }
-
-  // Setup beforeinstallprompt and appinstalled handlers
+  
   setupInstallPrompt() {
     window.addEventListener('beforeinstallprompt', (e) => {
-      // Prevent automatic mini-infobar on some browsers
+      console.log('beforeinstallprompt event fired');
       e.preventDefault();
       this.deferredPrompt = e;
-      console.log('📱 beforeinstallprompt captured');
-      this.showInstallBanner();
+      
+      // Show install buttons
+      this.showInstallButtons();
+      
+      // Show banner after 3 seconds
+      setTimeout(() => {
+        this.showInstallBanner();
+      }, 3000);
     });
-
-    window.addEventListener('appinstalled', (evt) => {
-      console.log('🎉 App installed', evt);
-      this.isInstalled = true;
+    
+    window.addEventListener('appinstalled', () => {
+      console.log('App installed successfully');
       this.deferredPrompt = null;
-      this.hideInstallBanner();
-      this.showToast('CephasGM ERP installed', 'success');
-    });
-
-    // install button handlers (if present in DOM)
-    document.addEventListener('click', (ev) => {
-      const target = ev.target.closest?.('#pwaInstallButton, #pwaInstallDismiss');
-      if (!target) return;
-
-      if (target.id === 'pwaInstallButton') {
-        this.installPWA();
-      } else if (target.id === 'pwaInstallDismiss') {
-        this.hideInstallBanner();
-      }
+      this.hideAllInstallOptions();
+      this.showToast('App installed successfully!', 'success');
     });
   }
-
-  // Prompt the saved beforeinstallprompt event
-  async installPWA() {
-    if (!this.deferredPrompt) {
-      this.showToast('Install not available', 'warning');
-      return;
-    }
-    try {
-      this.deferredPrompt.prompt();
-      const { outcome } = await this.deferredPrompt.userChoice;
-      console.log('PWA install result:', outcome);
-      if (outcome === 'accepted') {
-        this.showToast('Installation accepted', 'success');
-      } else {
-        this.showToast('Installation dismissed', 'info');
-      }
-      this.deferredPrompt = null;
-      this.hideInstallBanner();
-    } catch (err) {
-      console.error('Install failed:', err);
-      this.showToast('Installation failed', 'error');
-    }
+  
+  showInstallButtons() {
+    // Show all install buttons
+    const installButtons = document.querySelectorAll('[data-pwa-install]');
+    installButtons.forEach(btn => {
+      btn.style.display = 'flex';
+      btn.addEventListener('click', () => this.installPWA());
+    });
   }
-
-  showInstallBanner() {
-    // don't show if already installed or in standalone
-    const standalone = window.matchMedia('(display-mode: standalone)').matches ||
-                       window.navigator.standalone === true;
-    if (this.isInstalled || standalone) return;
-
+  
+  hideAllInstallOptions() {
+    // Hide banner
     const banner = document.getElementById('pwaInstallBanner');
-    if (banner) {
+    if (banner) banner.style.display = 'none';
+    
+    // Hide install buttons
+    const installButtons = document.querySelectorAll('[data-pwa-install]');
+    installButtons.forEach(btn => {
+      btn.style.display = 'none';
+    });
+  }
+  
+  showInstallBanner() {
+    // Don't show if already installed or dismissed recently
+    if (this.isStandalone) return;
+    
+    const dismissed = localStorage.getItem('pwaBannerDismissed');
+    if (dismissed && Date.now() - parseInt(dismissed) < 7 * 24 * 60 * 60 * 1000) {
+      return; // Don't show for 7 days after dismissal
+    }
+    
+    const banner = document.getElementById('pwaInstallBanner');
+    if (banner && this.deferredPrompt) {
       banner.classList.add('show');
     }
   }
-
+  
   hideInstallBanner() {
     const banner = document.getElementById('pwaInstallBanner');
-    if (banner) banner.classList.remove('show');
+    if (banner) {
+      banner.classList.remove('show');
+      localStorage.setItem('pwaBannerDismissed', Date.now().toString());
+    }
   }
-
-  // Online/offline handling
-  setupOnlineOfflineListeners() {
-    window.addEventListener('online', () => {
-      this.isOnline = true;
-      this.hideOfflineIndicator();
-      this.showToast('Connection restored', 'success');
-      this.syncPendingOperations();
-    });
-
-    window.addEventListener('offline', () => {
-      this.isOnline = false;
-      this.showOfflineIndicator();
-      this.showToast('You are offline', 'warning');
-    });
-
-    // initial
-    if (!this.isOnline) this.showOfflineIndicator();
-  }
-
-  showOfflineIndicator() {
-    const el = document.getElementById('offlineIndicator');
-    if (el) el.classList.add('show');
-  }
-  hideOfflineIndicator() {
-    const el = document.getElementById('offlineIndicator');
-    if (el) el.classList.remove('show');
-  }
-
-  // navigation handler - only intercept same-origin navigations
-  setupNavigationHandler() {
-    document.addEventListener('click', (e) => {
-      const a = e.target.closest?.('a');
-      if (!a || !a.href) return;
-      // allow native (external) links, tel:, mailto:, target=_blank, or explicit external param
-      if (a.target === '_blank' || a.hasAttribute('download') || a.dataset.external !== undefined) return;
-      if (a.href.startsWith('mailto:') || a.href.startsWith('tel:')) return;
-
-      // only intercept same-origin links
-      const linkUrl = new URL(a.href, window.location.href);
-      if (linkUrl.origin !== location.origin) return;
-
-      // intercept navigations that look like page loads (no fragment-only)
-      e.preventDefault();
-      this.navigateTo(linkUrl.pathname + linkUrl.search + linkUrl.hash);
-    });
-
-    // popstate
-    window.addEventListener('popstate', () => {
-      this.navigateTo(window.location.pathname + window.location.search + window.location.hash);
-    });
-  }
-
-  // Client-side navigation with partial replacement
-  async navigateTo(path) {
-    // if path equals current path, do nothing
-    if (path === window.location.pathname + window.location.search + window.location.hash) return;
-
-    this.showLoading();
+  
+  async installPWA() {
+    if (!this.deferredPrompt) {
+      if (this.isIOS) {
+        this.showIOSInstructions();
+        return;
+      }
+      this.showToast('Installation not available', 'warning');
+      return;
+    }
+    
     try {
-      const res = await fetch(path, { credentials: 'same-origin' });
-      if (!res.ok) {
-        throw new Error('Navigation fetch failed');
+      this.deferredPrompt.prompt();
+      const { outcome } = await this.deferredPrompt.userChoice;
+      
+      if (outcome === 'accepted') {
+        console.log('User accepted the install');
+        this.hideInstallBanner();
+      } else {
+        console.log('User dismissed the install');
       }
-      const text = await res.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(text, 'text/html');
-      const newMain = doc.querySelector('.main-content') || doc.body;
-      const currentMain = document.querySelector('.main-content') || document.body;
-
-      if (currentMain && newMain) {
-        currentMain.innerHTML = newMain.innerHTML;
-      }
-
-      // Update title and history
-      document.title = doc.title || document.title;
-      window.history.pushState({}, '', path);
-
-      // Re-run page scripts if needed
-      this.initializePageScripts();
-    } catch (err) {
-      console.warn('Navigation fallback to full load due to:', err);
-      window.location.href = path; // fallback
-    } finally {
-      this.hideLoading();
+      
+      this.deferredPrompt = null;
+    } catch (error) {
+      console.error('Install failed:', error);
+      this.showToast('Installation failed', 'error');
     }
   }
-
-  // Check PWA installation / display-mode
-  checkPWAStatus() {
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-      this.isInstalled = true;
-      console.log('📱 Running as standalone PWA');
+  
+  showIOSInstructions() {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    `;
+    
+    modal.innerHTML = `
+      <div style="
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        max-width: 400px;
+        margin: 1rem;
+        text-align: center;
+      ">
+        <h3 style="margin-bottom: 1rem;">Install on iOS</h3>
+        <p style="margin-bottom: 1.5rem;">To install this app:</p>
+        <ol style="text-align: left; margin-bottom: 1.5rem;">
+          <li>Tap the Share button <span style="font-size: 1.2em;">⎋</span></li>
+          <li>Scroll and tap "Add to Home Screen"</li>
+          <li>Tap "Add" to install</li>
+        </ol>
+        <button onclick="this.closest('div[style*=\"background: white\"]').parentElement.remove()" 
+                style="
+                  background: #2563eb;
+                  color: white;
+                  border: none;
+                  padding: 0.75rem 1.5rem;
+                  border-radius: 8px;
+                  cursor: pointer;
+                  font-weight: 600;
+                ">
+          Got it!
+        </button>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Close on background click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove();
+      }
+    });
+  }
+  
+  setupOfflineDetection() {
+    window.addEventListener('online', () => {
+      document.getElementById('offlineIndicator')?.classList.remove('show');
+    });
+    
+    window.addEventListener('offline', () => {
+      document.getElementById('offlineIndicator')?.classList.add('show');
+    });
+    
+    // Initial check
+    if (!navigator.onLine) {
+      document.getElementById('offlineIndicator')?.classList.add('show');
     }
   }
-
+  
+  setupEventListeners() {
+    // Banner buttons
+    document.getElementById('pwaInstallButton')?.addEventListener('click', () => {
+      this.installPWA();
+    });
+    
+    document.getElementById('pwaInstallDismiss')?.addEventListener('click', () => {
+      this.hideInstallBanner();
+    });
+    
+    document.getElementById('pwaInstallLater')?.addEventListener('click', () => {
+      this.hideInstallBanner();
+    });
+    
+    // Close banner button
+    document.getElementById('closeBanner')?.addEventListener('click', () => {
+      this.hideInstallBanner();
+    });
+  }
+  
   showUpdateNotification() {
-    // non-blocking update toast
-    if (confirm('A new version is available. Reload now to update?')) {
+    if (confirm('A new version is available. Reload to update?')) {
       window.location.reload();
     }
   }
-
-  // Basic toast helper
+  
   showToast(message, type = 'info') {
-    // simple implementation - keep concise
+    // Simple toast implementation
     const toast = document.createElement('div');
-    toast.className = `ce-toast ce-toast-${type}`;
     toast.textContent = message;
+    toast.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 10000;
+      animation: slideIn 0.3s ease;
+    `;
+    
     document.body.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 50);
+    
     setTimeout(() => {
-      toast.classList.remove('show');
+      toast.style.animation = 'slideOut 0.3s ease';
       setTimeout(() => toast.remove(), 300);
-    }, 4500);
-  }
-
-  // Loading UI (lightweight)
-  showLoading() {
-    if (document.querySelector('.ce-global-loader')) {
-      document.querySelector('.ce-global-loader').style.display = 'flex';
-      return;
-    }
-    const el = document.createElement('div');
-    el.className = 'ce-global-loader';
-    el.innerHTML = `<div class="ce-loader-inner"><div class="ce-spinner" aria-hidden="true"></div><div class="ce-loader-text">Loading...</div></div>`;
-    document.body.appendChild(el);
-    // minimal styles appended once
-    if (!document.getElementById('ce-pwa-styles')) {
-      const s = document.createElement('style');
-      s.id = 'ce-pwa-styles';
-      s.textContent = `
-        .ce-global-loader{position:fixed;inset:0;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;z-index:9999}
-        .ce-loader-inner{text-align:center}
-        .ce-spinner{width:36px;height:36px;border:4px solid #e6eefb;border-top-color:#2563eb;border-radius:50%;animation:ce-spin 1s linear infinite;margin:0 auto 8px}
-        @keyframes ce-spin{to{transform:rotate(360deg)}}
-        .ce-loader-text{color:#334155;font-weight:500}
-        .ce-toast{position:fixed;right:20px;top:70px;background:#fff;padding:10px 14px;border-radius:8px;box-shadow:0 8px 24px rgba(2,6,23,0.12);opacity:0;transform:translateY(-8px);transition:opacity .25s,transform .25s;z-index:10000}
-        .ce-toast.show{opacity:1;transform:translateY(0)}
-        .ce-toast-info{border-left:4px solid #3b82f6}
-        .ce-toast-success{border-left:4px solid #10b981}
-        .ce-toast-warning{border-left:4px solid #f59e0b}
-        .ce-toast-error{border-left:4px solid #ef4444}
+    }, 3000);
+    
+    // Add animation styles
+    if (!document.getElementById('toast-animations')) {
+      const style = document.createElement('style');
+      style.id = 'toast-animations';
+      style.textContent = `
+        @keyframes slideIn {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+          from { transform: translateX(0); opacity: 1; }
+          to { transform: translateX(100%); opacity: 0; }
+        }
       `;
-      document.head.appendChild(s);
+      document.head.appendChild(style);
     }
-  }
-
-  hideLoading() {
-    const el = document.querySelector('.ce-global-loader');
-    if (el) el.style.display = 'none';
-  }
-
-  // Placeholder sync function
-  async syncPendingOperations() {
-    // Implement app-specific pending sync logic here
-    console.log('🔄 Attempting to sync pending operations...');
-    // Example: read from IndexedDB and push to API
-  }
-
-  initializePageScripts() {
-    // Reinitialize any JS components after a partial navigation
-    console.log('🔁 Re-initializing page scripts');
   }
 }
 
-// instantiate on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-  window.pwaInitializer = new PWAInitializer();
-});
-
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = PWAInitializer;
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    window.pwaManager = new PWAInitializer();
+  });
+} else {
+  window.pwaManager = new PWAInitializer();
 }
