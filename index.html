@@ -30,7 +30,7 @@
   <link rel="icon" type="image/png" href="icon-192.png" />
   <link rel="apple-touch-icon" href="icon-192.png" />
 
-  <!-- Lightweight CSS -->
+  <!-- Complete CSS with PWA Fixes -->
   <style>
     :root{
       --bg: #f8fafc;
@@ -72,634 +72,659 @@
       min-height:100vh;
     }
 
-    /* PWA Install Banner - Modern popup style */
-    .pwa-banner{
-      position:fixed;
-      bottom:20px;
-      left:20px;
-      right:20px;
-      max-width:500px;
-      margin:0 auto;
-      background:var(--card);
-      color:var(--text);
-      padding:1.25rem;
-      border-radius:16px;
-      box-shadow:0 10px 40px rgba(0,0,0,0.2);
-      z-index:10000;
-      display:none;
-      flex-direction:column;
-      gap:1rem;
-      border:2px solid var(--primary);
-      animation:slideUp 0.5s ease-out;
+    /* ===== PWA BANNER STYLES ===== */
+    .pwa-banner {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      max-width: 500px;
+      margin: 0 auto;
+      background: var(--card);
+      color: var(--text);
+      padding: 1.25rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      z-index: 10000;
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+      border: 2px solid var(--primary);
+      animation: slideUp 0.5s ease-out;
+    }
+    
+    .pwa-banner.show {
+      display: flex;
     }
     
     @keyframes slideUp {
       from {
-        opacity:0;
-        transform:translateY(100px);
+        opacity: 0;
+        transform: translateY(100px);
       }
       to {
-        opacity:1;
-        transform:translateY(0);
+        opacity: 1;
+        transform: translateY(0);
       }
     }
     
-    .pwa-banner.show{
-      display:flex;
+    .pwa-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
     
-    .pwa-header{
-      display:flex;
-      align-items:center;
-      gap:1rem;
+    .pwa-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--success));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+      flex-shrink: 0;
     }
     
-    .pwa-icon{
-      width:60px;
-      height:60px;
-      border-radius:12px;
-      background:linear-gradient(135deg,var(--primary),var(--success));
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:1.5rem;
-      color:white;
-      flex-shrink:0;
+    .pwa-info h3 {
+      margin: 0 0 0.25rem;
+      font-size: 1.1rem;
     }
     
-    .pwa-info h3{
-      margin:0 0 0.25rem;
-      font-size:1.1rem;
+    .pwa-info p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
     }
     
-    .pwa-info p{
-      margin:0;
-      color:var(--muted);
-      font-size:0.9rem;
+    .pwa-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
     }
     
-    .pwa-actions{
-      display:flex;
-      gap:0.75rem;
-      justify-content:flex-end;
+    .close-banner {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1.25rem;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     
-    .close-banner{
-      position:absolute;
-      top:10px;
-      right:10px;
-      background:none;
-      border:none;
-      color:var(--muted);
-      cursor:pointer;
-      font-size:1.25rem;
-      width:30px;
-      height:30px;
-      border-radius:50%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+    .close-banner:hover {
+      background: var(--primary-light);
+      color: var(--primary);
     }
     
-    .close-banner:hover{
-      background:var(--primary-light);
-      color:var(--primary);
-    }
-
     /* Offline Indicator */
-    .offline-indicator{
-      position:fixed;
-      top:0;
-      left:0;
-      right:0;
-      background:var(--warning);
-      color:white;
-      text-align:center;
-      padding:0.75rem;
-      font-weight:600;
-      z-index:10001;
-      display:none;
-      animation:slideDown 0.3s ease-out;
+    .offline-indicator {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--warning);
+      color: white;
+      text-align: center;
+      padding: 0.75rem;
+      font-weight: 600;
+      z-index: 10001;
+      display: none;
+      animation: slideDown 0.3s ease-out;
     }
     
     @keyframes slideDown {
       from {
-        opacity:0;
-        transform:translateY(-100%);
+        opacity: 0;
+        transform: translateY(-100%);
       }
       to {
-        opacity:1;
-        transform:translateY(0);
+        opacity: 1;
+        transform: translateY(0);
       }
     }
     
-    .offline-indicator.show{
-      display:block;
-    }
-
-    /* Header */
-    .app-header{
-      position:sticky;
-      top:0;
-      z-index:1000;
-      background: rgba(255,255,255,0.98);
-      backdrop-filter:blur(20px);
-      padding:0.75rem 2rem;
-      box-shadow:var(--shadow);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
+    .offline-indicator.show {
+      display: block;
     }
     
-    .container{
-      max-width:var(--max-width);
-      margin:0 auto;
-      width:100%;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
+    /* Install buttons */
+    [data-pwa-install] {
+      background: linear-gradient(135deg, var(--primary), var(--success)) !important;
+      color: white !important;
+      box-shadow: var(--shadow) !important;
+      border: none !important;
+    }
+    
+    [data-pwa-install]:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: var(--shadow-lg) !important;
+    }
+    
+    /* Dark mode adjustments for PWA */
+    :root[data-theme='dark'] .pwa-banner {
+      background: var(--card);
+      border-color: var(--primary);
+    }
+
+    /* ===== HEADER & NAVIGATION ===== */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(20px);
+      padding: 0.75rem 2rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header-container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     /* Logo */
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:1rem;
-      text-decoration:none;
-      transition:transform 0.3s ease;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      transition: transform 0.3s ease;
     }
     
-    .brand:hover{
-      transform:scale(1.05);
+    .brand:hover {
+      transform: scale(1.05);
     }
     
-    .logo-icon{
-      font-size:1.5rem;
-      background:linear-gradient(135deg,var(--primary),var(--success));
-      color:white;
-      width:50px;
-      height:50px;
-      border-radius:12px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      box-shadow:var(--shadow);
+    .logo-icon {
+      font-size: 1.5rem;
+      background: linear-gradient(135deg, var(--primary), var(--success));
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
     }
     
-    .logo-text h1{
-      font-size:1.5rem;
-      font-weight:700;
-      color:#1e293b;
-      margin-bottom:0.25rem;
+    .logo-text h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.25rem;
     }
     
-    .logo-text p{
-      font-size:0.875rem;
-      color:var(--muted);
-      font-weight:500;
+    .logo-text p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      font-weight: 500;
     }
 
     /* Navigation */
-    .site-nav{
-      display:flex;
-      gap:0.5rem;
-      align-items:center;
+    .site-nav {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
     }
     
-    .nav-link{
-      text-decoration:none;
-      color:var(--muted);
-      font-weight:600;
-      padding:0.75rem 1.25rem;
-      border-radius:var(--radius);
-      transition:all 0.3s ease;
-      position:relative;
-      display:flex;
-      align-items:center;
-      gap:0.5rem;
-      font-size:0.9rem;
+    .nav-link {
+      text-decoration: none;
+      color: var(--muted);
+      font-weight: 600;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius);
+      transition: all 0.3s ease;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
     }
     
-    .nav-link:hover{
-      color:var(--primary);
-      background:var(--primary-light);
+    .nav-link:hover {
+      color: var(--primary);
+      background: var(--primary-light);
     }
     
-    .nav-link.active{
-      color:var(--primary);
-      background:var(--primary-light);
+    .nav-link.active {
+      color: var(--primary);
+      background: var(--primary-light);
     }
     
-    .nav-link.active::after{
-      content:'';
-      position:absolute;
-      bottom:-2px;
-      left:50%;
-      transform:translateX(-50%);
-      width:6px;
-      height:6px;
-      background:var(--primary);
-      border-radius:50%;
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 6px;
+      background: var(--primary);
+      border-radius: 50%;
     }
     
-    .nav-link.install-link{
-      background:linear-gradient(135deg,var(--primary),var(--success));
-      color:white;
-      box-shadow:var(--shadow);
+    /* Install link in nav */
+    .nav-link.install-link {
+      background: linear-gradient(135deg, var(--primary), var(--success)) !important;
+      color: white !important;
+      box-shadow: var(--shadow) !important;
+      border: none !important;
     }
     
-    .nav-link.install-link:hover{
-      transform:translateY(-2px);
-      box-shadow:var(--shadow-lg);
+    .nav-link.install-link:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: var(--shadow-lg) !important;
     }
 
-    /* Install button in controls */
-    .install-btn{
-      background:linear-gradient(135deg,var(--primary),var(--success));
-      color:white;
-      border:none;
-      padding:0.5rem 1rem;
-      border-radius:8px;
-      font-weight:600;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      gap:0.5rem;
-      box-shadow:var(--shadow);
+    /* Header controls */
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     
-    .install-btn:hover{
-      transform:translateY(-2px);
-      box-shadow:var(--shadow-lg);
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
     }
     
-    .install-btn.hidden{
-      display:none;
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--muted);
+      color: var(--muted);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--success));
+      color: white;
+      box-shadow: var(--shadow);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .install-btn {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .install-btn.show {
+      display: flex;
     }
 
-    /* Main Content */
-    .main-content{
-      margin-top:80px;
-      padding:2rem;
-      max-width:var(--max-width);
-      margin-left:auto;
-      margin-right:auto;
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      margin-top: 80px;
+      padding: 2rem;
+      max-width: var(--max-width);
+      margin-left: auto;
+      margin-right: auto;
     }
 
     /* Hero Section */
-    .hero{
-      text-align:center;
-      padding:3rem 2rem;
-      background:rgba(255,255,255,0.95);
-      backdrop-filter:blur(20px);
-      border-radius:20px;
-      margin-bottom:2rem;
-      box-shadow:var(--shadow);
-      border:1px solid rgba(255,255,255,0.2);
+    .hero {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.2);
     }
     
-    .hero-title{
-      font-size:2.5rem;
-      font-weight:700;
-      margin-bottom:1rem;
-      background:linear-gradient(135deg,var(--primary),var(--success));
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--primary), var(--success));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     
-    .hero-subtitle{
-      font-size:1.125rem;
-      margin-bottom:2rem;
-      color:var(--muted);
-      max-width:600px;
-      margin-left:auto;
-      margin-right:auto;
+    .hero-subtitle {
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
     }
     
-    .hero-stats{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:1.5rem;
-      max-width:800px;
-      margin:0 auto;
-    }
-    
-    .stat{
-      text-align:center;
-      padding:1.5rem;
-      background:var(--primary-light);
-      border-radius:var(--radius);
-      transition:transform 0.3s ease;
-    }
-    
-    .stat:hover{
-      transform:translateY(-5px);
-    }
-    
-    .stat .n{
-      font-size:2rem;
-      font-weight:700;
-      color:var(--primary);
-      display:block;
-      margin-bottom:0.5rem;
-    }
-    
-    .stat .l{
-      font-size:0.875rem;
-      color:var(--muted);
-      font-weight:500;
-    }
-
     /* Install CTA in Hero */
-    .install-cta{
-      margin-top:2rem;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:1rem;
-      flex-wrap:wrap;
+    .install-cta {
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
     
-    .install-cta-text{
-      color:var(--muted);
-      font-size:0.9rem;
+    .install-cta-text {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      max-width: 800px;
+      margin: 2rem auto 0;
+    }
+    
+    .stat {
+      text-align: center;
+      padding: 1.5rem;
+      background: var(--primary-light);
+      border-radius: var(--radius);
+      transition: transform 0.3s ease;
+    }
+    
+    .stat:hover {
+      transform: translateY(-5px);
+    }
+    
+    .stat .n {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat .l {
+      font-size: 0.875rem;
+      color: var(--muted);
+      font-weight: 500;
     }
 
-    /* Modules Grid */
-    .modules{
-      margin-bottom:2rem;
+    /* ===== MODULES GRID ===== */
+    .modules-section {
+      margin-bottom: 2rem;
     }
     
-    .section-header{
-      text-align:center;
-      margin-bottom:2rem;
+    .section-header {
+      text-align: center;
+      margin-bottom: 2rem;
     }
     
-    .section-title{
-      font-size:2rem;
-      font-weight:700;
-      color:var(--text);
-      margin-bottom:1rem;
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1rem;
     }
     
-    .section-subtitle{
-      font-size:1rem;
-      color:var(--muted);
-      max-width:600px;
-      margin:0 auto;
+    .section-subtitle {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto;
     }
     
-    .modules-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:1.5rem;
-      margin-bottom:2rem;
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
     }
     
-    .module{
-      background:rgba(255,255,255,0.95);
-      backdrop-filter:blur(20px);
-      border-radius:16px;
-      padding:1.5rem;
-      text-decoration:none;
-      color:inherit;
-      transition:all 0.3s ease;
-      border:1px solid rgba(255,255,255,0.3);
-      box-shadow:var(--shadow);
-      position:relative;
-      overflow:hidden;
-      height:100%;
-      display:flex;
-      flex-direction:column;
+    .module-card {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.3);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
     
-    .module::before{
-      content:'';
-      position:absolute;
-      top:0;
-      left:0;
-      right:0;
-      height:4px;
-      background:linear-gradient(135deg,var(--primary),var(--success));
+    .module-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(135deg, var(--primary), var(--success));
     }
     
-    .module:hover{
-      transform:translateY(-8px);
-      box-shadow:var(--shadow-lg);
-      border-color:var(--primary);
+    .module-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
     }
     
-    .module-header{
-      display:flex;
-      align-items:center;
-      gap:1rem;
-      margin-bottom:1rem;
+    .module-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
     }
     
-    .module-icon{
-      width:50px;
-      height:50px;
-      border-radius:12px;
-      background:linear-gradient(135deg,var(--primary-light),var(--primary));
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:1.25rem;
-      color:white;
-      flex-shrink:0;
+    .module-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: white;
+      flex-shrink: 0;
     }
     
-    .module-title{
-      font-size:1.25rem;
-      font-weight:600;
-      color:var(--text);
-      margin-bottom:0.5rem;
+    .module-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
     }
     
-    .module-description{
-      color:var(--muted);
-      margin-bottom:1rem;
-      line-height:1.5;
-      flex-grow:1;
+    .module-description {
+      color: var(--muted);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+      flex-grow: 1;
     }
     
-    .module-actions{
-      margin-top:auto;
+    .module-actions {
+      margin-top: auto;
     }
     
-    .btn{
-      padding:0.75rem 1.5rem;
-      border-radius:var(--radius);
-      font-weight:600;
-      text-decoration:none;
-      transition:all 0.3s ease;
-      border:none;
-      cursor:pointer;
-      display:inline-flex;
-      align-items:center;
-      gap:0.5rem;
-      font-size:0.875rem;
+    .module-btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      background: var(--primary);
+      color: white;
+      box-shadow: var(--shadow);
     }
     
-    .btn-primary{
-      background:var(--primary);
-      color:white;
-      box-shadow:var(--shadow);
-    }
-    
-    .btn-primary:hover{
-      background:var(--primary-600);
-      transform:translateY(-2px);
-      box-shadow:var(--shadow-lg);
-    }
-    
-    .btn-outline{
-      background:transparent;
-      border:1px solid var(--muted);
-      color:var(--muted);
-    }
-    
-    .btn-outline:hover{
-      background:rgba(255,255,255,0.1);
+    .module-btn:hover {
+      background: var(--primary-600);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
     }
 
-    /* Footer with Install Link */
-    .site-footer{
-      background:rgba(255,255,255,0.95);
-      backdrop-filter:blur(20px);
-      padding:2rem;
-      text-align:center;
-      margin-top:3rem;
-      border-top:1px solid rgba(255,255,255,0.3);
+    /* ===== FOOTER ===== */
+    .site-footer {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      padding: 2rem;
+      text-align: center;
+      margin-top: 3rem;
+      border-top: 1px solid rgba(255,255,255,0.3);
     }
     
-    .footer-content{
-      max-width:var(--max-width);
-      margin:0 auto;
-      display:flex;
-      flex-direction:column;
-      gap:1rem;
+    .footer-content {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
     
-    .footer-install{
-      margin-bottom:1rem;
+    .footer-install {
+      margin-bottom: 1rem;
     }
     
-    .copyright{
-      color:var(--muted);
-      font-size:0.875rem;
-      font-weight:500;
+    .copyright {
+      color: var(--muted);
+      font-size: 0.875rem;
+      font-weight: 500;
     }
     
-    .footer-links{
-      display:flex;
-      justify-content:center;
-      gap:1.5rem;
-      margin-top:1rem;
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
     }
     
-    .footer-link{
-      color:var(--primary);
-      text-decoration:none;
-      font-weight:500;
+    .footer-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
     }
     
-    .footer-link:hover{
-      text-decoration:underline;
+    .footer-link:hover {
+      text-decoration: underline;
     }
 
-    /* Responsive Design */
-    @media (max-width:1024px){
-      .hero-stats{
-        grid-template-columns:repeat(2,1fr);
+    /* ===== RESPONSIVE DESIGN ===== */
+    @media (max-width: 1024px) {
+      .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
     
-    @media (max-width:768px){
-      .app-header{
-        padding:0.75rem 1rem;
-        flex-direction:column;
-        gap:1rem;
-        height:auto;
+    @media (max-width: 768px) {
+      .app-header {
+        padding: 0.75rem 1rem;
+        flex-direction: column;
+        gap: 1rem;
+        height: auto;
       }
       
-      .site-nav{
-        gap:0.25rem;
-        flex-wrap:wrap;
-        justify-content:center;
-        width:100%;
+      .site-nav {
+        gap: 0.25rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
       }
       
-      .nav-link{
-        padding:0.5rem 1rem;
-        font-size:0.85rem;
+      .nav-link {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
       }
       
-      .hero-title{
-        font-size:2rem;
+      .hero-title {
+        font-size: 2rem;
       }
       
-      .hero-stats{
-        grid-template-columns:1fr;
-        gap:1rem;
+      .hero-stats {
+        grid-template-columns: 1fr;
+        gap: 1rem;
       }
       
-      .modules-grid{
-        grid-template-columns:1fr;
+      .modules-grid {
+        grid-template-columns: 1fr;
       }
       
-      .main-content{
-        padding:1rem;
-        margin-top:120px;
+      .main-content {
+        padding: 1rem;
+        margin-top: 120px;
       }
       
-      .pwa-banner{
-        left:10px;
-        right:10px;
-        bottom:10px;
+      .pwa-banner {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
       }
       
-      .footer-links{
-        flex-direction:column;
-        gap:0.75rem;
+      .footer-links {
+        flex-direction: column;
+        gap: 0.75rem;
       }
     }
 
-    /* Animation */
-    @keyframes fadeInUp{
-      from{
-        opacity:0;
-        transform:translateY(30px);
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
       }
-      to{
-        opacity:1;
-        transform:translateY(0);
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
     
-    .module{
-      animation:fadeInUp 0.6s ease-out;
+    .module-card {
+      animation: fadeInUp 0.6s ease-out;
     }
 
-    /* Dark mode support */
+    /* ===== DARK MODE SUPPORT ===== */
     :root[data-theme='dark'] .app-header,
     :root[data-theme='dark'] .hero,
-    :root[data-theme='dark'] .module,
-    :root[data-theme='dark'] .site-footer{
-      background:rgba(30,41,59,0.95);
+    :root[data-theme='dark'] .module-card,
+    :root[data-theme='dark'] .site-footer {
+      background: rgba(30,41,59,0.95);
     }
     
-    :root[data-theme='dark'] .app-header{
-      background:rgba(30,41,59,0.98);
+    :root[data-theme='dark'] .app-header {
+      background: rgba(30,41,59,0.98);
     }
     
-    :root[data-theme='dark'] .logo-text h1{
-      color:#f1f5f9;
-    }
-    
-    :root[data-theme='dark'] .pwa-banner{
-      background:var(--card);
-      border-color:var(--primary);
+    :root[data-theme='dark'] .logo-text h1 {
+      color: #f1f5f9;
     }
   </style>
 </head>
@@ -709,7 +734,7 @@
     ⚠️ You are currently offline. Some features may be limited.
   </div>
 
-  <!-- PWA Install Banner - Modern Popup -->
+  <!-- PWA Install Banner -->
   <div class="pwa-banner" id="pwaInstallBanner">
     <button class="close-banner" id="closeBanner" aria-label="Close banner">×</button>
     <div class="pwa-header">
@@ -727,7 +752,7 @@
 
   <!-- Header -->
   <header class="app-header">
-    <div class="container">
+    <div class="header-container">
       <a href="#home" class="brand">
         <div class="logo-icon">🏢</div>
         <div class="logo-text">
@@ -742,18 +767,18 @@
         <a href="#administration" class="nav-link">Administration</a>
         <a href="#support" class="nav-link">Support</a>
         <a href="#modules" class="nav-link">All Modules</a>
-        <!-- PWA Install link in navigation -->
-        <a href="#" class="nav-link install-link" id="navInstallLink">
+        <!-- PWA Install in Navigation -->
+        <a href="#" class="nav-link install-link" data-pwa-install style="display: none;">
           📱 Install App
         </a>
       </nav>
 
-      <div class="controls">
+      <div class="header-controls">
         <button id="themeToggle" class="btn btn-outline" aria-label="Toggle theme">
           🌓
         </button>
-        <!-- Additional install button -->
-        <button id="headerInstallBtn" class="install-btn hidden">
+        <!-- PWA Install Button -->
+        <button id="headerInstallBtn" class="btn btn-primary install-btn" data-pwa-install style="display: none;">
           <span>📱</span>
           <span>Install</span>
         </button>
@@ -771,7 +796,7 @@
       <!-- Install CTA in Hero -->
       <div class="install-cta">
         <span class="install-cta-text">Available as a Progressive Web App:</span>
-        <button id="heroInstallBtn" class="btn btn-primary">
+        <button id="heroInstallBtn" class="btn btn-primary" data-pwa-install>
           📱 Install for Offline Use
         </button>
       </div>
@@ -797,235 +822,234 @@
     </section>
 
     <!-- Operations Section -->
-    <section class="modules" id="operations">
+    <section class="modules-section" id="operations">
       <div class="section-header">
         <h2 class="section-title">Core Business Operations</h2>
         <p class="section-subtitle">Essential functions that drive daily business activities</p>
       </div>
       <div class="modules-grid">
-        <!-- Using relative paths for module links -->
-        <a href="finance.html" class="module">
+        <a href="finance.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">📊</div>
             <h3 class="module-title">Finance</h3>
           </div>
           <p class="module-description">Accounting, budgeting, financial reporting, and cash flow management.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
         
-        <a href="sales.html" class="module">
+        <a href="sales.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">💰</div>
             <h3 class="module-title">Sales</h3>
           </div>
           <p class="module-description">Track sales performance, manage leads, and monitor revenue streams.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
         
-        <a href="inventory.html" class="module">
+        <a href="inventory.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">📦</div>
             <h3 class="module-title">Inventory</h3>
           </div>
           <p class="module-description">Manage stock levels, track inventory movement, and optimize warehouse operations.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
         
-        <a href="projects.html" class="module">
+        <a href="projects.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">📋</div>
             <h3 class="module-title">Projects</h3>
           </div>
           <p class="module-description">Manage projects, timelines, resources and track progress across departments.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
         
-        <a href="procurement.html" class="module">
+        <a href="procurement.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">🛒</div>
             <h3 class="module-title">Procurement</h3>
           </div>
           <p class="module-description">Handle purchase orders, supplier management, and procurement processes.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
         
-        <a href="transport.html" class="module">
+        <a href="transport.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">🚚</div>
             <h3 class="module-title">Transport</h3>
           </div>
           <p class="module-description">Manage logistics, fleet operations, and delivery schedules.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
       </div>
     </section>
 
     <!-- Administration Section -->
-    <section class="modules" id="administration">
+    <section class="modules-section" id="administration">
       <div class="section-header">
         <h2 class="section-title">Administration & Management</h2>
         <p class="section-subtitle">Organizational management and administrative functions</p>
       </div>
       <div class="modules-grid">
-        <a href="admin.html" class="module">
+        <a href="admin.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">⚙️</div>
             <h3 class="module-title">System Admin</h3>
           </div>
           <p class="module-description">System configuration, user management, and administrative controls.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
         
-        <a href="hr.html" class="module">
+        <a href="hr.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">👥</div>
             <h3 class="module-title">Human Resources</h3>
           </div>
           <p class="module-description">Employee management, recruitment, performance tracking, and HR policies.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
         
-        <a href="payroll.html" class="module">
+        <a href="payroll.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">💵</div>
             <h3 class="module-title">Payroll</h3>
           </div>
           <p class="module-description">Process salaries, manage deductions, and handle payroll compliance.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
         
-        <a href="attendance.html" class="module">
+        <a href="attendance.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">📅</div>
             <h3 class="module-title">Attendance</h3>
           </div>
           <p class="module-description">Track employee attendance, leaves, and time management.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
       </div>
     </section>
 
     <!-- Support Section -->
-    <section class="modules" id="support">
+    <section class="modules-section" id="support">
       <div class="section-header">
         <h2 class="section-title">Support & Services</h2>
         <p class="section-subtitle">Business support tools and service management</p>
       </div>
       <div class="modules-grid">
-        <a href="customer-service.html" class="module">
+        <a href="customer-service.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">🤝</div>
             <h3 class="module-title">Customer Service</h3>
           </div>
           <p class="module-description">Manage customer support, tickets, and service quality monitoring.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
         
-        <a href="marketing.html" class="module">
+        <a href="marketing.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">📢</div>
             <h3 class="module-title">Marketing</h3>
           </div>
           <p class="module-description">Campaign management, marketing analytics, and promotional activities.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
         
-        <a href="legal.html" class="module">
+        <a href="legal.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">⚖️</div>
             <h3 class="module-title">Legal</h3>
           </div>
           <p class="module-description">Contract management, compliance tracking, and legal document repository.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
         
-        <a href="safety.html" class="module">
+        <a href="safety.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">🛡️</div>
             <h3 class="module-title">Safety</h3>
           </div>
           <p class="module-description">Workplace safety compliance, incident reporting, and safety training.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
       </div>
     </section>
 
     <!-- All Modules Section -->
-    <section class="modules" id="modules">
+    <section class="modules-section" id="modules">
       <div class="section-header">
         <h2 class="section-title">Additional Modules</h2>
         <p class="section-subtitle">Specialized tools and supplementary functions</p>
       </div>
       <div class="modules-grid">
-        <a href="training.html" class="module">
+        <a href="training.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">🎓</div>
             <h3 class="module-title">Training</h3>
           </div>
           <p class="module-description">Employee training programs, skill development, and certification tracking.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
         
-        <a href="meetings.html" class="module">
+        <a href="meetings.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">👥</div>
             <h3 class="module-title">Meetings</h3>
           </div>
           <p class="module-description">Schedule, organize and track meetings with agenda management.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
         
-        <a href="community.html" class="module">
+        <a href="community.html" class="module-card">
           <div class="module-header">
             <div class="module-icon">🌐</div>
             <h3 class="module-title">Community</h3>
           </div>
           <p class="module-description">Internal communication, announcements, and employee engagement.</p>
           <div class="module-actions">
-            <span class="btn btn-primary">Open Module</span>
+            <span class="module-btn">Open Module</span>
           </div>
         </a>
       </div>
     </section>
   </main>
 
-  <!-- Footer with Install Link -->
+  <!-- Footer -->
   <footer class="site-footer">
     <div class="footer-content">
       <div class="footer-install">
-        <button id="footerInstallBtn" class="btn btn-outline">
+        <button id="footerInstallBtn" class="btn btn-outline" data-pwa-install>
           📱 Install App for Better Experience
         </button>
       </div>
@@ -1035,7 +1059,7 @@
         <a href="#operations" class="footer-link">Operations</a>
         <a href="#administration" class="footer-link">Administration</a>
         <a href="#support" class="footer-link">Support</a>
-        <a href="#" id="footerInstallLink" class="footer-link">Install PWA</a>
+        <a href="#" id="footerInstallLink" class="footer-link" data-pwa-install>Install PWA</a>
       </div>
       
       <div class="copyright">
@@ -1044,212 +1068,11 @@
     </div>
   </footer>
 
+  <!-- PWA Initialization Script -->
+  <script src="pwa-init.js"></script>
+
+  <!-- Main Application Script -->
   <script>
-    // PWA Installation Manager
-    class PWAInstallManager {
-      constructor() {
-        this.deferredPrompt = null;
-        this.isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        this.isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                           window.navigator.standalone || 
-                           document.referrer.includes('android-app://');
-        
-        // Elements
-        this.banner = document.getElementById('pwaInstallBanner');
-        this.installButton = document.getElementById('pwaInstallButton');
-        this.installLaterBtn = document.getElementById('pwaInstallLater');
-        this.closeBannerBtn = document.getElementById('closeBanner');
-        this.navInstallLink = document.getElementById('navInstallLink');
-        this.headerInstallBtn = document.getElementById('headerInstallBtn');
-        this.heroInstallBtn = document.getElementById('heroInstallBtn');
-        this.footerInstallBtn = document.getElementById('footerInstallBtn');
-        this.footerInstallLink = document.getElementById('footerInstallLink');
-        
-        this.init();
-      }
-      
-      init() {
-        // Listen for beforeinstallprompt event
-        window.addEventListener('beforeinstallprompt', (e) => {
-          e.preventDefault();
-          this.deferredPrompt = e;
-          this.showInstallOptions();
-        });
-        
-        // If already installed or iOS, handle differently
-        if (this.isStandalone) {
-          this.hideAllInstallOptions();
-          console.log('App is already installed');
-          return;
-        }
-        
-        if (this.isIOS) {
-          this.showIOSInstructions();
-        }
-        
-        // Set up event listeners
-        this.setupEventListeners();
-        
-        // Show banner after delay if install is available
-        if (this.deferredPrompt || this.isIOS) {
-          setTimeout(() => {
-            this.showBanner();
-          }, 3000);
-        }
-      }
-      
-      setupEventListeners() {
-        // Install button in banner
-        this.installButton.addEventListener('click', () => this.installApp());
-        
-        // Later button
-        this.installLaterBtn.addEventListener('click', () => this.hideBanner());
-        this.closeBannerBtn.addEventListener('click', () => this.hideBanner());
-        
-        // Nav install link
-        this.navInstallLink.addEventListener('click', (e) => {
-          e.preventDefault();
-          if (this.deferredPrompt) {
-            this.installApp();
-          } else {
-            this.showBanner();
-          }
-        });
-        
-        // Header install button
-        this.headerInstallBtn.addEventListener('click', () => {
-          if (this.deferredPrompt) {
-            this.installApp();
-          } else {
-            this.showBanner();
-          }
-        });
-        
-        // Hero install button
-        this.heroInstallBtn.addEventListener('click', () => {
-          if (this.deferredPrompt) {
-            this.installApp();
-          } else {
-            this.showBanner();
-          }
-        });
-        
-        // Footer install button
-        this.footerInstallBtn.addEventListener('click', () => {
-          if (this.deferredPrompt) {
-            this.installApp();
-          } else {
-            this.showBanner();
-          }
-        });
-        
-        // Footer install link
-        this.footerInstallLink.addEventListener('click', (e) => {
-          e.preventDefault();
-          if (this.deferredPrompt) {
-            this.installApp();
-          } else {
-            this.showBanner();
-          }
-        });
-      }
-      
-      showInstallOptions() {
-        // Show header install button
-        this.headerInstallBtn.classList.remove('hidden');
-        
-        // Show install link in nav
-        this.navInstallLink.style.display = 'flex';
-      }
-      
-      hideAllInstallOptions() {
-        this.headerInstallBtn.classList.add('hidden');
-        this.navInstallLink.style.display = 'none';
-        this.heroInstallBtn.style.display = 'none';
-        this.footerInstallBtn.style.display = 'none';
-        this.footerInstallLink.style.display = 'none';
-      }
-      
-      showBanner() {
-        if (this.banner) {
-          this.banner.classList.add('show');
-          // Auto-hide after 30 seconds
-          setTimeout(() => {
-            this.hideBanner();
-          }, 30000);
-        }
-      }
-      
-      hideBanner() {
-        if (this.banner) {
-          this.banner.classList.remove('show');
-          // Store in localStorage that user dismissed
-          localStorage.setItem('pwaBannerDismissed', 'true');
-        }
-      }
-      
-      async installApp() {
-        if (this.deferredPrompt) {
-          this.deferredPrompt.prompt();
-          const { outcome } = await this.deferredPrompt.userChoice;
-          
-          if (outcome === 'accepted') {
-            console.log('User accepted the install prompt');
-            this.hideAllInstallOptions();
-            this.hideBanner();
-          } else {
-            console.log('User dismissed the install prompt');
-          }
-          
-          this.deferredPrompt = null;
-        } else if (this.isIOS) {
-          this.showIOSInstructions();
-        }
-      }
-      
-      showIOSInstructions() {
-        const instructions = `
-          <div style="background: white; padding: 20px; border-radius: 10px; max-width: 400px; margin: 20px auto;">
-            <h3>Install on iOS</h3>
-            <p>To install this app on your iOS device:</p>
-            <ol>
-              <li>Tap the Share button <span style="font-size: 1.2em;">⎋</span></li>
-              <li>Scroll down and tap "Add to Home Screen"</li>
-              <li>Tap "Add" in the top right corner</li>
-            </ol>
-            <button onclick="this.parentElement.style.display='none'">Close</button>
-          </div>
-        `;
-        
-        // Create modal for iOS instructions
-        const modal = document.createElement('div');
-        modal.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0,0,0,0.7);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 20000;
-        `;
-        modal.innerHTML = instructions;
-        document.body.appendChild(modal);
-        
-        // Close on background click
-        modal.addEventListener('click', (e) => {
-          if (e.target === modal) {
-            document.body.removeChild(modal);
-          }
-        });
-      }
-    }
-    
-    // Initialize PWA Install Manager
-    let pwaManager;
-    
     // Smooth scrolling for navigation
     document.querySelectorAll('.nav-link, .brand, .footer-link').forEach(link => {
       link.addEventListener('click', function(e) {
@@ -1281,7 +1104,7 @@
     
     // Update active nav link on scroll
     window.addEventListener('scroll', () => {
-      const sections = document.querySelectorAll('.hero, .modules');
+      const sections = document.querySelectorAll('.hero, .modules-section');
       const navLinks = document.querySelectorAll('.nav-link:not(.install-link)');
       let currentSection = '';
       
@@ -1302,22 +1125,10 @@
     
     // Add loading animation to module cards
     document.addEventListener('DOMContentLoaded', () => {
-      const cards = document.querySelectorAll('.module');
+      const cards = document.querySelectorAll('.module-card');
       cards.forEach((card, index) => {
         card.style.animationDelay = `${index * 0.1}s`;
       });
-      
-      // Initialize PWA Manager
-      pwaManager = new PWAInstallManager();
-    });
-    
-    // Offline detection
-    window.addEventListener('online', () => {
-      document.getElementById('offlineIndicator').classList.remove('show');
-    });
-    
-    window.addEventListener('offline', () => {
-      document.getElementById('offlineIndicator').classList.add('show');
     });
     
     // Theme toggle
@@ -1347,17 +1158,6 @@
       const currentTheme = root.getAttribute('data-theme') || 'light';
       toggleBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌓';
     })();
-    
-    // Service Worker Registration
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').then(registration => {
-          console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        }).catch(err => {
-          console.log('ServiceWorker registration failed: ', err);
-        });
-      });
-    }
     
     console.log('🚀 CephasGM ERP System Loaded Successfully');
   </script>
