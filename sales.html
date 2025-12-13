@@ -1,991 +1,1966 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales & CRM - CephasGM ERP</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #64748b;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --background: #f8fafc;
-            --surface: #ffffff;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CephasGM ERP">
+  
+  <title>Sales - CephasGM ERP</title>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <!-- SEO & Social -->
+  <meta name="description" content="CephasGM ERP Sales Module - Manage sales pipeline, customer relationships, and revenue growth" />
+  <meta name="keywords" content="ERP, Sales, CRM, Customer Relationship, Pipeline, Revenue" />
+  <meta name="author" content="CephasGM" />
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Sales - CephasGM ERP" />
+  <meta property="og:description" content="Manage sales pipeline, customer relationships, and revenue growth" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cephasgm.github.io/CephasGM-ERP/sales.html" />
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
 
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.6;
-        }
+  <!-- Icons -->
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
 
-        .dashboard {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            min-height: 100vh;
-        }
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        .sidebar {
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            padding: 2rem 1rem;
-            position: fixed;
-            width: 280px;
-            height: 100vh;
-            overflow-y: auto;
-        }
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-            padding: 0 1rem;
-            text-decoration: none;
-            color: inherit;
-        }
+  <!-- Sales Module Styles -->
+  <style>
+    :root{
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-600: #1d4ed8;
+      --primary-light: #dbeafe;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --radius: 12px;
+      --gap: 1rem;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --max-width: 1400px;
+      --nav-height: 72px;
+      --sidebar-width: 280px;
+    }
 
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.25rem;
-        }
+    /* Dark mode */
+    :root[data-theme='dark']{
+      --bg: linear-gradient(135deg,#0f172a,#071129);
+      --card: #0b1220;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --shadow: 0 10px 30px rgba(2,6,23,0.6);
+    }
+    
+    /* Base reset */
+    *{box-sizing:border-box; margin:0; padding:0}
+    html,body{height:100%}
+    body{
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      line-height:1.6;
+      min-height:100vh;
+    }
 
-        .nav-section {
-            margin-bottom: 2rem;
-        }
+    /* ===== LAYOUT ===== */
+    .sales-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+      min-height: 100vh;
+    }
 
-        .nav-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--text-light);
-            margin-bottom: 1rem;
-            padding: 0 1rem;
-            letter-spacing: 0.5px;
-        }
+    /* ===== SIDEBAR ===== */
+    .sales-sidebar {
+      background: var(--card);
+      border-right: 1px solid var(--primary-light);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 100;
+    }
 
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            color: var(--text-light);
-            text-decoration: none;
-            transition: all 0.2s;
-            margin-bottom: 0.25rem;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-            font-size: 0.95rem;
-        }
+    .sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--primary-light);
+    }
 
-        .nav-item:hover, .nav-item.active {
-            background: var(--primary);
-            color: white;
-        }
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
 
-        .nav-icon {
-            font-size: 1.25rem;
-            width: 24px;
-            text-align: center;
-        }
+    .sidebar-brand-logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--success));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
 
-        .main-content {
-            grid-column: 2;
-            padding: 2rem;
-            margin-left: 280px;
-        }
+    .sidebar-time {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
+    .sidebar-nav {
+      padding: 1rem 0;
+    }
 
-        .header h1 {
-            font-size: 1.875rem;
-            font-weight: 700;
-        }
+    .nav-section {
+      margin-bottom: 1.5rem;
+    }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
+    .nav-section-title {
+      padding: 0 1.5rem 0.5rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      font-weight: 600;
+    }
 
-        .stat-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      font-size: inherit;
+    }
 
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--primary);
-        }
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
 
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
+    .nav-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--primary);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
 
-        .stat-label {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
+    .nav-link-icon {
+      width: 1.25rem;
+      text-align: center;
+    }
 
-        /* Enhanced Module Grid */
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
+    /* ===== MAIN CONTENT ===== */
+    .sales-main {
+      padding: 2rem;
+      overflow-x: hidden;
+    }
 
-        .module-card {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
+    .sales-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--primary-light);
+    }
 
-        .module-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-color: var(--primary);
-        }
+    .sales-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
 
-        .module-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #10b981, #34d399);
-            color: white;
-        }
+    .sales-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
 
-        .module-card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem;
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
 
-        .module-card p {
-            color: var(--text-light);
-            font-size: 0.95rem;
-        }
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--success));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
 
-        /* New Enhanced Components */
-        .chart-container {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            margin-bottom: 2rem;
-        }
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
 
-        .chart-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
+    .user-name {
+      font-weight: 600;
+    }
 
-        .sales-management {
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
+    .user-role {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
 
-        .sales-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
+    /* ===== TABS ===== */
+    .sales-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--card);
+      padding: 0.5rem;
+      border-radius: var(--radius);
+      margin-bottom: 2rem;
+      overflow-x: auto;
+      box-shadow: var(--shadow);
+    }
 
-        .sales-table th,
-        .sales-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
+    .tab-btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 8px;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
 
-        .sales-table th {
-            background: var(--background);
-            font-weight: 600;
-            color: var(--text);
-        }
+    .tab-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
 
-        .deal-status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+    }
 
-        .status-prospect {
-            background: #f3e8ff;
-            color: #7c3aed;
-        }
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
 
-        .status-qualified {
-            background: #dbeafe;
-            color: #1e40af;
-        }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        .status-negotiation {
-            background: #fef3c7;
-            color: #92400e;
-        }
+    .tab-content.active {
+      display: block;
+    }
 
-        .status-closed {
-            background: #dcfce7;
-            color: #166534;
-        }
+    /* ===== CARDS ===== */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
 
-        .status-lost {
-            background: #fecaca;
-            color: #991b1b;
-        }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
 
-        .pipeline-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(135deg, var(--primary), var(--success));
+    }
 
-        .pipeline-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
+    /* ===== STATS GRID ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
 
-        .pipeline-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
+    .stat-card {
+      border-left: 4px solid var(--primary);
+    }
 
-        .pipeline-count {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
 
-        .lead-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--border);
-        }
+    .stat-title {
+      font-size: 0.875rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
 
-        .lead-item:last-child {
-            border-bottom: none;
-        }
+    .stat-icon {
+      font-size: 1.5rem;
+      opacity: 0.7;
+    }
 
-        .lead-value {
-            font-weight: 600;
-            color: var(--primary);
-        }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
 
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
+    .stat-change {
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
 
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
+    .text-success { color: var(--success); }
+    .text-warning { color: var(--warning); }
+    .text-danger { color: var(--danger); }
 
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
+    /* ===== CHART CONTAINER - FIXED ===== */
+    .chart-container {
+      background: var(--card);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+      position: relative;
+      height: 300px; /* Fixed height */
+    }
 
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text);
-        }
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
 
-        .btn-outline:hover {
-            background: var(--background);
-        }
+    @media (min-width: 1024px) {
+      .chart-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
 
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            color: var(--text-light);
-            border-top: 1px solid var(--border);
-        }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
 
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-        }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
 
-        .modal-content {
-            background: var(--surface);
-            margin: 5% auto;
-            padding: 2rem;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 600px;
-            position: relative;
-        }
+    /* ===== PIPELINE GRID ===== */
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
 
-        .close-modal {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-light);
-        }
+    .pipeline-card {
+      border-left: 4px solid;
+    }
 
-        .form-group {
-            margin-bottom: 1rem;
-        }
+    .pipeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
+    .pipeline-count {
+      font-size: 2rem;
+      font-weight: 700;
+    }
 
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: var(--background);
-        }
+    .lead-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--primary-light);
+    }
 
-        .currency-input {
-            display: flex;
-            align-items: center;
-        }
+    .lead-item:last-child {
+      border-bottom: none;
+    }
 
-        .currency-input select {
-            width: 100px;
-            margin-right: 1rem;
-        }
+    .lead-value {
+      font-weight: 600;
+      color: var(--primary);
+    }
 
-        .currency-input input {
-            flex: 1;
-        }
+    /* Pipeline colors */
+    .prospects { border-color: #8b5cf6; }
+    .prospects .pipeline-count { color: #8b5cf6; }
+    
+    .qualified { border-color: #3b82f6; }
+    .qualified .pipeline-count { color: #3b82f6; }
+    
+    .negotiation { border-color: #f59e0b; }
+    .negotiation .pipeline-count { color: #f59e0b; }
+    
+    .closed { border-color: #10b981; }
+    .closed .pipeline-count { color: #10b981; }
 
-        @media (max-width: 1024px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .main-content {
-                margin-left: 0;
-                grid-column: 1;
-            }
-            .chart-grid {
-                grid-template-columns: 1fr;
-            }
-            .pipeline-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    /* ===== SALES TABLE ===== */
+    .sales-table-container {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+      overflow-x: auto;
+    }
+
+    .sales-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .sales-table th {
+      background: var(--primary-light);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .sales-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--primary-light);
+    }
+
+    .sales-table tr:hover {
+      background: var(--primary-light);
+    }
+
+    .deal-status {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .status-prospect { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+    .status-qualified { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+    .status-negotiation { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+    .status-closed { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+    .status-lost { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+    /* ===== MODULES GRID ===== */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .module-card {
+      background: var(--card);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .module-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+    }
+
+    .module-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--success));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    .module-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .module-description {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-600);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-secondary {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* ===== DATE PICKER STYLES ===== */
+    .date-range-picker {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--card);
+      border: 1px solid var(--primary-light);
+      border-radius: var(--radius);
+      padding: 0.5rem;
+    }
+
+    .date-input {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      width: 120px;
+    }
+
+    .date-input:focus {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .date-separator {
+      color: var(--muted);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .sales-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sales-sidebar {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        width: var(--sidebar-width);
+        transition: left 0.3s ease;
+        z-index: 1000;
+      }
+
+      .sales-sidebar.active {
+        left: 0;
+      }
+
+      .mobile-menu-toggle {
+        display: flex;
+      }
+
+      .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        backdrop-filter: blur(4px);
+      }
+
+      .sidebar-overlay.active {
+        display: block;
+      }
+
+      .pipeline-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sales-main {
+        padding: 1rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pipeline-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modules-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sales-tabs {
+        flex-wrap: wrap;
+      }
+
+      .tab-btn {
+        flex: 1;
+        min-width: 120px;
+        justify-content: center;
+      }
+      
+      .chart-container {
+        height: 250px;
+      }
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      width: 48px;
+      height: 48px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: var(--shadow);
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      background: var(--primary-light);
+      border: none;
+      color: var(--primary);
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    /* Footer */
+    .sales-footer {
+      text-align: center;
+      padding: 2rem;
+      margin-top: 3rem;
+      color: var(--muted);
+      border-top: 1px solid var(--primary-light);
+    }
+  </style>
 </head>
 <body>
-    <div class="dashboard">
-        <nav class="sidebar">
-            <a href="index.html" class="logo">
-                <div class="logo-icon">CG</div>
-                <div>
-                    <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
-                    <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
-                </div>
-            </a>
+  <!-- Mobile Menu Toggle -->
+  <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu" aria-expanded="false">
+    <i class="fas fa-bars"></i>
+  </button>
 
-            <div class="nav-section">
-                <div class="nav-title">Sales & Marketing</div>
-                <a href="sales.html" class="nav-item active">
-                    <span class="nav-icon">💰</span>
-                    Sales & CRM
-                </a>
-                <a href="marketing.html" class="nav-item">
-                    <span class="nav-icon">📢</span>
-                    Marketing
-                </a>
-                <a href="customer-service.html" class="nav-item">
-                    <span class="nav-icon">🎯</span>
-                    Customer Service
-                </a>
-            </div>
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-            <div class="nav-section">
-                <div class="nav-title">Operations</div>
-                <a href="index.html" class="nav-item">
-                    <span class="nav-icon">📊</span>
-                    Dashboard
-                </a>
-                <a href="inventory.html" class="nav-item">
-                    <span class="nav-icon">📦</span>
-                    Inventory
-                </a>
-                <a href="finance.html" class="nav-item">
-                    <span class="nav-icon">💳</span>
-                    Finance
-                </a>
-            </div>
-        </nav>
+  <!-- Sales Layout -->
+  <div class="sales-layout">
+    <!-- Sidebar -->
+    <aside class="sales-sidebar" id="salesSidebar" aria-label="Sales navigation">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-brand">
+          <div class="sidebar-brand-logo" aria-hidden="true">CG</div>
+          <span>CephasGM ERP</span>
+        </a>
+        <div class="sidebar-time" id="current-time">Loading...</div>
+      </div>
 
-        <main class="main-content">
-            <div class="header">
-                <h1>Sales & CRM</h1>
-                <div style="color: var(--text-light);">Manage sales pipeline, customer relationships, and revenue growth</div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number">TZS 12.4M</div>
-                    <div class="stat-label">Monthly Revenue</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">156</div>
-                    <div class="stat-label">Active Leads</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">42%</div>
-                    <div class="stat-label">Conversion Rate</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">89%</div>
-                    <div class="stat-label">Customer Satisfaction</div>
-                </div>
-            </div>
-
-            <!-- Performance Charts -->
-            <div class="chart-grid">
-                <div class="chart-container">
-                    <div class="card-header">
-                        <div class="card-title">Revenue Performance</div>
-                        <select onchange="updateCharts()" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--background);">
-                            <option>Last 30 Days</option>
-                            <option>Last 90 Days</option>
-                            <option>Last Year</option>
-                        </select>
-                    </div>
-                    <canvas id="revenueChart" height="250"></canvas>
-                </div>
-
-                <div class="chart-container">
-                    <div class="card-header">
-                        <div class="card-title">Sales Pipeline</div>
-                        <div style="color: var(--success); font-weight: 600;">+18% Growth</div>
-                    </div>
-                    <canvas id="pipelineChart" height="250"></canvas>
-                </div>
-            </div>
-
-            <!-- Sales Pipeline Overview -->
-            <div class="pipeline-grid">
-                <div class="pipeline-card">
-                    <div class="pipeline-header">
-                        <h3>Prospects</h3>
-                        <div class="pipeline-count">45</div>
-                    </div>
-                    <div class="lead-item">
-                        <span>Total Value</span>
-                        <span class="lead-value">TZS 8.2M</span>
-                    </div>
-                    <div class="lead-item">
-                        <span>New This Week</span>
-                        <span class="lead-value">12</span>
-                    </div>
-                    <div class="lead-item">
-                        <span>Avg. Deal Size</span>
-                        <span class="lead-value">TZS 182K</span>
-                    </div>
-                </div>
-
-                <div class="pipeline-card">
-                    <div class="pipeline-header">
-                        <h3>Qualified</h3>
-                        <div class="pipeline-count">28</div>
-                    </div>
-                    <div class="lead-item">
-                        <span>Total Value</span>
-                        <span class="lead-value">TZS 5.6M</span>
-                    </div>
-                    <div class="lead-item">
-                        <span>Conversion Rate</span>
-                        <span class="lead-value">62%</span>
-                    </div>
-                    <div class="lead-item">
-                        <span>Avg. Deal Size</span>
-                        <span class="lead-value">TZS 200K</span>
-                    </div>
-                </div>
-
-                <div class="pipeline-card">
-                    <div class="pipeline-header">
-                        <h3>Negotiation</h3>
-                        <div class="pipeline-count">15</div>
-                    </div>
-                    <div class="lead-item">
-                        <span>Total Value</span>
-                        <span class="lead-value">TZS 3.8M</span>
-                    </div>
-                    <div class="lead-item">
-                        <span>Win Rate</span>
-                        <span class="lead-value">45%</span>
-                    </div>
-                    <div class="lead-item">
-                        <span>Avg. Deal Size</span>
-                        <span class="lead-value">TZS 253K</span>
-                    </div>
-                </div>
-
-                <div class="pipeline-card">
-                    <div class="pipeline-header">
-                        <h3>Closed Won</h3>
-                        <div class="pipeline-count">22</div>
-                    </div>
-                    <div class="lead-item">
-                        <span>Total Value</span>
-                        <span class="lead-value">TZS 4.9M</span>
-                    </div>
-                    <div class="lead-item">
-                        <span>This Month</span>
-                        <span class="lead-value">8</span>
-                    </div>
-                    <div class="lead-item">
-                        <span>Avg. Deal Size</span>
-                        <span class="lead-value">TZS 223K</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sales Opportunities Management -->
-            <div class="sales-management">
-                <div class="card-header">
-                    <div class="card-title">Active Opportunities</div>
-                    <button class="btn btn-primary" onclick="openModal('addOpportunityModal')">+ New Opportunity</button>
-                </div>
-                <table class="sales-table">
-                    <thead>
-                        <tr>
-                            <th>Opportunity</th>
-                            <th>Customer</th>
-                            <th>Sales Rep</th>
-                            <th>Value</th>
-                            <th>Stage</th>
-                            <th>Close Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Enterprise Software License</strong></td>
-                            <td>Tech Solutions Ltd</td>
-                            <td>Sarah Johnson</td>
-                            <td>TZS 2,450,000</td>
-                            <td><span class="deal-status status-negotiation">Negotiation</span></td>
-                            <td>2024-02-28</td>
-                            <td>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Cloud Infrastructure Setup</strong></td>
-                            <td>Global Bank Tanzania</td>
-                            <td>Mike Chen</td>
-                            <td>TZS 1,850,000</td>
-                            <td><span class="deal-status status-qualified">Qualified</span></td>
-                            <td>2024-03-15</td>
-                            <td>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Mobile App Development</strong></td>
-                            <td>Innovate Africa</td>
-                            <td>David Ochieng</td>
-                            <td>TZS 3,200,000</td>
-                            <td><span class="deal-status status-prospect">Prospect</span></td>
-                            <td>2024-04-01</td>
-                            <td>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>ERP Implementation</strong></td>
-                            <td>Manufacturing Corp</td>
-                            <td>Sarah Johnson</td>
-                            <td>TZS 4,500,000</td>
-                            <td><span class="deal-status status-closed">Closed Won</span></td>
-                            <td>2024-01-20</td>
-                            <td>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Sales Management Modules -->
-            <div class="module-grid">
-                <div class="module-card" onclick="openModal('leadsModal')">
-                    <div class="module-icon">🎯</div>
-                    <h3>Leads Management</h3>
-                    <p>Track potential customers, lead scoring, and conversion pipeline with automation</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('customersModal')">
-                    <div class="module-icon">👥</div>
-                    <h3>Customer Database</h3>
-                    <p>Comprehensive customer profiles, interaction history, and relationship management</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('pipelineModal')">
-                    <div class="module-icon">📈</div>
-                    <h3>Sales Pipeline</h3>
-                    <p>Visual sales funnel, deal stages, performance tracking, and forecasting</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('quotationsModal')">
-                    <div class="module-icon">📝</div>
-                    <h3>Quotations & Proposals</h3>
-                    <p>Create professional quotes, track proposal status, and manage approvals</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('analyticsModal')">
-                    <div class="module-icon">📊</div>
-                    <h3>Sales Analytics</h3>
-                    <p>Revenue reports, performance metrics, forecasting, and KPI tracking</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('commissionModal')">
-                    <div class="module-icon">💸</div>
-                    <h3>Commission Tracking</h3>
-                    <p>Sales team commissions, bonuses, performance incentives, and payout management</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('territoryModal')">
-                    <div class="module-icon">🗺️</div>
-                    <h3>Territory Management</h3>
-                    <p>Sales territories, account assignments, and regional performance tracking</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('forecastingModal')">
-                    <div class="module-icon">🔮</div>
-                    <h3>Sales Forecasting</h3>
-                    <p>Predictive analytics, revenue projections, and pipeline health analysis</p>
-                </div>
-            </div>
-
-            <div class="footer">
-                Copyright © 2025 😀
-            </div>
-        </main>
-    </div>
-
-    <!-- Modals -->
-    <div id="addOpportunityModal" class="modal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal('addOpportunityModal')">×</button>
-            <h2 style="margin-bottom: 1.5rem;">Create New Opportunity</h2>
-            <div class="form-group">
-                <label>Opportunity Name</label>
-                <input type="text" placeholder="Enter opportunity name">
-            </div>
-            <div class="form-group">
-                <label>Customer</label>
-                <select>
-                    <option>Select Customer</option>
-                    <option>Tech Solutions Ltd</option>
-                    <option>Global Bank Tanzania</option>
-                    <option>Innovate Africa</option>
-                    <option>Manufacturing Corp</option>
-                    <option>Retail Chain Tanzania</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Sales Representative</label>
-                <select>
-                    <option>Sarah Johnson</option>
-                    <option>Mike Chen</option>
-                    <option>David Ochieng</option>
-                    <option>Lisa Wangari</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Opportunity Value</label>
-                <div class="currency-input">
-                    <select>
-                        <option>TZS</option>
-                        <option>USD</option>
-                        <option>EUR</option>
-                    </select>
-                    <input type="number" placeholder="0.00" step="0.01">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Sales Stage</label>
-                <select>
-                    <option>Prospect</option>
-                    <option>Qualified</option>
-                    <option>Needs Analysis</option>
-                    <option>Proposal</option>
-                    <option>Negotiation</option>
-                    <option>Closed Won</option>
-                    <option>Closed Lost</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Expected Close Date</label>
-                <input type="date">
-            </div>
-            <div class="form-group">
-                <label>Probability (%)</label>
-                <input type="number" min="0" max="100" placeholder="Enter probability percentage">
-            </div>
-            <div style="margin-top: 2rem; display: flex; gap: 1rem;">
-                <button class="btn btn-primary" style="flex: 1;" onclick="createOpportunity()">Create Opportunity</button>
-                <button class="btn btn-outline" style="flex: 1;" onclick="closeModal('addOpportunityModal')">Cancel</button>
-            </div>
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        <div class="nav-section">
+          <div class="nav-section-title">Sales Operations</div>
+          <button class="nav-link active" onclick="switchTab('dashboard')">
+            <span class="nav-link-icon"><i class="fas fa-chart-line"></i></span>
+            <span>Sales Dashboard</span>
+          </button>
+          <button class="nav-link" onclick="switchTab('leads')">
+            <span class="nav-link-icon"><i class="fas fa-bullseye"></i></span>
+            <span>Leads Management</span>
+          </button>
+          <button class="nav-link" onclick="switchTab('opportunities')">
+            <span class="nav-link-icon"><i class="fas fa-briefcase"></i></span>
+            <span>Opportunities</span>
+          </button>
+          <button class="nav-link" onclick="switchTab('customers')">
+            <span class="nav-link-icon"><i class="fas fa-users"></i></span>
+            <span>Customers</span>
+          </button>
+          <button class="nav-link" onclick="switchTab('reports')">
+            <span class="nav-link-icon"><i class="fas fa-chart-bar"></i></span>
+            <span>Reports & Analytics</span>
+          </button>
         </div>
-    </div>
 
-    <div id="leadsModal" class="modal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal('leadsModal')">×</button>
-            <h2 style="margin-bottom: 1.5rem;">Leads Management</h2>
-            <div class="form-group">
-                <label>Search Leads</label>
-                <input type="text" placeholder="Search by company name or contact...">
-            </div>
-            <div class="form-group">
-                <label>Filter by Status</label>
-                <select>
-                    <option>All Statuses</option>
-                    <option>New</option>
-                    <option>Contacted</option>
-                    <option>Qualified</option>
-                    <option>Disqualified</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Filter by Source</label>
-                <select>
-                    <option>All Sources</option>
-                    <option>Website</option>
-                    <option>Referral</option>
-                    <option>Social Media</option>
-                    <option>Event</option>
-                    <option>Cold Call</option>
-                </select>
-            </div>
-            <div style="margin-top: 2rem; text-align: center;">
-                <button class="btn btn-primary" onclick="closeModal('leadsModal')">Manage Leads</button>
-            </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Quick Links</div>
+          <a href="index.html" class="nav-link">
+            <span class="nav-link-icon"><i class="fas fa-home"></i></span>
+            <span>Main Dashboard</span>
+          </a>
+          <a href="marketing.html" class="nav-link">
+            <span class="nav-link-icon"><i class="fas fa-bullhorn"></i></span>
+            <span>Marketing</span>
+          </a>
+          <a href="finance.html" class="nav-link">
+            <span class="nav-link-icon"><i class="fas fa-coins"></i></span>
+            <span>Finance</span>
+          </a>
+          <a href="inventory.html" class="nav-link">
+            <span class="nav-link-icon"><i class="fas fa-box"></i></span>
+            <span>Inventory</span>
+          </a>
         </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tools</div>
+          <button class="nav-link" onclick="switchTab('quotations')">
+            <span class="nav-link-icon"><i class="fas fa-file-invoice"></i></span>
+            <span>Create Quotation</span>
+          </button>
+          <button class="nav-link" onclick="openModal('forecastModal')">
+            <span class="nav-link-icon"><i class="fas fa-chart-line"></i></span>
+            <span>Sales Forecast</span>
+          </button>
+          <button class="nav-link" onclick="openModal('commissionModal')">
+            <span class="nav-link-icon"><i class="fas fa-money-bill-wave"></i></span>
+            <span>Commission Calculator</span>
+          </button>
+        </div>
+      </nav>
+
+      <div style="padding: 1.5rem; margin-top: auto; border-top: 1px solid var(--primary-light);">
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+          🌓
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="sales-main" id="main-content" tabindex="-1">
+      <!-- Header -->
+      <header class="sales-header">
+        <div>
+          <h1 class="sales-title">
+            <i class="fas fa-chart-line"></i>
+            Sales Operations
+          </h1>
+          <p style="color: var(--muted);">Manage sales pipeline, customer relationships, and revenue growth</p>
+        </div>
+
+        <div class="sales-actions">
+          <div class="user-profile">
+            <div class="user-avatar" aria-hidden="true">SO</div>
+            <div class="user-info">
+              <span class="user-name">Sales Operations</span>
+              <span class="user-role">Revenue Management</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Tabs Navigation -->
+      <div class="sales-tabs" role="tablist" aria-label="Sales sections">
+        <button class="tab-btn active" onclick="switchTab('dashboard')" role="tab" aria-selected="true">
+          <i class="fas fa-chart-line"></i> Dashboard
+        </button>
+        <button class="tab-btn" onclick="switchTab('leads')" role="tab" aria-selected="false">
+          <i class="fas fa-bullseye"></i> Leads
+        </button>
+        <button class="tab-btn" onclick="switchTab('opportunities')" role="tab" aria-selected="false">
+          <i class="fas fa-briefcase"></i> Opportunities
+        </button>
+        <button class="tab-btn" onclick="switchTab('customers')" role="tab" aria-selected="false">
+          <i class="fas fa-users"></i> Customers
+        </button>
+        <button class="tab-btn" onclick="switchTab('reports')" role="tab" aria-selected="false">
+          <i class="fas fa-chart-bar"></i> Reports
+        </button>
+        <button class="tab-btn" onclick="switchTab('quotations')" role="tab" aria-selected="false">
+          <i class="fas fa-file-invoice"></i> Quotations
+        </button>
+      </div>
+
+      <!-- Dashboard Tab -->
+      <section id="dashboard-tab" class="tab-content active" role="tabpanel" aria-labelledby="dashboard">
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+          <div class="card stat-card">
+            <div class="stat-header">
+              <h3 class="stat-title">Monthly Revenue</h3>
+              <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+            </div>
+            <div class="stat-value" id="monthlyRevenue">TZS 12.4M</div>
+            <div class="stat-change text-success">
+              <i class="fas fa-arrow-up"></i> 18% from last month
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-header">
+              <h3 class="stat-title">Active Leads</h3>
+              <div class="stat-icon"><i class="fas fa-bullseye"></i></div>
+            </div>
+            <div class="stat-value" id="activeLeads">156</div>
+            <div class="stat-change text-success">
+              <i class="fas fa-arrow-up"></i> 12 new this week
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-header">
+              <h3 class="stat-title">Conversion Rate</h3>
+              <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+            </div>
+            <div class="stat-value" id="conversionRate">42%</div>
+            <div class="stat-change text-warning">
+              <i class="fas fa-minus"></i> 3% from last quarter
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-header">
+              <h3 class="stat-title">Avg. Deal Size</h3>
+              <div class="stat-icon"><i class="fas fa-chart-pie"></i></div>
+            </div>
+            <div class="stat-value" id="avgDealSize">TZS 223K</div>
+            <div class="stat-change text-success">
+              <i class="fas fa-arrow-up"></i> 8% growth
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts - FIXED HEIGHT -->
+        <div class="chart-grid">
+          <div class="chart-container">
+            <div class="card-header">
+              <div class="card-title">Revenue Performance</div>
+              <div class="date-range-picker">
+                <input type="date" class="date-input" id="dateFrom" value="2024-01-01">
+                <span class="date-separator">to</span>
+                <input type="date" class="date-input" id="dateTo" value="2024-01-31">
+                <button class="btn btn-secondary btn-sm" onclick="applyDateRange()">
+                  <i class="fas fa-filter"></i> Apply
+                </button>
+              </div>
+            </div>
+            <canvas id="revenueChart"></canvas>
+          </div>
+
+          <div class="chart-container">
+            <div class="card-header">
+              <div class="card-title">Sales Pipeline</div>
+              <div style="color: var(--success); font-weight: 600;">+18% Growth</div>
+            </div>
+            <canvas id="pipelineChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Pipeline Overview -->
+        <div class="pipeline-grid">
+          <div class="card pipeline-card prospects">
+            <div class="pipeline-header">
+              <h3>Prospects</h3>
+              <div class="pipeline-count" id="prospectsCount">45</div>
+            </div>
+            <div class="lead-item">
+              <span>Total Value</span>
+              <span class="lead-value">TZS 8.2M</span>
+            </div>
+            <div class="lead-item">
+              <span>New This Week</span>
+              <span class="lead-value">12</span>
+            </div>
+            <div class="lead-item">
+              <span>Avg. Deal Size</span>
+              <span class="lead-value">TZS 182K</span>
+            </div>
+          </div>
+
+          <div class="card pipeline-card qualified">
+            <div class="pipeline-header">
+              <h3>Qualified</h3>
+              <div class="pipeline-count" id="qualifiedCount">28</div>
+            </div>
+            <div class="lead-item">
+              <span>Total Value</span>
+              <span class="lead-value">TZS 5.6M</span>
+            </div>
+            <div class="lead-item">
+              <span>Conversion Rate</span>
+              <span class="lead-value">62%</span>
+            </div>
+            <div class="lead-item">
+              <span>Avg. Deal Size</span>
+              <span class="lead-value">TZS 200K</span>
+            </div>
+          </div>
+
+          <div class="card pipeline-card negotiation">
+            <div class="pipeline-header">
+              <h3>Negotiation</h3>
+              <div class="pipeline-count" id="negotiationCount">15</div>
+            </div>
+            <div class="lead-item">
+              <span>Total Value</span>
+              <span class="lead-value">TZS 3.8M</span>
+            </div>
+            <div class="lead-item">
+              <span>Win Rate</span>
+              <span class="lead-value">45%</span>
+            </div>
+            <div class="lead-item">
+              <span>Avg. Deal Size</span>
+              <span class="lead-value">TZS 253K</span>
+            </div>
+          </div>
+
+          <div class="card pipeline-card closed">
+            <div class="pipeline-header">
+              <h3>Closed Won</h3>
+              <div class="pipeline-count" id="closedCount">22</div>
+            </div>
+            <div class="lead-item">
+              <span>Total Value</span>
+              <span class="lead-value">TZS 4.9M</span>
+            </div>
+            <div class="lead-item">
+              <span>This Month</span>
+              <span class="lead-value">8</span>
+            </div>
+            <div class="lead-item">
+              <span>Avg. Deal Size</span>
+              <span class="lead-value">TZS 223K</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Opportunities -->
+        <div class="sales-table-container">
+          <div class="card-header">
+            <div class="card-title">Recent Opportunities</div>
+            <button class="btn btn-primary" onclick="openModal('addOpportunityModal')">
+              <i class="fas fa-plus"></i> Add Opportunity
+            </button>
+          </div>
+          <table class="sales-table" id="recentOpportunities">
+            <thead>
+              <tr>
+                <th>Opportunity</th>
+                <th>Customer</th>
+                <th>Value</th>
+                <th>Stage</th>
+                <th>Close Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Data loaded by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Sales Modules - FIXED NAVIGATION -->
+        <div class="modules-grid">
+          <div class="module-card" onclick="switchTab('leads')">
+            <div class="module-icon"><i class="fas fa-bullseye"></i></div>
+            <div class="module-title">Leads Management</div>
+            <div class="module-description">Track potential customers, lead scoring, and conversion pipeline with automation</div>
+          </div>
+
+          <div class="module-card" onclick="switchTab('customers')">
+            <div class="module-icon"><i class="fas fa-users"></i></div>
+            <div class="module-title">Customer Database</div>
+            <div class="module-description">Comprehensive customer profiles, interaction history, and relationship management</div>
+          </div>
+
+          <div class="module-card" onclick="switchTab('reports')">
+            <div class="module-icon"><i class="fas fa-chart-bar"></i></div>
+            <div class="module-title">Sales Analytics</div>
+            <div class="module-description">Revenue reports, performance metrics, forecasting, and KPI tracking</div>
+          </div>
+
+          <div class="module-card" onclick="switchTab('quotations')">
+            <div class="module-icon"><i class="fas fa-file-invoice"></i></div>
+            <div class="module-title">Quotations & Proposals</div>
+            <div class="module-description">Create professional quotes, track proposal status, and manage approvals</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Leads Tab -->
+      <section id="leads-tab" class="tab-content" role="tabpanel" aria-labelledby="leads">
+        <div class="sales-table-container">
+          <div class="card-header">
+            <div class="card-title">Leads Management</div>
+            <button class="btn btn-primary" onclick="openModal('addLeadModal')">
+              <i class="fas fa-plus"></i> Add Lead
+            </button>
+          </div>
+          <table class="sales-table" id="leadsTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Company</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Source</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Data loaded by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Opportunities Tab -->
+      <section id="opportunities-tab" class="tab-content" role="tabpanel" aria-labelledby="opportunities">
+        <div class="sales-table-container">
+          <div class="card-header">
+            <div class="card-title">Sales Opportunities</div>
+            <button class="btn btn-primary" onclick="openModal('addOpportunityModal')">
+              <i class="fas fa-plus"></i> New Opportunity
+            </button>
+          </div>
+          <table class="sales-table" id="opportunitiesTable">
+            <thead>
+              <tr>
+                <th>Opportunity</th>
+                <th>Customer</th>
+                <th>Sales Rep</th>
+                <th>Value</th>
+                <th>Stage</th>
+                <th>Probability</th>
+                <th>Close Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Data loaded by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Customers Tab -->
+      <section id="customers-tab" class="tab-content" role="tabpanel" aria-labelledby="customers">
+        <div class="sales-table-container">
+          <div class="card-header">
+            <div class="card-title">Customer Database</div>
+            <button class="btn btn-primary" onclick="openModal('addCustomerModal')">
+              <i class="fas fa-plus"></i> Add Customer
+            </button>
+          </div>
+          <table class="sales-table" id="customersTable">
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Contact Person</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Type</th>
+                <th>Total Value</th>
+                <th>Last Purchase</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Data loaded by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Reports Tab -->
+      <section id="reports-tab" class="tab-content" role="tabpanel" aria-labelledby="reports">
+        <div class="chart-container">
+          <div class="card-header">
+            <div class="card-title">Sales Performance Report</div>
+            <select class="form-control" style="width: 200px;" id="reportPeriod" onchange="updatePerformanceChart(this.value)">
+              <option value="month">This Month</option>
+              <option value="quarter">This Quarter</option>
+              <option value="year">This Year</option>
+            </select>
+          </div>
+          <canvas id="performanceChart"></canvas>
+        </div>
+
+        <div class="stats-grid" style="margin-top: 2rem;">
+          <div class="card">
+            <h3 style="margin-bottom: 1rem;">Top Performing Products</h3>
+            <div id="topProducts">
+              <!-- Top products will be loaded here -->
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom: 1rem;">Top Sales Representatives</h3>
+            <div id="topReps">
+              <!-- Top reps will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quotations Tab -->
+      <section id="quotations-tab" class="tab-content" role="tabpanel" aria-labelledby="quotations">
+        <div class="sales-table-container">
+          <div class="card-header">
+            <div class="card-title">Quotations & Proposals</div>
+            <button class="btn btn-primary" onclick="openModal('addQuotationModal')">
+              <i class="fas fa-plus"></i> Create Quotation
+            </button>
+          </div>
+          <table class="sales-table" id="quotationsTable">
+            <thead>
+              <tr>
+                <th>Quote ID</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Expires</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Data loaded by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="sales-footer">
+        Copyright © 2025 CephasGM ERP. All rights reserved.
+      </footer>
+    </main>
+  </div>
+
+  <!-- All Modals (simplified version) -->
+  <div class="modal" id="addOpportunityModal" role="dialog" aria-modal="true" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div class="modal-content" style="background: var(--card); border-radius: var(--radius); width: 90%; max-width: 500px; padding: 1.5rem;">
+      <h3>Create New Opportunity</h3>
+      <form id="addOpportunityForm" onsubmit="addOpportunity(event)">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Opportunity Name" required>
+        </div>
+        <div class="form-group">
+          <input type="number" class="form-control" placeholder="Value" required>
+        </div>
+        <div class="form-group">
+          <select class="form-control" required>
+            <option value="">Select Stage</option>
+            <option value="prospect">Prospect</option>
+            <option value="qualified">Qualified</option>
+            <option value="negotiation">Negotiation</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('addOpportunityModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <script>
-        // Chart Initialization
-        let revenueChart, pipelineChart;
+  <!-- JavaScript -->
+  <script>
+    // ===== FIXED TAB SYSTEM =====
+    function switchTab(tabName) {
+      // Update top tabs
+      document.querySelectorAll('.sales-tabs .tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-selected', 'false');
+      });
+      
+      const activeTabBtn = document.querySelector(`.sales-tabs .tab-btn[onclick*="${tabName}"]`);
+      if (activeTabBtn) {
+        activeTabBtn.classList.add('active');
+        activeTabBtn.setAttribute('aria-selected', 'true');
+      }
+      
+      // Update sidebar navigation
+      document.querySelectorAll('.sidebar-nav .nav-link').forEach(link => {
+        link.classList.remove('active');
+      });
+      
+      const activeNavLink = document.querySelector(`.sidebar-nav .nav-link[onclick*="${tabName}"]`);
+      if (activeNavLink) {
+        activeNavLink.classList.add('active');
+      }
+      
+      // Update tab contents
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+        content.style.display = 'none';
+      });
+      
+      const activeTabContent = document.getElementById(`${tabName}-tab`);
+      if (activeTabContent) {
+        activeTabContent.classList.add('active');
+        activeTabContent.style.display = 'block';
+      }
+      
+      // Close mobile menu if open
+      const sidebar = document.getElementById('salesSidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      if (sidebar && sidebar.classList.contains('active')) {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+      
+      // Update charts if needed
+      if (tabName === 'dashboard') {
+        updateCharts();
+      } else if (tabName === 'reports') {
+        updatePerformanceChart('month');
+      }
+      
+      // Load specific tab data
+      if (tabName === 'leads') {
+        loadLeadsData();
+      } else if (tabName === 'opportunities') {
+        loadOpportunitiesData();
+      } else if (tabName === 'customers') {
+        loadCustomersData();
+      } else if (tabName === 'quotations') {
+        loadQuotationsData();
+      }
+    }
 
-        function initializeCharts() {
-            // Revenue Performance Chart
-            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-            revenueChart = new Chart(revenueCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Revenue (TZS)',
-                        data: [8500000, 9200000, 10500000, 9800000, 11200000, 12400000],
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
+    // ===== DATA MANAGEMENT =====
+    const salesData = {
+      opportunities: [
+        {
+          id: 1,
+          name: "Enterprise Software License",
+          customer: "Tech Solutions Ltd",
+          rep: "Sales Team",
+          value: 2450000,
+          currency: "TZS",
+          stage: "negotiation",
+          probability: 75,
+          closeDate: "2024-02-28",
+          description: "Full enterprise software suite license"
+        },
+        {
+          id: 2,
+          name: "Cloud Infrastructure Setup",
+          customer: "Global Bank Tanzania",
+          rep: "Sales Team",
+          value: 1850000,
+          currency: "TZS",
+          stage: "qualified",
+          probability: 60,
+          closeDate: "2024-03-15",
+          description: "Cloud migration and setup"
+        }
+      ],
+      
+      leads: [
+        {
+          id: 1,
+          name: "John Mwita",
+          company: "Tech Solutions Ltd",
+          email: "john@techsolutions.co.tz",
+          phone: "+255 712 345 678",
+          source: "website",
+          status: "qualified",
+          created: "2024-01-15",
+          score: 85
+        },
+        {
+          id: 2,
+          name: "Sarah Kato",
+          company: "Global Bank TZ",
+          email: "sarah.k@globalbank.co.tz",
+          phone: "+255 713 456 789",
+          source: "referral",
+          status: "contacted",
+          created: "2024-01-20",
+          score: 65
+        }
+      ],
+      
+      customers: [
+        {
+          id: 1,
+          company: "Tech Solutions Ltd",
+          contact: "John Mwita",
+          email: "john@techsolutions.co.tz",
+          phone: "+255 712 345 678",
+          type: "Corporate",
+          totalValue: 12500000,
+          lastPurchase: "2024-01-10",
+          interactions: 12
+        },
+        {
+          id: 2,
+          company: "Global Bank Tanzania",
+          contact: "Sarah Kato",
+          email: "sarah.k@globalbank.co.tz",
+          phone: "+255 713 456 789",
+          type: "Enterprise",
+          totalValue: 8500000,
+          lastPurchase: "2023-12-15",
+          interactions: 8
+        }
+      ],
+      
+      quotations: [
+        {
+          id: "QT-001",
+          customer: "Tech Solutions Ltd",
+          amount: 2450000,
+          status: "pending",
+          created: "2024-01-15",
+          expires: "2024-02-15",
+          items: ["Enterprise Software License", "1-year Support"]
+        },
+        {
+          id: "QT-002",
+          customer: "Global Bank Tanzania",
+          amount: 1850000,
+          status: "approved",
+          created: "2024-01-10",
+          expires: "2024-02-10",
+          items: ["Cloud Infrastructure Setup", "Migration Services"]
+        }
+      ]
+    };
+
+    // ===== CHART FUNCTIONS =====
+    let revenueChart, pipelineChart, performanceChart;
+
+    function initializeCharts() {
+      // Revenue Chart - FIXED ASPECT RATIO
+      const revenueCtx = document.getElementById('revenueChart');
+      if (revenueCtx) {
+        revenueChart = new Chart(revenueCtx.getContext('2d'), {
+          type: 'line',
+          data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+              label: 'Revenue (TZS)',
+              data: [8500000, 9200000, 10500000, 9800000, 11200000, 12400000],
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              tension: 0.4,
+              fill: true
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top',
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function(value) {
+                    return 'TZS ' + (value / 1000000).toFixed(1) + 'M';
+                  }
                 }
-            });
-
-            // Sales Pipeline Chart
-            const pipelineCtx = document.getElementById('pipelineChart').getContext('2d');
-            pipelineChart = new Chart(pipelineCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Prospects', 'Qualified', 'Negotiation', 'Closed Won'],
-                    datasets: [{
-                        data: [45, 28, 15, 22],
-                        backgroundColor: [
-                            '#8b5cf6',
-                            '#3b82f6',
-                            '#f59e0b',
-                            '#10b981'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                        }
-                    }
-                }
-            });
-        }
-
-        // Modal Functions
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'block';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        // System Functions
-        function createOpportunity() {
-            alert('New sales opportunity created successfully!');
-            closeModal('addOpportunityModal');
-        }
-
-        function updateCharts() {
-            alert('Updating charts with latest sales data...');
-            // In real implementation, this would fetch new data
-        }
-
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeCharts();
-            
-            // Navigation active state
-            document.querySelectorAll('.nav-item').forEach(item => {
-                if (item.href === window.location.href) {
-                    item.classList.add('active');
-                }
-            });
-
-            // Module card hover effects
-            document.querySelectorAll('.module-card').forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-4px)';
-                });
-                card.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                });
-            });
-
-            // Close modal when clicking outside
-            window.onclick = function(event) {
-                if (event.target.classList.contains('modal')) {
-                    event.target.style.display = 'none';
-                }
+              }
             }
+          }
         });
+      }
 
-        // Simulate real-time updates
-        setInterval(() => {
-            // Update pipeline counts randomly
-            const pipelineCounts = document.querySelectorAll('.pipeline-count');
-            pipelineCounts.forEach(count => {
-                const current = parseInt(count.textContent);
-                const change = Math.random() > 0.5 ? 1 : -1;
-                const newCount = Math.max(0, current + change);
-                count.textContent = newCount;
-            });
-        }, 30000);
-    </script>
+      // Pipeline Chart - FIXED ASPECT RATIO
+      const pipelineCtx = document.getElementById('pipelineChart');
+      if (pipelineCtx) {
+        pipelineChart = new Chart(pipelineCtx.getContext('2d'), {
+          type: 'doughnut',
+          data: {
+            labels: ['Prospects', 'Qualified', 'Negotiation', 'Closed Won'],
+            datasets: [{
+              data: [45, 28, 15, 22],
+              backgroundColor: [
+                '#8b5cf6',
+                '#3b82f6',
+                '#f59e0b',
+                '#10b981'
+              ]
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+              }
+            }
+          }
+        });
+      }
+
+      // Performance Chart - FIXED ASPECT RATIO
+      const performanceCtx = document.getElementById('performanceChart');
+      if (performanceCtx) {
+        performanceChart = new Chart(performanceCtx.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+            datasets: [
+              {
+                label: 'Target',
+                data: [10000000, 11000000, 12000000, 13000000],
+                backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                borderColor: '#3b82f6',
+                borderWidth: 1
+              },
+              {
+                label: 'Actual',
+                data: [9500000, 11500000, 12500000, 12800000],
+                backgroundColor: 'rgba(16, 185, 129, 0.5)',
+                borderColor: '#10b981',
+                borderWidth: 1
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top',
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function(value) {
+                    return 'TZS ' + (value / 1000000).toFixed(1) + 'M';
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    function updateRevenueChart(period) {
+      if (!revenueChart) return;
+      
+      let labels, data;
+      switch(period) {
+        case 'month':
+          labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+          data = [2800000, 3200000, 3500000, 2900000];
+          break;
+        case 'quarter':
+          labels = ['Jan', 'Feb', 'Mar'];
+          data = [8500000, 9200000, 10500000];
+          break;
+        default:
+          labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+          data = [8500000, 9200000, 10500000, 9800000, 11200000, 12400000];
+      }
+      
+      revenueChart.data.labels = labels;
+      revenueChart.data.datasets[0].data = data;
+      revenueChart.update();
+    }
+
+    function applyDateRange() {
+      const dateFrom = document.getElementById('dateFrom').value;
+      const dateTo = document.getElementById('dateTo').value;
+      
+      if (!dateFrom || !dateTo) {
+        alert('Please select both dates');
+        return;
+      }
+      
+      // In a real app, you would fetch data based on date range
+      // For demo, we'll just show a message and update the chart
+      alert(`Applying date range: ${dateFrom} to ${dateTo}`);
+      
+      // Update chart with new data (mock data for demo)
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+      const mockData = months.map(() => Math.floor(Math.random() * 5000000) + 5000000);
+      
+      if (revenueChart) {
+        revenueChart.data.datasets[0].data = mockData;
+        revenueChart.update();
+      }
+    }
+
+    function updatePerformanceChart(period) {
+      if (!performanceChart) return;
+      
+      let labels, targetData, actualData;
+      switch(period) {
+        case 'month':
+          labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+          targetData = [2500000, 2750000, 3000000, 3250000];
+          actualData = [2800000, 3200000, 3500000, 2900000];
+          break;
+        case 'quarter':
+          labels = ['Month 1', 'Month 2', 'Month 3'];
+          targetData = [3000000, 3500000, 4000000];
+          actualData = [2800000, 3200000, 3500000];
+          break;
+        default:
+          labels = ['Q1', 'Q2', 'Q3', 'Q4'];
+          targetData = [10000000, 11000000, 12000000, 13000000];
+          actualData = [9500000, 11500000, 12500000, 12800000];
+      }
+      
+      performanceChart.data.labels = labels;
+      performanceChart.data.datasets[0].data = targetData;
+      performanceChart.data.datasets[1].data = actualData;
+      performanceChart.update();
+    }
+
+    function updateCharts() {
+      if (revenueChart) revenueChart.update();
+      if (pipelineChart) pipelineChart.update();
+      if (performanceChart) performanceChart.update();
+    }
+
+    // ===== DATA LOADING FUNCTIONS =====
+    function loadDashboardData() {
+      // Update opportunity table
+      const opportunityTbody = document.querySelector('#recentOpportunities tbody');
+      if (opportunityTbody) {
+        opportunityTbody.innerHTML = salesData.opportunities.map(opp => `
+          <tr>
+            <td><strong>${opp.name}</strong></td>
+            <td>${opp.customer}</td>
+            <td>TZS ${opp.value.toLocaleString()}</td>
+            <td><span class="deal-status status-${opp.stage}">${opp.stage.charAt(0).toUpperCase() + opp.stage.slice(1)}</span></td>
+            <td>${opp.closeDate}</td>
+            <td>
+              <div class="table-actions">
+                <button class="btn btn-secondary btn-sm" onclick="viewOpportunity(${opp.id})">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function loadLeadsData() {
+      const leadsTbody = document.querySelector('#leadsTable tbody');
+      if (leadsTbody) {
+        leadsTbody.innerHTML = salesData.leads.map(lead => `
+          <tr>
+            <td>${lead.name}</td>
+            <td>${lead.company}</td>
+            <td>${lead.email}</td>
+            <td>${lead.phone}</td>
+            <td>${lead.source}</td>
+            <td><span class="deal-status status-${lead.status}">${lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}</span></td>
+            <td>${lead.created}</td>
+            <td>
+              <div class="table-actions">
+                <button class="btn btn-secondary btn-sm" onclick="viewLead(${lead.id})">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function loadOpportunitiesData() {
+      const opportunitiesTbody = document.querySelector('#opportunitiesTable tbody');
+      if (opportunitiesTbody) {
+        opportunitiesTbody.innerHTML = salesData.opportunities.map(opp => `
+          <tr>
+            <td><strong>${opp.name}</strong></td>
+            <td>${opp.customer}</td>
+            <td>${opp.rep}</td>
+            <td>TZS ${opp.value.toLocaleString()}</td>
+            <td><span class="deal-status status-${opp.stage}">${opp.stage.charAt(0).toUpperCase() + opp.stage.slice(1)}</span></td>
+            <td>${opp.probability}%</td>
+            <td>${opp.closeDate}</td>
+            <td>
+              <div class="table-actions">
+                <button class="btn btn-secondary btn-sm" onclick="viewOpportunity(${opp.id})">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function loadCustomersData() {
+      const customersTbody = document.querySelector('#customersTable tbody');
+      if (customersTbody) {
+        customersTbody.innerHTML = salesData.customers.map(customer => `
+          <tr>
+            <td>${customer.company}</td>
+            <td>${customer.contact}</td>
+            <td>${customer.email}</td>
+            <td>${customer.phone}</td>
+            <td>${customer.type}</td>
+            <td>TZS ${customer.totalValue.toLocaleString()}</td>
+            <td>${customer.lastPurchase}</td>
+            <td>
+              <div class="table-actions">
+                <button class="btn btn-secondary btn-sm" onclick="viewCustomer(${customer.id})">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function loadQuotationsData() {
+      const quotationsTbody = document.querySelector('#quotationsTable tbody');
+      if (quotationsTbody) {
+        quotationsTbody.innerHTML = salesData.quotations.map(quote => `
+          <tr>
+            <td><strong>${quote.id}</strong></td>
+            <td>${quote.customer}</td>
+            <td>TZS ${quote.amount.toLocaleString()}</td>
+            <td><span class="deal-status status-${quote.status}">${quote.status.charAt(0).toUpperCase() + quote.status.slice(1)}</span></td>
+            <td>${quote.created}</td>
+            <td>${quote.expires}</td>
+            <td>
+              <div class="table-actions">
+                <button class="btn btn-secondary btn-sm" onclick="viewQuotation('${quote.id}')">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function loadReportsData() {
+      const topProducts = document.getElementById('topProducts');
+      if (topProducts) {
+        topProducts.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--primary-light);">
+            <span>Enterprise Software</span>
+            <span style="font-weight: 600; color: var(--primary);">TZS 4,500,000</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--primary-light);">
+            <span>Cloud Services</span>
+            <span style="font-weight: 600; color: var(--primary);">TZS 3,200,000</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0;">
+            <span>Mobile Applications</span>
+            <span style="font-weight: 600; color: var(--primary);">TZS 2,800,000</span>
+          </div>
+        `;
+      }
+      
+      const topReps = document.getElementById('topReps');
+      if (topReps) {
+        topReps.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--primary-light);">
+            <span>Sales Team</span>
+            <span style="font-weight: 600; color: var(--success);">TZS 12,500,000</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--primary-light);">
+            <span>Regional Sales</span>
+            <span style="font-weight: 600; color: var(--success);">TZS 8,500,000</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0;">
+            <span>Online Sales</span>
+            <span style="font-weight: 600; color: var(--success);">TZS 6,200,000</span>
+          </div>
+        `;
+      }
+    }
+
+    // ===== MODAL FUNCTIONS =====
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+
+    // ===== UTILITY FUNCTIONS =====
+    function addOpportunity(event) {
+      event.preventDefault();
+      alert('Opportunity added!');
+      closeModal('addOpportunityModal');
+    }
+
+    function viewOpportunity(id) {
+      const opportunity = salesData.opportunities.find(o => o.id === id);
+      if (opportunity) {
+        alert(`Viewing: ${opportunity.name}\nValue: TZS ${opportunity.value.toLocaleString()}\nStage: ${opportunity.stage}`);
+      }
+    }
+
+    function viewLead(id) {
+      const lead = salesData.leads.find(l => l.id === id);
+      if (lead) {
+        alert(`Viewing: ${lead.name}\nCompany: ${lead.company}\nStatus: ${lead.status}`);
+      }
+    }
+
+    function viewCustomer(id) {
+      const customer = salesData.customers.find(c => c.id === id);
+      if (customer) {
+        alert(`Viewing: ${customer.company}\nContact: ${customer.contact}\nTotal Value: TZS ${customer.totalValue.toLocaleString()}`);
+      }
+    }
+
+    function viewQuotation(id) {
+      const quote = salesData.quotations.find(q => q.id === id);
+      if (quote) {
+        alert(`Viewing: ${quote.id}\nCustomer: ${quote.customer}\nAmount: TZS ${quote.amount.toLocaleString()}\nStatus: ${quote.status}`);
+      }
+    }
+
+    // ===== INITIALIZATION =====
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize theme
+      const themeToggle = document.getElementById('themeToggle');
+      const savedTheme = localStorage.getItem('cephasgm-theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌓';
+      
+      themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', nextTheme);
+        localStorage.setItem('cephasgm-theme', nextTheme);
+        themeToggle.textContent = nextTheme === 'dark' ? '☀️' : '🌓';
+        updateCharts();
+      });
+
+      // Mobile menu
+      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+      const salesSidebar = document.getElementById('salesSidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      
+      function toggleMobileMenu() {
+        const isExpanded = mobileMenuToggle.getAttribute('aria-expanded') === 'true';
+        mobileMenuToggle.setAttribute('aria-expanded', !isExpanded);
+        salesSidebar.classList.toggle('active');
+        sidebarOverlay.classList.toggle('active');
+        document.body.style.overflow = isExpanded ? '' : 'hidden';
+      }
+      
+      mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+      sidebarOverlay.addEventListener('click', toggleMobileMenu);
+
+      // Close modals when clicking outside
+      document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal')) {
+          closeModal(e.target.id);
+        }
+      });
+
+      // Update time
+      function updateCurrentTime() {
+        const now = new Date();
+        const options = { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        };
+        const timeElement = document.getElementById('current-time');
+        if (timeElement) {
+          timeElement.textContent = now.toLocaleDateString('en-US', options);
+        }
+      }
+      updateCurrentTime();
+      setInterval(updateCurrentTime, 60000);
+
+      // Initialize charts
+      initializeCharts();
+      
+      // Load all data
+      loadDashboardData();
+      loadLeadsData();
+      loadOpportunitiesData();
+      loadCustomersData();
+      loadQuotationsData();
+      loadReportsData();
+
+      // Set default dates for date picker
+      const today = new Date();
+      const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+      const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      
+      document.getElementById('dateFrom').value = firstDay.toISOString().split('T')[0];
+      document.getElementById('dateTo').value = lastDay.toISOString().split('T')[0];
+
+      // Service Worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('Service Worker registered:', reg))
+          .catch(err => console.error('Service Worker registration failed:', err));
+      }
+    });
+
+    // Make functions globally available
+    window.switchTab = switchTab;
+    window.openModal = openModal;
+    window.closeModal = closeModal;
+    window.viewOpportunity = viewOpportunity;
+    window.viewLead = viewLead;
+    window.viewCustomer = viewCustomer;
+    window.viewQuotation = viewQuotation;
+    window.addOpportunity = addOpportunity;
+    window.updateRevenueChart = updateRevenueChart;
+    window.updatePerformanceChart = updatePerformanceChart;
+    window.applyDateRange = applyDateRange;
+  </script>
 </body>
 </html>
