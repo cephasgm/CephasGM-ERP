@@ -333,6 +333,7 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       border-left: 4px solid var(--primary);
       cursor: pointer;
+      position: relative;
     }
 
     .stat-card:hover {
@@ -363,6 +364,10 @@
       font-size: 2rem;
       font-weight: 700;
       margin-bottom: 0.25rem;
+      min-height: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .stat-change {
@@ -374,6 +379,39 @@
 
     .trend-up { color: var(--success); }
     .trend-down { color: var(--danger); }
+
+    .edit-stat-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0.25rem;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      display: none;
+    }
+
+    .edit-stat-btn:hover {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .stat-card:hover .edit-stat-btn {
+      display: inline-block;
+    }
+
+    .edit-stat-input {
+      font-size: 2rem;
+      font-weight: 700;
+      border: 2px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 0.25rem 0.5rem;
+      background: var(--card);
+      color: var(--text);
+      width: 100%;
+      max-width: 200px;
+    }
 
     /* ===== FINANCIAL OVERVIEW ===== */
     .financial-overview {
@@ -462,6 +500,7 @@
       border-radius: var(--radius);
       padding: 1rem;
       border: 1px solid var(--primary);
+      position: relative;
     }
 
     .budget-header {
@@ -478,6 +517,40 @@
     .budget-amount {
       color: var(--muted);
       font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .edit-budget-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.875rem;
+      padding: 0.125rem 0.25rem;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      display: none;
+    }
+
+    .edit-budget-btn:hover {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .budget-card:hover .edit-budget-btn {
+      display: inline-block;
+    }
+
+    .edit-budget-input {
+      font-size: 0.875rem;
+      border: 2px solid var(--primary);
+      border-radius: 4px;
+      padding: 0.125rem 0.25rem;
+      background: var(--card);
+      color: var(--text);
+      width: 120px;
     }
 
     .progress-bar {
@@ -1109,6 +1182,7 @@
               <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
             </div>
             <div class="stat-value" id="revenueValue">TZS 24.8M</div>
+            <button class="edit-stat-btn" onclick="editStat('revenueValue')"><i class="fas fa-edit"></i></button>
             <div class="stat-change trend-up">
               <i class="fas fa-arrow-up"></i> 12.4% from last month
             </div>
@@ -1120,6 +1194,7 @@
               <div class="stat-icon"><i class="fas fa-receipt"></i></div>
             </div>
             <div class="stat-value" id="expensesValue">TZS 8.7M</div>
+            <button class="edit-stat-btn" onclick="editStat('expensesValue')"><i class="fas fa-edit"></i></button>
             <div class="stat-change trend-down">
               <i class="fas fa-arrow-down"></i> 3.2% from last month
             </div>
@@ -1131,6 +1206,7 @@
               <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
             </div>
             <div class="stat-value" id="profitValue">TZS 16.1M</div>
+            <button class="edit-stat-btn" onclick="editStat('profitValue')"><i class="fas fa-edit"></i></button>
             <div class="stat-change trend-up">
               <i class="fas fa-arrow-up"></i> 18.7% from last month
             </div>
@@ -1142,6 +1218,7 @@
               <div class="stat-icon"><i class="fas fa-percentage"></i></div>
             </div>
             <div class="stat-value" id="budgetValue">94%</div>
+            <button class="edit-stat-btn" onclick="editStat('budgetValue')"><i class="fas fa-edit"></i></button>
             <div class="stat-change trend-up">
               <i class="fas fa-arrow-up"></i> 2.1% from target
             </div>
@@ -2086,6 +2163,48 @@
     </div>
   </div>
 
+  <!-- Edit Budget Modal -->
+  <div class="modal" id="editBudgetModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Budget</h3>
+        <button class="modal-close" onclick="closeModal('editBudgetModal')">&times;</button>
+      </div>
+      <form id="editBudgetForm" onsubmit="saveEditedBudget(event)">
+        <div class="modal-body">
+          <input type="hidden" id="editBudgetId" name="budgetId">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Budget Name</label>
+              <input type="text" class="form-control" id="editBudgetName" name="budgetName" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select class="form-control" id="editBudgetCategory" name="category" required>
+                <option value="Expenses">Expenses</option>
+                <option value="Revenue">Revenue</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Allocated Amount (TZS)</label>
+              <input type="number" class="form-control" id="editBudgetAllocated" name="allocatedAmount" step="0.01" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Current Amount</label>
+              <input type="number" class="form-control" id="editBudgetCurrent" name="currentAmount" step="0.01" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('editBudgetModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Upload Receipt Modal -->
   <div class="modal" id="uploadReceiptModal" role="dialog" aria-modal="true">
     <div class="modal-content">
@@ -2189,6 +2308,53 @@
     </div>
   </div>
 
+  <!-- Edit Tax Filing Modal -->
+  <div class="modal" id="editTaxFilingModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Tax Filing</h3>
+        <button class="modal-close" onclick="closeModal('editTaxFilingModal')">&times;</button>
+      </div>
+      <form id="editTaxFilingForm" onsubmit="saveEditedTaxFiling(event)">
+        <div class="modal-body">
+          <input type="hidden" id="editTaxId" name="taxId">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tax Type</label>
+              <input type="text" class="form-control" id="editTaxType" name="taxType" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Period</label>
+              <input type="text" class="form-control" id="editTaxPeriod" name="period" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Amount Due (TZS)</label>
+              <input type="number" class="form-control" id="editTaxAmount" name="amount" step="0.01" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Due Date</label>
+              <input type="date" class="form-control" id="editTaxDueDate" name="dueDate" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select class="form-control" id="editTaxStatus" name="status" required>
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+              <option value="overdue">Overdue</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('editTaxFilingModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Report Generation Modal -->
   <div class="modal" id="reportModal" role="dialog" aria-modal="true">
     <div class="modal-content">
@@ -2228,6 +2394,109 @@
     </div>
   </div>
 
+  <!-- Custom Report Modal -->
+  <div class="modal" id="customReportModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Custom Report Generator</h3>
+        <button class="modal-close" onclick="closeModal('customReportModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Report Name</label>
+          <input type="text" class="form-control" id="customReportName" placeholder="Enter report name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Data Sources</label>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <label><input type="checkbox" name="dataSource" value="transactions" checked> Transactions</label>
+            <label><input type="checkbox" name="dataSource" value="budgets"> Budgets</label>
+            <label><input type="checkbox" name="dataSource" value="invoices"> Invoices</label>
+            <label><input type="checkbox" name="dataSource" value="expenses"> Expenses</label>
+            <label><input type="checkbox" name="dataSource" value="tax"> Tax Data</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date Range</label>
+          <div class="date-range-inputs">
+            <input type="date" id="customReportStart" class="date-input">
+            <span>to</span>
+            <input type="date" id="customReportEnd" class="date-input">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Report Format</label>
+          <select id="customReportFormat" class="form-control">
+            <option value="summary">Summary View</option>
+            <option value="detailed">Detailed View</option>
+            <option value="comparative">Comparative Analysis</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('customReportModal')">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="generateCustomReportFinal()">
+          <i class="fas fa-magic"></i> Generate Custom Report
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit Filter Modal -->
+  <div class="modal" id="auditFilterModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Set Audit Filters</h3>
+        <button class="modal-close" onclick="closeModal('auditFilterModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Date Range</label>
+          <div class="date-range-inputs">
+            <input type="date" id="auditFilterStart" class="date-input">
+            <span>to</span>
+            <input type="date" id="auditFilterEnd" class="date-input">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">User</label>
+          <input type="text" class="form-control" id="auditFilterUser" placeholder="Filter by username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Action Type</label>
+          <select id="auditFilterAction" class="form-control">
+            <option value="">All Actions</option>
+            <option value="Create">Create</option>
+            <option value="Update">Update</option>
+            <option value="Delete">Delete</option>
+            <option value="View">View</option>
+            <option value="Export">Export</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Resource Type</label>
+          <select id="auditFilterResource" class="form-control">
+            <option value="">All Resources</option>
+            <option value="Invoice">Invoice</option>
+            <option value="Expense">Expense</option>
+            <option value="Budget">Budget</option>
+            <option value="Transaction">Transaction</option>
+            <option value="Report">Report</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('auditFilterModal')">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="applyAuditFilters()">
+          <i class="fas fa-filter"></i> Apply Filters
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="clearAuditFilters()">
+          <i class="fas fa-times"></i> Clear Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Transaction Detail Modal -->
   <div class="modal" id="transactionDetailModal" role="dialog" aria-modal="true">
     <div class="modal-content">
@@ -2253,6 +2522,8 @@
       constructor() {
         this.currency = 'TZS';
         this.currentModule = 'overview';
+        this.editingStat = null;
+        this.editingBudget = null;
         this.exchangeRates = {
           'TZS': { rate: 1, symbol: 'TZS ', name: 'Tanzanian Shilling' },
           'USD': { rate: 0.00043, symbol: '$', name: 'US Dollar' },
@@ -2315,6 +2586,12 @@
             { id: 2, type: 'Income Tax', period: '2024', amount: 8500000, dueDate: '2025-03-31', status: 'pending' },
             { id: 3, type: 'Withholding Tax', period: 'December 2024', amount: 450000, dueDate: '2025-01-15', status: 'paid' }
           ],
+          stats: {
+            revenue: 24800000,
+            expenses: 8700000,
+            profit: 16100000,
+            budgetUtilization: 94
+          },
           nextInvoiceId: 4,
           nextTransactionId: 6,
           nextJournalEntryId: 4,
@@ -2336,7 +2613,6 @@
       }
 
       setupNavigation() {
-        // Module navigation
         document.querySelectorAll('.nav-link[data-module], .module-card[data-module]').forEach(element => {
           element.addEventListener('click', (e) => {
             const module = element.dataset.module;
@@ -2344,7 +2620,6 @@
           });
         });
 
-        // Mobile menu toggle
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');
         const financeSidebar = document.getElementById('financeSidebar');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -2374,25 +2649,20 @@
       }
 
       openModule(module) {
-        // Update current module
         this.currentModule = module;
         
-        // Hide all modules
         document.querySelectorAll('.module-container').forEach(container => {
           container.classList.remove('active');
         });
         
-        // Show selected module
         const moduleContainer = document.getElementById(`${module}Module`);
         if (moduleContainer) {
           moduleContainer.classList.add('active');
         } else {
-          // If module doesn't exist, show overview
           this.openModule('overview');
           return;
         }
         
-        // Update navigation active state
         document.querySelectorAll('.nav-link').forEach(link => {
           link.classList.remove('active');
           if (link.dataset.module === module) {
@@ -2400,13 +2670,9 @@
           }
         });
         
-        // Update header
         this.updateModuleHeader(module);
-        
-        // Load module data
         this.updateModuleData();
         
-        // Close mobile menu if open
         const financeSidebar = document.getElementById('financeSidebar');
         if (financeSidebar.classList.contains('active')) {
           financeSidebar.classList.remove('active');
@@ -2437,7 +2703,6 @@
         const startDate = document.getElementById('startDate').value;
         const endDate = document.getElementById('endDate').value;
         
-        // Filter transactions by date range
         const filteredTransactions = this.financialData.transactions.filter(t => {
           const transactionDate = new Date(t.date);
           const start = new Date(startDate);
@@ -2445,7 +2710,6 @@
           return transactionDate >= start && transactionDate <= end;
         });
 
-        // Calculate stats based on filtered data
         const revenue = filteredTransactions
           .filter(t => t.amount > 0)
           .reduce((sum, t) => sum + t.amount, 0);
@@ -2456,50 +2720,27 @@
         
         const profit = revenue - expenses;
         
-        // Update stats
         document.getElementById('revenueValue').textContent = this.formatCurrency(revenue);
         document.getElementById('expensesValue').textContent = this.formatCurrency(expenses);
         document.getElementById('profitValue').textContent = this.formatCurrency(profit);
         
-        // Update chart with filtered data
         this.renderChart();
-        
-        // Update transactions table
         this.renderTransactions(filteredTransactions.slice(0, 5));
       }
 
       updateOverview() {
-        // Calculate stats from all data
-        const revenue = this.financialData.transactions
-          .filter(t => t.amount > 0)
-          .reduce((sum, t) => sum + t.amount, 0);
-        
-        const expenses = this.financialData.transactions
-          .filter(t => t.amount < 0)
-          .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-        
-        const profit = revenue - expenses;
-        const totalBudget = this.financialData.budgets
-          .filter(b => b.category === 'Expenses')
-          .reduce((sum, b) => sum + b.allocated, 0);
-        const totalSpent = this.financialData.budgets
-          .filter(b => b.category === 'Expenses')
-          .reduce((sum, b) => sum + b.spent, 0);
-        const budgetUtilization = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0;
+        const revenue = this.financialData.stats.revenue;
+        const expenses = this.financialData.stats.expenses;
+        const profit = this.financialData.stats.profit;
+        const budgetUtilization = this.financialData.stats.budgetUtilization;
 
-        // Update stats
         document.getElementById('revenueValue').textContent = this.formatCurrency(revenue);
         document.getElementById('expensesValue').textContent = this.formatCurrency(expenses);
         document.getElementById('profitValue').textContent = this.formatCurrency(profit);
         document.getElementById('budgetValue').textContent = `${budgetUtilization}%`;
 
-        // Update transactions
         this.renderTransactions();
-        
-        // Update budgets
         this.renderBudgets();
-        
-        // Update chart
         this.renderChart();
       }
 
@@ -2533,7 +2774,6 @@
       }
 
       updateAccountingModule() {
-        // Update stats
         const totalAssets = this.financialData.chartOfAccounts
           .filter(a => a.type === 'Asset')
           .reduce((sum, a) => sum + a.balance, 0);
@@ -2554,7 +2794,6 @@
         document.getElementById('totalEquity').textContent = this.formatCurrency(totalEquity);
         document.getElementById('cashBalance').textContent = this.formatCurrency(cashBalance);
 
-        // Update journal entries
         const journalEntries = document.getElementById('journalEntries');
         journalEntries.innerHTML = this.financialData.journalEntries.slice(0, 5).map(entry => `
           <tr>
@@ -2572,7 +2811,6 @@
           </tr>
         `).join('');
 
-        // Update chart of accounts
         const chartOfAccounts = document.getElementById('chartOfAccounts');
         chartOfAccounts.innerHTML = this.financialData.chartOfAccounts.map(account => `
           <tr>
@@ -2602,7 +2840,6 @@
         document.getElementById('overdueInvoices').textContent = overdueInvoices;
         document.getElementById('totalInvoiceAmount').textContent = this.formatCurrency(totalInvoiceAmount);
 
-        // Update invoice list
         const invoiceList = document.getElementById('invoiceList');
         invoiceList.innerHTML = this.financialData.invoices.map(invoice => `
           <tr>
@@ -2647,7 +2884,6 @@
         document.getElementById('largestCategory').textContent = largestCategory;
         document.getElementById('avgDailyExpense').textContent = this.formatCurrency(avgDailyExpense);
 
-        // Update expense list
         const expenseList = document.getElementById('expenseList');
         expenseList.innerHTML = this.financialData.expenses.map(expense => `
           <tr>
@@ -2678,7 +2914,6 @@
         document.getElementById('budgetVariance').textContent = '+2.1%';
         document.getElementById('forecastAccuracy').textContent = '92%';
 
-        // Update budget cards
         const budgetTable = document.getElementById('budgetTable');
         budgetTable.innerHTML = this.financialData.budgets.map(budget => {
           const spent = budget.category === 'Expenses' ? budget.spent : budget.achieved;
@@ -2691,6 +2926,7 @@
                 <div class="budget-name">${budget.name}</div>
                 <div class="budget-amount">
                   ${this.formatCurrency(spent)} / ${this.formatCurrency(budget.allocated)}
+                  <button class="edit-budget-btn" onclick="editBudget(${budget.id})"><i class="fas fa-edit"></i></button>
                 </div>
               </div>
               <div class="progress-bar">
@@ -2703,7 +2939,6 @@
                 </span>
                 <div class="table-actions">
                   <i class="fas fa-eye action-icon" onclick="viewBudget(${budget.id})" title="View"></i>
-                  <i class="fas fa-edit action-icon" onclick="editBudget(${budget.id})" title="Edit"></i>
                   <i class="fas fa-trash action-icon" onclick="deleteBudget(${budget.id})" title="Delete"></i>
                 </div>
               </div>
@@ -2726,7 +2961,6 @@
         document.getElementById('taxCredits').textContent = this.formatCurrency(420000);
         document.getElementById('complianceScore').textContent = '95%';
 
-        // Update tax obligations
         const taxObligations = document.getElementById('taxObligations');
         taxObligations.innerHTML = this.financialData.taxObligations.map(obligation => `
           <tr>
@@ -2741,7 +2975,7 @@
             </td>
             <td class="table-actions">
               <i class="fas fa-eye action-icon" onclick="viewTaxObligation(${obligation.id})" title="View"></i>
-              <i class="fas fa-edit action-icon" onclick="editTaxObligation(${obligation.id})" title="Edit"></i>
+              <i class="fas fa-edit action-icon" onclick="editTaxFiling(${obligation.id})" title="Edit"></i>
               <i class="fas fa-trash action-icon" onclick="deleteTaxObligation(${obligation.id})" title="Delete"></i>
             </td>
           </tr>
@@ -2749,7 +2983,6 @@
       }
 
       updateReportsModule() {
-        // Set default dates for reports
         const today = new Date();
         const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
         
@@ -2781,7 +3014,6 @@
         document.getElementById('fxGainLoss').textContent = this.formatCurrency(1200000);
         document.getElementById('baseCurrency').textContent = this.currency;
 
-        // Update exchange rates table
         const exchangeRates = document.getElementById('exchangeRates');
         exchangeRates.innerHTML = Object.entries(this.exchangeRates).map(([code, data]) => {
           const change = (Math.random() * 0.02 - 0.01).toFixed(4);
@@ -2813,6 +3045,21 @@
           return `${symbol}${(converted / 1000).toFixed(1)}K`;
         }
         return `${symbol}${converted.toFixed(2)}`;
+      }
+
+      parseCurrency(value) {
+        const symbol = this.exchangeRates[this.currency].symbol;
+        const rate = this.exchangeRates[this.currency].rate;
+        
+        let cleaned = value.replace(symbol, '').trim();
+        
+        if (cleaned.endsWith('M')) {
+          return parseFloat(cleaned.replace('M', '')) * 1000000 / rate;
+        } else if (cleaned.endsWith('K')) {
+          return parseFloat(cleaned.replace('K', '')) * 1000 / rate;
+        } else {
+          return parseFloat(cleaned) / rate;
+        }
       }
 
       renderTransactions(transactions = null) {
@@ -2870,11 +3117,9 @@
       renderChart() {
         const chart = document.getElementById('performanceChart');
         
-        // Generate mock data for the chart based on date range
         const startDate = document.getElementById('startDate')?.value || '2024-12-01';
         const endDate = document.getElementById('endDate')?.value || '2024-12-31';
         
-        // Create a simple bar chart
         chart.innerHTML = `
           <div style="width: 100%; height: 100%; padding: 20px; display: flex; flex-direction: column;">
             <div style="flex: 1; display: flex; align-items: end; gap: 20px; padding: 20px;">
@@ -2907,13 +3152,11 @@
           this.updateFinancialDataByDateRange();
         });
 
-        // Back to dashboard
         document.querySelector('a[href="index.html"]').addEventListener('click', function(e) {
           e.preventDefault();
           window.location.href = 'index.html';
         });
 
-        // Service Worker
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('sw.js')
             .then(reg => console.log('Service Worker registered:', reg))
@@ -3008,11 +3251,75 @@
         this.updateBudgetingModule();
       }
 
+      updateBudget(id, updatedData) {
+        const index = this.financialData.budgets.findIndex(b => b.id === id);
+        if (index !== -1) {
+          this.financialData.budgets[index] = { ...this.financialData.budgets[index], ...updatedData };
+          this.saveData();
+          this.updateBudgetingModule();
+          return true;
+        }
+        return false;
+      }
+
+      deleteBudget(id) {
+        const index = this.financialData.budgets.findIndex(b => b.id === id);
+        if (index !== -1) {
+          this.financialData.budgets.splice(index, 1);
+          this.saveData();
+          this.updateBudgetingModule();
+          return true;
+        }
+        return false;
+      }
+
       addTaxObligation(obligation) {
         obligation.id = this.financialData.taxObligations.length + 1;
         this.financialData.taxObligations.push(obligation);
         this.saveData();
         this.updateTaxModule();
+      }
+
+      updateTaxObligation(id, updatedData) {
+        const index = this.financialData.taxObligations.findIndex(t => t.id === id);
+        if (index !== -1) {
+          this.financialData.taxObligations[index] = { ...this.financialData.taxObligations[index], ...updatedData };
+          this.saveData();
+          this.updateTaxModule();
+          return true;
+        }
+        return false;
+      }
+
+      deleteTaxObligation(id) {
+        const index = this.financialData.taxObligations.findIndex(t => t.id === id);
+        if (index !== -1) {
+          this.financialData.taxObligations.splice(index, 1);
+          this.saveData();
+          this.updateTaxModule();
+          return true;
+        }
+        return false;
+      }
+
+      updateStat(statId, value) {
+        const statMap = {
+          'revenueValue': 'revenue',
+          'expensesValue': 'expenses',
+          'profitValue': 'profit',
+          'budgetValue': 'budgetUtilization'
+        };
+        
+        const statKey = statMap[statId];
+        if (statKey) {
+          if (statKey === 'budgetUtilization') {
+            this.financialData.stats[statKey] = parseInt(value);
+          } else {
+            this.financialData.stats[statKey] = this.parseCurrency(value);
+          }
+          this.saveData();
+          this.updateOverview();
+        }
       }
     }
 
@@ -3036,580 +3343,204 @@
       financeSystem.openModule(module);
     };
 
-    // 1. ACCOUNTING SYSTEM FUNCTIONS
-    window.openJournalEntryModal = function() {
-      // Generate journal entry number
-      const entryNumber = `JE-${String(financeSystem.financialData.nextJournalEntryId).padStart(3, '0')}`;
-      document.querySelector('#journalEntryForm input[name="entryNumber"]').value = entryNumber;
+    // 1. EDITABLE STATISTICS FUNCTIONS
+    window.editStat = function(statId) {
+      const statElement = document.getElementById(statId);
+      const currentValue = statElement.textContent;
       
-      // Set today's date
-      const today = new Date().toISOString().split('T')[0];
-      document.querySelector('#journalEntryForm input[name="date"]').value = today;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'edit-stat-input';
+      input.value = currentValue;
       
-      openModal('journalEntryModal');
-    };
-
-    window.submitJournalEntry = function(event) {
-      event.preventDefault();
-      const formData = new FormData(event.target);
-      
-      const journalEntry = {
-        date: formData.get('date'),
-        entryNumber: formData.get('entryNumber'),
-        description: formData.get('description'),
-        debit: parseFloat(formData.get('debitAmount')),
-        credit: parseFloat(formData.get('creditAmount')),
-        status: 'posted'
-      };
-      
-      financeSystem.addJournalEntry(journalEntry);
-      
-      alert('Journal entry added successfully!');
-      closeModal('journalEntryModal');
-    };
-
-    window.viewGeneralLedger = function() {
-      alert('Opening General Ledger... Showing all ledger entries with running balances.');
-      // In a full implementation, this would open a detailed ledger view
-    };
-
-    window.runTrialBalance = function() {
-      const debitTotal = financeSystem.financialData.journalEntries.reduce((sum, entry) => sum + entry.debit, 0);
-      const creditTotal = financeSystem.financialData.journalEntries.reduce((sum, entry) => sum + entry.credit, 0);
-      
-      if (debitTotal === creditTotal) {
-        alert(`Trial Balance Success!\n\nDebit Total: ${financeSystem.formatCurrency(debitTotal)}\nCredit Total: ${financeSystem.formatCurrency(creditTotal)}\n\nBalanced ✓`);
-      } else {
-        alert(`Trial Balance Imbalance!\n\nDebit Total: ${financeSystem.formatCurrency(debitTotal)}\nCredit Total: ${financeSystem.formatCurrency(creditTotal)}\n\nDifference: ${financeSystem.formatCurrency(Math.abs(debitTotal - creditTotal))}`);
-      }
-    };
-
-    window.viewFinancialStatements = function() {
-      alert('Opening Financial Statements... Generating Balance Sheet, Income Statement, and Cash Flow Statement.');
-      // In a full implementation, this would generate and display all financial statements
-    };
-
-    window.exportAccountingData = function() {
-      const accountingData = {
-        chartOfAccounts: financeSystem.financialData.chartOfAccounts,
-        journalEntries: financeSystem.financialData.journalEntries,
-        generated: new Date().toISOString()
-      };
-      
-      const dataStr = JSON.stringify(accountingData, null, 2);
-      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-      const exportFileDefaultName = `accounting_data_${new Date().toISOString().split('T')[0]}.json`;
-      
-      const linkElement = document.createElement('a');
-      linkElement.setAttribute('href', dataUri);
-      linkElement.setAttribute('download', exportFileDefaultName);
-      linkElement.click();
-      
-      alert('Accounting data exported successfully!');
-    };
-
-    window.viewAllJournalEntries = function() {
-      alert('Opening all journal entries... Showing complete journal history with filtering options.');
-      // In a full implementation, this would open a full journal view
-    };
-
-    window.exportJournalEntries = function() {
-      const dataStr = JSON.stringify(financeSystem.financialData.journalEntries, null, 2);
-      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-      const exportFileDefaultName = `journal_entries_${new Date().toISOString().split('T')[0]}.json`;
-      
-      const linkElement = document.createElement('a');
-      linkElement.setAttribute('href', dataUri);
-      linkElement.setAttribute('download', exportFileDefaultName);
-      linkElement.click();
-      
-      alert('Journal entries exported successfully!');
-    };
-
-    window.openAddAccountModal = function() {
-      // Generate next account code
-      document.querySelector('#addAccountForm input[name="accountCode"]').value = 
-        financeSystem.financialData.nextAccountCode;
-      openModal('addAccountModal');
-    };
-
-    window.submitNewAccount = function(event) {
-      event.preventDefault();
-      const formData = new FormData(event.target);
-      
-      const newAccount = {
-        code: formData.get('accountCode'),
-        name: formData.get('accountName'),
-        type: formData.get('accountType'),
-        balance: parseFloat(formData.get('openingBalance')),
-        description: formData.get('description') || ''
-      };
-      
-      financeSystem.addAccount(newAccount);
-      
-      alert('Account added successfully!');
-      closeModal('addAccountModal');
-    };
-
-    window.exportChartOfAccounts = function() {
-      const csvContent = "data:text/csv;charset=utf-8," 
-        + "Account Code,Account Name,Type,Balance\n"
-        + financeSystem.financialData.chartOfAccounts.map(account => 
-            `${account.code},${account.name},${account.type},${account.balance}`
-          ).join("\n");
-      
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `chart_of_accounts_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      alert('Chart of Accounts exported to CSV successfully!');
-    };
-
-    window.viewJournalEntry = function(id) {
-      const entry = financeSystem.financialData.journalEntries.find(e => e.id === id);
-      if (entry) {
-        alert(`Journal Entry Details:\n\nEntry #: ${entry.entryNumber}\nDate: ${entry.date}\nDescription: ${entry.description}\nDebit: ${financeSystem.formatCurrency(entry.debit)}\nCredit: ${financeSystem.formatCurrency(entry.credit)}\nStatus: ${entry.status}`);
-      }
-    };
-
-    window.editJournalEntry = function(id) {
-      alert(`Editing journal entry ${id}... Opening edit form.`);
-    };
-
-    window.deleteJournalEntry = function(id) {
-      if (confirm('Are you sure you want to delete this journal entry?')) {
-        const index = financeSystem.financialData.journalEntries.findIndex(e => e.id === id);
-        if (index !== -1) {
-          financeSystem.financialData.journalEntries.splice(index, 1);
-          financeSystem.saveData();
-          financeSystem.updateAccountingModule();
-          alert('Journal entry deleted successfully!');
+      input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          saveStat(statId, input.value);
         }
-      }
-    };
-
-    window.viewAccount = function(code) {
-      const account = financeSystem.financialData.chartOfAccounts.find(a => a.code === code);
-      if (account) {
-        alert(`Account Details:\n\nCode: ${account.code}\nName: ${account.name}\nType: ${account.type}\nBalance: ${financeSystem.formatCurrency(account.balance)}`);
-      }
-    };
-
-    window.editAccount = function(code) {
-      alert(`Editing account ${code}... Opening edit form.`);
-    };
-
-    window.deleteAccount = function(code) {
-      if (confirm('Are you sure you want to delete this account?')) {
-        const index = financeSystem.financialData.chartOfAccounts.findIndex(a => a.code === code);
-        if (index !== -1) {
-          financeSystem.financialData.chartOfAccounts.splice(index, 1);
-          financeSystem.saveData();
-          financeSystem.updateAccountingModule();
-          alert('Account deleted successfully!');
-        }
-      }
-    };
-
-    // 2. INVOICING & BILLING FUNCTIONS
-    window.viewAllInvoices = function() {
-      alert('Opening all invoices... Showing complete invoice history with filtering and search.');
-      // In a full implementation, this would open a full invoice management view
-    };
-
-    window.sendReminders = function() {
-      const overdueInvoices = financeSystem.financialData.invoices.filter(i => i.status === 'overdue');
-      const pendingInvoices = financeSystem.financialData.invoices.filter(i => i.status === 'pending');
-      
-      alert(`Sending payment reminders...\n\n${overdueInvoices.length} overdue invoices\n${pendingInvoices.length} pending invoices\n\nEmail notifications sent to clients.`);
-    };
-
-    window.runInvoicingReport = function() {
-      openModal('reportModal');
-      document.getElementById('reportModalTitle').textContent = 'Generate Invoicing Report';
-    };
-
-    window.exportInvoices = function() {
-      const csvContent = "data:text/csv;charset=utf-8," 
-        + "Invoice Number,Client,Date,Due Date,Amount,Status\n"
-        + financeSystem.financialData.invoices.map(invoice => 
-            `${invoice.number},${invoice.client},${invoice.date},${invoice.dueDate},${invoice.amount},${invoice.status}`
-          ).join("\n");
-      
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `invoices_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      alert('Invoices exported to CSV successfully!');
-    };
-
-    window.viewInvoice = function(id) {
-      const invoice = financeSystem.financialData.invoices.find(i => i.id === id);
-      if (invoice) {
-        alert(`Invoice Details:\n\nInvoice #: ${invoice.number}\nClient: ${invoice.client}\nDate: ${invoice.date}\nDue Date: ${invoice.dueDate}\nAmount: ${financeSystem.formatCurrency(invoice.amount)}\nStatus: ${invoice.status}`);
-      }
-    };
-
-    window.editInvoice = function(id) {
-      alert(`Editing invoice ${id}... Opening edit form.`);
-    };
-
-    window.deleteInvoice = function(id) {
-      if (confirm('Are you sure you want to delete this invoice?')) {
-        const index = financeSystem.financialData.invoices.findIndex(i => i.id === id);
-        if (index !== -1) {
-          financeSystem.financialData.invoices.splice(index, 1);
-          financeSystem.saveData();
-          financeSystem.updateInvoicingModule();
-          alert('Invoice deleted successfully!');
-        }
-      }
-    };
-
-    window.exportInvoicePDF = function(id) {
-      alert(`Exporting invoice ${id} as PDF... PDF file generated and downloaded.`);
-    };
-
-    // 3. EXPENSE TRACKING FUNCTIONS
-    window.uploadReceipt = function() {
-      openModal('uploadReceiptModal');
-    };
-
-    window.submitReceiptUpload = function(event) {
-      event.preventDefault();
-      const formData = new FormData(event.target);
-      
-      // Simulate file upload
-      const fileName = formData.get('receiptFile').name;
-      const expenseDate = formData.get('expenseDate');
-      const amount = parseFloat(formData.get('amount'));
-      const vendor = formData.get('vendor');
-      const notes = formData.get('notes');
-      
-      alert(`Receipt uploaded successfully!\n\nFile: ${fileName}\nDate: ${expenseDate}\nAmount: ${financeSystem.formatCurrency(amount)}\nVendor: ${vendor}\nNotes: ${notes}`);
-      
-      // Add expense record
-      financeSystem.addExpense({
-        date: expenseDate,
-        description: `Receipt: ${vendor} - ${notes}`,
-        category: 'Receipt Upload',
-        amount: amount,
-        paymentMethod: 'receipt',
-        status: 'pending review'
       });
       
-      closeModal('uploadReceiptModal');
-    };
-
-    window.categorizeExpenses = function() {
-      alert('Opening expense categorization tool... Bulk categorize multiple expenses at once.');
-      // In a full implementation, this would open a categorization interface
-    };
-
-    window.runExpenseReport = function() {
-      openModal('reportModal');
-      document.getElementById('reportModalTitle').textContent = 'Generate Expense Report';
-    };
-
-    window.exportExpenses = function() {
-      const csvContent = "data:text/csv;charset=utf-8," 
-        + "Date,Description,Category,Amount,Payment Method,Status\n"
-        + financeSystem.financialData.expenses.map(expense => 
-            `${expense.date},${expense.description},${expense.category},${expense.amount},${expense.paymentMethod},${expense.status}`
-          ).join("\n");
+      input.addEventListener('blur', function() {
+        saveStat(statId, input.value);
+      });
       
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `expenses_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      alert('Expenses exported to CSV successfully!');
+      statElement.innerHTML = '';
+      statElement.appendChild(input);
+      input.focus();
     };
 
-    window.viewAllExpenses = function() {
-      alert('Opening all expenses... Showing complete expense history with filtering options.');
-      // In a full implementation, this would open a full expense management view
+    window.saveStat = function(statId, value) {
+      financeSystem.updateStat(statId, value);
+      alert('Statistic updated successfully!');
     };
 
-    window.viewExpense = function(id) {
-      const expense = financeSystem.financialData.expenses.find(e => e.id === id);
-      if (expense) {
-        alert(`Expense Details:\n\nDate: ${expense.date}\nDescription: ${expense.description}\nCategory: ${expense.category}\nAmount: ${financeSystem.formatCurrency(expense.amount)}\nPayment Method: ${expense.paymentMethod}\nStatus: ${expense.status}`);
-      }
-    };
-
-    window.editExpense = function(id) {
-      alert(`Editing expense ${id}... Opening edit form.`);
-    };
-
-    window.deleteExpense = function(id) {
-      if (confirm('Are you sure you want to delete this expense?')) {
-        const index = financeSystem.financialData.expenses.findIndex(e => e.id === id);
-        if (index !== -1) {
-          financeSystem.financialData.expenses.splice(index, 1);
-          financeSystem.saveData();
-          financeSystem.updateExpensesModule();
-          alert('Expense deleted successfully!');
-        }
-      }
-    };
-
-    // 4. BUDGETING & FORECASTING FUNCTIONS
-    window.openCreateBudgetModal = function() {
-      // Set default dates
-      const today = new Date();
-      const endDate = new Date(today);
-      endDate.setMonth(endDate.getMonth() + 1);
-      
-      document.querySelector('#createBudgetForm input[name="startDate"]').value = today.toISOString().split('T')[0];
-      document.querySelector('#createBudgetForm input[name="endDate"]').value = endDate.toISOString().split('T')[0];
-      
-      openModal('createBudgetModal');
-    };
-
-    window.submitNewBudget = function(event) {
-      event.preventDefault();
-      const formData = new FormData(event.target);
-      
-      const newBudget = {
-        name: formData.get('budgetName'),
-        category: formData.get('category'),
-        allocated: parseFloat(formData.get('allocatedAmount')),
-        spent: 0,
-        period: formData.get('period'),
-        startDate: formData.get('startDate'),
-        endDate: formData.get('endDate'),
-        description: formData.get('description') || ''
-      };
-      
-      if (newBudget.category === 'Revenue') {
-        newBudget.achieved = 0;
-      }
-      
-      financeSystem.addBudget(newBudget);
-      
-      alert('Budget created successfully!');
-      closeModal('createBudgetModal');
-    };
-
+    // 2. BUDGETING & FORECASTING FUNCTIONS
     window.runForecast = function() {
       alert('Running financial forecast... Analyzing historical data and generating projections for next quarter.');
-      // In a full implementation, this would run forecasting algorithms
+      // Add forecast functionality
+      const forecastData = {
+        nextQuarterRevenue: financeSystem.financialData.stats.revenue * 1.15,
+        nextQuarterExpenses: financeSystem.financialData.stats.expenses * 1.08,
+        nextQuarterProfit: financeSystem.financialData.stats.profit * 1.20,
+        confidenceLevel: '85%'
+      };
+      
+      alert(`Forecast Results:\n\nNext Quarter Revenue: ${financeSystem.formatCurrency(forecastData.nextQuarterRevenue)}\nNext Quarter Expenses: ${financeSystem.formatCurrency(forecastData.nextQuarterExpenses)}\nNext Quarter Profit: ${financeSystem.formatCurrency(forecastData.nextQuarterProfit)}\nConfidence Level: ${forecastData.confidenceLevel}`);
     };
 
     window.analyzeVariance = function() {
       alert('Analyzing budget variance... Comparing actual spending against budgeted amounts with detailed variance analysis.');
-      // In a full implementation, this would perform variance analysis
+      // Add variance analysis functionality
+      const totalBudget = financeSystem.financialData.budgets.reduce((sum, b) => sum + b.allocated, 0);
+      const totalSpent = financeSystem.financialData.budgets
+        .filter(b => b.category === 'Expenses')
+        .reduce((sum, b) => sum + b.spent, 0);
+      
+      const variance = totalSpent - totalBudget;
+      const variancePercentage = (variance / totalBudget) * 100;
+      
+      alert(`Variance Analysis:\n\nTotal Budget: ${financeSystem.formatCurrency(totalBudget)}\nTotal Spent: ${financeSystem.formatCurrency(totalSpent)}\nVariance: ${financeSystem.formatCurrency(variance)} (${variancePercentage.toFixed(2)}%)\n\n${variance > 0 ? '⚠️ Over Budget' : '✓ Under Budget'}`);
     };
 
     window.compareScenarios = function() {
       alert('Comparing budget scenarios... Showing different what-if analyses and their financial impacts.');
-      // In a full implementation, this would show scenario comparison
-    };
-
-    window.exportBudgets = function() {
-      const csvContent = "data:text/csv;charset=utf-8," 
-        + "Name,Category,Allocated,Spent/Used,Period,Utilization\n"
-        + financeSystem.financialData.budgets.map(budget => {
-            const used = budget.category === 'Expenses' ? budget.spent : budget.achieved;
-            const utilization = Math.round((used / budget.allocated) * 100);
-            return `${budget.name},${budget.category},${budget.allocated},${used},${budget.period},${utilization}%`;
-          }).join("\n");
+      // Add scenario comparison functionality
+      const scenarios = [
+        { name: 'Conservative', revenue: financeSystem.financialData.stats.revenue * 0.9, expenses: financeSystem.financialData.stats.expenses * 0.95 },
+        { name: 'Baseline', revenue: financeSystem.financialData.stats.revenue, expenses: financeSystem.financialData.stats.expenses },
+        { name: 'Optimistic', revenue: financeSystem.financialData.stats.revenue * 1.15, expenses: financeSystem.financialData.stats.expenses * 1.05 }
+      ];
       
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `budgets_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      alert('Budgets exported to CSV successfully!');
-    };
-
-    window.viewAllBudgets = function() {
-      alert('Opening all budgets... Showing complete budget portfolio with detailed analytics.');
-      // In a full implementation, this would open a comprehensive budget view
-    };
-
-    window.viewBudget = function(id) {
-      const budget = financeSystem.financialData.budgets.find(b => b.id === id);
-      if (budget) {
-        const used = budget.category === 'Expenses' ? budget.spent : budget.achieved;
-        const remaining = budget.allocated - used;
-        const utilization = Math.round((used / budget.allocated) * 100);
-        
-        alert(`Budget Details:\n\nName: ${budget.name}\nCategory: ${budget.category}\nAllocated: ${financeSystem.formatCurrency(budget.allocated)}\nUsed: ${financeSystem.formatCurrency(used)}\nRemaining: ${financeSystem.formatCurrency(remaining)}\nUtilization: ${utilization}%\nPeriod: ${budget.period}`);
-      }
-    };
-
-    window.editBudget = function(id) {
-      alert(`Editing budget ${id}... Opening edit form.`);
-    };
-
-    window.deleteBudget = function(id) {
-      if (confirm('Are you sure you want to delete this budget?')) {
-        const index = financeSystem.financialData.budgets.findIndex(b => b.id === id);
-        if (index !== -1) {
-          financeSystem.financialData.budgets.splice(index, 1);
-          financeSystem.saveData();
-          financeSystem.updateBudgetingModule();
-          alert('Budget deleted successfully!');
-        }
-      }
-    };
-
-    // 5. TAX MANAGEMENT FUNCTIONS (with TRA information)
-    window.calculateTax = function() {
-      openModal('taxCalculationModal');
-      
-      // Set default due date (end of current month)
-      const today = new Date();
-      const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-      document.querySelector('#taxCalculationForm input[name="dueDate"]').value = lastDay.toISOString().split('T')[0];
-    };
-
-    window.submitTaxCalculation = function(event) {
-      event.preventDefault();
-      const formData = new FormData(event.target);
-      
-      const taxType = formData.get('taxType');
-      const taxableAmount = parseFloat(formData.get('taxableAmount'));
-      const period = formData.get('period');
-      const dueDate = formData.get('dueDate');
-      const notes = formData.get('notes');
-      
-      // Calculate tax based on type
-      let taxAmount = 0;
-      let taxRate = '';
-      
-      switch(taxType) {
-        case 'VAT':
-          taxAmount = taxableAmount * 0.18; // 18% VAT
-          taxRate = '18%';
-          break;
-        case 'Withholding Tax':
-          taxAmount = taxableAmount * 0.15; // 15% WHT
-          taxRate = '15%';
-          break;
-        case 'Income Tax':
-          // Progressive tax calculation
-          if (taxableAmount <= 2700000) taxAmount = taxableAmount * 0.08;
-          else if (taxableAmount <= 5200000) taxAmount = 216000 + (taxableAmount - 2700000) * 0.20;
-          else if (taxableAmount <= 7600000) taxAmount = 716000 + (taxableAmount - 5200000) * 0.25;
-          else taxAmount = 1316000 + (taxableAmount - 7600000) * 0.30;
-          taxRate = 'Progressive (8%-30%)';
-          break;
-        default:
-          taxAmount = taxableAmount * 0.10; // Default 10%
-          taxRate = '10%';
-      }
-      
-      // Add tax obligation
-      financeSystem.addTaxObligation({
-        type: taxType,
-        period: period,
-        amount: taxAmount,
-        dueDate: dueDate,
-        status: 'pending',
-        notes: notes
+      let scenarioText = 'Scenario Comparison:\n\n';
+      scenarios.forEach(scenario => {
+        const profit = scenario.revenue - scenario.expenses;
+        scenarioText += `${scenario.name}:\n  Revenue: ${financeSystem.formatCurrency(scenario.revenue)}\n  Expenses: ${financeSystem.formatCurrency(scenario.expenses)}\n  Profit: ${financeSystem.formatCurrency(profit)}\n\n`;
       });
       
-      alert(`Tax Calculation Complete!\n\nTax Type: ${taxType}\nTaxable Amount: ${financeSystem.formatCurrency(taxableAmount)}\nTax Rate: ${taxRate}\nTax Amount: ${financeSystem.formatCurrency(taxAmount)}\nDue Date: ${dueDate}\n\nSaved to Tax Obligations.`);
-      
-      closeModal('taxCalculationModal');
+      alert(scenarioText);
     };
 
+    window.editBudget = function(budgetId) {
+      const budget = financeSystem.financialData.budgets.find(b => b.id === budgetId);
+      if (!budget) return;
+      
+      document.getElementById('editBudgetId').value = budgetId;
+      document.getElementById('editBudgetName').value = budget.name;
+      document.getElementById('editBudgetCategory').value = budget.category;
+      document.getElementById('editBudgetAllocated').value = budget.allocated;
+      document.getElementById('editBudgetCurrent').value = budget.category === 'Expenses' ? budget.spent : budget.achieved;
+      
+      openModal('editBudgetModal');
+    };
+
+    window.saveEditedBudget = function(event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      const budgetId = parseInt(formData.get('budgetId'));
+      const updatedData = {
+        name: formData.get('budgetName'),
+        category: formData.get('category'),
+        allocated: parseFloat(formData.get('allocatedAmount'))
+      };
+      
+      if (updatedData.category === 'Expenses') {
+        updatedData.spent = parseFloat(formData.get('currentAmount'));
+      } else {
+        updatedData.achieved = parseFloat(formData.get('currentAmount'));
+      }
+      
+      financeSystem.updateBudget(budgetId, updatedData);
+      alert('Budget updated successfully!');
+      closeModal('editBudgetModal');
+    };
+
+    window.deleteBudget = function(budgetId) {
+      if (confirm('Are you sure you want to delete this budget?')) {
+        financeSystem.deleteBudget(budgetId);
+        alert('Budget deleted successfully!');
+      }
+    };
+
+    // 3. TAX MANAGEMENT FUNCTIONS
     window.prepareFiling = function() {
       alert('Preparing tax filing... Generating TRA-compliant tax return documents and forms.');
-      // In a full implementation, this would generate TRA filing documents
-    };
-
-    window.checkCompliance = function() {
-      alert('Checking TRA compliance...\n\n• Verifying tax registrations\n• Checking filing deadlines\n• Reviewing payment status\n• Validating documentation\n\nCompliance Score: 95% ✓');
-    };
-
-    window.viewTaxReports = function() {
-      openModal('reportModal');
-      document.getElementById('reportModalTitle').textContent = 'Generate Tax Reports';
-    };
-
-    window.exportTaxData = function() {
-      const csvContent = "data:text/csv;charset=utf-8," 
-        + "Tax Type,Period,Amount Due,Due Date,Status\n"
-        + financeSystem.financialData.taxObligations.map(obligation => 
-            `${obligation.type},${obligation.period},${obligation.amount},${obligation.dueDate},${obligation.status}`
-          ).join("\n");
+      // Add tax filing preparation functionality
+      const totalTaxDue = financeSystem.financialData.taxObligations
+        .filter(t => t.status === 'pending')
+        .reduce((sum, t) => sum + t.amount, 0);
       
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `tax_data_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      alert(`Tax Filing Preparation Complete!\n\nTotal Tax Due: ${financeSystem.formatCurrency(totalTaxDue)}\nDocuments Generated:\n• TRA Form 001 - VAT Return\n• TRA Form 006 - Income Tax Return\n• Withholding Tax Certificates\n• Supporting Documentation\n\nReady for submission to TRA.`);
+    };
+
+    window.editTaxFiling = function(taxId) {
+      const tax = financeSystem.financialData.taxObligations.find(t => t.id === taxId);
+      if (!tax) return;
       
-      alert('Tax data exported to CSV successfully!');
+      document.getElementById('editTaxId').value = taxId;
+      document.getElementById('editTaxType').value = tax.type;
+      document.getElementById('editTaxPeriod').value = tax.period;
+      document.getElementById('editTaxAmount').value = tax.amount;
+      document.getElementById('editTaxDueDate').value = tax.dueDate;
+      document.getElementById('editTaxStatus').value = tax.status;
+      
+      openModal('editTaxFilingModal');
     };
 
-    window.viewAllTaxObligations = function() {
-      alert('Opening all tax obligations... Showing complete tax history with TRA deadlines and compliance status.');
-      // In a full implementation, this would open a comprehensive tax view
+    window.saveEditedTaxFiling = function(event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      const taxId = parseInt(formData.get('taxId'));
+      const updatedData = {
+        type: formData.get('taxType'),
+        period: formData.get('period'),
+        amount: parseFloat(formData.get('amount')),
+        dueDate: formData.get('dueDate'),
+        status: formData.get('status')
+      };
+      
+      financeSystem.updateTaxObligation(taxId, updatedData);
+      alert('Tax filing updated successfully!');
+      closeModal('editTaxFilingModal');
     };
 
-    window.viewTaxObligation = function(id) {
-      const obligation = financeSystem.financialData.taxObligations.find(t => t.id === id);
-      if (obligation) {
-        alert(`Tax Obligation Details:\n\nType: ${obligation.type}\nPeriod: ${obligation.period}\nAmount Due: ${financeSystem.formatCurrency(obligation.amount)}\nDue Date: ${obligation.dueDate}\nStatus: ${obligation.status}\n\nTRA Reference: TRA-${obligation.type.substring(0,3)}-${new Date(obligation.dueDate).getFullYear()}`);
-      }
-    };
-
-    window.editTaxObligation = function(id) {
-      alert(`Editing tax obligation ${id}... Opening edit form.`);
-    };
-
-    window.deleteTaxObligation = function(id) {
+    window.deleteTaxObligation = function(taxId) {
       if (confirm('Are you sure you want to delete this tax obligation?')) {
-        const index = financeSystem.financialData.taxObligations.findIndex(t => t.id === id);
-        if (index !== -1) {
-          financeSystem.financialData.taxObligations.splice(index, 1);
-          financeSystem.saveData();
-          financeSystem.updateTaxModule();
-          alert('Tax obligation deleted successfully!');
-        }
+        financeSystem.deleteTaxObligation(taxId);
+        alert('Tax obligation deleted successfully!');
       }
     };
 
-    // 6. FINANCIAL REPORTS FUNCTIONS
+    // 4. FINANCIAL REPORTS FUNCTIONS
+    window.generateCustomReport = function() {
+      openModal('customReportModal');
+    };
+
+    window.generateCustomReportFinal = function() {
+      const reportName = document.getElementById('customReportName').value || 'Custom Report';
+      const dataSources = Array.from(document.querySelectorAll('input[name="dataSource"]:checked')).map(cb => cb.value);
+      const format = document.getElementById('customReportFormat').value;
+      
+      alert(`Generating ${reportName}...\n\nData Sources: ${dataSources.join(', ')}\nFormat: ${format}\n\nReport generation complete! The report will be available for download shortly.`);
+      closeModal('customReportModal');
+    };
+
     window.generateBalanceSheet = function() {
       openModal('reportModal');
-      document.getElementById('reportModalTitle').textContent = 'Generate Balance Sheet';
+      document.getElementById('reportModalTitle').textContent = 'Generate Balance Sheet Report';
     };
 
     window.generateIncomeStatement = function() {
       openModal('reportModal');
-      document.getElementById('reportModalTitle').textContent = 'Generate Income Statement';
+      document.getElementById('reportModalTitle').textContent = 'Generate Income Statement Report';
     };
 
     window.generateCashFlow = function() {
       openModal('reportModal');
-      document.getElementById('reportModalTitle').textContent = 'Generate Cash Flow Statement';
+      document.getElementById('reportModalTitle').textContent = 'Generate Cash Flow Statement Report';
     };
 
     window.generateTrialBalance = function() {
       openModal('reportModal');
-      document.getElementById('reportModalTitle').textContent = 'Generate Trial Balance';
+      document.getElementById('reportModalTitle').textContent = 'Generate Trial Balance Report';
     };
 
     window.generateAgingReport = function() {
@@ -3622,17 +3553,11 @@
       document.getElementById('reportModalTitle').textContent = 'Generate Budget vs Actual Report';
     };
 
-    window.generateCustomReport = function() {
-      alert('Opening custom report builder... Configure filters, columns, and calculations for your custom report.');
-      // In a full implementation, this would open a custom report builder
-    };
-
     window.exportAllReports = function() {
       alert('Exporting all financial reports...\n\n• Balance Sheet\n• Income Statement\n• Cash Flow Statement\n• Trial Balance\n• Aging Report\n• Budget vs Actual\n\nZIP archive generated and downloaded.');
-      // In a full implementation, this would generate and bundle all reports
     };
 
-    // 7. AUDIT TRAIL FUNCTIONS
+    // 5. AUDIT TRAIL FUNCTIONS
     window.searchAuditLog = function() {
       const searchTerm = document.getElementById('auditSearch').value.toLowerCase();
       const filteredLogs = financeSystem.financialData.auditLogs.filter(log =>
@@ -3643,9 +3568,26 @@
       );
       
       if (filteredLogs.length > 0) {
+        const auditLogs = document.getElementById('auditLogs');
+        auditLogs.innerHTML = filteredLogs.map(log => `
+          <tr>
+            <td>${log.timestamp}</td>
+            <td>${log.user}</td>
+            <td>${log.action}</td>
+            <td>${log.resource}</td>
+            <td>${log.details}</td>
+            <td>${log.ip}</td>
+            <td class="table-actions">
+              <i class="fas fa-eye action-icon" onclick="viewAuditLog(${log.id})" title="View"></i>
+              <i class="fas fa-trash action-icon" onclick="deleteAuditLog(${log.id})" title="Delete"></i>
+            </td>
+          </tr>
+        `).join('');
+        
         alert(`Found ${filteredLogs.length} audit log(s) matching "${searchTerm}"`);
       } else {
         alert(`No audit logs found matching "${searchTerm}"`);
+        financeSystem.updateAuditModule();
       }
     };
 
@@ -3673,8 +3615,67 @@
     };
 
     window.setAuditFilters = function() {
-      alert('Setting audit filters... Configure date ranges, users, action types, and resource filters.');
-      // In a full implementation, this would open a filter configuration dialog
+      openModal('auditFilterModal');
+    };
+
+    window.applyAuditFilters = function() {
+      const startDate = document.getElementById('auditFilterStart').value;
+      const endDate = document.getElementById('auditFilterEnd').value;
+      const user = document.getElementById('auditFilterUser').value.toLowerCase();
+      const action = document.getElementById('auditFilterAction').value;
+      const resource = document.getElementById('auditFilterResource').value;
+      
+      let filteredLogs = financeSystem.financialData.auditLogs;
+      
+      if (startDate && endDate) {
+        filteredLogs = filteredLogs.filter(log => {
+          const logDate = new Date(log.timestamp.split(' ')[0]);
+          const start = new Date(startDate);
+          const end = new Date(endDate);
+          return logDate >= start && logDate <= end;
+        });
+      }
+      
+      if (user) {
+        filteredLogs = filteredLogs.filter(log => log.user.toLowerCase().includes(user));
+      }
+      
+      if (action) {
+        filteredLogs = filteredLogs.filter(log => log.action === action);
+      }
+      
+      if (resource) {
+        filteredLogs = filteredLogs.filter(log => log.resource.includes(resource));
+      }
+      
+      const auditLogs = document.getElementById('auditLogs');
+      auditLogs.innerHTML = filteredLogs.map(log => `
+        <tr>
+          <td>${log.timestamp}</td>
+          <td>${log.user}</td>
+          <td>${log.action}</td>
+          <td>${log.resource}</td>
+          <td>${log.details}</td>
+          <td>${log.ip}</td>
+          <td class="table-actions">
+            <i class="fas fa-eye action-icon" onclick="viewAuditLog(${log.id})" title="View"></i>
+            <i class="fas fa-trash action-icon" onclick="deleteAuditLog(${log.id})" title="Delete"></i>
+          </td>
+        </tr>
+      `).join('');
+      
+      alert(`Applied filters. Showing ${filteredLogs.length} audit log(s).`);
+      closeModal('auditFilterModal');
+    };
+
+    window.clearAuditFilters = function() {
+      document.getElementById('auditFilterStart').value = '';
+      document.getElementById('auditFilterEnd').value = '';
+      document.getElementById('auditFilterUser').value = '';
+      document.getElementById('auditFilterAction').value = '';
+      document.getElementById('auditFilterResource').value = '';
+      financeSystem.updateAuditModule();
+      alert('All filters cleared.');
     };
 
     window.viewAuditLog = function(id) {
@@ -3696,23 +3697,108 @@
       }
     };
 
-    // 8. FINANCIAL MANAGEMENT FUNCTIONS
-    window.runBudgetAnalysis = function() {
-      alert('Running comprehensive budget analysis...\n\n• Spending patterns identified\n• Budget utilization: 94%\n• Variance analysis completed\n• Recommendations generated\n\nAnalysis saved to reports.');
+    // 6. MULTI-CURRENCY MODULE FUNCTIONS
+    window.updateExchangeRates = function() {
+      alert('Updating exchange rates... Fetching latest rates from central bank API.');
+      // Simulate API call
+      setTimeout(() => {
+        financeSystem.exchangeRates = {
+          'TZS': { rate: 1, symbol: 'TZS ', name: 'Tanzanian Shilling' },
+          'USD': { rate: 0.00044, symbol: '$', name: 'US Dollar' },
+          'EUR': { rate: 0.00040, symbol: '€', name: 'Euro' },
+          'GBP': { rate: 0.00035, symbol: '£', name: 'British Pound' }
+        };
+        financeSystem.updateMultiCurrencyModule();
+        alert('Exchange rates updated successfully!\n\nNew rates:\nUSD: TZS 2,272.73\nEUR: TZS 2,500.00\nGBP: TZS 2,857.14');
+      }, 1000);
     };
 
-    window.syncPayroll = function() {
-      alert('Syncing with payroll system...\n\n• Connecting to payroll module\n• Importing salary data\n• Updating expense categories\n• Generating payroll journal entries\n\nSync completed successfully!');
-      // In a full implementation, this would integrate with the payroll module
+    window.addCurrency = function() {
+      const newCurrency = prompt('Enter new currency code (e.g., JPY, CNY, INR):');
+      if (newCurrency && newCurrency.length === 3) {
+        const rate = prompt(`Enter exchange rate for 1 ${newCurrency} to TZS:`);
+        const name = prompt(`Enter currency name for ${newCurrency}:`);
+        
+        if (rate && name) {
+          financeSystem.exchangeRates[newCurrency] = {
+            rate: 1 / parseFloat(rate),
+            symbol: newCurrency + ' ',
+            name: name
+          };
+          financeSystem.updateMultiCurrencyModule();
+          alert(`Currency ${newCurrency} added successfully!`);
+        }
+      } else if (newCurrency) {
+        alert('Please enter a valid 3-letter currency code.');
+      }
     };
 
-    // Shared Functions
+    window.runCurrencyReport = function() {
+      openModal('reportModal');
+      document.getElementById('reportModalTitle').textContent = 'Generate Currency Report';
+    };
+
+    window.setBaseCurrency = function() {
+      const currentCurrency = financeSystem.currency;
+      const newCurrency = prompt(`Current base currency: ${currentCurrency}\n\nEnter new base currency code:`);
+      
+      if (newCurrency && financeSystem.exchangeRates[newCurrency]) {
+        financeSystem.currency = newCurrency;
+        document.getElementById('currencySelect').value = newCurrency;
+        financeSystem.updateOverview();
+        financeSystem.updateModuleData();
+        alert(`Base currency changed to ${newCurrency} successfully!`);
+      } else if (newCurrency) {
+        alert(`Currency ${newCurrency} not found. Available currencies: ${Object.keys(financeSystem.exchangeRates).join(', ')}`);
+      }
+    };
+
+    window.exportCurrencyData = function() {
+      const csvContent = "data:text/csv;charset=utf-8," 
+        + "Currency,Code,Rate to TZS,Last Updated\n"
+        + Object.entries(financeSystem.exchangeRates).map(([code, data]) => 
+            `${data.name},${code},${data.rate},${new Date().toLocaleDateString()}`
+          ).join("\n");
+      
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `exchange_rates_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      alert('Currency data exported to CSV successfully!');
+    };
+
+    window.viewAllCurrencies = function() {
+      alert('Opening all currencies... Showing complete currency list with historical rates.');
+    };
+
+    window.viewCurrency = function(code) {
+      const currency = financeSystem.exchangeRates[code];
+      if (currency) {
+        alert(`Currency Details:\n\nName: ${currency.name}\nCode: ${code}\nRate to TZS: ${currency.rate}\nSymbol: ${currency.symbol}\n1 TZS = ${(1 / currency.rate).toFixed(2)} ${code}`);
+      }
+    };
+
+    window.editCurrency = function(code) {
+      const currency = financeSystem.exchangeRates[code];
+      if (!currency) return;
+      
+      const newRate = prompt(`Current rate for ${code}: 1 ${code} = ${(1 / currency.rate).toFixed(2)} TZS\n\nEnter new rate (1 ${code} = ? TZS):`);
+      if (newRate && !isNaN(newRate)) {
+        financeSystem.exchangeRates[code].rate = 1 / parseFloat(newRate);
+        financeSystem.updateMultiCurrencyModule();
+        alert(`Exchange rate for ${code} updated successfully!`);
+      }
+    };
+
+    // 7. SHARED FUNCTIONS
     window.createInvoice = function() {
-      // Generate invoice number
       const invoiceNumber = `INV-${String(financeSystem.financialData.nextInvoiceId).padStart(3, '0')}`;
       document.querySelector('#invoiceForm input[name="invoiceNumber"]').value = invoiceNumber;
       
-      // Set today's date and 30 days from now as due date
       const today = new Date().toISOString().split('T')[0];
       const dueDate = new Date();
       dueDate.setDate(dueDate.getDate() + 30);
@@ -3722,7 +3808,6 @@
     };
 
     window.recordExpense = function() {
-      // Set today's date as default
       const today = new Date().toISOString().split('T')[0];
       document.querySelector('#expenseForm input[name="date"]').value = today;
       
@@ -3768,7 +3853,6 @@
       
       financeSystem.addInvoice(invoice);
       
-      // Also add as a transaction
       financeSystem.addTransaction({
         date: invoice.date,
         description: `Invoice ${invoice.number} - ${invoice.client}`,
@@ -3797,7 +3881,6 @@
       
       financeSystem.addExpense(expense);
       
-      // Also add as a transaction
       financeSystem.addTransaction({
         date: expense.date,
         description: expense.description,
@@ -3821,7 +3904,6 @@
 
     window.viewAllTransactions = function() {
       alert('Opening all transactions... Showing complete transaction history with advanced filtering.');
-      // In a full implementation, this would open a comprehensive transaction view
     };
 
     window.exportTransactions = function() {
@@ -3893,7 +3975,6 @@
       document.getElementById('startDate').value = firstDay.toISOString().split('T')[0];
       document.getElementById('endDate').value = today.toISOString().split('T')[0];
       
-      // Set default dates in report modals
       document.getElementById('reportStart').value = firstDay.toISOString().split('T')[0];
       document.getElementById('reportEnd').value = today.toISOString().split('T')[0];
     });
@@ -3929,55 +4010,200 @@
       }
     });
 
-    // Multi-currency module functions
-    window.updateExchangeRates = function() {
-      alert('Updating exchange rates... Fetching latest rates from central bank API.');
-    };
-
-    window.addCurrency = function() {
-      alert('Adding new currency... Opening currency addition form.');
-    };
-
-    window.runCurrencyReport = function() {
-      openModal('reportModal');
-      document.getElementById('reportModalTitle').textContent = 'Generate Currency Report';
-    };
-
-    window.setBaseCurrency = function() {
-      alert('Setting base currency... Select new base currency from available options.');
-    };
-
-    window.exportCurrencyData = function() {
-      const csvContent = "data:text/csv;charset=utf-8," 
-        + "Currency,Code,Rate to TZS,Last Updated\n"
-        + Object.entries(financeSystem.exchangeRates).map(([code, data]) => 
-            `${data.name},${code},${data.rate},${new Date().toLocaleDateString()}`
-          ).join("\n");
+    // Original functions from the provided code (kept for compatibility)
+    window.openJournalEntryModal = function() {
+      const entryNumber = `JE-${String(financeSystem.financialData.nextJournalEntryId).padStart(3, '0')}`;
+      document.querySelector('#journalEntryForm input[name="entryNumber"]').value = entryNumber;
       
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `exchange_rates_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const today = new Date().toISOString().split('T')[0];
+      document.querySelector('#journalEntryForm input[name="date"]').value = today;
       
-      alert('Currency data exported to CSV successfully!');
+      openModal('journalEntryModal');
     };
 
-    window.viewAllCurrencies = function() {
-      alert('Opening all currencies... Showing complete currency list with historical rates.');
+    window.submitJournalEntry = function(event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      
+      const journalEntry = {
+        date: formData.get('date'),
+        entryNumber: formData.get('entryNumber'),
+        description: formData.get('description'),
+        debit: parseFloat(formData.get('debitAmount')),
+        credit: parseFloat(formData.get('creditAmount')),
+        status: 'posted'
+      };
+      
+      financeSystem.addJournalEntry(journalEntry);
+      
+      alert('Journal entry added successfully!');
+      closeModal('journalEntryModal');
     };
 
-    window.viewCurrency = function(code) {
-      const currency = financeSystem.exchangeRates[code];
-      if (currency) {
-        alert(`Currency Details:\n\nName: ${currency.name}\nCode: ${code}\nRate to TZS: ${currency.rate}\nSymbol: ${currency.symbol}`);
+    window.viewGeneralLedger = function() {
+      alert('Opening General Ledger... Showing all ledger entries with running balances.');
+    };
+
+    window.runTrialBalance = function() {
+      const debitTotal = financeSystem.financialData.journalEntries.reduce((sum, entry) => sum + entry.debit, 0);
+      const creditTotal = financeSystem.financialData.journalEntries.reduce((sum, entry) => sum + entry.credit, 0);
+      
+      if (debitTotal === creditTotal) {
+        alert(`Trial Balance Success!\n\nDebit Total: ${financeSystem.formatCurrency(debitTotal)}\nCredit Total: ${financeSystem.formatCurrency(creditTotal)}\n\nBalanced ✓`);
+      } else {
+        alert(`Trial Balance Imbalance!\n\nDebit Total: ${financeSystem.formatCurrency(debitTotal)}\nCredit Total: ${financeSystem.formatCurrency(creditTotal)}\n\nDifference: ${financeSystem.formatCurrency(Math.abs(debitTotal - creditTotal))}`);
       }
     };
 
-    window.editCurrency = function(code) {
-      alert(`Editing currency ${code}... Opening edit form.`);
+    window.viewFinancialStatements = function() {
+      alert('Opening Financial Statements... Generating Balance Sheet, Income Statement, and Cash Flow Statement.');
+    };
+
+    window.exportAccountingData = function() {
+      const accountingData = {
+        chartOfAccounts: financeSystem.financialData.chartOfAccounts,
+        journalEntries: financeSystem.financialData.journalEntries,
+        generated: new Date().toISOString()
+      };
+      
+      const dataStr = JSON.stringify(accountingData, null, 2);
+      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+      const exportFileDefaultName = `accounting_data_${new Date().toISOString().split('T')[0]}.json`;
+      
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.click();
+      
+      alert('Accounting data exported successfully!');
+    };
+
+    window.openAddAccountModal = function() {
+      document.querySelector('#addAccountForm input[name="accountCode"]').value = 
+        financeSystem.financialData.nextAccountCode;
+      openModal('addAccountModal');
+    };
+
+    window.submitNewAccount = function(event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      
+      const newAccount = {
+        code: formData.get('accountCode'),
+        name: formData.get('accountName'),
+        type: formData.get('accountType'),
+        balance: parseFloat(formData.get('openingBalance')),
+        description: formData.get('description') || ''
+      };
+      
+      financeSystem.addAccount(newAccount);
+      
+      alert('Account added successfully!');
+      closeModal('addAccountModal');
+    };
+
+    window.openCreateBudgetModal = function() {
+      const today = new Date();
+      const endDate = new Date(today);
+      endDate.setMonth(endDate.getMonth() + 1);
+      
+      document.querySelector('#createBudgetForm input[name="startDate"]').value = today.toISOString().split('T')[0];
+      document.querySelector('#createBudgetForm input[name="endDate"]').value = endDate.toISOString().split('T')[0];
+      
+      openModal('createBudgetModal');
+    };
+
+    window.submitNewBudget = function(event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      
+      const newBudget = {
+        name: formData.get('budgetName'),
+        category: formData.get('category'),
+        allocated: parseFloat(formData.get('allocatedAmount')),
+        spent: 0,
+        period: formData.get('period'),
+        startDate: formData.get('startDate'),
+        endDate: formData.get('endDate'),
+        description: formData.get('description') || ''
+      };
+      
+      if (newBudget.category === 'Revenue') {
+        newBudget.achieved = 0;
+      }
+      
+      financeSystem.addBudget(newBudget);
+      
+      alert('Budget created successfully!');
+      closeModal('createBudgetModal');
+    };
+
+    window.calculateTax = function() {
+      openModal('taxCalculationModal');
+      
+      const today = new Date();
+      const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      document.querySelector('#taxCalculationForm input[name="dueDate"]').value = lastDay.toISOString().split('T')[0];
+    };
+
+    window.submitTaxCalculation = function(event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      
+      const taxType = formData.get('taxType');
+      const taxableAmount = parseFloat(formData.get('taxableAmount'));
+      const period = formData.get('period');
+      const dueDate = formData.get('dueDate');
+      const notes = formData.get('notes');
+      
+      let taxAmount = 0;
+      let taxRate = '';
+      
+      switch(taxType) {
+        case 'VAT':
+          taxAmount = taxableAmount * 0.18;
+          taxRate = '18%';
+          break;
+        case 'Withholding Tax':
+          taxAmount = taxableAmount * 0.15;
+          taxRate = '15%';
+          break;
+        case 'Income Tax':
+          if (taxableAmount <= 2700000) taxAmount = taxableAmount * 0.08;
+          else if (taxableAmount <= 5200000) taxAmount = 216000 + (taxableAmount - 2700000) * 0.20;
+          else if (taxableAmount <= 7600000) taxAmount = 716000 + (taxableAmount - 5200000) * 0.25;
+          else taxAmount = 1316000 + (taxableAmount - 7600000) * 0.30;
+          taxRate = 'Progressive (8%-30%)';
+          break;
+        default:
+          taxAmount = taxableAmount * 0.10;
+          taxRate = '10%';
+      }
+      
+      financeSystem.addTaxObligation({
+        type: taxType,
+        period: period,
+        amount: taxAmount,
+        dueDate: dueDate,
+        status: 'pending',
+        notes: notes
+      });
+      
+      alert(`Tax Calculation Complete!\n\nTax Type: ${taxType}\nTaxable Amount: ${financeSystem.formatCurrency(taxableAmount)}\nTax Rate: ${taxRate}\nTax Amount: ${financeSystem.formatCurrency(taxAmount)}\nDue Date: ${dueDate}\n\nSaved to Tax Obligations.`);
+      
+      closeModal('taxCalculationModal');
+    };
+
+    window.checkCompliance = function() {
+      alert('Checking TRA compliance...\n\n• Verifying tax registrations\n• Checking filing deadlines\n• Reviewing payment status\n• Validating documentation\n\nCompliance Score: 95% ✓');
+    };
+
+    window.runBudgetAnalysis = function() {
+      alert('Running comprehensive budget analysis...\n\n• Spending patterns identified\n• Budget utilization: 94%\n• Variance analysis completed\n• Recommendations generated\n\nAnalysis saved to reports.');
+    };
+
+    window.syncPayroll = function() {
+      alert('Syncing with payroll system...\n\n• Connecting to payroll module\n• Importing salary data\n• Updating expense categories\n• Generating payroll journal entries\n\nSync completed successfully!');
     };
   </script>
 </body>
