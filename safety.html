@@ -240,6 +240,34 @@
             flex-wrap: wrap;
         }
 
+        .chart-type-selector {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .chart-type-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--background);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .chart-type-btn:hover {
+            border-color: var(--primary);
+            background: var(--surface);
+        }
+
+        .chart-type-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
         .custom-calendar {
             display: flex;
             gap: 0.5rem;
@@ -782,6 +810,107 @@
             background: var(--background);
         }
 
+        /* Standards Cards Grid */
+        .standards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .standard-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .standard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .standard-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-international {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        .badge-national {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .standard-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .standard-code {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            font-family: monospace;
+        }
+
+        .standard-industry {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: var(--background);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .standard-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .status-compliant {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-noncompliant {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .standard-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        /* Tab Container */
         .tab-container {
             margin-bottom: 2rem;
         }
@@ -846,6 +975,9 @@
             .form-row {
                 grid-template-columns: 1fr;
             }
+            .standards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
         }
 
         @media (max-width: 768px) {
@@ -873,6 +1005,9 @@
                 height: 400px;
             }
             .module-grid {
+                grid-template-columns: 1fr;
+            }
+            .standards-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -916,10 +1051,6 @@
                 <a href="safety.html" class="nav-item active">
                     <span class="nav-icon">🛡️</span>
                     Health & Safety
-                </a>
-                <a href="index.html" class="nav-item">
-                    <span class="nav-icon">📊</span>
-                    Main Dashboard
                 </a>
             </div>
 
@@ -1024,9 +1155,15 @@
                 <div class="chart-header">
                     <div>
                         <div class="chart-title">Incident Trends Analysis</div>
-                        <div class="chart-subtitle">Safety performance monitoring with custom date range</div>
+                        <div class="chart-subtitle">Safety performance monitoring with multiple chart types</div>
                     </div>
                     <div class="chart-controls">
+                        <div class="chart-type-selector">
+                            <button class="chart-type-btn active" onclick="changeChartType('line')">📈 Line</button>
+                            <button class="chart-type-btn" onclick="changeChartType('bar')">📊 Bar</button>
+                            <button class="chart-type-btn" onclick="changeChartType('pie')">🥧 Pie</button>
+                            <button class="chart-type-btn" onclick="changeChartType('doughnut')">🍩 Doughnut</button>
+                        </div>
                         <div class="custom-calendar">
                             <input type="date" id="startDate" class="date-input" onchange="updateChartWithCustomRange()">
                             <span>to</span>
@@ -1138,6 +1275,12 @@
                     <div class="module-icon">🔍</div>
                     <h3>Audit & Inspection</h3>
                     <p>Schedule and conduct safety audits, inspections, and compliance verifications</p>
+                </div>
+
+                <div class="module-card" onclick="openModal('standardsModal')">
+                    <div class="module-icon">📋</div>
+                    <h3>Standards Compliance</h3>
+                    <p>Manage international and national safety standards compliance</p>
                 </div>
             </div>
 
@@ -1320,34 +1463,64 @@
         </div>
     </div>
 
-    <!-- Health Surveillance Modal -->
+    <!-- Health Surveillance Modal with Attachment Upload -->
     <div id="healthModal" class="modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal('healthModal')">×</button>
             <div class="modal-header">
                 <h2>Health Surveillance Management</h2>
-                <p>Employee Health Monitoring - Click on any cell to edit</p>
+                <p>Employee Health Monitoring - Upload medical forms and documents</p>
             </div>
             
-            <div style="overflow-x: auto; margin-top: 1rem;">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Employee ID</th>
-                            <th>Name</th>
-                            <th>Department</th>
-                            <th>Last Medical</th>
-                            <th>Next Due</th>
-                            <th>Medical Status</th>
-                            <th>Vaccination Status</th>
-                            <th>Health Notes</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="healthTableBody">
-                        <!-- Health records will be loaded here -->
-                    </tbody>
-                </table>
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" onclick="switchHealthTab('healthRecords')">Health Records</button>
+                    <button class="tab-button" onclick="switchHealthTab('healthAttachments')">Attachments</button>
+                </div>
+                
+                <div class="tab-content active" id="healthRecordsTab">
+                    <div style="overflow-x: auto; margin-top: 1rem;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Employee ID</th>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>Last Medical</th>
+                                    <th>Next Due</th>
+                                    <th>Medical Status</th>
+                                    <th>Vaccination Status</th>
+                                    <th>Health Notes</th>
+                                    <th>Attachments</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="healthTableBody">
+                                <!-- Health records will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="healthAttachmentsTab">
+                    <div class="form-group">
+                        <label>Select Employee</label>
+                        <select id="healthEmployeeSelect" onchange="loadHealthAttachments()">
+                            <option value="">Select employee</option>
+                        </select>
+                    </div>
+                    
+                    <div class="file-upload-area" onclick="document.getElementById('healthFileInput').click()">
+                        <input type="file" id="healthFileInput" style="display: none;" multiple onchange="uploadHealthAttachment()">
+                        <div style="font-size: 3rem;">📎</div>
+                        <div style="margin: 1rem 0;">Click to upload medical forms, test results, or other health documents</div>
+                        <div style="color: var(--text-light); font-size: 0.875rem;">Supported: PDF, DOC, JPG, PNG (Max 10MB each)</div>
+                    </div>
+                    
+                    <div class="file-list" id="healthAttachmentsList">
+                        <!-- Attachments will be listed here -->
+                    </div>
+                </div>
             </div>
             
             <div class="action-buttons" style="margin-top: 2rem;">
@@ -1357,34 +1530,64 @@
         </div>
     </div>
 
-    <!-- Contractor Safety Modal -->
+    <!-- Contractor Safety Modal with Attachment Upload -->
     <div id="contractorModal" class="modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal('contractorModal')">×</button>
             <div class="modal-header">
                 <h2>Contractor Safety Management</h2>
-                <p>Contractor Safety Compliance - Click on any cell to edit</p>
+                <p>Contractor Safety Compliance - Upload company forms, IDs, and documents</p>
             </div>
             
-            <div style="overflow-x: auto; margin-top: 1rem;">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Contractor ID</th>
-                            <th>Company</th>
-                            <th>Contact Person</th>
-                            <th>Work Type</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Safety Rating</th>
-                            <th>Compliance Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="contractorTableBody">
-                        <!-- Contractor records will be loaded here -->
-                    </tbody>
-                </table>
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" onclick="switchContractorTab('contractorRecords')">Contractor Records</button>
+                    <button class="tab-button" onclick="switchContractorTab('contractorAttachments')">Attachments</button>
+                </div>
+                
+                <div class="tab-content active" id="contractorRecordsTab">
+                    <div style="overflow-x: auto; margin-top: 1rem;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Contractor ID</th>
+                                    <th>Company</th>
+                                    <th>Contact Person</th>
+                                    <th>Work Type</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Safety Rating</th>
+                                    <th>Compliance Status</th>
+                                    <th>Attachments</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contractorTableBody">
+                                <!-- Contractor records will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="contractorAttachmentsTab">
+                    <div class="form-group">
+                        <label>Select Contractor</label>
+                        <select id="contractorSelect" onchange="loadContractorAttachments()">
+                            <option value="">Select contractor</option>
+                        </select>
+                    </div>
+                    
+                    <div class="file-upload-area" onclick="document.getElementById('contractorFileInput').click()">
+                        <input type="file" id="contractorFileInput" style="display: none;" multiple onchange="uploadContractorAttachment()">
+                        <div style="font-size: 3rem;">📎</div>
+                        <div style="margin: 1rem 0;">Click to upload medical forms, company forms, IDs, certificates, etc.</div>
+                        <div style="color: var(--text-light); font-size: 0.875rem;">Supported: PDF, DOC, JPG, PNG (Max 10MB each)</div>
+                    </div>
+                    
+                    <div class="file-list" id="contractorAttachmentsList">
+                        <!-- Attachments will be listed here -->
+                    </div>
+                </div>
             </div>
             
             <div class="action-buttons" style="margin-top: 2rem;">
@@ -1394,39 +1597,210 @@
         </div>
     </div>
 
-    <!-- Audit & Inspection Modal -->
+    <!-- Audit & Inspection Modal with Attachment Upload -->
     <div id="auditModal" class="modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal('auditModal')">×</button>
             <div class="modal-header">
                 <h2>Audit & Inspection Management</h2>
-                <p>Safety Audits and Inspections - Click on any cell to edit</p>
+                <p>Safety Audits and Inspections - Upload reports and documents</p>
             </div>
             
-            <div style="overflow-x: auto; margin-top: 1rem;">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Audit ID</th>
-                            <th>Type</th>
-                            <th>Department</th>
-                            <th>Audit Date</th>
-                            <th>Auditor</th>
-                            <th>Score</th>
-                            <th>Status</th>
-                            <th>Findings</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="auditTableBody">
-                        <!-- Audit records will be loaded here -->
-                    </tbody>
-                </table>
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" onclick="switchAuditTab('auditRecords')">Audit Records</button>
+                    <button class="tab-button" onclick="switchAuditTab('auditAttachments')">Attachments</button>
+                </div>
+                
+                <div class="tab-content active" id="auditRecordsTab">
+                    <div style="overflow-x: auto; margin-top: 1rem;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Audit ID</th>
+                                    <th>Type</th>
+                                    <th>Department</th>
+                                    <th>Audit Date</th>
+                                    <th>Auditor</th>
+                                    <th>Score</th>
+                                    <th>Status</th>
+                                    <th>Findings</th>
+                                    <th>Attachments</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auditTableBody">
+                                <!-- Audit records will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="auditAttachmentsTab">
+                    <div class="form-group">
+                        <label>Select Audit</label>
+                        <select id="auditSelect" onchange="loadAuditAttachments()">
+                            <option value="">Select audit</option>
+                        </select>
+                    </div>
+                    
+                    <div class="file-upload-area" onclick="document.getElementById('auditFileInput').click()">
+                        <input type="file" id="auditFileInput" style="display: none;" multiple onchange="uploadAuditAttachment()">
+                        <div style="font-size: 3rem;">📎</div>
+                        <div style="margin: 1rem 0;">Click to upload risk assessment reports, exposure reports, audit findings, etc.</div>
+                        <div style="color: var(--text-light); font-size: 0.875rem;">Supported: PDF, DOC, JPG, PNG (Max 10MB each)</div>
+                    </div>
+                    
+                    <div class="file-list" id="auditAttachmentsList">
+                        <!-- Attachments will be listed here -->
+                    </div>
+                </div>
             </div>
             
             <div class="action-buttons" style="margin-top: 2rem;">
                 <button class="btn btn-outline" onclick="addAudit()">+ Schedule Audit</button>
                 <button class="btn btn-outline" onclick="closeModal('auditModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Standards Compliance Modal -->
+    <div id="standardsModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('standardsModal')">×</button>
+            <div class="modal-header">
+                <h2>Standards & Compliance Management</h2>
+                <p>Manage International and National Safety Standards</p>
+            </div>
+            
+            <div class="action-buttons" style="margin-bottom: 2rem;">
+                <button class="btn btn-primary" onclick="addStandard()">+ Add Standard</button>
+            </div>
+            
+            <div class="standards-grid" id="standardsGrid">
+                <!-- Standards cards will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Standard Modal -->
+    <div id="standardModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('standardModal')">×</button>
+            <div class="modal-header">
+                <h2 id="standardModalTitle">Add New Standard</h2>
+            </div>
+            
+            <div class="success-message" id="standardSuccess">Standard saved successfully!</div>
+            <div class="error-message" id="standardError">Please fill all required fields.</div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Standard Name *</label>
+                    <input type="text" id="standardName" placeholder="e.g., ISO 45001:2018" required>
+                </div>
+                <div class="form-group">
+                    <label>Standard Code *</label>
+                    <input type="text" id="standardCode" placeholder="e.g., ISO45001" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Standard Type *</label>
+                    <select id="standardType" required>
+                        <option value="">Select type</option>
+                        <option value="International">International</option>
+                        <option value="National">National</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Industry *</label>
+                    <select id="standardIndustry" required>
+                        <option value="">Select industry</option>
+                        <option value="General Industry">General Industry</option>
+                        <option value="Construction">Construction</option>
+                        <option value="Manufacturing">Manufacturing</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Oil & Gas">Oil & Gas</option>
+                        <option value="Mining">Mining</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Chemical">Chemical</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Description *</label>
+                <textarea id="standardDescription" rows="4" placeholder="Description of the standard and its requirements" required></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Status *</label>
+                    <select id="standardStatus" required>
+                        <option value="">Select status</option>
+                        <option value="Compliant">Compliant</option>
+                        <option value="Non-Compliant">Non-Compliant</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Pending Review">Pending Review</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Effective Date</label>
+                    <input type="date" id="standardEffectiveDate">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Remarks</label>
+                <textarea id="standardRemarks" rows="3" placeholder="Additional remarks or notes"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Upload Standard Document</label>
+                <div class="file-upload-area" onclick="document.getElementById('standardFileInput').click()">
+                    <input type="file" id="standardFileInput" style="display: none;" accept=".pdf,.doc,.docx,.jpg,.png">
+                    <div style="font-size: 3rem;">📎</div>
+                    <div style="margin: 1rem 0;">Click to upload standard document (PDF, DOC, JPG, PNG)</div>
+                </div>
+                <div class="file-list" id="standardFilesList"></div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-success" onclick="saveStandard()">💾 Save Standard</button>
+                <button class="btn btn-outline" onclick="closeModal('standardModal')">Cancel</button>
+                <button class="btn btn-danger" id="deleteStandardBtn" style="display: none;" onclick="deleteCurrentStandard()">🗑️ Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Risk Assessment Modal -->
+    <div id="riskModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('riskModal')">×</button>
+            <div class="modal-header">
+                <h2>Risk Assessment Management</h2>
+                <p>Click on any risk cell to edit details</p>
+            </div>
+            
+            <div class="risk-matrix">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">Risk Assessment Matrix</div>
+                        <div class="chart-subtitle">Edit risk levels and departments</div>
+                    </div>
+                    <div>
+                        <button class="btn btn-success" onclick="saveRiskMatrix()">💾 Save Matrix</button>
+                    </div>
+                </div>
+                <div class="matrix-grid" id="modalRiskMatrix">
+                    <!-- Matrix cells will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="action-buttons" style="margin-top: 2rem;">
+                <button class="btn btn-outline" onclick="closeModal('riskModal')">Close</button>
             </div>
         </div>
     </div>
@@ -1438,9 +1812,18 @@
         let healthRecords = [];
         let contractors = [];
         let audits = [];
+        let standards = [];
+        let attachments = {
+            health: {},
+            contractor: {},
+            audit: {},
+            standards: {}
+        };
         let incidentTrendChart = null;
         let editingCell = null;
         let itemToDelete = null;
+        let editingStandardIndex = -1;
+        let currentChartType = 'line';
 
         // Initialize Application
         document.addEventListener('DOMContentLoaded', function() {
@@ -1451,6 +1834,7 @@
             loadAllData();
             initializeCharts();
             loadAllTables();
+            loadStandards();
             setupEventListeners();
             updateStatistics();
             
@@ -1490,6 +1874,24 @@
             // Load audits
             const savedAudits = localStorage.getItem('audits');
             audits = savedAudits ? JSON.parse(savedAudits) : getDefaultAudits();
+            
+            // Load standards
+            const savedStandards = localStorage.getItem('safetyStandards');
+            standards = savedStandards ? JSON.parse(savedStandards) : getDefaultStandards();
+            
+            // Load attachments
+            const savedAttachments = localStorage.getItem('safetyAttachments');
+            attachments = savedAttachments ? JSON.parse(savedAttachments) : {
+                health: {},
+                contractor: {},
+                audit: {},
+                standards: {}
+            };
+            
+            // Populate dropdowns
+            populateHealthEmployeeSelect();
+            populateContractorSelect();
+            populateAuditSelect();
         }
 
         function getDefaultIncidents() {
@@ -1519,19 +1921,6 @@
                     actions: 'First aid administered, wound cleaned.',
                     recommendations: 'Provide cut-resistant gloves.',
                     createdAt: new Date().toISOString()
-                },
-                {
-                    id: 'INC-2024-003',
-                    type: 'Lost Time Injury',
-                    severity: 'Serious',
-                    location: 'Construction Site',
-                    reportedBy: 'Mike Johnson',
-                    date: '2024-02-05T09:45',
-                    status: 'Under Investigation',
-                    description: 'Worker fell from ladder, suspected broken arm.',
-                    actions: 'Emergency services called, area secured.',
-                    recommendations: 'Improve ladder safety training.',
-                    createdAt: new Date().toISOString()
                 }
             ];
         }
@@ -1557,16 +1946,6 @@
                     expiryDate: '2025-02-01',
                     status: 'Active',
                     condition: 'Good'
-                },
-                {
-                    id: 'PPE-003',
-                    type: 'Safety Glasses',
-                    department: 'Manufacturing',
-                    assignedTo: 'Mike Johnson',
-                    issueDate: '2024-01-20',
-                    expiryDate: '2025-01-20',
-                    status: 'Active',
-                    condition: 'Fair'
                 }
             ];
         }
@@ -1646,6 +2025,47 @@
             ];
         }
 
+        function getDefaultStandards() {
+            return [
+                {
+                    id: 'STD-001',
+                    name: 'ISO 45001:2018',
+                    code: 'ISO45001',
+                    type: 'International',
+                    industry: 'General Industry',
+                    description: 'Occupational health and safety management systems - Requirements with guidance for use.',
+                    status: 'Compliant',
+                    effectiveDate: '2024-01-01',
+                    remarks: 'Fully implemented across all departments',
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'STD-002',
+                    name: 'OSHA Regulations',
+                    code: 'OSHA-29CFR',
+                    type: 'National',
+                    industry: 'General Industry',
+                    description: 'Occupational Safety and Health Administration regulations for workplace safety.',
+                    status: 'Compliant',
+                    effectiveDate: '2024-01-01',
+                    remarks: 'Regular audits conducted',
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'STD-003',
+                    name: 'ISO 14001:2015',
+                    code: 'ISO14001',
+                    type: 'International',
+                    industry: 'General Industry',
+                    description: 'Environmental management systems - Requirements with guidance for use.',
+                    status: 'In Progress',
+                    effectiveDate: '2024-03-01',
+                    remarks: 'Implementation in progress, target completion Q3 2024',
+                    createdAt: new Date().toISOString()
+                }
+            ];
+        }
+
         function updateStatistics() {
             // Update Lost Time Injuries
             const ltiCount = incidents.filter(i => i.type === 'Lost Time Injury').length;
@@ -1656,7 +2076,9 @@
             document.getElementById('safetyTrainings').textContent = trainingCount;
             
             // Update Compliance Rate
-            document.getElementById('complianceRate').textContent = '98%';
+            const compliantStandards = standards.filter(s => s.status === 'Compliant').length;
+            const complianceRate = standards.length > 0 ? Math.round((compliantStandards / standards.length) * 100) : 0;
+            document.getElementById('complianceRate').textContent = complianceRate + '%';
             
             // Update Active Audits
             const activeAuditsCount = audits.filter(a => a.status === 'In Progress' || a.status === 'Scheduled').length;
@@ -1669,6 +2091,8 @@
             localStorage.setItem('healthRecords', JSON.stringify(healthRecords));
             localStorage.setItem('contractors', JSON.stringify(contractors));
             localStorage.setItem('audits', JSON.stringify(audits));
+            localStorage.setItem('safetyStandards', JSON.stringify(standards));
+            localStorage.setItem('safetyAttachments', JSON.stringify(attachments));
         }
 
         // Chart Functions
@@ -1679,6 +2103,7 @@
             const months = [];
             const incidentData = [];
             const nearMissData = [];
+            const firstAidData = [];
             
             const endDate = new Date();
             const startDate = new Date();
@@ -1693,12 +2118,13 @@
                 // Generate sample data
                 incidentData.push(Math.floor(Math.random() * 10) + 1);
                 nearMissData.push(Math.floor(Math.random() * 15) + 5);
+                firstAidData.push(Math.floor(Math.random() * 8) + 2);
                 
                 currentDate.setMonth(currentDate.getMonth() + 1);
             }
             
             incidentTrendChart = new Chart(ctx, {
-                type: 'line',
+                type: currentChartType,
                 data: {
                     labels: months,
                     datasets: [
@@ -1706,10 +2132,10 @@
                             label: 'Incidents',
                             data: incidentData,
                             borderColor: '#ef4444',
-                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            backgroundColor: currentChartType === 'line' ? 'rgba(239, 68, 68, 0.1)' : '#ef4444',
                             borderWidth: 2,
                             tension: 0.3,
-                            fill: true,
+                            fill: currentChartType === 'line',
                             pointBackgroundColor: '#ef4444',
                             pointBorderColor: '#ffffff',
                             pointBorderWidth: 2,
@@ -1720,11 +2146,25 @@
                             label: 'Near Misses',
                             data: nearMissData,
                             borderColor: '#f59e0b',
-                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            backgroundColor: currentChartType === 'line' ? 'rgba(245, 158, 11, 0.1)' : '#f59e0b',
                             borderWidth: 2,
                             tension: 0.3,
-                            fill: true,
+                            fill: currentChartType === 'line',
                             pointBackgroundColor: '#f59e0b',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'First Aid Cases',
+                            data: firstAidData,
+                            borderColor: '#10b981',
+                            backgroundColor: currentChartType === 'line' ? 'rgba(16, 185, 129, 0.1)' : '#10b981',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: currentChartType === 'line',
+                            pointBackgroundColor: '#10b981',
                             pointBorderColor: '#ffffff',
                             pointBorderWidth: 2,
                             pointRadius: 4,
@@ -1732,33 +2172,53 @@
                         }
                     ]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                usePointStyle: true,
-                                padding: 10,
-                                font: {
-                                    size: 12
-                                }
-                            }
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                            backgroundColor: 'rgba(30, 41, 59, 0.9)',
-                            titleFont: {
+                options: getChartOptions(currentChartType)
+            });
+        }
+
+        function getChartOptions(chartType) {
+            const baseOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 10,
+                            font: {
                                 size: 12
-                            },
-                            bodyFont: {
-                                size: 11
-                            },
-                            padding: 10
+                            }
                         }
                     },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                        titleFont: {
+                            size: 12
+                        },
+                        bodyFont: {
+                            size: 11
+                        },
+                        padding: 10
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                layout: {
+                    padding: {
+                        top: 10,
+                        bottom: 10
+                    }
+                }
+            };
+
+            if (chartType === 'line' || chartType === 'bar') {
+                return {
+                    ...baseOptions,
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -1782,7 +2242,7 @@
                         },
                         x: {
                             grid: {
-                                display: false
+                                display: chartType === 'bar'
                             },
                             ticks: {
                                 font: {
@@ -1790,19 +2250,25 @@
                                 }
                             }
                         }
-                    },
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
-                    },
-                    layout: {
-                        padding: {
-                            top: 10,
-                            bottom: 10
-                        }
                     }
-                }
+                };
+            } else {
+                return baseOptions;
+            }
+        }
+
+        function changeChartType(type) {
+            currentChartType = type;
+            
+            // Update button states
+            document.querySelectorAll('.chart-type-btn').forEach(btn => {
+                btn.classList.remove('active');
             });
+            event.target.classList.add('active');
+            
+            // Update chart type
+            incidentTrendChart.destroy();
+            initializeCharts();
         }
 
         function updateChartWithCustomRange() {
@@ -1826,15 +2292,19 @@
             const months = [];
             const incidentData = [];
             const nearMissData = [];
+            const firstAidData = [];
             
             let currentDate = new Date(startDate);
-            while (currentDate <= endDate) {
+            const monthDiff = (endDate.getFullYear() - startDate.getFullYear()) * 12 + endDate.getMonth() - startDate.getMonth();
+            
+            for (let i = 0; i <= monthDiff; i++) {
                 const monthName = currentDate.toLocaleString('default', { month: 'short' });
                 months.push(monthName);
                 
                 // Generate sample data
                 incidentData.push(Math.floor(Math.random() * 10) + 1);
                 nearMissData.push(Math.floor(Math.random() * 15) + 5);
+                firstAidData.push(Math.floor(Math.random() * 8) + 2);
                 
                 currentDate.setMonth(currentDate.getMonth() + 1);
             }
@@ -1843,6 +2313,7 @@
             incidentTrendChart.data.labels = months;
             incidentTrendChart.data.datasets[0].data = incidentData;
             incidentTrendChart.data.datasets[1].data = nearMissData;
+            incidentTrendChart.data.datasets[2].data = firstAidData;
             incidentTrendChart.update();
             
             showToast('Success', `Chart updated for ${startDateInput.value} to ${endDateInput.value}`, 'success');
@@ -1927,6 +2398,36 @@
             
             localStorage.setItem('riskMatrix', JSON.stringify(matrixData));
             showToast('Success', 'Risk matrix saved successfully!', 'success');
+            
+            // Refresh the modal view
+            loadModalRiskMatrix();
+        }
+
+        function loadModalRiskMatrix() {
+            const matrixContainer = document.getElementById('modalRiskMatrix');
+            if (!matrixContainer) return;
+            
+            const savedMatrix = localStorage.getItem('riskMatrix');
+            const matrixData = savedMatrix ? JSON.parse(savedMatrix) : [
+                { riskLevel: 'Low Risk', department: 'Admin', colorClass: 'risk-low' },
+                { riskLevel: 'Medium Risk', department: 'Sales', colorClass: 'risk-medium' },
+                { riskLevel: 'High Risk', department: 'Warehouse', colorClass: 'risk-high' },
+                { riskLevel: 'Very High Risk', department: 'Manufacturing', colorClass: 'risk-very-high' },
+                { riskLevel: 'Extreme Risk', department: 'Construction', colorClass: 'risk-extreme' }
+            ];
+            
+            matrixContainer.innerHTML = '';
+            
+            matrixData.forEach((item, index) => {
+                const cell = document.createElement('div');
+                cell.className = `matrix-cell ${item.colorClass}`;
+                cell.innerHTML = `
+                    <div>${item.riskLevel}</div>
+                    <div>${item.department}</div>
+                `;
+                cell.onclick = function() { editRiskCell(this); };
+                matrixContainer.appendChild(cell);
+            });
         }
 
         // Table Loading Functions
@@ -2008,6 +2509,11 @@
             table.innerHTML = '';
             
             healthRecords.forEach((record, index) => {
+                const attachmentCount = attachments.health[record.id] ? attachments.health[record.id].length : 0;
+                const attachmentBadge = attachmentCount > 0 ? 
+                    `<span style="background: var(--primary); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem;">${attachmentCount} 📎</span>` : 
+                    'No attachments';
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td class="editable" onclick="editTableCell(this, 'healthRecords', ${index}, 'id')">${record.id}</td>
@@ -2018,6 +2524,7 @@
                     <td class="editable" onclick="editTableCell(this, 'healthRecords', ${index}, 'medicalStatus')">${record.medicalStatus}</td>
                     <td class="editable" onclick="editTableCell(this, 'healthRecords', ${index}, 'vaccinationStatus')">${record.vaccinationStatus}</td>
                     <td class="editable" onclick="editTableCell(this, 'healthRecords', ${index}, 'healthNotes')">${record.healthNotes}</td>
+                    <td>${attachmentBadge}</td>
                     <td>
                         <button class="btn btn-sm btn-outline" onclick="deleteItem('healthRecords', ${index})">Delete</button>
                     </td>
@@ -2033,6 +2540,11 @@
             table.innerHTML = '';
             
             contractors.forEach((contractor, index) => {
+                const attachmentCount = attachments.contractor[contractor.id] ? attachments.contractor[contractor.id].length : 0;
+                const attachmentBadge = attachmentCount > 0 ? 
+                    `<span style="background: var(--primary); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem;">${attachmentCount} 📎</span>` : 
+                    'No attachments';
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td class="editable" onclick="editTableCell(this, 'contractors', ${index}, 'id')">${contractor.id}</td>
@@ -2043,6 +2555,7 @@
                     <td class="editable" onclick="editTableCell(this, 'contractors', ${index}, 'endDate')">${contractor.endDate}</td>
                     <td class="editable" onclick="editTableCell(this, 'contractors', ${index}, 'safetyRating')">${contractor.safetyRating}</td>
                     <td class="editable" onclick="editTableCell(this, 'contractors', ${index}, 'complianceStatus')">${contractor.complianceStatus}</td>
+                    <td>${attachmentBadge}</td>
                     <td>
                         <button class="btn btn-sm btn-outline" onclick="deleteItem('contractors', ${index})">Delete</button>
                     </td>
@@ -2058,6 +2571,11 @@
             table.innerHTML = '';
             
             audits.forEach((audit, index) => {
+                const attachmentCount = attachments.audit[audit.id] ? attachments.audit[audit.id].length : 0;
+                const attachmentBadge = attachmentCount > 0 ? 
+                    `<span style="background: var(--primary); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem;">${attachmentCount} 📎</span>` : 
+                    'No attachments';
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td class="editable" onclick="editTableCell(this, 'audits', ${index}, 'id')">${audit.id}</td>
@@ -2068,12 +2586,555 @@
                     <td class="editable" onclick="editTableCell(this, 'audits', ${index}, 'score')">${audit.score}</td>
                     <td class="editable" onclick="editTableCell(this, 'audits', ${index}, 'status')">${audit.status}</td>
                     <td class="editable" onclick="editTableCell(this, 'audits', ${index}, 'findings')">${audit.findings}</td>
+                    <td>${attachmentBadge}</td>
                     <td>
                         <button class="btn btn-sm btn-outline" onclick="deleteItem('audits', ${index})">Delete</button>
                     </td>
                 `;
                 table.appendChild(row);
             });
+        }
+
+        // Attachment Functions
+        function populateHealthEmployeeSelect() {
+            const select = document.getElementById('healthEmployeeSelect');
+            if (!select) return;
+            
+            select.innerHTML = '<option value="">Select employee</option>';
+            healthRecords.forEach(record => {
+                const option = document.createElement('option');
+                option.value = record.id;
+                option.textContent = `${record.name} (${record.id})`;
+                select.appendChild(option);
+            });
+        }
+
+        function populateContractorSelect() {
+            const select = document.getElementById('contractorSelect');
+            if (!select) return;
+            
+            select.innerHTML = '<option value="">Select contractor</option>';
+            contractors.forEach(contractor => {
+                const option = document.createElement('option');
+                option.value = contractor.id;
+                option.textContent = `${contractor.company} (${contractor.id})`;
+                select.appendChild(option);
+            });
+        }
+
+        function populateAuditSelect() {
+            const select = document.getElementById('auditSelect');
+            if (!select) return;
+            
+            select.innerHTML = '<option value="">Select audit</option>';
+            audits.forEach(audit => {
+                const option = document.createElement('option');
+                option.value = audit.id;
+                option.textContent = `${audit.type} - ${audit.department} (${audit.id})`;
+                select.appendChild(option);
+            });
+        }
+
+        function switchHealthTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('#healthModal .tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update tab content
+            document.getElementById('healthRecordsTab').classList.remove('active');
+            document.getElementById('healthAttachmentsTab').classList.remove('active');
+            document.getElementById(tabName === 'healthRecords' ? 'healthRecordsTab' : 'healthAttachmentsTab').classList.add('active');
+        }
+
+        function switchContractorTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('#contractorModal .tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update tab content
+            document.getElementById('contractorRecordsTab').classList.remove('active');
+            document.getElementById('contractorAttachmentsTab').classList.remove('active');
+            document.getElementById(tabName === 'contractorRecords' ? 'contractorRecordsTab' : 'contractorAttachmentsTab').classList.add('active');
+        }
+
+        function switchAuditTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('#auditModal .tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update tab content
+            document.getElementById('auditRecordsTab').classList.remove('active');
+            document.getElementById('auditAttachmentsTab').classList.remove('active');
+            document.getElementById(tabName === 'auditRecords' ? 'auditRecordsTab' : 'auditAttachmentsTab').classList.add('active');
+        }
+
+        function loadHealthAttachments() {
+            const employeeId = document.getElementById('healthEmployeeSelect').value;
+            const list = document.getElementById('healthAttachmentsList');
+            
+            if (!employeeId) {
+                list.innerHTML = '<div style="text-align: center; color: var(--text-light); padding: 2rem;">Select an employee to view attachments</div>';
+                return;
+            }
+            
+            const employeeAttachments = attachments.health[employeeId] || [];
+            
+            if (employeeAttachments.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: var(--text-light); padding: 2rem;">No attachments for this employee</div>';
+                return;
+            }
+            
+            list.innerHTML = '';
+            employeeAttachments.forEach((attachment, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div>
+                        <div style="font-weight: 500;">${attachment.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-light);">${attachment.type} • ${attachment.size}</div>
+                    </div>
+                    <button class="btn btn-sm btn-danger" onclick="deleteHealthAttachment('${employeeId}', ${index})">Delete</button>
+                `;
+                list.appendChild(fileItem);
+            });
+        }
+
+        function loadContractorAttachments() {
+            const contractorId = document.getElementById('contractorSelect').value;
+            const list = document.getElementById('contractorAttachmentsList');
+            
+            if (!contractorId) {
+                list.innerHTML = '<div style="text-align: center; color: var(--text-light); padding: 2rem;">Select a contractor to view attachments</div>';
+                return;
+            }
+            
+            const contractorAttachments = attachments.contractor[contractorId] || [];
+            
+            if (contractorAttachments.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: var(--text-light); padding: 2rem;">No attachments for this contractor</div>';
+                return;
+            }
+            
+            list.innerHTML = '';
+            contractorAttachments.forEach((attachment, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div>
+                        <div style="font-weight: 500;">${attachment.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-light);">${attachment.type} • ${attachment.size}</div>
+                    </div>
+                    <button class="btn btn-sm btn-danger" onclick="deleteContractorAttachment('${contractorId}', ${index})">Delete</button>
+                `;
+                list.appendChild(fileItem);
+            });
+        }
+
+        function loadAuditAttachments() {
+            const auditId = document.getElementById('auditSelect').value;
+            const list = document.getElementById('auditAttachmentsList');
+            
+            if (!auditId) {
+                list.innerHTML = '<div style="text-align: center; color: var(--text-light); padding: 2rem;">Select an audit to view attachments</div>';
+                return;
+            }
+            
+            const auditAttachments = attachments.audit[auditId] || [];
+            
+            if (auditAttachments.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: var(--text-light); padding: 2rem;">No attachments for this audit</div>';
+                return;
+            }
+            
+            list.innerHTML = '';
+            auditAttachments.forEach((attachment, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div>
+                        <div style="font-weight: 500;">${attachment.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-light);">${attachment.type} • ${attachment.size}</div>
+                    </div>
+                    <button class="btn btn-sm btn-danger" onclick="deleteAuditAttachment('${auditId}', ${index})">Delete</button>
+                `;
+                list.appendChild(fileItem);
+            });
+        }
+
+        function uploadHealthAttachment() {
+            const fileInput = document.getElementById('healthFileInput');
+            const employeeId = document.getElementById('healthEmployeeSelect').value;
+            
+            if (!employeeId) {
+                showToast('Error', 'Please select an employee first', 'error');
+                return;
+            }
+            
+            if (fileInput.files.length === 0) return;
+            
+            const files = Array.from(fileInput.files);
+            files.forEach(file => {
+                const attachment = {
+                    name: file.name,
+                    type: file.type,
+                    size: formatFileSize(file.size),
+                    uploaded: new Date().toISOString()
+                };
+                
+                if (!attachments.health[employeeId]) {
+                    attachments.health[employeeId] = [];
+                }
+                
+                attachments.health[employeeId].push(attachment);
+            });
+            
+            saveAllData();
+            loadHealthAttachments();
+            loadHealthTable();
+            showToast('Success', `${files.length} file(s) uploaded successfully`, 'success');
+            
+            // Clear file input
+            fileInput.value = '';
+        }
+
+        function uploadContractorAttachment() {
+            const fileInput = document.getElementById('contractorFileInput');
+            const contractorId = document.getElementById('contractorSelect').value;
+            
+            if (!contractorId) {
+                showToast('Error', 'Please select a contractor first', 'error');
+                return;
+            }
+            
+            if (fileInput.files.length === 0) return;
+            
+            const files = Array.from(fileInput.files);
+            files.forEach(file => {
+                const attachment = {
+                    name: file.name,
+                    type: file.type,
+                    size: formatFileSize(file.size),
+                    uploaded: new Date().toISOString()
+                };
+                
+                if (!attachments.contractor[contractorId]) {
+                    attachments.contractor[contractorId] = [];
+                }
+                
+                attachments.contractor[contractorId].push(attachment);
+            });
+            
+            saveAllData();
+            loadContractorAttachments();
+            loadContractorTable();
+            showToast('Success', `${files.length} file(s) uploaded successfully`, 'success');
+            
+            // Clear file input
+            fileInput.value = '';
+        }
+
+        function uploadAuditAttachment() {
+            const fileInput = document.getElementById('auditFileInput');
+            const auditId = document.getElementById('auditSelect').value;
+            
+            if (!auditId) {
+                showToast('Error', 'Please select an audit first', 'error');
+                return;
+            }
+            
+            if (fileInput.files.length === 0) return;
+            
+            const files = Array.from(fileInput.files);
+            files.forEach(file => {
+                const attachment = {
+                    name: file.name,
+                    type: file.type,
+                    size: formatFileSize(file.size),
+                    uploaded: new Date().toISOString()
+                };
+                
+                if (!attachments.audit[auditId]) {
+                    attachments.audit[auditId] = [];
+                }
+                
+                attachments.audit[auditId].push(attachment);
+            });
+            
+            saveAllData();
+            loadAuditAttachments();
+            loadAuditTable();
+            showToast('Success', `${files.length} file(s) uploaded successfully`, 'success');
+            
+            // Clear file input
+            fileInput.value = '';
+        }
+
+        function deleteHealthAttachment(employeeId, index) {
+            if (attachments.health[employeeId]) {
+                attachments.health[employeeId].splice(index, 1);
+                saveAllData();
+                loadHealthAttachments();
+                loadHealthTable();
+                showToast('Success', 'Attachment deleted successfully', 'success');
+            }
+        }
+
+        function deleteContractorAttachment(contractorId, index) {
+            if (attachments.contractor[contractorId]) {
+                attachments.contractor[contractorId].splice(index, 1);
+                saveAllData();
+                loadContractorAttachments();
+                loadContractorTable();
+                showToast('Success', 'Attachment deleted successfully', 'success');
+            }
+        }
+
+        function deleteAuditAttachment(auditId, index) {
+            if (attachments.audit[auditId]) {
+                attachments.audit[auditId].splice(index, 1);
+                saveAllData();
+                loadAuditAttachments();
+                loadAuditTable();
+                showToast('Success', 'Attachment deleted successfully', 'success');
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Standards Management Functions
+        function loadStandards() {
+            const grid = document.getElementById('standardsGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            
+            standards.forEach((standard, index) => {
+                const card = document.createElement('div');
+                card.className = 'standard-card';
+                
+                const statusClass = standard.status === 'Compliant' ? 'status-compliant' : 
+                                  standard.status === 'Non-Compliant' ? 'status-noncompliant' : 'status-pending';
+                
+                card.innerHTML = `
+                    <div class="standard-badge ${standard.type === 'International' ? 'badge-international' : 'badge-national'}">
+                        ${standard.type}
+                    </div>
+                    <h3>${standard.name}</h3>
+                    <div class="standard-code">${standard.code}</div>
+                    <div class="standard-industry">${standard.industry}</div>
+                    <div class="standard-status ${statusClass}">${standard.status}</div>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-light);">
+                        ${standard.description.substring(0, 150)}...
+                    </p>
+                    <div style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 1rem;">
+                        <strong>Effective:</strong> ${standard.effectiveDate || 'N/A'}
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 1rem;">
+                        <strong>Remarks:</strong> ${standard.remarks || 'No remarks'}
+                    </div>
+                    <div class="standard-actions">
+                        <button class="btn btn-sm btn-outline" onclick="editStandard(${index})">Edit</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteStandard(${index})">Delete</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function addStandard() {
+            editingStandardIndex = -1;
+            document.getElementById('standardModalTitle').textContent = 'Add New Standard';
+            document.getElementById('deleteStandardBtn').style.display = 'none';
+            document.getElementById('standardSuccess').style.display = 'none';
+            document.getElementById('standardError').style.display = 'none';
+            
+            // Clear form
+            document.getElementById('standardName').value = '';
+            document.getElementById('standardCode').value = '';
+            document.getElementById('standardType').value = '';
+            document.getElementById('standardIndustry').value = '';
+            document.getElementById('standardDescription').value = '';
+            document.getElementById('standardStatus').value = '';
+            document.getElementById('standardEffectiveDate').value = '';
+            document.getElementById('standardRemarks').value = '';
+            document.getElementById('standardFilesList').innerHTML = '';
+            
+            openModal('standardModal');
+        }
+
+        function editStandard(index) {
+            editingStandardIndex = index;
+            const standard = standards[index];
+            
+            document.getElementById('standardModalTitle').textContent = 'Edit Standard';
+            document.getElementById('deleteStandardBtn').style.display = 'inline-flex';
+            document.getElementById('standardSuccess').style.display = 'none';
+            document.getElementById('standardError').style.display = 'none';
+            
+            // Fill form
+            document.getElementById('standardName').value = standard.name;
+            document.getElementById('standardCode').value = standard.code;
+            document.getElementById('standardType').value = standard.type;
+            document.getElementById('standardIndustry').value = standard.industry;
+            document.getElementById('standardDescription').value = standard.description;
+            document.getElementById('standardStatus').value = standard.status;
+            document.getElementById('standardEffectiveDate').value = standard.effectiveDate || '';
+            document.getElementById('standardRemarks').value = standard.remarks || '';
+            
+            // Load attachments if any
+            const standardFiles = attachments.standards[standard.id] || [];
+            const filesList = document.getElementById('standardFilesList');
+            filesList.innerHTML = '';
+            
+            standardFiles.forEach((file, fileIndex) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div>
+                        <div style="font-weight: 500;">${file.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-light);">${file.type} • ${file.size}</div>
+                    </div>
+                    <button class="btn btn-sm btn-danger" onclick="deleteStandardAttachment('${standard.id}', ${fileIndex})">Delete</button>
+                `;
+                filesList.appendChild(fileItem);
+            });
+            
+            openModal('standardModal');
+        }
+
+        function saveStandard() {
+            // Get form values
+            const name = document.getElementById('standardName').value;
+            const code = document.getElementById('standardCode').value;
+            const type = document.getElementById('standardType').value;
+            const industry = document.getElementById('standardIndustry').value;
+            const description = document.getElementById('standardDescription').value;
+            const status = document.getElementById('standardStatus').value;
+            const effectiveDate = document.getElementById('standardEffectiveDate').value;
+            const remarks = document.getElementById('standardRemarks').value;
+            
+            // Validation
+            if (!name || !code || !type || !industry || !description || !status) {
+                document.getElementById('standardError').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('standardError').style.display = 'none';
+                }, 3000);
+                return;
+            }
+            
+            // Handle file upload
+            const fileInput = document.getElementById('standardFileInput');
+            if (fileInput.files.length > 0) {
+                const files = Array.from(fileInput.files);
+                files.forEach(file => {
+                    const attachment = {
+                        name: file.name,
+                        type: file.type,
+                        size: formatFileSize(file.size),
+                        uploaded: new Date().toISOString()
+                    };
+                    
+                    const standardId = editingStandardIndex >= 0 ? standards[editingStandardIndex].id : `STD-${new Date().getFullYear()}-${(standards.length + 1).toString().padStart(3, '0')}`;
+                    
+                    if (!attachments.standards[standardId]) {
+                        attachments.standards[standardId] = [];
+                    }
+                    
+                    attachments.standards[standardId].push(attachment);
+                });
+                fileInput.value = '';
+            }
+            
+            if (editingStandardIndex >= 0) {
+                // Update existing standard
+                standards[editingStandardIndex] = {
+                    ...standards[editingStandardIndex],
+                    name,
+                    code,
+                    type,
+                    industry,
+                    description,
+                    status,
+                    effectiveDate,
+                    remarks,
+                    updatedAt: new Date().toISOString()
+                };
+            } else {
+                // Add new standard
+                const newStandard = {
+                    id: `STD-${new Date().getFullYear()}-${(standards.length + 1).toString().padStart(3, '0')}`,
+                    name,
+                    code,
+                    type,
+                    industry,
+                    description,
+                    status,
+                    effectiveDate,
+                    remarks,
+                    createdAt: new Date().toISOString()
+                };
+                standards.push(newStandard);
+            }
+            
+            saveAllData();
+            loadStandards();
+            updateStatistics();
+            
+            // Show success message
+            document.getElementById('standardSuccess').style.display = 'block';
+            
+            // Close modal after delay
+            setTimeout(() => {
+                closeModal('standardModal');
+                document.getElementById('standardSuccess').style.display = 'none';
+            }, 2000);
+        }
+
+        function deleteCurrentStandard() {
+            if (editingStandardIndex >= 0) {
+                deleteStandard(editingStandardIndex);
+                closeModal('standardModal');
+            }
+        }
+
+        function deleteStandard(index) {
+            showConfirmDialog('Delete Standard', 'Are you sure you want to delete this standard?', function() {
+                const standardId = standards[index].id;
+                
+                // Remove from standards array
+                standards.splice(index, 1);
+                
+                // Remove attachments if any
+                if (attachments.standards[standardId]) {
+                    delete attachments.standards[standardId];
+                }
+                
+                saveAllData();
+                loadStandards();
+                updateStatistics();
+                showToast('Deleted', 'Standard deleted successfully!', 'success');
+            });
+        }
+
+        function deleteStandardAttachment(standardId, index) {
+            if (attachments.standards[standardId]) {
+                attachments.standards[standardId].splice(index, 1);
+                saveAllData();
+                editStandard(editingStandardIndex); // Refresh the edit view
+                showToast('Success', 'Attachment deleted successfully', 'success');
+            }
         }
 
         // Table Cell Editing Function
@@ -2247,6 +3308,7 @@
             healthRecords.push(newRecord);
             saveAllData();
             loadHealthTable();
+            populateHealthEmployeeSelect();
             showToast('Success', 'New health record added!', 'success');
         }
 
@@ -2265,6 +3327,7 @@
             contractors.push(newContractor);
             saveAllData();
             loadContractorTable();
+            populateContractorSelect();
             showToast('Success', 'New contractor added!', 'success');
         }
 
@@ -2283,6 +3346,7 @@
             audits.push(newAudit);
             saveAllData();
             loadAuditTable();
+            populateAuditSelect();
             updateStatistics();
             showToast('Success', 'New audit scheduled!', 'success');
         }
@@ -2451,6 +3515,10 @@
                 loadContractorTable();
             } else if (modalId === 'auditModal') {
                 loadAuditTable();
+            } else if (modalId === 'riskModal') {
+                loadModalRiskMatrix();
+            } else if (modalId === 'standardsModal') {
+                loadStandards();
             }
         }
 
