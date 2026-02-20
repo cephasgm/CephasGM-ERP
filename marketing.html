@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketing & BI - CephasGM ERP</title>
+    <title>Marketing & Business Intelligence - CephasGM ERP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     <style>
@@ -948,6 +948,79 @@
             outline-offset: 2px;
         }
 
+        .tab-container {
+            margin-bottom: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .insight-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .insight-card:hover {
+            transform: translateX(4px);
+            border-color: var(--primary);
+        }
+
+        .workflow-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--background);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+
+        .workflow-item:hover {
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+
         @media (max-width: 1024px) {
             .dashboard {
                 grid-template-columns: 1fr;
@@ -1032,15 +1105,15 @@
 
             <div class="nav-section">
                 <div class="nav-title">Digital Channels</div>
-                <a href="social-media.html" class="nav-item" onclick="openModule('social-media')">
+                <a href="social-media.html" class="nav-item" onclick="openModule('social-media'); return false;">
                     <span class="nav-icon">📱</span>
                     Social Media
                 </a>
-                <a href="seo-analytics.html" class="nav-item" onclick="openModule('seo-analytics')">
+                <a href="seo-analytics.html" class="nav-item" onclick="openModule('seo-analytics'); return false;">
                     <span class="nav-icon">🔍</span>
                     SEO & Analytics
                 </a>
-                <a href="email-marketing.html" class="nav-item">
+                <a href="email-marketing.html" class="nav-item" onclick="openModule('email-marketing'); return false;">
                     <span class="nav-icon">✉️</span>
                     Email Marketing
                 </a>
@@ -1048,15 +1121,15 @@
 
             <div class="nav-section">
                 <div class="nav-title">Business Intelligence</div>
-                <a href="reports.html" class="nav-item" onclick="openModule('advanced-reports')">
+                <a href="reports.html" class="nav-item" onclick="openModule('advanced-reports'); return false;">
                     <span class="nav-icon">📊</span>
                     Advanced Reports
                 </a>
-                <a href="data-analytics.html" class="nav-item" onclick="openModule('data-analytics')">
+                <a href="data-analytics.html" class="nav-item" onclick="openModule('data-analytics'); return false;">
                     <span class="nav-icon">📈</span>
                     Data Analytics
                 </a>
-                <a href="forecasting.html" class="nav-item">
+                <a href="forecasting.html" class="nav-item" onclick="openModule('forecasting'); return false;">
                     <span class="nav-icon">🔮</span>
                     Forecasting
                 </a>
@@ -1080,7 +1153,7 @@
 
             <div class="nav-section">
                 <div class="nav-title">User</div>
-                <div class="nav-item" onclick="openModule('marketing-manager')">
+                <div class="nav-item" onclick="openModule('marketing-manager'); return false;">
                     <span class="nav-icon">👤</span>
                     <span id="userRole">Marketing Manager</span>
                 </div>
@@ -1124,475 +1197,325 @@
                 </div>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-card" data-stat="budget">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-stat" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-stat" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
-                    </div>
-                    <div class="stat-number" id="marketingBudget">TZS 8.2M</div>
-                    <input type="text" class="stat-number-input" id="budgetInput" value="8200000" style="display:none;">
-                    <div class="stat-label">Marketing Budget</div>
-                </div>
-                <div class="stat-card" data-stat="roi">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-stat" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-stat" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
-                    </div>
-                    <div class="stat-number" id="roiQuarter">24%</div>
-                    <input type="text" class="stat-number-input" id="roiInput" value="24" style="display:none;">
-                    <div class="stat-label">ROI This Quarter</div>
-                </div>
-                <div class="stat-card" data-stat="reach">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-stat" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-stat" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
-                    </div>
-                    <div class="stat-number" id="totalReach">156K</div>
-                    <input type="text" class="stat-number-input" id="reachInput" value="156000" style="display:none;">
-                    <div class="stat-label">Total Reach</div>
-                </div>
-                <div class="stat-card" data-stat="conversion">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-stat" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-stat" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
-                    </div>
-                    <div class="stat-number" id="conversionRate">4.2%</div>
-                    <input type="text" class="stat-number-input" id="conversionInput" value="4.2" style="display:none;">
-                    <div class="stat-label">Conversion Rate</div>
-                </div>
-            </div>
-
-            <div class="campaigns-grid">
-                <div class="campaign-card" data-campaign="digital">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-campaign" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-campaign" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
-                    </div>
-                    <div class="card-header">
-                        <div class="card-icon">📱</div>
-                        <div class="card-title">Digital Campaigns</div>
-                    </div>
-                    <div class="metric-grid">
-                        <div class="metric-item" data-metric="impressions">
-                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
-                            <div class="metric-value" id="digitalImpressions">42K</div>
-                            <input type="text" class="metric-value-input" id="impressionsInput" value="42000" style="display:none;">
-                            <div class="metric-label">Impressions</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 85%"></div>
-                            </div>
-                        </div>
-                        <div class="metric-item" data-metric="engagements">
-                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
-                            <div class="metric-value" id="digitalEngagements">1.8K</div>
-                            <input type="text" class="metric-value-input" id="engagementsInput" value="1800" style="display:none;">
-                            <div class="metric-label">Engagements</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 65%"></div>
-                            </div>
-                        </div>
-                        <div class="metric-item" data-metric="ctr">
-                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
-                            <div class="metric-value" id="digitalCTR">4.3%</div>
-                            <input type="text" class="metric-value-input" id="ctrInput" value="4.3" style="display:none;">
-                            <div class="metric-label">CTR</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 43%"></div>
-                            </div>
-                        </div>
-                        <div class="metric-item" data-metric="cpc">
-                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
-                            <div class="metric-value" id="digitalCPC">TZS 156</div>
-                            <input type="text" class="metric-value-input" id="cpcInput" value="156" style="display:none;">
-                            <div class="metric-label">CPC</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 78%"></div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Tabs Navigation -->
+            <div class="tab-container">
+                <div class="tabs">
+                    <button class="tab active" data-tab="overview">Overview</button>
+                    <button class="tab" data-tab="campaigns">Campaigns</button>
+                    <button class="tab" data-tab="analytics">Analytics</button>
+                    <button class="tab" data-tab="social">Social Media</button>
+                    <button class="tab" data-tab="seo">SEO & SEM</button>
+                    <button class="tab" data-tab="email">Email Marketing</button>
+                    <button class="tab" data-tab="content">Content</button>
+                    <button class="tab" data-tab="insights">Customer Insights</button>
+                    <button class="tab" data-tab="predictive">Predictive</button>
+                    <button class="tab" data-tab="competitive">Competitive</button>
+                    <button class="tab" data-tab="automation">Automation</button>
                 </div>
 
-                <div class="campaign-card" data-campaign="email">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-campaign" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-campaign" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
-                    </div>
-                    <div class="card-header">
-                        <div class="card-icon">📧</div>
-                        <div class="card-title">Email Marketing</div>
-                    </div>
-                    <div class="metric-grid">
-                        <div class="metric-item" data-metric="sent">
-                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
-                            <div class="metric-value" id="emailSent">24.8K</div>
-                            <input type="text" class="metric-value-input" id="sentInput" value="24800" style="display:none;">
-                            <div class="metric-label">Sent</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 100%"></div>
+                <!-- Overview Tab -->
+                <div class="tab-content active" id="tab-overview">
+                    <div class="stats-grid">
+                        <div class="stat-card" data-stat="budget">
+                            <div class="edit-controls">
+                                <button class="btn btn-sm btn-secondary edit-stat" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-success save-stat" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
                             </div>
+                            <div class="stat-number" id="marketingBudget">TZS 8.2M</div>
+                            <input type="text" class="stat-number-input" id="budgetInput" value="8200000" style="display:none;">
+                            <div class="stat-label">Marketing Budget</div>
                         </div>
-                        <div class="metric-item" data-metric="openRate">
-                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
-                            <div class="metric-value" id="emailOpenRate">68%</div>
-                            <input type="text" class="metric-value-input" id="openRateInput" value="68" style="display:none;">
-                            <div class="metric-label">Open Rate</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 68%"></div>
+                        <div class="stat-card" data-stat="roi">
+                            <div class="edit-controls">
+                                <button class="btn btn-sm btn-secondary edit-stat" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-success save-stat" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
                             </div>
+                            <div class="stat-number" id="roiQuarter">24%</div>
+                            <input type="text" class="stat-number-input" id="roiInput" value="24" style="display:none;">
+                            <div class="stat-label">ROI This Quarter</div>
                         </div>
-                        <div class="metric-item" data-metric="clickRate">
-                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
-                            <div class="metric-value" id="emailClickRate">12.4%</div>
-                            <input type="text" class="metric-value-input" id="clickRateInput" value="12.4" style="display:none;">
-                            <div class="metric-label">Click Rate</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 12.4%"></div>
+                        <div class="stat-card" data-stat="reach">
+                            <div class="edit-controls">
+                                <button class="btn btn-sm btn-secondary edit-stat" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-success save-stat" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
                             </div>
+                            <div class="stat-number" id="totalReach">156K</div>
+                            <input type="text" class="stat-number-input" id="reachInput" value="156000" style="display:none;">
+                            <div class="stat-label">Total Reach</div>
                         </div>
-                        <div class="metric-item" data-metric="emailConversion">
-                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
-                            <div class="metric-value" id="emailConversion">2.1%</div>
-                            <input type="text" class="metric-value-input" id="emailConversionInput" value="2.1" style="display:none;">
-                            <div class="metric-label">Conversion</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 2.1%"></div>
+                        <div class="stat-card" data-stat="conversion">
+                            <div class="edit-controls">
+                                <button class="btn btn-sm btn-secondary edit-stat" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-success save-stat" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
                             </div>
+                            <div class="stat-number" id="conversionRate">4.2%</div>
+                            <input type="text" class="stat-number-input" id="conversionInput" value="4.2" style="display:none;">
+                            <div class="stat-label">Conversion Rate</div>
                         </div>
                     </div>
-                </div>
 
-                <div class="campaign-card" data-campaign="seo">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-campaign" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-campaign" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
-                    </div>
-                    <div class="card-header">
-                        <div class="card-icon">🔍</div>
-                        <div class="card-title">SEO Performance</div>
-                    </div>
-                    <div class="metric-grid">
-                        <div class="metric-item" data-metric="keywords">
-                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
-                            <div class="metric-value" id="seoKeywords">156</div>
-                            <input type="text" class="metric-value-input" id="keywordsInput" value="156" style="display:none;">
-                            <div class="metric-label">Keywords</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 78%"></div>
+                    <div class="bi-dashboard">
+                        <div class="bi-header">
+                            <div class="bi-title">Executive Dashboard</div>
+                            <div class="bi-filters">
+                                <select class="bi-filter" id="timeFilter">
+                                    <option value="7">Last 7 Days</option>
+                                    <option value="30" selected>Last 30 Days</option>
+                                    <option value="90">Last Quarter</option>
+                                    <option value="365">Last Year</option>
+                                </select>
+                                <select class="bi-filter" id="channelFilter">
+                                    <option value="all">All Channels</option>
+                                    <option value="digital">Digital Only</option>
+                                    <option value="traditional">Traditional Only</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="metric-item" data-metric="avgRank">
-                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
-                            <div class="metric-value" id="seoAvgRank">#8</div>
-                            <input type="text" class="metric-value-input" id="avgRankInput" value="8" style="display:none;">
-                            <div class="metric-label">Avg Rank</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 80%"></div>
-                            </div>
-                        </div>
-                        <div class="metric-item" data-metric="organicTraffic">
-                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
-                            <div class="metric-value" id="organicTraffic">12.4K</div>
-                            <input type="text" class="metric-value-input" id="organicInput" value="12400" style="display:none;">
-                            <div class="metric-label">Organic Traffic</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 62%"></div>
-                            </div>
-                        </div>
-                        <div class="metric-item" data-metric="cpcSaved">
-                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
-                            <div class="metric-value" id="seoCPC">TZS 0</div>
-                            <input type="text" class="metric-value-input" id="cpcSavedInput" value="0" style="display:none;">
-                            <div class="metric-label">CPC Saved</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 100%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bi-dashboard">
-                <div class="bi-header">
-                    <div class="bi-title">Business Intelligence Dashboard</div>
-                    <div class="bi-filters">
-                        <select class="bi-filter" id="timeFilter">
-                            <option value="7">Last 7 Days</option>
-                            <option value="30" selected>Last 30 Days</option>
-                            <option value="90">Last Quarter</option>
-                            <option value="365">Last Year</option>
-                        </select>
-                        <select class="bi-filter" id="channelFilter">
-                            <option value="all">All Channels</option>
-                            <option value="digital">Digital Only</option>
-                            <option value="traditional">Traditional Only</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="bi-grid">
-                    <div class="bi-chart">
-                        <div class="chart-container">
-                            <div class="chart-bars" id="revenueChart">
-                                <div class="chart-bar" style="height: 180px;" data-value="4800000">
-                                    <span class="chart-bar-value" id="chartValue1">TZS 4.8M</span>
-                                    <span class="chart-bar-label">Revenue</span>
-                                </div>
-                                <div class="chart-bar" style="height: 150px;" data-value="3200000">
-                                    <span class="chart-bar-value" id="chartValue2">TZS 3.2M</span>
-                                    <span class="chart-bar-label">Campaigns</span>
-                                </div>
-                                <div class="chart-bar" style="height: 100px;" data-value="1800000">
-                                    <span class="chart-bar-value" id="chartValue3">TZS 1.8M</span>
-                                    <span class="chart-bar-label">Conversions</span>
+                        <div class="bi-grid">
+                            <div class="bi-chart">
+                                <div class="chart-container">
+                                    <div class="chart-bars" id="revenueChart">
+                                        <div class="chart-bar" style="height: 180px;" data-value="4800000">
+                                            <span class="chart-bar-value" id="chartValue1">TZS 4.8M</span>
+                                            <span class="chart-bar-label">Revenue</span>
+                                        </div>
+                                        <div class="chart-bar" style="height: 150px;" data-value="3200000">
+                                            <span class="chart-bar-value" id="chartValue2">TZS 3.2M</span>
+                                            <span class="chart-bar-label">Campaigns</span>
+                                        </div>
+                                        <div class="chart-bar" style="height: 100px;" data-value="1800000">
+                                            <span class="chart-bar-value" id="chartValue3">TZS 1.8M</span>
+                                            <span class="chart-bar-label">Conversions</span>
+                                        </div>
+                                    </div>
+                                    <div class="chart-legend">
+                                        <div class="legend-item">
+                                            <div class="legend-color" style="background: var(--primary);"></div>
+                                            <span>Revenue vs Campaign Spend vs Conversions</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="chart-legend">
-                                <div class="legend-item">
-                                    <div class="legend-color" style="background: var(--primary);"></div>
-                                    <span>Revenue vs Campaign Spend vs Conversions</span>
+                            <div class="bi-metrics">
+                                <div class="bi-metric" data-bi="revenue">
+                                    <i class="fas fa-edit edit-bi" title="Edit metric"></i>
+                                    <div class="bi-value" id="revenueGenerated">TZS 4.8M</div>
+                                    <input type="text" class="bi-value-input" id="revenueInput" value="4800000" style="display:none;">
+                                    <div class="bi-label">Revenue Generated</div>
+                                </div>
+                                <div class="bi-metric" data-bi="roiRatio">
+                                    <i class="fas fa-edit edit-bi" title="Edit metric"></i>
+                                    <div class="bi-value" id="roiRatio">3.2:1</div>
+                                    <input type="text" class="bi-value-input" id="roiRatioInput" value="3.2" style="display:none;">
+                                    <div class="bi-label">ROI Ratio</div>
+                                </div>
+                                <div class="bi-metric" data-bi="marketShare">
+                                    <i class="fas fa-edit edit-bi" title="Edit metric"></i>
+                                    <div class="bi-value" id="marketShare">42%</div>
+                                    <input type="text" class="bi-value-input" id="marketShareInput" value="42" style="display:none;">
+                                    <div class="bi-label">Market Share</div>
+                                </div>
+                                <div class="bi-metric" data-bi="growthRate">
+                                    <i class="fas fa-edit edit-bi" title="Edit metric"></i>
+                                    <div class="bi-value" id="growthRate">8.4%</div>
+                                    <input type="text" class="bi-value-input" id="growthRateInput" value="8.4" style="display:none;">
+                                    <div class="bi-label">Growth Rate</div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="bi-metrics">
-                        <div class="bi-metric" data-bi="revenue">
-                            <i class="fas fa-edit edit-bi" title="Edit metric"></i>
-                            <div class="bi-value" id="revenueGenerated">TZS 4.8M</div>
-                            <input type="text" class="bi-value-input" id="revenueInput" value="4800000" style="display:none;">
-                            <div class="bi-label">Revenue Generated</div>
-                        </div>
-                        <div class="bi-metric" data-bi="roiRatio">
-                            <i class="fas fa-edit edit-bi" title="Edit metric"></i>
-                            <div class="bi-value" id="roiRatio">3.2:1</div>
-                            <input type="text" class="bi-value-input" id="roiRatioInput" value="3.2" style="display:none;">
-                            <div class="bi-label">ROI Ratio</div>
-                        </div>
-                        <div class="bi-metric" data-bi="marketShare">
-                            <i class="fas fa-edit edit-bi" title="Edit metric"></i>
-                            <div class="bi-value" id="marketShare">42%</div>
-                            <input type="text" class="bi-value-input" id="marketShareInput" value="42" style="display:none;">
-                            <div class="bi-label">Market Share</div>
-                        </div>
-                        <div class="bi-metric" data-bi="growthRate">
-                            <i class="fas fa-edit edit-bi" title="Edit metric"></i>
-                            <div class="bi-value" id="growthRate">8.4%</div>
-                            <input type="text" class="bi-value-input" id="growthRateInput" value="8.4" style="display:none;">
-                            <div class="bi-label">Growth Rate</div>
-                        </div>
-                    </div>
                 </div>
-            </div>
 
-            <div class="channels-grid">
-                <div class="channel-card" data-channel="facebook">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-channel" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-channel" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
-                    </div>
-                    <div class="channel-icon">📘</div>
-                    <div class="channel-name" id="fbName">Facebook</div>
-                    <input type="text" class="channel-name-input" id="fbNameInput" value="Facebook" style="display:none;">
-                    <a href="https://facebook.com/cephasgm" target="_blank" class="channel-link" id="fbLink">Visit Page</a>
-                    <div class="channel-stats">
-                        <div class="channel-stat">
-                            <div class="channel-value" id="fbReach">24K</div>
-                            <input type="text" class="channel-value-input" id="fbReachInput" value="24000" style="display:none;">
-                            <div class="channel-label">Reach</div>
-                        </div>
-                        <div class="channel-stat">
-                            <div class="channel-value" id="fbEngagement">3.2%</div>
-                            <input type="text" class="channel-value-input" id="fbEngagementInput" value="3.2" style="display:none;">
-                            <div class="channel-label">Engagement</div>
-                        </div>
+                <!-- Campaigns Tab -->
+                <div class="tab-content" id="tab-campaigns">
+                    <div class="campaigns-grid" id="campaignsGrid">
+                        <!-- Campaigns will be loaded here dynamically -->
                     </div>
                 </div>
 
-                <div class="channel-card" data-channel="instagram">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-channel" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-channel" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
-                    </div>
-                    <div class="channel-icon">📷</div>
-                    <div class="channel-name" id="igName">Instagram</div>
-                    <input type="text" class="channel-name-input" id="igNameInput" value="Instagram" style="display:none;">
-                    <a href="https://instagram.com/cephasgm" target="_blank" class="channel-link" id="igLink">Visit Page</a>
-                    <div class="channel-stats">
-                        <div class="channel-stat">
-                            <div class="channel-value" id="igReach">18K</div>
-                            <input type="text" class="channel-value-input" id="igReachInput" value="18000" style="display:none;">
-                            <div class="channel-label">Reach</div>
+                <!-- Analytics Tab -->
+                <div class="tab-content" id="tab-analytics">
+                    <div class="bi-dashboard">
+                        <div class="bi-header">
+                            <div class="bi-title">Digital Analytics</div>
                         </div>
-                        <div class="channel-stat">
-                            <div class="channel-value" id="igEngagement">4.8%</div>
-                            <input type="text" class="channel-value-input" id="igEngagementInput" value="4.8" style="display:none;">
-                            <div class="channel-label">Engagement</div>
+                        <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <div class="metric-item">
+                                <div class="metric-value" id="websiteSessions">45.2K</div>
+                                <div class="metric-label">Website Sessions</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="uniqueVisitors">32.8K</div>
+                                <div class="metric-label">Unique Visitors</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="bounceRate">42%</div>
+                                <div class="metric-label">Bounce Rate</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="avgSessionDuration">2:45</div>
+                                <div class="metric-label">Avg Session Duration</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="pagesPerSession">3.2</div>
+                                <div class="metric-label">Pages/Session</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 2rem;">
+                            <h3>Traffic Sources</h3>
+                            <div class="progress-bar" style="margin: 1rem 0;">
+                                <div class="progress-fill" style="width: 35%;">Direct 35%</div>
+                            </div>
+                            <div class="progress-bar" style="margin: 1rem 0;">
+                                <div class="progress-fill" style="width: 25%;">Organic Search 25%</div>
+                            </div>
+                            <div class="progress-bar" style="margin: 1rem 0;">
+                                <div class="progress-fill" style="width: 20%;">Social Media 20%</div>
+                            </div>
+                            <div class="progress-bar" style="margin: 1rem 0;">
+                                <div class="progress-fill" style="width: 15%;">Referral 15%</div>
+                            </div>
+                            <div class="progress-bar" style="margin: 1rem 0;">
+                                <div class="progress-fill" style="width: 5%;">Email 5%</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="channel-card" data-channel="linkedin">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-channel" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-channel" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
-                    </div>
-                    <div class="channel-icon">💼</div>
-                    <div class="channel-name" id="liName">LinkedIn</div>
-                    <input type="text" class="channel-name-input" id="liNameInput" value="LinkedIn" style="display:none;">
-                    <a href="https://linkedin.com/company/cephasgm" target="_blank" class="channel-link" id="liLink">Visit Page</a>
-                    <div class="channel-stats">
-                        <div class="channel-stat">
-                            <div class="channel-value" id="liReach">8.4K</div>
-                            <input type="text" class="channel-value-input" id="liReachInput" value="8400" style="display:none;">
-                            <div class="channel-label">Reach</div>
-                        </div>
-                        <div class="channel-stat">
-                            <div class="channel-value" id="liEngagement">2.1%</div>
-                            <input type="text" class="channel-value-input" id="liEngagementInput" value="2.1" style="display:none;">
-                            <div class="channel-label">Engagement</div>
-                        </div>
+                <!-- Social Media Tab -->
+                <div class="tab-content" id="tab-social">
+                    <div class="channels-grid" id="socialChannelsGrid">
+                        <!-- Social channels will be loaded here -->
                     </div>
                 </div>
 
-                <div class="channel-card" data-channel="x">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-channel" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-channel" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
-                    </div>
-                    <div class="channel-icon">𝕏</div>
-                    <div class="channel-name" id="xName">X (Twitter)</div>
-                    <input type="text" class="channel-name-input" id="xNameInput" value="X (Twitter)" style="display:none;">
-                    <a href="https://x.com/cephasgm" target="_blank" class="channel-link" id="xLink">Visit Page</a>
-                    <div class="channel-stats">
-                        <div class="channel-stat">
-                            <div class="channel-value" id="xReach">12.6K</div>
-                            <input type="text" class="channel-value-input" id="xReachInput" value="12600" style="display:none;">
-                            <div class="channel-label">Reach</div>
+                <!-- SEO & SEM Tab -->
+                <div class="tab-content" id="tab-seo">
+                    <div class="bi-dashboard">
+                        <div class="bi-header">
+                            <div class="bi-title">SEO & SEM Performance</div>
                         </div>
-                        <div class="channel-stat">
-                            <div class="channel-value" id="xEngagement">1.8%</div>
-                            <input type="text" class="channel-value-input" id="xEngagementInput" value="1.8" style="display:none;">
-                            <div class="channel-label">Engagement</div>
+                        <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <div class="metric-item">
+                                <div class="metric-value" id="keywordCount">156</div>
+                                <div class="metric-label">Keywords Tracked</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="avgPosition">#8</div>
+                                <div class="metric-label">Average Position</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="organicTraffic">12.4K</div>
+                                <div class="metric-label">Organic Traffic</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="backlinks">342</div>
+                                <div class="metric-label">Backlinks</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="domainAuthority">52</div>
+                                <div class="metric-label">Domain Authority</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="module-grid">
-                <div class="module-card tooltip" onclick="openModule('campaign-management')" data-module="campaign">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
-                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
+                <!-- Email Marketing Tab -->
+                <div class="tab-content" id="tab-email">
+                    <div class="bi-dashboard">
+                        <div class="bi-header">
+                            <div class="bi-title">Email Marketing Performance</div>
+                        </div>
+                        <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <div class="metric-item">
+                                <div class="metric-value" id="listSize">24.8K</div>
+                                <div class="metric-label">List Size</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="openRate">68%</div>
+                                <div class="metric-label">Open Rate</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="clickRate">12.4%</div>
+                                <div class="metric-label">Click Rate</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="unsubscribeRate">0.8%</div>
+                                <div class="metric-label">Unsubscribe Rate</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="module-icon">🎯</div>
-                    <h3 class="module-title">Campaign Management</h3>
-                    <input type="text" class="module-title-input" value="Campaign Management" style="display:none;">
-                    <p class="module-desc">Plan, execute, and track multi-channel marketing campaigns with real-time analytics</p>
-                    <textarea class="module-desc-input" style="display:none;">Plan, execute, and track multi-channel marketing campaigns with real-time analytics</textarea>
-                    <span class="tooltip-text">Multi-channel campaign planning with budget tracking</span>
                 </div>
 
-                <div class="module-card tooltip" onclick="openModule('digital-analytics')" data-module="analytics">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
-                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
+                <!-- Content Marketing Tab -->
+                <div class="tab-content" id="tab-content">
+                    <div class="module-grid">
+                        <!-- Content items will be loaded here -->
                     </div>
-                    <div class="module-icon">📊</div>
-                    <h3 class="module-title">Digital Analytics</h3>
-                    <input type="text" class="module-title-input" value="Digital Analytics" style="display:none;">
-                    <p class="module-desc">Web analytics, social media insights, and digital performance tracking with AI-powered insights</p>
-                    <textarea class="module-desc-input" style="display:none;">Web analytics, social media insights, and digital performance tracking with AI-powered insights</textarea>
-                    <span class="tooltip-text">AI-powered analytics with predictive insights</span>
                 </div>
 
-                <div class="module-card tooltip" onclick="openModule('seo-sem')" data-module="seo">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
-                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
+                <!-- Customer Insights Tab -->
+                <div class="tab-content" id="tab-insights">
+                    <div class="bi-dashboard">
+                        <div class="bi-header">
+                            <div class="bi-title">Customer Segmentation</div>
+                        </div>
+                        <div id="segmentsGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                            <!-- Segments will be loaded here -->
+                        </div>
                     </div>
-                    <div class="module-icon">🔍</div>
-                    <h3 class="module-title">SEO & SEM</h3>
-                    <input type="text" class="module-title-input" value="SEO & SEM" style="display:none;">
-                    <p class="module-desc">Search engine optimization, paid advertising, and keyword performance monitoring</p>
-                    <textarea class="module-desc-input" style="display:none;">Search engine optimization, paid advertising, and keyword performance monitoring</textarea>
-                    <span class="tooltip-text">Keyword tracking and competitive analysis</span>
                 </div>
 
-                <div class="module-card tooltip" onclick="openModule('content-marketing')" data-module="content">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
-                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
+                <!-- Predictive Analytics Tab -->
+                <div class="tab-content" id="tab-predictive">
+                    <div class="bi-dashboard">
+                        <div class="bi-header">
+                            <div class="bi-title">Predictive Analytics</div>
+                        </div>
+                        <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <div class="metric-item">
+                                <div class="metric-value" id="leadScore">85</div>
+                                <div class="metric-label">Avg Lead Score</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="churnRisk">12%</div>
+                                <div class="metric-label">Churn Risk</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="ltv">TZS 45K</div>
+                                <div class="metric-label">Customer LTV</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="module-icon">📝</div>
-                    <h3 class="module-title">Content Marketing</h3>
-                    <input type="text" class="module-title-input" value="Content Marketing" style="display:none;">
-                    <p class="module-desc">Content strategy, creation calendar, and performance analytics across all channels</p>
-                    <textarea class="module-desc-input" style="display:none;">Content strategy, creation calendar, and performance analytics across all channels</textarea>
-                    <span class="tooltip-text">Content calendar with performance metrics</span>
                 </div>
 
-                <div class="module-card tooltip" onclick="openModule('marketing-automation')" data-module="automation">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
-                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
+                <!-- Competitive Intelligence Tab -->
+                <div class="tab-content" id="tab-competitive">
+                    <div class="bi-dashboard">
+                        <div class="bi-header">
+                            <div class="bi-title">Competitive Analysis</div>
+                        </div>
+                        <div id="competitorsGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                            <!-- Competitors will be loaded here -->
+                        </div>
                     </div>
-                    <div class="module-icon">⚡</div>
-                    <h3 class="module-title">Marketing Automation</h3>
-                    <input type="text" class="module-title-input" value="Marketing Automation" style="display:none;">
-                    <p class="module-desc">Automated email campaigns, lead nurturing, and customer journey mapping</p>
-                    <textarea class="module-desc-input" style="display:none;">Automated email campaigns, lead nurturing, and customer journey mapping</textarea>
-                    <span class="tooltip-text">Automated workflows and lead scoring</span>
                 </div>
 
-                <div class="module-card tooltip" onclick="openModule('competitive-intelligence')" data-module="competitive">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
-                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
+                <!-- Marketing Automation Tab -->
+                <div class="tab-content" id="tab-automation">
+                    <div class="bi-dashboard">
+                        <div class="bi-header">
+                            <div class="bi-title">Automation Workflows</div>
+                        </div>
+                        <div id="workflowsList">
+                            <!-- Workflows will be loaded here -->
+                        </div>
                     </div>
-                    <div class="module-icon">👁️</div>
-                    <h3 class="module-title">Competitive Intelligence</h3>
-                    <input type="text" class="module-title-input" value="Competitive Intelligence" style="display:none;">
-                    <p class="module-desc">Market analysis, competitor tracking, and strategic positioning insights</p>
-                    <textarea class="module-desc-input" style="display:none;">Market analysis, competitor tracking, and strategic positioning insights</textarea>
-                    <span class="tooltip-text">Competitor monitoring and market analysis</span>
-                </div>
-
-                <div class="module-card tooltip" onclick="openModule('customer-insights')" data-module="insights">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
-                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
-                    </div>
-                    <div class="module-icon">👥</div>
-                    <h3 class="module-title">Customer Insights</h3>
-                    <input type="text" class="module-title-input" value="Customer Insights" style="display:none;">
-                    <p class="module-desc">Customer segmentation, behavior analysis, and persona development</p>
-                    <textarea class="module-desc-input" style="display:none;">Customer segmentation, behavior analysis, and persona development</textarea>
-                    <span class="tooltip-text">Customer segmentation and persona mapping</span>
-                </div>
-
-                <div class="module-card tooltip" onclick="openModule('predictive-analytics')" data-module="predictive">
-                    <div class="edit-controls">
-                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
-                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
-                    </div>
-                    <div class="module-icon">🔮</div>
-                    <h3 class="module-title">Predictive Analytics</h3>
-                    <input type="text" class="module-title-input" value="Predictive Analytics" style="display:none;">
-                    <p class="module-desc">AI-powered forecasting, trend analysis, and market opportunity identification</p>
-                    <textarea class="module-desc-input" style="display:none;">AI-powered forecasting, trend analysis, and market opportunity identification</textarea>
-                    <span class="tooltip-text">AI-driven forecasting and trend analysis</span>
                 </div>
             </div>
 
             <div class="footer">
-                Copyright © 2025 😀
+                Copyright © 2025 CephasGM ERP System
             </div>
         </main>
     </div>
@@ -1606,8 +1529,22 @@
             </div>
             <form id="campaignForm" onsubmit="saveCampaign(event)">
                 <div class="form-group">
-                    <label for="campaignName">Campaign Name</label>
+                    <label for="campaignId">Campaign ID</label>
+                    <input type="text" id="campaignId" value="CAMP-" + Date.now() readonly>
+                </div>
+                <div class="form-group">
+                    <label for="campaignName">Campaign Name *</label>
                     <input type="text" id="campaignName" required>
+                </div>
+                <div class="form-group">
+                    <label for="campaignObjective">Objective</label>
+                    <select id="campaignObjective">
+                        <option value="awareness">Brand Awareness</option>
+                        <option value="leadgen">Lead Generation</option>
+                        <option value="sales">Sales</option>
+                        <option value="retention">Customer Retention</option>
+                        <option value="launch">Product Launch</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="campaignType">Campaign Type</label>
@@ -1617,11 +1554,35 @@
                         <option value="social">Social Media</option>
                         <option value="seo">SEO</option>
                         <option value="content">Content</option>
+                        <option value="print">Print</option>
+                        <option value="tv">TV</option>
+                        <option value="radio">Radio</option>
+                        <option value="outdoor">Outdoor</option>
+                        <option value="event">Event</option>
+                        <option value="integrated">Integrated</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="campaignBudget">Budget (TZS)</label>
+                    <label for="campaignRegion">Region/Country</label>
+                    <input type="text" id="campaignRegion" placeholder="e.g., Tanzania, East Africa">
+                </div>
+                <div class="form-group">
+                    <label for="campaignCurrency">Local Currency</label>
+                    <select id="campaignCurrency">
+                        <option value="TZS">TZS - Tanzanian Shilling</option>
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="KES">KES - Kenyan Shilling</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="campaignBudget">Budget Allocated</label>
                     <input type="number" id="campaignBudget" required>
+                </div>
+                <div class="form-group">
+                    <label for="exchangeRate">Exchange Rate (to base TZS)</label>
+                    <input type="number" id="exchangeRate" step="0.0001" value="1.0">
                 </div>
                 <div class="form-group">
                     <label for="campaignStart">Start Date</label>
@@ -1632,12 +1593,55 @@
                     <input type="date" id="campaignEnd" required>
                 </div>
                 <div class="form-group">
-                    <label for="campaignGoal">Goal</label>
-                    <input type="text" id="campaignGoal" required>
+                    <label for="campaignStatus">Status</label>
+                    <select id="campaignStatus">
+                        <option value="planned">Planned</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="paused">Paused</option>
+                        <option value="completed">Completed</option>
+                        <option value="archived">Archived</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label for="campaignTarget">Target Audience</label>
-                    <textarea id="campaignTarget" rows="3" required></textarea>
+                    <label for="targetAudience">Target Audience</label>
+                    <textarea id="targetAudience" rows="2" placeholder="e.g., IT Decision Makers, 25-45, Urban"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="targetReach">Target Reach</label>
+                    <input type="number" id="targetReach" placeholder="Planned audience size">
+                </div>
+                <div class="form-group">
+                    <label for="channelMix">Channel Mix</label>
+                    <input type="text" id="channelMix" placeholder="e.g., Facebook, Google Ads, Email">
+                </div>
+                <div class="form-group">
+                    <label for="landingPage">Landing Page URL</label>
+                    <input type="url" id="landingPage" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label for="utmParams">UTM Parameters</label>
+                    <input type="text" id="utmParams" placeholder="utm_source=...">
+                </div>
+                <div class="form-group">
+                    <label for="creativeAssets">Creative Assets</label>
+                    <input type="text" id="creativeAssets" placeholder="Links to images/videos">
+                </div>
+                <div class="form-group">
+                    <label for="localRequirements">Local Requirements</label>
+                    <textarea id="localRequirements" rows="2" placeholder="Cultural notes, regulations..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="compliance">Compliance</label>
+                    <select id="compliance">
+                        <option value="gdpr">GDPR (EU)</option>
+                        <option value="ccpa">CCPA (California)</option>
+                        <option value="local">Local Regulations</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="marketManager">Market Manager</label>
+                    <input type="text" id="marketManager" placeholder="Responsible person">
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-success">Save Campaign</button>
@@ -1647,20 +1651,21 @@
         </div>
     </div>
 
+    <!-- Module Content Modal -->
+    <div id="moduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="moduleModalTitle">Module</h2>
+                <span class="modal-close" onclick="closeModuleModal()">&times;</span>
+            </div>
+            <div id="moduleModalContent" class="form-group">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Mobile navigation toggle
-        document.getElementById('mobileNavToggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('active');
-        });
-
-        // Active navigation highlighting
-        document.querySelectorAll('.nav-item').forEach(item => {
-            if (item.href === window.location.href) {
-                item.classList.add('active');
-            }
-        });
-
-        // Currency conversion
+        // ==================== GLOBAL STATE ====================
         const currencyRates = {
             'TZS': { rate: 1, symbol: 'TZS ' },
             'USD': { rate: 0.00043, symbol: '$' },
@@ -1669,19 +1674,321 @@
             'KES': { rate: 0.062, symbol: 'KSh ' }
         };
 
-        document.getElementById('currencySelect').addEventListener('change', function() {
-            const selectedCurrency = this.value;
-            const rateInfo = currencyRates[selectedCurrency];
+        let currentCurrency = 'TZS';
+        let campaigns = JSON.parse(localStorage.getItem('campaigns') || '[]');
+        let socialChannels = JSON.parse(localStorage.getItem('socialChannels') || '[]');
+        let contentItems = JSON.parse(localStorage.getItem('contentItems') || '[]');
+        let customerSegments = JSON.parse(localStorage.getItem('customerSegments') || '[]');
+        let competitors = JSON.parse(localStorage.getItem('competitors') || '[]');
+        let workflows = JSON.parse(localStorage.getItem('workflows') || '[]');
+        let marketingStats = JSON.parse(localStorage.getItem('marketingStats') || '{}');
+
+        // ==================== INITIALIZATION ====================
+        function initializeData() {
+            // Initialize default campaigns if none exist
+            if (campaigns.length === 0) {
+                campaigns = [
+                    {
+                        id: 'CAMP-001',
+                        name: 'Summer Sale 2025',
+                        objective: 'sales',
+                        type: 'digital',
+                        region: 'Tanzania',
+                        currency: 'TZS',
+                        budget: 2500000,
+                        exchangeRate: 1.0,
+                        start: '2025-06-01',
+                        end: '2025-08-31',
+                        status: 'in-progress',
+                        targetAudience: 'Young adults 18-35',
+                        targetReach: 50000,
+                        channelMix: 'Facebook, Instagram, Google',
+                        landingPage: 'https://cephasgm.com/summer-sale',
+                        utmParams: 'utm_source=summer2025',
+                        creativeAssets: '/assets/summer/',
+                        localRequirements: 'Swahili translations needed',
+                        compliance: 'local',
+                        marketManager: 'John Doe',
+                        actualReach: 32450,
+                        actualSpend: 1850000,
+                        roi: 0.32,
+                        roas: 2.1
+                    },
+                    {
+                        id: 'CAMP-002',
+                        name: 'Product Launch X1',
+                        objective: 'launch',
+                        type: 'integrated',
+                        region: 'East Africa',
+                        currency: 'TZS',
+                        budget: 5000000,
+                        exchangeRate: 1.0,
+                        start: '2025-03-15',
+                        end: '2025-05-30',
+                        status: 'completed',
+                        targetAudience: 'Tech enthusiasts',
+                        targetReach: 100000,
+                        channelMix: 'TV, Radio, Social, Print',
+                        landingPage: 'https://cephasgm.com/x1-launch',
+                        utmParams: 'utm_source=launch2025',
+                        creativeAssets: '/assets/x1/',
+                        localRequirements: 'Multi-country campaign',
+                        compliance: 'gdpr',
+                        marketManager: 'Jane Smith',
+                        actualReach: 87500,
+                        actualSpend: 4200000,
+                        roi: 0.45,
+                        roas: 3.2
+                    }
+                ];
+                localStorage.setItem('campaigns', JSON.stringify(campaigns));
+            }
+
+            // Initialize default social channels
+            if (socialChannels.length === 0) {
+                socialChannels = [
+                    { name: 'Facebook', icon: '📘', reach: 24000, engagement: 3.2, followers: 15200, link: 'https://facebook.com/cephasgm' },
+                    { name: 'Instagram', icon: '📷', reach: 18000, engagement: 4.8, followers: 12300, link: 'https://instagram.com/cephasgm' },
+                    { name: 'LinkedIn', icon: '💼', reach: 8400, engagement: 2.1, followers: 5600, link: 'https://linkedin.com/company/cephasgm' },
+                    { name: 'X (Twitter)', icon: '𝕏', reach: 12600, engagement: 1.8, followers: 8900, link: 'https://x.com/cephasgm' },
+                    { name: 'TikTok', icon: '🎵', reach: 34200, engagement: 6.2, followers: 21500, link: 'https://tiktok.com/@cephasgm' },
+                    { name: 'YouTube', icon: '📺', reach: 15600, engagement: 4.1, followers: 7800, link: 'https://youtube.com/@cephasgm' }
+                ];
+                localStorage.setItem('socialChannels', JSON.stringify(socialChannels));
+            }
+
+            // Initialize default content items
+            if (contentItems.length === 0) {
+                contentItems = [
+                    { title: 'Digital Transformation Guide', type: 'E-book', owner: 'Content Team', publishDate: '2025-01-15', status: 'Published', views: 3450, conversions: 89 },
+                    { title: 'Why ERP Matters', type: 'Blog Post', owner: 'John', publishDate: '2025-02-10', status: 'Published', views: 2100, conversions: 34 },
+                    { title: 'Customer Success Story', type: 'Case Study', owner: 'Jane', publishDate: '2025-03-05', status: 'In Progress', views: 0, conversions: 0 }
+                ];
+                localStorage.setItem('contentItems', JSON.stringify(contentItems));
+            }
+
+            // Initialize default customer segments
+            if (customerSegments.length === 0) {
+                customerSegments = [
+                    { name: 'Enterprise Clients', size: 45, value: 'TZS 2.5M', behavior: 'High engagement', nps: 72 },
+                    { name: 'SMB Owners', size: 230, value: 'TZS 450K', behavior: 'Price sensitive', nps: 68 },
+                    { name: 'Startups', size: 120, value: 'TZS 180K', behavior: 'Growth focused', nps: 85 }
+                ];
+                localStorage.setItem('customerSegments', JSON.stringify(customerSegments));
+            }
+
+            // Initialize default competitors
+            if (competitors.length === 0) {
+                competitors = [
+                    { name: 'Competitor A', marketShare: 28, pricing: 'Premium', socialFollowers: 45000, keyProducts: 'ERP Pro' },
+                    { name: 'Competitor B', marketShare: 15, pricing: 'Mid-range', socialFollowers: 23000, keyProducts: 'Business Suite' },
+                    { name: 'Competitor C', marketShare: 8, pricing: 'Budget', socialFollowers: 12000, keyProducts: 'Startup ERP' }
+                ];
+                localStorage.setItem('competitors', JSON.stringify(competitors));
+            }
+
+            // Initialize default workflows
+            if (workflows.length === 0) {
+                workflows = [
+                    { name: 'Welcome Series', trigger: 'Form Fill', actions: 'Send 5 emails', completion: 78, conversion: 12 },
+                    { name: 'Abandoned Cart', trigger: 'Cart Abandonment', actions: 'Send 3 reminders', completion: 65, conversion: 8 },
+                    { name: 'Lead Nurturing', trigger: 'Download', actions: 'Send educational content', completion: 82, conversion: 15 }
+                ];
+                localStorage.setItem('workflows', JSON.stringify(workflows));
+            }
+
+            // Initialize marketing stats
+            if (Object.keys(marketingStats).length === 0) {
+                marketingStats = {
+                    budget: 8200000,
+                    roi: 24,
+                    reach: 156000,
+                    conversion: 4.2
+                };
+                localStorage.setItem('marketingStats', JSON.stringify(marketingStats));
+            }
+        }
+
+        // ==================== UI RENDERING ====================
+        function renderCampaigns() {
+            const grid = document.getElementById('campaignsGrid');
+            if (!grid) return;
             
-            // Update all currency values
-            updateCurrencyForElement('marketingBudget', 8200000, rateInfo);
-            updateCurrencyForElement('digitalCPC', 156, rateInfo);
-            updateCurrencyForElement('seoCPC', 0, rateInfo);
-            updateCurrencyForElement('revenueGenerated', 4800000, rateInfo);
-            updateCurrencyForElement('chartValue1', 4800000, rateInfo);
-            updateCurrencyForElement('chartValue2', 3200000, rateInfo);
-            updateCurrencyForElement('chartValue3', 1800000, rateInfo);
-        });
+            grid.innerHTML = '';
+            campaigns.forEach(campaign => {
+                const card = document.createElement('div');
+                card.className = 'campaign-card';
+                card.dataset.id = campaign.id;
+                card.innerHTML = `
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-campaign" onclick="editCampaign('${campaign.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger delete-campaign" onclick="deleteCampaign('${campaign.id}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="card-header">
+                        <div class="card-icon">📢</div>
+                        <div class="card-title">${campaign.name}</div>
+                    </div>
+                    <div style="margin-bottom: 0.5rem;">
+                        <span class="badge" style="background: var(--primary); color: white; padding: 0.25rem 0.5rem; border-radius: 4px;">${campaign.status}</span>
+                        <span class="badge" style="background: var(--secondary); color: white; padding: 0.25rem 0.5rem; border-radius: 4px;">${campaign.region}</span>
+                    </div>
+                    <div class="metric-grid">
+                        <div class="metric-item">
+                            <div class="metric-value">${campaign.currency} ${formatNumber(campaign.budget)}</div>
+                            <div class="metric-label">Budget</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">${campaign.actualReach || 0}K</div>
+                            <div class="metric-label">Reach</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">${campaign.roi ? (campaign.roi * 100).toFixed(0) + '%' : '0%'}</div>
+                            <div class="metric-label">ROI</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">${campaign.roas || 0}:1</div>
+                            <div class="metric-label">ROAS</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-light);">
+                        <i class="fas fa-calendar"></i> ${campaign.start} to ${campaign.end}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderSocialChannels() {
+            const grid = document.getElementById('socialChannelsGrid');
+            if (!grid) return;
+
+            grid.innerHTML = '';
+            socialChannels.forEach((channel, index) => {
+                const card = document.createElement('div');
+                card.className = 'channel-card';
+                card.innerHTML = `
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary" onclick="editSocialChannel(${index})"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteSocialChannel(${index})"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="channel-icon">${channel.icon}</div>
+                    <div class="channel-name">${channel.name}</div>
+                    <a href="${channel.link}" target="_blank" class="channel-link">Visit Page</a>
+                    <div class="channel-stats">
+                        <div class="channel-stat">
+                            <div class="channel-value">${channel.reach}K</div>
+                            <div class="channel-label">Reach</div>
+                        </div>
+                        <div class="channel-stat">
+                            <div class="channel-value">${channel.engagement}%</div>
+                            <div class="channel-label">Engagement</div>
+                        </div>
+                        <div class="channel-stat">
+                            <div class="channel-value">${channel.followers}K</div>
+                            <div class="channel-label">Followers</div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderContentItems() {
+            const grid = document.querySelector('#tab-content .module-grid');
+            if (!grid) return;
+
+            grid.innerHTML = '';
+            contentItems.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'module-card';
+                card.innerHTML = `
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary" onclick="editContent(${index})"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteContent(${index})"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="module-icon">📝</div>
+                    <h3>${item.title}</h3>
+                    <p>${item.type} - ${item.status}</p>
+                    <div class="metric-grid" style="margin-top: 0.5rem;">
+                        <div class="metric-item">
+                            <div class="metric-value">${item.views}K</div>
+                            <div class="metric-label">Views</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">${item.conversions}</div>
+                            <div class="metric-label">Conversions</div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderCustomerSegments() {
+            const grid = document.getElementById('segmentsGrid');
+            if (!grid) return;
+
+            grid.innerHTML = '';
+            customerSegments.forEach((segment, index) => {
+                const card = document.createElement('div');
+                card.className = 'insight-card';
+                card.innerHTML = `
+                    <h4>${segment.name}</h4>
+                    <p>Size: ${segment.size}</p>
+                    <p>Value: ${segment.value}</p>
+                    <p>NPS: ${segment.nps}</p>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderCompetitors() {
+            const grid = document.getElementById('competitorsGrid');
+            if (!grid) return;
+
+            grid.innerHTML = '';
+            competitors.forEach((comp, index) => {
+                const card = document.createElement('div');
+                card.className = 'insight-card';
+                card.innerHTML = `
+                    <h4>${comp.name}</h4>
+                    <p>Market Share: ${comp.marketShare}%</p>
+                    <p>Pricing: ${comp.pricing}</p>
+                    <p>Social: ${comp.socialFollowers}K</p>
+                    <p>Key Product: ${comp.keyProducts}</p>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderWorkflows() {
+            const list = document.getElementById('workflowsList');
+            if (!list) return;
+
+            list.innerHTML = '';
+            workflows.forEach((flow, index) => {
+                const item = document.createElement('div');
+                item.className = 'workflow-item';
+                item.innerHTML = `
+                    <div style="flex: 1;">
+                        <strong>${flow.name}</strong>
+                        <div style="font-size: 0.875rem;">Trigger: ${flow.trigger}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div>${flow.completion}% Complete</div>
+                        <div>${flow.conversion}% Convert</div>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function formatNumber(num) {
+            if (num >= 1000000) return (num/1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num/1000).toFixed(0) + 'K';
+            return num.toString();
+        }
 
         function updateCurrencyForElement(elementId, originalValue, rateInfo) {
             const element = document.getElementById(elementId);
@@ -1690,512 +1997,320 @@
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 0
                 });
-                element.textContent = `${rateInfo.symbol}${convertedValue}`;
+                element.textContent = `${rateInfo.symbol}${formatNumber(convertedValue)}`;
             }
         }
 
-        // Language selector
-        document.getElementById('languageSelect').addEventListener('change', function() {
-            const selectedLanguage = this.value;
-            const translations = {
-                'en': {
-                    'marketingBudget': 'Marketing Budget',
-                    'roiQuarter': 'ROI This Quarter',
-                    'totalReach': 'Total Reach',
-                    'conversionRate': 'Conversion Rate',
-                    'newCampaign': 'New Campaign',
-                    // Add more translations as needed
-                },
-                'sw': {
-                    'marketingBudget': 'Bajeti ya Masoko',
-                    'roiQuarter': 'ROI Robo ya Mwaka',
-                    'totalReach': 'Jumla ya Ufikiaji',
-                    'conversionRate': 'Kiwango cha Ubadilishaji',
-                    'newCampaign': 'Kampeni Mpya',
+        // ==================== EVENT HANDLERS ====================
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    const tabId = this.dataset.tab;
+                    document.getElementById(`tab-${tabId}`).classList.add('active');
+                    
+                    // Render tab-specific content
+                    switch(tabId) {
+                        case 'campaigns': renderCampaigns(); break;
+                        case 'social': renderSocialChannels(); break;
+                        case 'content': renderContentItems(); break;
+                        case 'insights': renderCustomerSegments(); break;
+                        case 'competitive': renderCompetitors(); break;
+                        case 'automation': renderWorkflows(); break;
+                    }
+                });
+            });
+
+            // Currency conversion
+            document.getElementById('currencySelect').addEventListener('change', function() {
+                currentCurrency = this.value;
+                const rateInfo = currencyRates[currentCurrency];
+                
+                updateCurrencyForElement('marketingBudget', marketingStats.budget || 8200000, rateInfo);
+                updateCurrencyForElement('revenueGenerated', 4800000, rateInfo);
+                updateCurrencyForElement('chartValue1', 4800000, rateInfo);
+                updateCurrencyForElement('chartValue2', 3200000, rateInfo);
+                updateCurrencyForElement('chartValue3', 1800000, rateInfo);
+            });
+
+            // Language selector
+            document.getElementById('languageSelect').addEventListener('change', function() {
+                const lang = this.value;
+                const translations = {
+                    'en': {
+                        title: 'Marketing & Business Intelligence',
+                        newCampaign: 'New Campaign'
+                    },
+                    'sw': {
+                        title: 'Masoko na Akili ya Biashara',
+                        newCampaign: 'Kampeni Mpya'
+                    }
+                };
+                document.querySelector('h1').textContent = translations[lang].title;
+                document.querySelector('.btn-marketing').innerHTML = `<i class="fas fa-plus"></i> ${translations[lang].newCampaign}`;
+            });
+
+            // Dark mode
+            document.getElementById('darkModeToggle').addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                const icon = this.querySelector('i');
+                icon.classList.toggle('fa-moon');
+                icon.classList.toggle('fa-sun');
+            });
+
+            // Mobile nav toggle
+            document.getElementById('mobileNavToggle').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+
+            // New campaign button
+            document.getElementById('newCampaignBtn').addEventListener('click', function() {
+                document.getElementById('campaignId').value = 'CAMP-' + Date.now();
+                document.getElementById('campaignModal').style.display = 'block';
+            });
+
+            // Edit functionality for stats
+            document.querySelectorAll('.edit-stat').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const card = this.closest('.stat-card');
+                    const statNumber = card.querySelector('.stat-number');
+                    const statInput = card.querySelector('.stat-number-input');
+                    const editBtn = this;
+                    const saveBtn = card.querySelector('.save-stat');
+                    
+                    statNumber.style.display = 'none';
+                    statInput.style.display = 'block';
+                    editBtn.style.display = 'none';
+                    saveBtn.style.display = 'inline-block';
+                });
+            });
+
+            document.querySelectorAll('.save-stat').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const card = this.closest('.stat-card');
+                    const statNumber = card.querySelector('.stat-number');
+                    const statInput = card.querySelector('.stat-number-input');
+                    const editBtn = card.querySelector('.edit-stat');
+                    const saveBtn = this;
+                    
+                    let value = parseFloat(statInput.value);
+                    const statType = card.dataset.stat;
+                    
+                    marketingStats[statType] = value;
+                    localStorage.setItem('marketingStats', JSON.stringify(marketingStats));
+                    
+                    if (statType === 'budget' || statType === 'reach') {
+                        statNumber.textContent = formatNumber(value);
+                    } else {
+                        statNumber.textContent = value + '%';
+                    }
+                    
+                    statNumber.style.display = 'block';
+                    statInput.style.display = 'none';
+                    editBtn.style.display = 'inline-block';
+                    saveBtn.style.display = 'none';
+                });
+            });
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    window.location.href = 'login.html';
+                }
+            });
+
+            // Close modal on outside click
+            window.onclick = function(event) {
+                const modal = document.getElementById('campaignModal');
+                if (event.target == modal) {
+                    modal.style.display = 'none';
                 }
             };
-            
-            const t = translations[selectedLanguage];
-            if (selectedLanguage === 'sw') {
-                document.querySelector('h1').textContent = 'Masoko na Akili ya Biashara';
-                document.querySelector('.btn-marketing').innerHTML = '<i class="fas fa-plus"></i> Kampeni Mpya';
-                // Update other elements as needed
-            } else {
-                document.querySelector('h1').textContent = 'Marketing & Business Intelligence';
-                document.querySelector('.btn-marketing').innerHTML = '<i class="fas fa-plus"></i> New Campaign';
-            }
-        });
-
-        // Dark mode toggle
-        document.getElementById('darkModeToggle').addEventListener('click', function() {
-            document.body.classList.toggle('dark-mode');
-            const icon = this.querySelector('i');
-            if (document.body.classList.contains('dark-mode')) {
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-            } else {
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-            }
-        });
-
-        // Module opening function
-        function openModule(module) {
-            const moduleNames = {
-                'campaign-management': 'Campaign Management',
-                'digital-analytics': 'Digital Analytics',
-                'seo-sem': 'SEO & SEM',
-                'content-marketing': 'Content Marketing',
-                'marketing-automation': 'Marketing Automation',
-                'competitive-intelligence': 'Competitive Intelligence',
-                'customer-insights': 'Customer Insights',
-                'predictive-analytics': 'Predictive Analytics',
-                'advanced-reports': 'Advanced Reports',
-                'data-analytics': 'Data Analytics',
-                'marketing-manager': 'Marketing Manager',
-                'social-media': 'Social Media',
-                'seo-analytics': 'SEO & Analytics'
-            };
-            
-            const modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.style.display = 'block';
-            modal.innerHTML = `
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2>${moduleNames[module] || module}</h2>
-                        <span class="modal-close" onclick="this.closest('.modal').remove()">&times;</span>
-                    </div>
-                    <div class="form-group">
-                        <h3>Module Content</h3>
-                        <p>This is the ${moduleNames[module] || module} module. You can add detailed content, analytics, and configuration options here.</p>
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Metric</th>
-                                    <th>Value</th>
-                                    <th>Trend</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Performance</td>
-                                    <td>85%</td>
-                                    <td><i class="fas fa-arrow-up" style="color: var(--success);"></i></td>
-                                </tr>
-                                <tr>
-                                    <td>Growth</td>
-                                    <td>12%</td>
-                                    <td><i class="fas fa-arrow-up" style="color: var(--success);"></i></td>
-                                </tr>
-                                <tr>
-                                    <td>Engagement</td>
-                                    <td>4.2K</td>
-                                    <td><i class="fas fa-arrow-down" style="color: var(--error);"></i></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-primary" onclick="alert('Configuration saved!'); this.closest('.modal').remove();">Save Configuration</button>
-                        <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Close</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
         }
 
-        // New campaign button
-        document.getElementById('newCampaignBtn').addEventListener('click', function() {
-            document.getElementById('campaignModal').style.display = 'block';
-        });
-
-        function closeCampaignModal() {
-            document.getElementById('campaignModal').style.display = 'none';
-        }
-
+        // ==================== CRUD OPERATIONS ====================
         function saveCampaign(event) {
             event.preventDefault();
             
             const campaignData = {
+                id: document.getElementById('campaignId').value,
                 name: document.getElementById('campaignName').value,
+                objective: document.getElementById('campaignObjective').value,
                 type: document.getElementById('campaignType').value,
-                budget: document.getElementById('campaignBudget').value,
+                region: document.getElementById('campaignRegion').value,
+                currency: document.getElementById('campaignCurrency').value,
+                budget: parseFloat(document.getElementById('campaignBudget').value),
+                exchangeRate: parseFloat(document.getElementById('exchangeRate').value),
                 start: document.getElementById('campaignStart').value,
                 end: document.getElementById('campaignEnd').value,
-                goal: document.getElementById('campaignGoal').value,
-                target: document.getElementById('campaignTarget').value
+                status: document.getElementById('campaignStatus').value,
+                targetAudience: document.getElementById('targetAudience').value,
+                targetReach: document.getElementById('targetReach').value,
+                channelMix: document.getElementById('channelMix').value,
+                landingPage: document.getElementById('landingPage').value,
+                utmParams: document.getElementById('utmParams').value,
+                creativeAssets: document.getElementById('creativeAssets').value,
+                localRequirements: document.getElementById('localRequirements').value,
+                compliance: document.getElementById('compliance').value,
+                marketManager: document.getElementById('marketManager').value,
+                actualReach: 0,
+                actualSpend: 0,
+                roi: 0,
+                roas: 0
             };
             
-            // Save to localStorage
-            let campaigns = JSON.parse(localStorage.getItem('campaigns') || '[]');
             campaigns.push(campaignData);
             localStorage.setItem('campaigns', JSON.stringify(campaigns));
             
             alert('Campaign created successfully!');
             closeCampaignModal();
+            renderCampaigns();
+        }
+
+        function editCampaign(id) {
+            const campaign = campaigns.find(c => c.id === id);
+            if (!campaign) return;
+
+            // Populate form with campaign data
+            document.getElementById('campaignId').value = campaign.id;
+            document.getElementById('campaignName').value = campaign.name;
+            document.getElementById('campaignObjective').value = campaign.objective;
+            document.getElementById('campaignType').value = campaign.type;
+            document.getElementById('campaignRegion').value = campaign.region || '';
+            document.getElementById('campaignCurrency').value = campaign.currency || 'TZS';
+            document.getElementById('campaignBudget').value = campaign.budget;
+            document.getElementById('exchangeRate').value = campaign.exchangeRate || 1.0;
+            document.getElementById('campaignStart').value = campaign.start;
+            document.getElementById('campaignEnd').value = campaign.end;
+            document.getElementById('campaignStatus').value = campaign.status;
+            document.getElementById('targetAudience').value = campaign.targetAudience || '';
+            document.getElementById('targetReach').value = campaign.targetReach || '';
+            document.getElementById('channelMix').value = campaign.channelMix || '';
+            document.getElementById('landingPage').value = campaign.landingPage || '';
+            document.getElementById('utmParams').value = campaign.utmParams || '';
+            document.getElementById('creativeAssets').value = campaign.creativeAssets || '';
+            document.getElementById('localRequirements').value = campaign.localRequirements || '';
+            document.getElementById('compliance').value = campaign.compliance || 'none';
+            document.getElementById('marketManager').value = campaign.marketManager || '';
+
+            document.getElementById('campaignModal').style.display = 'block';
+        }
+
+        function deleteCampaign(id) {
+            if (confirm('Are you sure you want to delete this campaign?')) {
+                campaigns = campaigns.filter(c => c.id !== id);
+                localStorage.setItem('campaigns', JSON.stringify(campaigns));
+                renderCampaigns();
+            }
+        }
+
+        function editSocialChannel(index) {
+            // Implementation for editing social channel
+            alert('Edit social channel feature - would open edit modal');
+        }
+
+        function deleteSocialChannel(index) {
+            if (confirm('Delete this social channel?')) {
+                socialChannels.splice(index, 1);
+                localStorage.setItem('socialChannels', JSON.stringify(socialChannels));
+                renderSocialChannels();
+            }
+        }
+
+        function editContent(index) {
+            alert('Edit content feature - would open edit modal');
+        }
+
+        function deleteContent(index) {
+            if (confirm('Delete this content?')) {
+                contentItems.splice(index, 1);
+                localStorage.setItem('contentItems', JSON.stringify(contentItems));
+                renderContentItems();
+            }
+        }
+
+        function closeCampaignModal() {
+            document.getElementById('campaignModal').style.display = 'none';
+            document.getElementById('campaignForm').reset();
+        }
+
+        function openModule(moduleName) {
+            const modal = document.getElementById('moduleModal');
+            const title = document.getElementById('moduleModalTitle');
+            const content = document.getElementById('moduleModalContent');
             
-            // Update campaigns display
-            displayCampaigns();
-        }
-
-        function displayCampaigns() {
-            const campaigns = JSON.parse(localStorage.getItem('campaigns') || '[]');
-            if (campaigns.length > 0) {
-                const latestCampaign = campaigns[campaigns.length - 1];
-                // Add to campaigns grid or update existing
-                const campaignsGrid = document.querySelector('.campaigns-grid');
-                const newCard = document.createElement('div');
-                newCard.className = 'campaign-card';
-                newCard.innerHTML = `
-                    <div class="card-header">
-                        <div class="card-icon">📢</div>
-                        <div class="card-title">${latestCampaign.name}</div>
-                    </div>
-                    <div class="metric-grid">
-                        <div class="metric-item">
-                            <div class="metric-value">${latestCampaign.budget}</div>
-                            <div class="metric-label">Budget</div>
-                        </div>
-                        <div class="metric-item">
-                            <div class="metric-value">0%</div>
-                            <div class="metric-label">Progress</div>
-                        </div>
-                    </div>
-                `;
-                campaignsGrid.appendChild(newCard);
-            }
-        }
-
-        // Logout functionality
-        document.getElementById('logoutBtn').addEventListener('click', function() {
-            if (confirm('Are you sure you want to logout?')) {
-                alert('Logging out...');
-                window.location.href = 'login.html';
-            }
-        });
-
-        // Edit functionality for stats
-        document.querySelectorAll('.edit-stat').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const card = this.closest('.stat-card');
-                const statNumber = card.querySelector('.stat-number');
-                const statInput = card.querySelector('.stat-number-input');
-                const editBtn = this;
-                const saveBtn = card.querySelector('.save-stat');
-                
-                statNumber.style.display = 'none';
-                statInput.style.display = 'block';
-                editBtn.style.display = 'none';
-                saveBtn.style.display = 'inline-block';
-            });
-        });
-
-        document.querySelectorAll('.save-stat').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const card = this.closest('.stat-card');
-                const statNumber = card.querySelector('.stat-number');
-                const statInput = card.querySelector('.stat-number-input');
-                const editBtn = card.querySelector('.edit-stat');
-                const saveBtn = this;
-                
-                let value = statInput.value;
-                const statType = card.dataset.stat;
-                
-                // Format based on stat type
-                if (statType === 'budget' || statType === 'reach') {
-                    if (value >= 1000) {
-                        statNumber.textContent = (value >= 1000000) ? 
-                            `TZS ${(value/1000000).toFixed(1)}M` : 
-                            `TZS ${(value/1000).toFixed(0)}K`;
-                    } else {
-                        statNumber.textContent = `TZS ${value}`;
-                    }
-                } else {
-                    statNumber.textContent = value + '%';
+            title.textContent = moduleName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            
+            const moduleData = {
+                'social-media': {
+                    metrics: ['Followers: 45.2K', 'Engagement: 3.8%', 'Posts: 156'],
+                    actions: ['Schedule Post', 'View Analytics', 'Manage Accounts']
+                },
+                'seo-analytics': {
+                    metrics: ['Keywords: 156', 'Backlinks: 342', 'Domain Authority: 52'],
+                    actions: ['Run Audit', 'Check Rankings', 'Analyze Competitors']
+                },
+                'email-marketing': {
+                    metrics: ['Subscribers: 24.8K', 'Open Rate: 68%', 'Click Rate: 12.4%'],
+                    actions: ['Create Campaign', 'View Reports', 'Manage Lists']
+                },
+                'advanced-reports': {
+                    metrics: ['Reports Available: 12', 'Last Generated: Today', 'Scheduled: 5'],
+                    actions: ['Generate Report', 'Schedule Report', 'Export Data']
+                },
+                'data-analytics': {
+                    metrics: ['Data Points: 1.2M', 'Queries: 345', 'Dashboards: 8'],
+                    actions: ['Run Query', 'Create Dashboard', 'Export Dataset']
+                },
+                'forecasting': {
+                    metrics: ['Accuracy: 92%', 'Next Quarter: +15%', 'Confidence: High'],
+                    actions: ['Generate Forecast', 'Adjust Model', 'View Trends']
+                },
+                'marketing-manager': {
+                    metrics: ['Team: 8 members', 'Active Projects: 12', 'Tasks: 34'],
+                    actions: ['View Team', 'Assign Tasks', 'Check Workflow']
                 }
-                
-                statNumber.style.display = 'block';
-                statInput.style.display = 'none';
-                editBtn.style.display = 'inline-block';
-                saveBtn.style.display = 'none';
-                
-                // Save to localStorage
-                saveStatToStorage(statType, value);
-            });
-        });
-
-        // Edit functionality for campaign metrics
-        document.querySelectorAll('.edit-metric').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const metricItem = this.closest('.metric-item');
-                const metricValue = metricItem.querySelector('.metric-value');
-                const metricInput = metricItem.querySelector('.metric-value-input');
-                
-                metricValue.style.display = 'none';
-                metricInput.style.display = 'block';
-                this.style.display = 'none';
-            });
-        });
-
-        document.querySelectorAll('.metric-value-input').forEach(input => {
-            input.addEventListener('blur', function() {
-                const metricItem = this.closest('.metric-item');
-                const metricValue = metricItem.querySelector('.metric-value');
-                const editBtn = metricItem.querySelector('.edit-metric');
-                const value = this.value;
-                
-                if (metricValue.textContent.includes('%')) {
-                    metricValue.textContent = value + '%';
-                } else if (metricValue.textContent.includes('#')) {
-                    metricValue.textContent = '#' + value;
-                } else if (metricValue.textContent.includes('TZS')) {
-                    metricValue.textContent = 'TZS ' + value;
-                } else {
-                    metricValue.textContent = value + (value >= 1000 ? 'K' : '');
-                }
-                
-                metricValue.style.display = 'block';
-                this.style.display = 'none';
-                editBtn.style.display = 'inline-block';
-            });
-        });
-
-        // Edit functionality for BI metrics
-        document.querySelectorAll('.edit-bi').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const biMetric = this.closest('.bi-metric');
-                const biValue = biMetric.querySelector('.bi-value');
-                const biInput = biMetric.querySelector('.bi-value-input');
-                
-                biValue.style.display = 'none';
-                biInput.style.display = 'block';
-                this.style.display = 'none';
-            });
-        });
-
-        document.querySelectorAll('.bi-value-input').forEach(input => {
-            input.addEventListener('blur', function() {
-                const biMetric = this.closest('.bi-metric');
-                const biValue = biMetric.querySelector('.bi-value');
-                const editBtn = biMetric.querySelector('.edit-bi');
-                const value = this.value;
-                
-                if (biValue.textContent.includes('%')) {
-                    biValue.textContent = value + '%';
-                } else if (biValue.textContent.includes(':')) {
-                    biValue.textContent = value + ':1';
-                } else {
-                    biValue.textContent = 'TZS ' + (value >= 1000000 ? 
-                        (value/1000000).toFixed(1) + 'M' : 
-                        (value/1000).toFixed(0) + 'K');
-                }
-                
-                biValue.style.display = 'block';
-                this.style.display = 'none';
-                editBtn.style.display = 'inline-block';
-            });
-        });
-
-        // Edit functionality for channels
-        document.querySelectorAll('.edit-channel').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const channel = this.closest('.channel-card');
-                const channelName = channel.querySelector('.channel-name');
-                const channelNameInput = channel.querySelector('.channel-name-input');
-                const channelValues = channel.querySelectorAll('.channel-value');
-                const channelValueInputs = channel.querySelectorAll('.channel-value-input');
-                const editBtn = this;
-                const saveBtn = channel.querySelector('.save-channel');
-                
-                channelName.style.display = 'none';
-                channelNameInput.style.display = 'block';
-                channelValues.forEach(v => v.style.display = 'none');
-                channelValueInputs.forEach(i => i.style.display = 'block');
-                editBtn.style.display = 'none';
-                saveBtn.style.display = 'inline-block';
-            });
-        });
-
-        document.querySelectorAll('.save-channel').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const channel = this.closest('.channel-card');
-                const channelName = channel.querySelector('.channel-name');
-                const channelNameInput = channel.querySelector('.channel-name-input');
-                const channelValues = channel.querySelectorAll('.channel-value');
-                const channelValueInputs = channel.querySelectorAll('.channel-value-input');
-                const editBtn = channel.querySelector('.edit-channel');
-                const saveBtn = this;
-                
-                channelName.textContent = channelNameInput.value;
-                channelName.style.display = 'block';
-                channelNameInput.style.display = 'none';
-                
-                channelValueInputs.forEach((input, index) => {
-                    if (channelValues[index]) {
-                        channelValues[index].textContent = input.value + 
-                            (channelValues[index].textContent.includes('%') ? '%' : '');
-                        channelValues[index].style.display = 'block';
-                    }
-                    input.style.display = 'none';
-                });
-                
-                editBtn.style.display = 'inline-block';
-                saveBtn.style.display = 'none';
-                
-                // Update channel link based on name
-                const channelLink = channel.querySelector('.channel-link');
-                const channelType = channel.dataset.channel;
-                if (channelType === 'x') {
-                    channelLink.href = `https://x.com/${channelNameInput.value.toLowerCase().replace(/\s+/g, '')}`;
-                } else {
-                    channelLink.href = `https://${channelType}.com/${channelNameInput.value.toLowerCase().replace(/\s+/g, '')}`;
-                }
-            });
-        });
-
-        // Edit functionality for modules
-        document.querySelectorAll('.edit-module').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const module = this.closest('.module-card');
-                const moduleTitle = module.querySelector('.module-title');
-                const moduleTitleInput = module.querySelector('.module-title-input');
-                const moduleDesc = module.querySelector('.module-desc');
-                const moduleDescInput = module.querySelector('.module-desc-input');
-                const editBtn = this;
-                const saveBtn = module.querySelector('.save-module');
-                
-                moduleTitle.style.display = 'none';
-                moduleTitleInput.style.display = 'block';
-                moduleDesc.style.display = 'none';
-                moduleDescInput.style.display = 'block';
-                editBtn.style.display = 'none';
-                saveBtn.style.display = 'inline-block';
-            });
-        });
-
-        document.querySelectorAll('.save-module').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const module = this.closest('.module-card');
-                const moduleTitle = module.querySelector('.module-title');
-                const moduleTitleInput = module.querySelector('.module-title-input');
-                const moduleDesc = module.querySelector('.module-desc');
-                const moduleDescInput = module.querySelector('.module-desc-input');
-                const editBtn = module.querySelector('.edit-module');
-                const saveBtn = this;
-                
-                moduleTitle.textContent = moduleTitleInput.value;
-                moduleTitle.style.display = 'block';
-                moduleTitleInput.style.display = 'none';
-                
-                moduleDesc.textContent = moduleDescInput.value;
-                moduleDesc.style.display = 'block';
-                moduleDescInput.style.display = 'none';
-                
-                editBtn.style.display = 'inline-block';
-                saveBtn.style.display = 'none';
-            });
-        });
-
-        function deleteModule(btn) {
-            if (confirm('Are you sure you want to delete this module?')) {
-                const module = btn.closest('.module-card');
-                module.remove();
-            }
-        }
-
-        // Save stats to localStorage
-        function saveStatToStorage(statType, value) {
-            let stats = JSON.parse(localStorage.getItem('marketingStats') || '{}');
-            stats[statType] = value;
-            localStorage.setItem('marketingStats', JSON.stringify(stats));
-        }
-
-        // Load stats from localStorage
-        function loadStatsFromStorage() {
-            const stats = JSON.parse(localStorage.getItem('marketingStats') || '{}');
-            if (stats.budget) {
-                document.getElementById('marketingBudget').textContent = 
-                    stats.budget >= 1000000 ? 
-                    `TZS ${(stats.budget/1000000).toFixed(1)}M` : 
-                    `TZS ${(stats.budget/1000).toFixed(0)}K`;
-                document.getElementById('budgetInput').value = stats.budget;
-            }
-            if (stats.roi) {
-                document.getElementById('roiQuarter').textContent = stats.roi + '%';
-                document.getElementById('roiInput').value = stats.roi;
-            }
-            if (stats.reach) {
-                document.getElementById('totalReach').textContent = 
-                    stats.reach >= 1000 ? 
-                    (stats.reach/1000).toFixed(0) + 'K' : 
-                    stats.reach;
-                document.getElementById('reachInput').value = stats.reach;
-            }
-            if (stats.conversion) {
-                document.getElementById('conversionRate').textContent = stats.conversion + '%';
-                document.getElementById('conversionInput').value = stats.conversion;
-            }
-        }
-
-        // Time filter change
-        document.getElementById('timeFilter').addEventListener('change', function() {
-            updateChartData(this.value);
-        });
-
-        function updateChartData(days) {
-            // Simulate data update based on time period
-            const multipliers = {
-                '7': 0.3,
-                '30': 1,
-                '90': 2.5,
-                '365': 8
             };
-            
-            const multiplier = multipliers[days] || 1;
-            const baseRevenue = 4800000;
-            const baseCampaign = 3200000;
-            const baseConversion = 1800000;
-            
-            document.getElementById('chartValue1').textContent = `TZS ${(baseRevenue * multiplier / 1000000).toFixed(1)}M`;
-            document.getElementById('chartValue2').textContent = `TZS ${(baseCampaign * multiplier / 1000000).toFixed(1)}M`;
-            document.getElementById('chartValue3').textContent = `TZS ${(baseConversion * multiplier / 1000000).toFixed(1)}M`;
+
+            const data = moduleData[moduleName] || {
+                metrics: ['Metric 1: 123', 'Metric 2: 456', 'Metric 3: 789'],
+                actions: ['Action 1', 'Action 2', 'Action 3']
+            };
+
+            let html = '<div style="margin-bottom: 1rem;">';
+            data.metrics.forEach(m => {
+                html += `<div class="metric-item" style="margin-bottom: 0.5rem;">${m}</div>`;
+            });
+            html += '</div><div class="form-group">';
+            data.actions.forEach(a => {
+                html += `<button class="btn btn-secondary" style="margin-right: 0.5rem; margin-bottom: 0.5rem;" onclick="alert('${a} clicked')">${a}</button>`;
+            });
+            html += '</div>';
+
+            content.innerHTML = html;
+            modal.style.display = 'block';
         }
 
-        // Channel filter change
-        document.getElementById('channelFilter').addEventListener('change', function() {
-            const filter = this.value;
-            const channels = document.querySelectorAll('.channel-card');
-            
-            channels.forEach(channel => {
-                if (filter === 'all') {
-                    channel.style.display = 'block';
-                } else if (filter === 'digital') {
-                    if (['facebook', 'instagram', 'x'].includes(channel.dataset.channel)) {
-                        channel.style.display = 'block';
-                    } else {
-                        channel.style.display = 'none';
-                    }
-                } else if (filter === 'traditional') {
-                    channel.style.display = 'none'; // No traditional channels in current setup
-                }
-            });
-        });
+        function closeModuleModal() {
+            document.getElementById('moduleModal').style.display = 'none';
+        }
 
-        // Simulate real-time updates
+        // ==================== SIMULATE REAL-TIME UPDATES ====================
         function simulateRealTimeUpdates() {
-            // Update every 30 seconds with small random changes
             setInterval(() => {
                 if (!document.body.classList.contains('editing')) {
+                    // Update random metrics
                     const metrics = document.querySelectorAll('.metric-value:not(.editing), .bi-value:not(.editing), .channel-value:not(.editing)');
                     metrics.forEach(metric => {
-                        if (!metric.closest('.modal')) {
+                        if (!metric.closest('.modal') && Math.random() > 0.7) {
                             const currentText = metric.textContent;
                             const numValue = parseFloat(currentText.replace(/[^0-9.]/g, ''));
                             if (!isNaN(numValue) && numValue > 0) {
-                                const change = (Math.random() * 0.06) - 0.03; // -3% to +3%
+                                const change = (Math.random() * 0.04) - 0.02; // -2% to +2%
                                 const newValue = numValue * (1 + change);
                                 
                                 if (currentText.includes('%')) {
@@ -2203,7 +2318,7 @@
                                 } else if (currentText.includes(':')) {
                                     // Skip ratio values
                                 } else if (currentText.includes('TZS')) {
-                                    // Skip currency values as they're handled separately
+                                    // Skip currency values
                                 } else {
                                     metric.textContent = newValue >= 1000 ? 
                                         (newValue/1000).toFixed(1) + 'K' : 
@@ -2213,40 +2328,63 @@
                         }
                     });
                 }
-            }, 30000);
+            }, 45000); // Update every 45 seconds
         }
 
-        // PWA initialization
+        // ==================== SERVICE WORKER ====================
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(function(registration) {
-                        console.log('ServiceWorker registration successful');
-                    })
-                    .catch(function(err) {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
+                navigator.serviceWorker.register('/sw.js').catch(function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
             });
         }
 
-        // Initialize
-        loadStatsFromStorage();
-        simulateRealTimeUpdates();
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('campaignModal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
+        // ==================== INITIALIZE EVERYTHING ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            setupEventListeners();
+            
+            // Render initial tab
+            renderCampaigns();
+            renderSocialChannels();
+            renderContentItems();
+            renderCustomerSegments();
+            renderCompetitors();
+            renderWorkflows();
+            
+            // Load stats from localStorage
+            if (marketingStats.budget) {
+                document.getElementById('marketingBudget').textContent = formatNumber(marketingStats.budget);
+                document.getElementById('budgetInput').value = marketingStats.budget;
             }
-        }
-
-        // Keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeCampaignModal();
+            if (marketingStats.roi) {
+                document.getElementById('roiQuarter').textContent = marketingStats.roi + '%';
+                document.getElementById('roiInput').value = marketingStats.roi;
             }
+            if (marketingStats.reach) {
+                document.getElementById('totalReach').textContent = formatNumber(marketingStats.reach);
+                document.getElementById('reachInput').value = marketingStats.reach;
+            }
+            if (marketingStats.conversion) {
+                document.getElementById('conversionRate').textContent = marketingStats.conversion + '%';
+                document.getElementById('conversionInput').value = marketingStats.conversion;
+            }
+            
+            simulateRealTimeUpdates();
         });
+
+        // Make functions globally available
+        window.openModule = openModule;
+        window.closeModuleModal = closeModuleModal;
+        window.closeCampaignModal = closeCampaignModal;
+        window.saveCampaign = saveCampaign;
+        window.editCampaign = editCampaign;
+        window.deleteCampaign = deleteCampaign;
+        window.editSocialChannel = editSocialChannel;
+        window.deleteSocialChannel = deleteSocialChannel;
+        window.editContent = editContent;
+        window.deleteContent = deleteContent;
     </script>
 </body>
 </html>
