@@ -143,6 +143,7 @@
             display: flex;
             gap: 1rem;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -185,6 +186,30 @@
             background: linear-gradient(135deg, #db2777, #9333ea);
         }
 
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #0b9f6e;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+        }
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -200,6 +225,7 @@
             box-shadow: var(--shadow);
             text-align: center;
             transition: transform 0.2s;
+            position: relative;
         }
 
         .stat-card:hover {
@@ -207,11 +233,34 @@
             box-shadow: var(--shadow-lg);
         }
 
+        .stat-card .edit-controls {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: none;
+            gap: 0.25rem;
+        }
+
+        .stat-card:hover .edit-controls {
+            display: flex;
+        }
+
         .stat-number {
             font-size: 2.5rem;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+
+        .stat-number-input {
+            font-size: 1.5rem;
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            display: none;
         }
 
         .stat-label {
@@ -219,7 +268,6 @@
             font-size: 0.9rem;
         }
 
-        /* Campaign Performance */
         .campaigns-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -234,11 +282,24 @@
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
             transition: transform 0.2s;
+            position: relative;
         }
 
         .campaign-card:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-lg);
+        }
+
+        .campaign-card .edit-controls {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: none;
+            gap: 0.25rem;
+        }
+
+        .campaign-card:hover .edit-controls {
+            display: flex;
         }
 
         .card-header {
@@ -276,6 +337,21 @@
             padding: 1rem;
             background: var(--background);
             border-radius: 8px;
+            position: relative;
+        }
+
+        .metric-item .edit-metric {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+            cursor: pointer;
+        }
+
+        .metric-item:hover .edit-metric {
+            opacity: 1;
         }
 
         .metric-value {
@@ -283,6 +359,17 @@
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 0.25rem;
+            cursor: pointer;
+        }
+
+        .metric-value-input {
+            font-size: 1rem;
+            width: 100%;
+            padding: 0.25rem;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+            display: none;
         }
 
         .metric-label {
@@ -290,7 +377,21 @@
             color: var(--text-light);
         }
 
-        /* BI Dashboard */
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--marketing-pink), var(--marketing-purple));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
         .bi-dashboard {
             background: var(--surface);
             border-radius: 12px;
@@ -305,6 +406,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .bi-title {
@@ -315,6 +418,7 @@
         .bi-filters {
             display: flex;
             gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .bi-filter {
@@ -336,11 +440,77 @@
             border-radius: 8px;
             padding: 1.5rem;
             height: 300px;
+            position: relative;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-bars {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 200px;
+            margin-bottom: 1rem;
+        }
+
+        .chart-bar {
+            width: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--marketing-purple));
+            border-radius: 6px 6px 0 0;
+            position: relative;
+            transition: height 0.5s ease;
+            cursor: pointer;
+        }
+
+        .chart-bar:hover {
+            opacity: 0.9;
+        }
+
+        .chart-bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+
+        .chart-bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--surface);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .legend-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: var(--text-light);
-            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
         }
 
         .bi-metrics {
@@ -355,6 +525,8 @@
             border-radius: 8px;
             text-align: center;
             transition: transform 0.2s;
+            cursor: pointer;
+            position: relative;
         }
 
         .bi-metric:hover {
@@ -362,10 +534,34 @@
             box-shadow: var(--shadow);
         }
 
+        .bi-metric .edit-bi {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .bi-metric:hover .edit-bi {
+            opacity: 1;
+        }
+
         .bi-value {
             font-size: 1.75rem;
             font-weight: 700;
             color: var(--primary);
+            cursor: pointer;
+        }
+
+        .bi-value-input {
+            font-size: 1.25rem;
+            width: 100%;
+            padding: 0.25rem;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+            display: none;
         }
 
         .bi-label {
@@ -374,7 +570,6 @@
             margin-top: 0.25rem;
         }
 
-        /* Digital Channels */
         .channels-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -390,6 +585,8 @@
             text-align: center;
             box-shadow: var(--shadow);
             transition: transform 0.2s;
+            position: relative;
+            cursor: pointer;
         }
 
         .channel-card:hover {
@@ -397,9 +594,52 @@
             box-shadow: var(--shadow-lg);
         }
 
+        .channel-card .edit-controls {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: none;
+            gap: 0.25rem;
+        }
+
+        .channel-card:hover .edit-controls {
+            display: flex;
+        }
+
         .channel-icon {
             font-size: 2rem;
             margin-bottom: 1rem;
+        }
+
+        .channel-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+
+        .channel-name-input {
+            font-size: 1rem;
+            width: 100%;
+            padding: 0.25rem;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            display: none;
+        }
+
+        .channel-link {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        .channel-link:hover {
+            background: var(--primary-dark);
         }
 
         .channel-stats {
@@ -415,6 +655,16 @@
         .channel-value {
             font-weight: 700;
             color: var(--primary);
+            cursor: pointer;
+        }
+
+        .channel-value-input {
+            font-size: 1rem;
+            width: 100%;
+            padding: 0.25rem;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            display: none;
         }
 
         .channel-label {
@@ -449,6 +699,18 @@
             border-color: var(--marketing-pink);
         }
 
+        .module-card .edit-controls {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: none;
+            gap: 0.25rem;
+        }
+
+        .module-card:hover .edit-controls {
+            display: flex;
+        }
+
         .module-icon {
             width: 60px;
             height: 60px;
@@ -466,11 +728,32 @@
             font-size: 1.25rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+
+        .module-card h3 input {
+            font-size: 1.1rem;
+            width: 100%;
+            padding: 0.25rem;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            display: none;
         }
 
         .module-card p {
             color: var(--text-light);
             font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .module-card p textarea {
+            font-size: 0.95rem;
+            width: 100%;
+            padding: 0.25rem;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            resize: vertical;
+            display: none;
         }
 
         .tooltip {
@@ -501,17 +784,95 @@
             opacity: 1;
         }
 
-        .currency-selector {
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: var(--surface);
+            margin: 5% auto;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .modal-close:hover {
+            color: var(--text);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .currency-selector,
+        .language-selector {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        .currency-selector select {
+        .currency-selector select,
+        .language-selector select {
             padding: 0.5rem;
             border-radius: 6px;
             border: 1px solid var(--border);
             background: var(--surface);
+            color: var(--text);
+        }
+
+        .dark-mode-toggle {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .dark-mode-toggle:hover {
+            background: var(--background);
             color: var(--text);
         }
 
@@ -523,7 +884,6 @@
             border-top: 1px solid var(--border);
         }
 
-        /* Mobile Navigation */
         .mobile-nav-toggle {
             display: none;
             position: fixed;
@@ -541,39 +901,53 @@
             cursor: pointer;
         }
 
-        /* Language Selector */
-        .language-selector {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
         }
 
-        .language-selector select {
-            padding: 0.5rem;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text);
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
         }
 
-        /* Dark Mode Toggle */
-        .dark-mode-toggle {
-            background: none;
-            border: none;
-            font-size: 1.25rem;
-            cursor: pointer;
-            color: var(--text-light);
-            padding: 0.5rem;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-
-        .dark-mode-toggle:hover {
+        .data-table th {
             background: var(--background);
-            color: var(--text);
+            font-weight: 600;
         }
 
-        /* Responsive Design */
+        .data-table tr:hover {
+            background: var(--background);
+        }
+
+        .dark-mode {
+            --background: #0f172a;
+            --surface: #1e293b;
+            --text: #f1f5f9;
+            --text-light: #94a3b8;
+            --border: #334155;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        button:focus, a:focus, select:focus, input:focus, textarea:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
         @media (max-width: 1024px) {
             .dashboard {
                 grid-template-columns: 1fr;
@@ -623,50 +997,6 @@
                 flex-direction: column;
             }
         }
-
-        /* Dark Mode Support */
-        .dark-mode {
-            --background: #0f172a;
-            --surface: #1e293b;
-            --text: #f1f5f9;
-            --text-light: #94a3b8;
-            --border: #334155;
-        }
-
-        /* Accessibility */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        /* Focus styles for keyboard navigation */
-        button:focus, a:focus, select:focus {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-
-        /* Progress bars for campaign metrics */
-        .progress-bar {
-            height: 8px;
-            background: var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 0.5rem;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--marketing-pink), var(--marketing-purple));
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
     </style>
 </head>
 <body>
@@ -702,11 +1032,11 @@
 
             <div class="nav-section">
                 <div class="nav-title">Digital Channels</div>
-                <a href="social-media.html" class="nav-item">
+                <a href="social-media.html" class="nav-item" onclick="openModule('social-media')">
                     <span class="nav-icon">📱</span>
                     Social Media
                 </a>
-                <a href="seo-analytics.html" class="nav-item">
+                <a href="seo-analytics.html" class="nav-item" onclick="openModule('seo-analytics')">
                     <span class="nav-icon">🔍</span>
                     SEO & Analytics
                 </a>
@@ -718,11 +1048,11 @@
 
             <div class="nav-section">
                 <div class="nav-title">Business Intelligence</div>
-                <a href="reports.html" class="nav-item">
+                <a href="reports.html" class="nav-item" onclick="openModule('advanced-reports')">
                     <span class="nav-icon">📊</span>
                     Advanced Reports
                 </a>
-                <a href="data-analytics.html" class="nav-item">
+                <a href="data-analytics.html" class="nav-item" onclick="openModule('data-analytics')">
                     <span class="nav-icon">📈</span>
                     Data Analytics
                 </a>
@@ -750,7 +1080,7 @@
 
             <div class="nav-section">
                 <div class="nav-title">User</div>
-                <div class="nav-item">
+                <div class="nav-item" onclick="openModule('marketing-manager')">
                     <span class="nav-icon">👤</span>
                     <span id="userRole">Marketing Manager</span>
                 </div>
@@ -795,55 +1125,86 @@
             </div>
 
             <div class="stats-grid">
-                <div class="stat-card">
+                <div class="stat-card" data-stat="budget">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-stat" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-stat" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
+                    </div>
                     <div class="stat-number" id="marketingBudget">TZS 8.2M</div>
+                    <input type="text" class="stat-number-input" id="budgetInput" value="8200000" style="display:none;">
                     <div class="stat-label">Marketing Budget</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">24%</div>
+                <div class="stat-card" data-stat="roi">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-stat" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-stat" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
+                    </div>
+                    <div class="stat-number" id="roiQuarter">24%</div>
+                    <input type="text" class="stat-number-input" id="roiInput" value="24" style="display:none;">
                     <div class="stat-label">ROI This Quarter</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">156K</div>
+                <div class="stat-card" data-stat="reach">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-stat" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-stat" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
+                    </div>
+                    <div class="stat-number" id="totalReach">156K</div>
+                    <input type="text" class="stat-number-input" id="reachInput" value="156000" style="display:none;">
                     <div class="stat-label">Total Reach</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">4.2%</div>
+                <div class="stat-card" data-stat="conversion">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-stat" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-stat" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
+                    </div>
+                    <div class="stat-number" id="conversionRate">4.2%</div>
+                    <input type="text" class="stat-number-input" id="conversionInput" value="4.2" style="display:none;">
                     <div class="stat-label">Conversion Rate</div>
                 </div>
             </div>
 
-            <!-- Campaign Performance -->
             <div class="campaigns-grid">
-                <div class="campaign-card">
+                <div class="campaign-card" data-campaign="digital">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-campaign" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-campaign" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
+                    </div>
                     <div class="card-header">
                         <div class="card-icon">📱</div>
                         <div class="card-title">Digital Campaigns</div>
                     </div>
                     <div class="metric-grid">
-                        <div class="metric-item">
-                            <div class="metric-value">42K</div>
+                        <div class="metric-item" data-metric="impressions">
+                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
+                            <div class="metric-value" id="digitalImpressions">42K</div>
+                            <input type="text" class="metric-value-input" id="impressionsInput" value="42000" style="display:none;">
                             <div class="metric-label">Impressions</div>
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: 85%"></div>
                             </div>
                         </div>
-                        <div class="metric-item">
-                            <div class="metric-value">1.8K</div>
+                        <div class="metric-item" data-metric="engagements">
+                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
+                            <div class="metric-value" id="digitalEngagements">1.8K</div>
+                            <input type="text" class="metric-value-input" id="engagementsInput" value="1800" style="display:none;">
                             <div class="metric-label">Engagements</div>
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: 65%"></div>
                             </div>
                         </div>
-                        <div class="metric-item">
-                            <div class="metric-value">4.3%</div>
+                        <div class="metric-item" data-metric="ctr">
+                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
+                            <div class="metric-value" id="digitalCTR">4.3%</div>
+                            <input type="text" class="metric-value-input" id="ctrInput" value="4.3" style="display:none;">
                             <div class="metric-label">CTR</div>
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: 43%"></div>
                             </div>
                         </div>
-                        <div class="metric-item">
+                        <div class="metric-item" data-metric="cpc">
+                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
                             <div class="metric-value" id="digitalCPC">TZS 156</div>
+                            <input type="text" class="metric-value-input" id="cpcInput" value="156" style="display:none;">
                             <div class="metric-label">CPC</div>
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: 78%"></div>
@@ -852,35 +1213,47 @@
                     </div>
                 </div>
 
-                <div class="campaign-card">
+                <div class="campaign-card" data-campaign="email">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-campaign" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-campaign" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
+                    </div>
                     <div class="card-header">
                         <div class="card-icon">📧</div>
                         <div class="card-title">Email Marketing</div>
                     </div>
                     <div class="metric-grid">
-                        <div class="metric-item">
-                            <div class="metric-value">24.8K</div>
+                        <div class="metric-item" data-metric="sent">
+                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
+                            <div class="metric-value" id="emailSent">24.8K</div>
+                            <input type="text" class="metric-value-input" id="sentInput" value="24800" style="display:none;">
                             <div class="metric-label">Sent</div>
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: 100%"></div>
                             </div>
                         </div>
-                        <div class="metric-item">
-                            <div class="metric-value">68%</div>
+                        <div class="metric-item" data-metric="openRate">
+                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
+                            <div class="metric-value" id="emailOpenRate">68%</div>
+                            <input type="text" class="metric-value-input" id="openRateInput" value="68" style="display:none;">
                             <div class="metric-label">Open Rate</div>
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: 68%"></div>
                             </div>
                         </div>
-                        <div class="metric-item">
-                            <div class="metric-value">12.4%</div>
+                        <div class="metric-item" data-metric="clickRate">
+                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
+                            <div class="metric-value" id="emailClickRate">12.4%</div>
+                            <input type="text" class="metric-value-input" id="clickRateInput" value="12.4" style="display:none;">
                             <div class="metric-label">Click Rate</div>
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: 12.4%"></div>
                             </div>
                         </div>
-                        <div class="metric-item">
-                            <div class="metric-value">2.1%</div>
+                        <div class="metric-item" data-metric="emailConversion">
+                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
+                            <div class="metric-value" id="emailConversion">2.1%</div>
+                            <input type="text" class="metric-value-input" id="emailConversionInput" value="2.1" style="display:none;">
                             <div class="metric-label">Conversion</div>
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: 2.1%"></div>
@@ -889,35 +1262,47 @@
                     </div>
                 </div>
 
-                <div class="campaign-card">
+                <div class="campaign-card" data-campaign="seo">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-campaign" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-campaign" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
+                    </div>
                     <div class="card-header">
                         <div class="card-icon">🔍</div>
                         <div class="card-title">SEO Performance</div>
                     </div>
                     <div class="metric-grid">
-                        <div class="metric-item">
-                            <div class="metric-value">156</div>
+                        <div class="metric-item" data-metric="keywords">
+                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
+                            <div class="metric-value" id="seoKeywords">156</div>
+                            <input type="text" class="metric-value-input" id="keywordsInput" value="156" style="display:none;">
                             <div class="metric-label">Keywords</div>
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: 78%"></div>
                             </div>
                         </div>
-                        <div class="metric-item">
-                            <div class="metric-value">#8</div>
+                        <div class="metric-item" data-metric="avgRank">
+                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
+                            <div class="metric-value" id="seoAvgRank">#8</div>
+                            <input type="text" class="metric-value-input" id="avgRankInput" value="8" style="display:none;">
                             <div class="metric-label">Avg Rank</div>
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: 80%"></div>
                             </div>
                         </div>
-                        <div class="metric-item">
-                            <div class="metric-value">12.4K</div>
+                        <div class="metric-item" data-metric="organicTraffic">
+                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
+                            <div class="metric-value" id="organicTraffic">12.4K</div>
+                            <input type="text" class="metric-value-input" id="organicInput" value="12400" style="display:none;">
                             <div class="metric-label">Organic Traffic</div>
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: 62%"></div>
                             </div>
                         </div>
-                        <div class="metric-item">
+                        <div class="metric-item" data-metric="cpcSaved">
+                            <i class="fas fa-edit edit-metric" title="Edit metric"></i>
                             <div class="metric-value" id="seoCPC">TZS 0</div>
+                            <input type="text" class="metric-value-input" id="cpcSavedInput" value="0" style="display:none;">
                             <div class="metric-label">CPC Saved</div>
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: 100%"></div>
@@ -927,169 +1312,281 @@
                 </div>
             </div>
 
-            <!-- Business Intelligence Dashboard -->
             <div class="bi-dashboard">
                 <div class="bi-header">
                     <div class="bi-title">Business Intelligence Dashboard</div>
                     <div class="bi-filters">
                         <select class="bi-filter" id="timeFilter">
-                            <option>Last 7 Days</option>
-                            <option>Last 30 Days</option>
-                            <option>Last Quarter</option>
-                            <option>Last Year</option>
+                            <option value="7">Last 7 Days</option>
+                            <option value="30" selected>Last 30 Days</option>
+                            <option value="90">Last Quarter</option>
+                            <option value="365">Last Year</option>
                         </select>
                         <select class="bi-filter" id="channelFilter">
-                            <option>All Channels</option>
-                            <option>Digital Only</option>
-                            <option>Traditional Only</option>
+                            <option value="all">All Channels</option>
+                            <option value="digital">Digital Only</option>
+                            <option value="traditional">Traditional Only</option>
                         </select>
                     </div>
                 </div>
                 <div class="bi-grid">
                     <div class="bi-chart">
-                        <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
-                        Marketing Performance Analytics Chart
-                        <br><small style="opacity: 0.7;">Revenue vs Campaign Spend vs Conversions</small>
+                        <div class="chart-container">
+                            <div class="chart-bars" id="revenueChart">
+                                <div class="chart-bar" style="height: 180px;" data-value="4800000">
+                                    <span class="chart-bar-value" id="chartValue1">TZS 4.8M</span>
+                                    <span class="chart-bar-label">Revenue</span>
+                                </div>
+                                <div class="chart-bar" style="height: 150px;" data-value="3200000">
+                                    <span class="chart-bar-value" id="chartValue2">TZS 3.2M</span>
+                                    <span class="chart-bar-label">Campaigns</span>
+                                </div>
+                                <div class="chart-bar" style="height: 100px;" data-value="1800000">
+                                    <span class="chart-bar-value" id="chartValue3">TZS 1.8M</span>
+                                    <span class="chart-bar-label">Conversions</span>
+                                </div>
+                            </div>
+                            <div class="chart-legend">
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background: var(--primary);"></div>
+                                    <span>Revenue vs Campaign Spend vs Conversions</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="bi-metrics">
-                        <div class="bi-metric">
+                        <div class="bi-metric" data-bi="revenue">
+                            <i class="fas fa-edit edit-bi" title="Edit metric"></i>
                             <div class="bi-value" id="revenueGenerated">TZS 4.8M</div>
+                            <input type="text" class="bi-value-input" id="revenueInput" value="4800000" style="display:none;">
                             <div class="bi-label">Revenue Generated</div>
                         </div>
-                        <div class="bi-metric">
-                            <div class="bi-value">3.2:1</div>
+                        <div class="bi-metric" data-bi="roiRatio">
+                            <i class="fas fa-edit edit-bi" title="Edit metric"></i>
+                            <div class="bi-value" id="roiRatio">3.2:1</div>
+                            <input type="text" class="bi-value-input" id="roiRatioInput" value="3.2" style="display:none;">
                             <div class="bi-label">ROI Ratio</div>
                         </div>
-                        <div class="bi-metric">
-                            <div class="bi-value">42%</div>
+                        <div class="bi-metric" data-bi="marketShare">
+                            <i class="fas fa-edit edit-bi" title="Edit metric"></i>
+                            <div class="bi-value" id="marketShare">42%</div>
+                            <input type="text" class="bi-value-input" id="marketShareInput" value="42" style="display:none;">
                             <div class="bi-label">Market Share</div>
                         </div>
-                        <div class="bi-metric">
-                            <div class="bi-value">8.4%</div>
+                        <div class="bi-metric" data-bi="growthRate">
+                            <i class="fas fa-edit edit-bi" title="Edit metric"></i>
+                            <div class="bi-value" id="growthRate">8.4%</div>
+                            <input type="text" class="bi-value-input" id="growthRateInput" value="8.4" style="display:none;">
                             <div class="bi-label">Growth Rate</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Digital Channels Performance -->
             <div class="channels-grid">
-                <div class="channel-card">
+                <div class="channel-card" data-channel="facebook">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-channel" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-channel" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
+                    </div>
                     <div class="channel-icon">📘</div>
-                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Facebook</div>
+                    <div class="channel-name" id="fbName">Facebook</div>
+                    <input type="text" class="channel-name-input" id="fbNameInput" value="Facebook" style="display:none;">
+                    <a href="https://facebook.com/cephasgm" target="_blank" class="channel-link" id="fbLink">Visit Page</a>
                     <div class="channel-stats">
                         <div class="channel-stat">
-                            <div class="channel-value">24K</div>
+                            <div class="channel-value" id="fbReach">24K</div>
+                            <input type="text" class="channel-value-input" id="fbReachInput" value="24000" style="display:none;">
                             <div class="channel-label">Reach</div>
                         </div>
                         <div class="channel-stat">
-                            <div class="channel-value">3.2%</div>
+                            <div class="channel-value" id="fbEngagement">3.2%</div>
+                            <input type="text" class="channel-value-input" id="fbEngagementInput" value="3.2" style="display:none;">
                             <div class="channel-label">Engagement</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="channel-card">
+                <div class="channel-card" data-channel="instagram">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-channel" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-channel" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
+                    </div>
                     <div class="channel-icon">📷</div>
-                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Instagram</div>
+                    <div class="channel-name" id="igName">Instagram</div>
+                    <input type="text" class="channel-name-input" id="igNameInput" value="Instagram" style="display:none;">
+                    <a href="https://instagram.com/cephasgm" target="_blank" class="channel-link" id="igLink">Visit Page</a>
                     <div class="channel-stats">
                         <div class="channel-stat">
-                            <div class="channel-value">18K</div>
+                            <div class="channel-value" id="igReach">18K</div>
+                            <input type="text" class="channel-value-input" id="igReachInput" value="18000" style="display:none;">
                             <div class="channel-label">Reach</div>
                         </div>
                         <div class="channel-stat">
-                            <div class="channel-value">4.8%</div>
+                            <div class="channel-value" id="igEngagement">4.8%</div>
+                            <input type="text" class="channel-value-input" id="igEngagementInput" value="4.8" style="display:none;">
                             <div class="channel-label">Engagement</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="channel-card">
+                <div class="channel-card" data-channel="linkedin">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-channel" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-channel" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
+                    </div>
                     <div class="channel-icon">💼</div>
-                    <div style="font-weight: 600; margin-bottom: 0.5rem;">LinkedIn</div>
+                    <div class="channel-name" id="liName">LinkedIn</div>
+                    <input type="text" class="channel-name-input" id="liNameInput" value="LinkedIn" style="display:none;">
+                    <a href="https://linkedin.com/company/cephasgm" target="_blank" class="channel-link" id="liLink">Visit Page</a>
                     <div class="channel-stats">
                         <div class="channel-stat">
-                            <div class="channel-value">8.4K</div>
+                            <div class="channel-value" id="liReach">8.4K</div>
+                            <input type="text" class="channel-value-input" id="liReachInput" value="8400" style="display:none;">
                             <div class="channel-label">Reach</div>
                         </div>
                         <div class="channel-stat">
-                            <div class="channel-value">2.1%</div>
+                            <div class="channel-value" id="liEngagement">2.1%</div>
+                            <input type="text" class="channel-value-input" id="liEngagementInput" value="2.1" style="display:none;">
                             <div class="channel-label">Engagement</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="channel-card">
-                    <div class="channel-icon">🐦</div>
-                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Twitter</div>
+                <div class="channel-card" data-channel="x">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-channel" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-channel" style="display:none;" title="Save"><i class="fas fa-save"></i></button>
+                    </div>
+                    <div class="channel-icon">𝕏</div>
+                    <div class="channel-name" id="xName">X (Twitter)</div>
+                    <input type="text" class="channel-name-input" id="xNameInput" value="X (Twitter)" style="display:none;">
+                    <a href="https://x.com/cephasgm" target="_blank" class="channel-link" id="xLink">Visit Page</a>
                     <div class="channel-stats">
                         <div class="channel-stat">
-                            <div class="channel-value">12.6K</div>
+                            <div class="channel-value" id="xReach">12.6K</div>
+                            <input type="text" class="channel-value-input" id="xReachInput" value="12600" style="display:none;">
                             <div class="channel-label">Reach</div>
                         </div>
                         <div class="channel-stat">
-                            <div class="channel-value">1.8%</div>
+                            <div class="channel-value" id="xEngagement">1.8%</div>
+                            <input type="text" class="channel-value-input" id="xEngagementInput" value="1.8" style="display:none;">
                             <div class="channel-label">Engagement</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Marketing & BI Modules -->
             <div class="module-grid">
-                <div class="module-card tooltip" onclick="openModule('campaign-management')">
+                <div class="module-card tooltip" onclick="openModule('campaign-management')" data-module="campaign">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
+                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
+                    </div>
                     <div class="module-icon">🎯</div>
-                    <h3>Campaign Management</h3>
-                    <p>Plan, execute, and track multi-channel marketing campaigns with real-time analytics</p>
+                    <h3 class="module-title">Campaign Management</h3>
+                    <input type="text" class="module-title-input" value="Campaign Management" style="display:none;">
+                    <p class="module-desc">Plan, execute, and track multi-channel marketing campaigns with real-time analytics</p>
+                    <textarea class="module-desc-input" style="display:none;">Plan, execute, and track multi-channel marketing campaigns with real-time analytics</textarea>
                     <span class="tooltip-text">Multi-channel campaign planning with budget tracking</span>
                 </div>
 
-                <div class="module-card tooltip" onclick="openModule('digital-analytics')">
+                <div class="module-card tooltip" onclick="openModule('digital-analytics')" data-module="analytics">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
+                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
+                    </div>
                     <div class="module-icon">📊</div>
-                    <h3>Digital Analytics</h3>
-                    <p>Web analytics, social media insights, and digital performance tracking with AI-powered insights</p>
+                    <h3 class="module-title">Digital Analytics</h3>
+                    <input type="text" class="module-title-input" value="Digital Analytics" style="display:none;">
+                    <p class="module-desc">Web analytics, social media insights, and digital performance tracking with AI-powered insights</p>
+                    <textarea class="module-desc-input" style="display:none;">Web analytics, social media insights, and digital performance tracking with AI-powered insights</textarea>
                     <span class="tooltip-text">AI-powered analytics with predictive insights</span>
                 </div>
 
-                <div class="module-card tooltip" onclick="openModule('seo-sem')">
+                <div class="module-card tooltip" onclick="openModule('seo-sem')" data-module="seo">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
+                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
+                    </div>
                     <div class="module-icon">🔍</div>
-                    <h3>SEO & SEM</h3>
-                    <p>Search engine optimization, paid advertising, and keyword performance monitoring</p>
+                    <h3 class="module-title">SEO & SEM</h3>
+                    <input type="text" class="module-title-input" value="SEO & SEM" style="display:none;">
+                    <p class="module-desc">Search engine optimization, paid advertising, and keyword performance monitoring</p>
+                    <textarea class="module-desc-input" style="display:none;">Search engine optimization, paid advertising, and keyword performance monitoring</textarea>
                     <span class="tooltip-text">Keyword tracking and competitive analysis</span>
                 </div>
 
-                <div class="module-card tooltip" onclick="openModule('content-marketing')">
+                <div class="module-card tooltip" onclick="openModule('content-marketing')" data-module="content">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
+                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
+                    </div>
                     <div class="module-icon">📝</div>
-                    <h3>Content Marketing</h3>
-                    <p>Content strategy, creation calendar, and performance analytics across all channels</p>
+                    <h3 class="module-title">Content Marketing</h3>
+                    <input type="text" class="module-title-input" value="Content Marketing" style="display:none;">
+                    <p class="module-desc">Content strategy, creation calendar, and performance analytics across all channels</p>
+                    <textarea class="module-desc-input" style="display:none;">Content strategy, creation calendar, and performance analytics across all channels</textarea>
                     <span class="tooltip-text">Content calendar with performance metrics</span>
                 </div>
 
-                <div class="module-card tooltip" onclick="openModule('marketing-automation')">
+                <div class="module-card tooltip" onclick="openModule('marketing-automation')" data-module="automation">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
+                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
+                    </div>
                     <div class="module-icon">⚡</div>
-                    <h3>Marketing Automation</h3>
-                    <p>Automated email campaigns, lead nurturing, and customer journey mapping</p>
+                    <h3 class="module-title">Marketing Automation</h3>
+                    <input type="text" class="module-title-input" value="Marketing Automation" style="display:none;">
+                    <p class="module-desc">Automated email campaigns, lead nurturing, and customer journey mapping</p>
+                    <textarea class="module-desc-input" style="display:none;">Automated email campaigns, lead nurturing, and customer journey mapping</textarea>
                     <span class="tooltip-text">Automated workflows and lead scoring</span>
                 </div>
 
-                <div class="module-card tooltip" onclick="openModule('competitive-intelligence')">
+                <div class="module-card tooltip" onclick="openModule('competitive-intelligence')" data-module="competitive">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
+                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
+                    </div>
                     <div class="module-icon">👁️</div>
-                    <h3>Competitive Intelligence</h3>
-                    <p>Market analysis, competitor tracking, and strategic positioning insights</p>
+                    <h3 class="module-title">Competitive Intelligence</h3>
+                    <input type="text" class="module-title-input" value="Competitive Intelligence" style="display:none;">
+                    <p class="module-desc">Market analysis, competitor tracking, and strategic positioning insights</p>
+                    <textarea class="module-desc-input" style="display:none;">Market analysis, competitor tracking, and strategic positioning insights</textarea>
                     <span class="tooltip-text">Competitor monitoring and market analysis</span>
                 </div>
 
-                <div class="module-card tooltip" onclick="openModule('customer-insights')">
+                <div class="module-card tooltip" onclick="openModule('customer-insights')" data-module="insights">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
+                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
+                    </div>
                     <div class="module-icon">👥</div>
-                    <h3>Customer Insights</h3>
-                    <p>Customer segmentation, behavior analysis, and persona development</p>
+                    <h3 class="module-title">Customer Insights</h3>
+                    <input type="text" class="module-title-input" value="Customer Insights" style="display:none;">
+                    <p class="module-desc">Customer segmentation, behavior analysis, and persona development</p>
+                    <textarea class="module-desc-input" style="display:none;">Customer segmentation, behavior analysis, and persona development</textarea>
                     <span class="tooltip-text">Customer segmentation and persona mapping</span>
                 </div>
 
-                <div class="module-card tooltip" onclick="openModule('predictive-analytics')">
+                <div class="module-card tooltip" onclick="openModule('predictive-analytics')" data-module="predictive">
+                    <div class="edit-controls">
+                        <button class="btn btn-sm btn-secondary edit-module" title="Edit" onclick="event.stopPropagation()"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-success save-module" style="display:none;" title="Save" onclick="event.stopPropagation()"><i class="fas fa-save"></i></button>
+                        <button class="btn btn-sm btn-danger delete-module" title="Delete" onclick="event.stopPropagation(); deleteModule(this)"><i class="fas fa-trash"></i></button>
+                    </div>
                     <div class="module-icon">🔮</div>
-                    <h3>Predictive Analytics</h3>
-                    <p>AI-powered forecasting, trend analysis, and market opportunity identification</p>
+                    <h3 class="module-title">Predictive Analytics</h3>
+                    <input type="text" class="module-title-input" value="Predictive Analytics" style="display:none;">
+                    <p class="module-desc">AI-powered forecasting, trend analysis, and market opportunity identification</p>
+                    <textarea class="module-desc-input" style="display:none;">AI-powered forecasting, trend analysis, and market opportunity identification</textarea>
                     <span class="tooltip-text">AI-driven forecasting and trend analysis</span>
                 </div>
             </div>
@@ -1098,6 +1595,56 @@
                 Copyright © 2025 😀
             </div>
         </main>
+    </div>
+
+    <!-- Campaign Modal -->
+    <div id="campaignModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Campaign</h2>
+                <span class="modal-close" onclick="closeCampaignModal()">&times;</span>
+            </div>
+            <form id="campaignForm" onsubmit="saveCampaign(event)">
+                <div class="form-group">
+                    <label for="campaignName">Campaign Name</label>
+                    <input type="text" id="campaignName" required>
+                </div>
+                <div class="form-group">
+                    <label for="campaignType">Campaign Type</label>
+                    <select id="campaignType" required>
+                        <option value="digital">Digital</option>
+                        <option value="email">Email</option>
+                        <option value="social">Social Media</option>
+                        <option value="seo">SEO</option>
+                        <option value="content">Content</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="campaignBudget">Budget (TZS)</label>
+                    <input type="number" id="campaignBudget" required>
+                </div>
+                <div class="form-group">
+                    <label for="campaignStart">Start Date</label>
+                    <input type="date" id="campaignStart" required>
+                </div>
+                <div class="form-group">
+                    <label for="campaignEnd">End Date</label>
+                    <input type="date" id="campaignEnd" required>
+                </div>
+                <div class="form-group">
+                    <label for="campaignGoal">Goal</label>
+                    <input type="text" id="campaignGoal" required>
+                </div>
+                <div class="form-group">
+                    <label for="campaignTarget">Target Audience</label>
+                    <textarea id="campaignTarget" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success">Save Campaign</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeCampaignModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -1113,66 +1660,69 @@
             }
         });
 
-        // Module card hover effects
-        document.querySelectorAll('.module-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-4px)';
-            });
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
-
         // Currency conversion
         const currencyRates = {
-            'TZS': { rate: 1, symbol: 'TSh' },
+            'TZS': { rate: 1, symbol: 'TZS ' },
             'USD': { rate: 0.00043, symbol: '$' },
             'EUR': { rate: 0.00040, symbol: '€' },
             'GBP': { rate: 0.00034, symbol: '£' },
-            'KES': { rate: 0.062, symbol: 'KSh' }
+            'KES': { rate: 0.062, symbol: 'KSh ' }
         };
 
         document.getElementById('currencySelect').addEventListener('change', function() {
             const selectedCurrency = this.value;
             const rateInfo = currencyRates[selectedCurrency];
             
-            // Update marketing budget
-            const budgetElement = document.getElementById('marketingBudget');
-            const originalBudget = 8200000; // Original in base currency (TZS)
-            const convertedBudget = (originalBudget * rateInfo.rate).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-            budgetElement.textContent = `${rateInfo.symbol}${convertedBudget}`;
-            
-            // Update CPC values
-            const digitalCPC = document.getElementById('digitalCPC');
-            const originalDigitalCPC = 156;
-            const convertedDigitalCPC = (originalDigitalCPC * rateInfo.rate).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-            digitalCPC.textContent = `${rateInfo.symbol}${convertedDigitalCPC}`;
-            
-            // Update revenue generated
-            const revenueElement = document.getElementById('revenueGenerated');
-            const originalRevenue = 4800000;
-            const convertedRevenue = (originalRevenue * rateInfo.rate).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-            revenueElement.textContent = `${rateInfo.symbol}${convertedRevenue}`;
+            // Update all currency values
+            updateCurrencyForElement('marketingBudget', 8200000, rateInfo);
+            updateCurrencyForElement('digitalCPC', 156, rateInfo);
+            updateCurrencyForElement('seoCPC', 0, rateInfo);
+            updateCurrencyForElement('revenueGenerated', 4800000, rateInfo);
+            updateCurrencyForElement('chartValue1', 4800000, rateInfo);
+            updateCurrencyForElement('chartValue2', 3200000, rateInfo);
+            updateCurrencyForElement('chartValue3', 1800000, rateInfo);
         });
+
+        function updateCurrencyForElement(elementId, originalValue, rateInfo) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                const convertedValue = (originalValue * rateInfo.rate).toLocaleString(undefined, {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                });
+                element.textContent = `${rateInfo.symbol}${convertedValue}`;
+            }
+        }
 
         // Language selector
         document.getElementById('languageSelect').addEventListener('change', function() {
             const selectedLanguage = this.value;
+            const translations = {
+                'en': {
+                    'marketingBudget': 'Marketing Budget',
+                    'roiQuarter': 'ROI This Quarter',
+                    'totalReach': 'Total Reach',
+                    'conversionRate': 'Conversion Rate',
+                    'newCampaign': 'New Campaign',
+                    // Add more translations as needed
+                },
+                'sw': {
+                    'marketingBudget': 'Bajeti ya Masoko',
+                    'roiQuarter': 'ROI Robo ya Mwaka',
+                    'totalReach': 'Jumla ya Ufikiaji',
+                    'conversionRate': 'Kiwango cha Ubadilishaji',
+                    'newCampaign': 'Kampeni Mpya',
+                }
+            };
+            
+            const t = translations[selectedLanguage];
             if (selectedLanguage === 'sw') {
-                alert('Lugha imebadilishwa kuwa Kiswahili');
-                // In a real implementation, this would change all text to Swahili
+                document.querySelector('h1').textContent = 'Masoko na Akili ya Biashara';
+                document.querySelector('.btn-marketing').innerHTML = '<i class="fas fa-plus"></i> Kampeni Mpya';
+                // Update other elements as needed
             } else {
-                alert('Language changed to English');
-                // In a real implementation, this would change all text to English
+                document.querySelector('h1').textContent = 'Marketing & Business Intelligence';
+                document.querySelector('.btn-marketing').innerHTML = '<i class="fas fa-plus"></i> New Campaign';
             }
         });
 
@@ -1199,54 +1749,472 @@
                 'marketing-automation': 'Marketing Automation',
                 'competitive-intelligence': 'Competitive Intelligence',
                 'customer-insights': 'Customer Insights',
-                'predictive-analytics': 'Predictive Analytics'
+                'predictive-analytics': 'Predictive Analytics',
+                'advanced-reports': 'Advanced Reports',
+                'data-analytics': 'Data Analytics',
+                'marketing-manager': 'Marketing Manager',
+                'social-media': 'Social Media',
+                'seo-analytics': 'SEO & Analytics'
             };
             
-            alert(`${moduleNames[module]} opening...`);
-            // In a real implementation, this would navigate to the specific module page
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>${moduleNames[module] || module}</h2>
+                        <span class="modal-close" onclick="this.closest('.modal').remove()">&times;</span>
+                    </div>
+                    <div class="form-group">
+                        <h3>Module Content</h3>
+                        <p>This is the ${moduleNames[module] || module} module. You can add detailed content, analytics, and configuration options here.</p>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Value</th>
+                                    <th>Trend</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Performance</td>
+                                    <td>85%</td>
+                                    <td><i class="fas fa-arrow-up" style="color: var(--success);"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>Growth</td>
+                                    <td>12%</td>
+                                    <td><i class="fas fa-arrow-up" style="color: var(--success);"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>Engagement</td>
+                                    <td>4.2K</td>
+                                    <td><i class="fas fa-arrow-down" style="color: var(--error);"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" onclick="alert('Configuration saved!'); this.closest('.modal').remove();">Save Configuration</button>
+                        <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Close</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
         }
 
         // New campaign button
         document.getElementById('newCampaignBtn').addEventListener('click', function() {
-            alert('Creating new marketing campaign...');
-            // In a real implementation, this would open a campaign creation form
+            document.getElementById('campaignModal').style.display = 'block';
         });
+
+        function closeCampaignModal() {
+            document.getElementById('campaignModal').style.display = 'none';
+        }
+
+        function saveCampaign(event) {
+            event.preventDefault();
+            
+            const campaignData = {
+                name: document.getElementById('campaignName').value,
+                type: document.getElementById('campaignType').value,
+                budget: document.getElementById('campaignBudget').value,
+                start: document.getElementById('campaignStart').value,
+                end: document.getElementById('campaignEnd').value,
+                goal: document.getElementById('campaignGoal').value,
+                target: document.getElementById('campaignTarget').value
+            };
+            
+            // Save to localStorage
+            let campaigns = JSON.parse(localStorage.getItem('campaigns') || '[]');
+            campaigns.push(campaignData);
+            localStorage.setItem('campaigns', JSON.stringify(campaigns));
+            
+            alert('Campaign created successfully!');
+            closeCampaignModal();
+            
+            // Update campaigns display
+            displayCampaigns();
+        }
+
+        function displayCampaigns() {
+            const campaigns = JSON.parse(localStorage.getItem('campaigns') || '[]');
+            if (campaigns.length > 0) {
+                const latestCampaign = campaigns[campaigns.length - 1];
+                // Add to campaigns grid or update existing
+                const campaignsGrid = document.querySelector('.campaigns-grid');
+                const newCard = document.createElement('div');
+                newCard.className = 'campaign-card';
+                newCard.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-icon">📢</div>
+                        <div class="card-title">${latestCampaign.name}</div>
+                    </div>
+                    <div class="metric-grid">
+                        <div class="metric-item">
+                            <div class="metric-value">${latestCampaign.budget}</div>
+                            <div class="metric-label">Budget</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">0%</div>
+                            <div class="metric-label">Progress</div>
+                        </div>
+                    </div>
+                `;
+                campaignsGrid.appendChild(newCard);
+            }
+        }
 
         // Logout functionality
         document.getElementById('logoutBtn').addEventListener('click', function() {
             if (confirm('Are you sure you want to logout?')) {
                 alert('Logging out...');
-                // In a real implementation, this would redirect to login page
+                window.location.href = 'login.html';
             }
         });
 
-        // Simulate real-time metric updates
-        function updateMarketingMetrics() {
-            const metrics = document.querySelectorAll('.metric-value, .bi-value, .channel-value');
-            metrics.forEach(metric => {
-                // Skip ROI ratio and CPC saved as they have special formats
-                if (metric.textContent.includes(':') || metric.textContent.includes('₦0')) {
-                    return;
+        // Edit functionality for stats
+        document.querySelectorAll('.edit-stat').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const card = this.closest('.stat-card');
+                const statNumber = card.querySelector('.stat-number');
+                const statInput = card.querySelector('.stat-number-input');
+                const editBtn = this;
+                const saveBtn = card.querySelector('.save-stat');
+                
+                statNumber.style.display = 'none';
+                statInput.style.display = 'block';
+                editBtn.style.display = 'none';
+                saveBtn.style.display = 'inline-block';
+            });
+        });
+
+        document.querySelectorAll('.save-stat').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const card = this.closest('.stat-card');
+                const statNumber = card.querySelector('.stat-number');
+                const statInput = card.querySelector('.stat-number-input');
+                const editBtn = card.querySelector('.edit-stat');
+                const saveBtn = this;
+                
+                let value = statInput.value;
+                const statType = card.dataset.stat;
+                
+                // Format based on stat type
+                if (statType === 'budget' || statType === 'reach') {
+                    if (value >= 1000) {
+                        statNumber.textContent = (value >= 1000000) ? 
+                            `TZS ${(value/1000000).toFixed(1)}M` : 
+                            `TZS ${(value/1000).toFixed(0)}K`;
+                    } else {
+                        statNumber.textContent = `TZS ${value}`;
+                    }
+                } else {
+                    statNumber.textContent = value + '%';
                 }
                 
-                const currentValue = parseFloat(metric.textContent.replace(/[^\d.]/g, ''));
-                const randomChange = (Math.random() * 0.1) - 0.05; // -5% to +5%
-                const newValue = currentValue * (1 + randomChange);
+                statNumber.style.display = 'block';
+                statInput.style.display = 'none';
+                editBtn.style.display = 'inline-block';
+                saveBtn.style.display = 'none';
                 
-                if (metric.textContent.includes('₦')) {
-                    metric.textContent = `₦${(newValue / 1000).toFixed(1)}K`;
-                } else if (metric.textContent.includes('%')) {
-                    metric.textContent = `${newValue.toFixed(1)}%`;
-                } else if (metric.textContent.includes('#')) {
-                    // Skip rank values
+                // Save to localStorage
+                saveStatToStorage(statType, value);
+            });
+        });
+
+        // Edit functionality for campaign metrics
+        document.querySelectorAll('.edit-metric').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const metricItem = this.closest('.metric-item');
+                const metricValue = metricItem.querySelector('.metric-value');
+                const metricInput = metricItem.querySelector('.metric-value-input');
+                
+                metricValue.style.display = 'none';
+                metricInput.style.display = 'block';
+                this.style.display = 'none';
+            });
+        });
+
+        document.querySelectorAll('.metric-value-input').forEach(input => {
+            input.addEventListener('blur', function() {
+                const metricItem = this.closest('.metric-item');
+                const metricValue = metricItem.querySelector('.metric-value');
+                const editBtn = metricItem.querySelector('.edit-metric');
+                const value = this.value;
+                
+                if (metricValue.textContent.includes('%')) {
+                    metricValue.textContent = value + '%';
+                } else if (metricValue.textContent.includes('#')) {
+                    metricValue.textContent = '#' + value;
+                } else if (metricValue.textContent.includes('TZS')) {
+                    metricValue.textContent = 'TZS ' + value;
                 } else {
-                    metric.textContent = Math.round(newValue).toLocaleString();
+                    metricValue.textContent = value + (value >= 1000 ? 'K' : '');
+                }
+                
+                metricValue.style.display = 'block';
+                this.style.display = 'none';
+                editBtn.style.display = 'inline-block';
+            });
+        });
+
+        // Edit functionality for BI metrics
+        document.querySelectorAll('.edit-bi').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const biMetric = this.closest('.bi-metric');
+                const biValue = biMetric.querySelector('.bi-value');
+                const biInput = biMetric.querySelector('.bi-value-input');
+                
+                biValue.style.display = 'none';
+                biInput.style.display = 'block';
+                this.style.display = 'none';
+            });
+        });
+
+        document.querySelectorAll('.bi-value-input').forEach(input => {
+            input.addEventListener('blur', function() {
+                const biMetric = this.closest('.bi-metric');
+                const biValue = biMetric.querySelector('.bi-value');
+                const editBtn = biMetric.querySelector('.edit-bi');
+                const value = this.value;
+                
+                if (biValue.textContent.includes('%')) {
+                    biValue.textContent = value + '%';
+                } else if (biValue.textContent.includes(':')) {
+                    biValue.textContent = value + ':1';
+                } else {
+                    biValue.textContent = 'TZS ' + (value >= 1000000 ? 
+                        (value/1000000).toFixed(1) + 'M' : 
+                        (value/1000).toFixed(0) + 'K');
+                }
+                
+                biValue.style.display = 'block';
+                this.style.display = 'none';
+                editBtn.style.display = 'inline-block';
+            });
+        });
+
+        // Edit functionality for channels
+        document.querySelectorAll('.edit-channel').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const channel = this.closest('.channel-card');
+                const channelName = channel.querySelector('.channel-name');
+                const channelNameInput = channel.querySelector('.channel-name-input');
+                const channelValues = channel.querySelectorAll('.channel-value');
+                const channelValueInputs = channel.querySelectorAll('.channel-value-input');
+                const editBtn = this;
+                const saveBtn = channel.querySelector('.save-channel');
+                
+                channelName.style.display = 'none';
+                channelNameInput.style.display = 'block';
+                channelValues.forEach(v => v.style.display = 'none');
+                channelValueInputs.forEach(i => i.style.display = 'block');
+                editBtn.style.display = 'none';
+                saveBtn.style.display = 'inline-block';
+            });
+        });
+
+        document.querySelectorAll('.save-channel').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const channel = this.closest('.channel-card');
+                const channelName = channel.querySelector('.channel-name');
+                const channelNameInput = channel.querySelector('.channel-name-input');
+                const channelValues = channel.querySelectorAll('.channel-value');
+                const channelValueInputs = channel.querySelectorAll('.channel-value-input');
+                const editBtn = channel.querySelector('.edit-channel');
+                const saveBtn = this;
+                
+                channelName.textContent = channelNameInput.value;
+                channelName.style.display = 'block';
+                channelNameInput.style.display = 'none';
+                
+                channelValueInputs.forEach((input, index) => {
+                    if (channelValues[index]) {
+                        channelValues[index].textContent = input.value + 
+                            (channelValues[index].textContent.includes('%') ? '%' : '');
+                        channelValues[index].style.display = 'block';
+                    }
+                    input.style.display = 'none';
+                });
+                
+                editBtn.style.display = 'inline-block';
+                saveBtn.style.display = 'none';
+                
+                // Update channel link based on name
+                const channelLink = channel.querySelector('.channel-link');
+                const channelType = channel.dataset.channel;
+                if (channelType === 'x') {
+                    channelLink.href = `https://x.com/${channelNameInput.value.toLowerCase().replace(/\s+/g, '')}`;
+                } else {
+                    channelLink.href = `https://${channelType}.com/${channelNameInput.value.toLowerCase().replace(/\s+/g, '')}`;
                 }
             });
+        });
+
+        // Edit functionality for modules
+        document.querySelectorAll('.edit-module').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const module = this.closest('.module-card');
+                const moduleTitle = module.querySelector('.module-title');
+                const moduleTitleInput = module.querySelector('.module-title-input');
+                const moduleDesc = module.querySelector('.module-desc');
+                const moduleDescInput = module.querySelector('.module-desc-input');
+                const editBtn = this;
+                const saveBtn = module.querySelector('.save-module');
+                
+                moduleTitle.style.display = 'none';
+                moduleTitleInput.style.display = 'block';
+                moduleDesc.style.display = 'none';
+                moduleDescInput.style.display = 'block';
+                editBtn.style.display = 'none';
+                saveBtn.style.display = 'inline-block';
+            });
+        });
+
+        document.querySelectorAll('.save-module').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const module = this.closest('.module-card');
+                const moduleTitle = module.querySelector('.module-title');
+                const moduleTitleInput = module.querySelector('.module-title-input');
+                const moduleDesc = module.querySelector('.module-desc');
+                const moduleDescInput = module.querySelector('.module-desc-input');
+                const editBtn = module.querySelector('.edit-module');
+                const saveBtn = this;
+                
+                moduleTitle.textContent = moduleTitleInput.value;
+                moduleTitle.style.display = 'block';
+                moduleTitleInput.style.display = 'none';
+                
+                moduleDesc.textContent = moduleDescInput.value;
+                moduleDesc.style.display = 'block';
+                moduleDescInput.style.display = 'none';
+                
+                editBtn.style.display = 'inline-block';
+                saveBtn.style.display = 'none';
+            });
+        });
+
+        function deleteModule(btn) {
+            if (confirm('Are you sure you want to delete this module?')) {
+                const module = btn.closest('.module-card');
+                module.remove();
+            }
         }
 
-        // Update metrics every 30 seconds
-        setInterval(updateMarketingMetrics, 30000);
+        // Save stats to localStorage
+        function saveStatToStorage(statType, value) {
+            let stats = JSON.parse(localStorage.getItem('marketingStats') || '{}');
+            stats[statType] = value;
+            localStorage.setItem('marketingStats', JSON.stringify(stats));
+        }
+
+        // Load stats from localStorage
+        function loadStatsFromStorage() {
+            const stats = JSON.parse(localStorage.getItem('marketingStats') || '{}');
+            if (stats.budget) {
+                document.getElementById('marketingBudget').textContent = 
+                    stats.budget >= 1000000 ? 
+                    `TZS ${(stats.budget/1000000).toFixed(1)}M` : 
+                    `TZS ${(stats.budget/1000).toFixed(0)}K`;
+                document.getElementById('budgetInput').value = stats.budget;
+            }
+            if (stats.roi) {
+                document.getElementById('roiQuarter').textContent = stats.roi + '%';
+                document.getElementById('roiInput').value = stats.roi;
+            }
+            if (stats.reach) {
+                document.getElementById('totalReach').textContent = 
+                    stats.reach >= 1000 ? 
+                    (stats.reach/1000).toFixed(0) + 'K' : 
+                    stats.reach;
+                document.getElementById('reachInput').value = stats.reach;
+            }
+            if (stats.conversion) {
+                document.getElementById('conversionRate').textContent = stats.conversion + '%';
+                document.getElementById('conversionInput').value = stats.conversion;
+            }
+        }
+
+        // Time filter change
+        document.getElementById('timeFilter').addEventListener('change', function() {
+            updateChartData(this.value);
+        });
+
+        function updateChartData(days) {
+            // Simulate data update based on time period
+            const multipliers = {
+                '7': 0.3,
+                '30': 1,
+                '90': 2.5,
+                '365': 8
+            };
+            
+            const multiplier = multipliers[days] || 1;
+            const baseRevenue = 4800000;
+            const baseCampaign = 3200000;
+            const baseConversion = 1800000;
+            
+            document.getElementById('chartValue1').textContent = `TZS ${(baseRevenue * multiplier / 1000000).toFixed(1)}M`;
+            document.getElementById('chartValue2').textContent = `TZS ${(baseCampaign * multiplier / 1000000).toFixed(1)}M`;
+            document.getElementById('chartValue3').textContent = `TZS ${(baseConversion * multiplier / 1000000).toFixed(1)}M`;
+        }
+
+        // Channel filter change
+        document.getElementById('channelFilter').addEventListener('change', function() {
+            const filter = this.value;
+            const channels = document.querySelectorAll('.channel-card');
+            
+            channels.forEach(channel => {
+                if (filter === 'all') {
+                    channel.style.display = 'block';
+                } else if (filter === 'digital') {
+                    if (['facebook', 'instagram', 'x'].includes(channel.dataset.channel)) {
+                        channel.style.display = 'block';
+                    } else {
+                        channel.style.display = 'none';
+                    }
+                } else if (filter === 'traditional') {
+                    channel.style.display = 'none'; // No traditional channels in current setup
+                }
+            });
+        });
+
+        // Simulate real-time updates
+        function simulateRealTimeUpdates() {
+            // Update every 30 seconds with small random changes
+            setInterval(() => {
+                if (!document.body.classList.contains('editing')) {
+                    const metrics = document.querySelectorAll('.metric-value:not(.editing), .bi-value:not(.editing), .channel-value:not(.editing)');
+                    metrics.forEach(metric => {
+                        if (!metric.closest('.modal')) {
+                            const currentText = metric.textContent;
+                            const numValue = parseFloat(currentText.replace(/[^0-9.]/g, ''));
+                            if (!isNaN(numValue) && numValue > 0) {
+                                const change = (Math.random() * 0.06) - 0.03; // -3% to +3%
+                                const newValue = numValue * (1 + change);
+                                
+                                if (currentText.includes('%')) {
+                                    metric.textContent = newValue.toFixed(1) + '%';
+                                } else if (currentText.includes(':')) {
+                                    // Skip ratio values
+                                } else if (currentText.includes('TZS')) {
+                                    // Skip currency values as they're handled separately
+                                } else {
+                                    metric.textContent = newValue >= 1000 ? 
+                                        (newValue/1000).toFixed(1) + 'K' : 
+                                        Math.round(newValue).toString();
+                                }
+                            }
+                        }
+                    });
+                }
+            }, 30000);
+        }
 
         // PWA initialization
         if ('serviceWorker' in navigator) {
@@ -1261,24 +2229,24 @@
             });
         }
 
-        // Check for PWA update
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.ready.then(registration => {
-                registration.addEventListener('updatefound', () => {
-                    const newWorker = registration.installing;
-                    console.log('New service worker found...');
-                    
-                    newWorker.addEventListener('statechange', () => {
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            // New update available
-                            if (confirm('A new version is available. Refresh to update?')) {
-                                window.location.reload();
-                            }
-                        }
-                    });
-                });
-            });
+        // Initialize
+        loadStatsFromStorage();
+        simulateRealTimeUpdates();
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('campaignModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
         }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeCampaignModal();
+            }
+        });
     </script>
 </body>
 </html>
