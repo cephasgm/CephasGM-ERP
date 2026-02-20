@@ -385,7 +385,7 @@
       box-shadow: var(--shadow);
       margin-bottom: 2rem;
       position: relative;
-      height: 300px; /* Fixed height */
+      height: 300px;
     }
 
     .chart-grid {
@@ -513,6 +513,40 @@
     .status-negotiation { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
     .status-closed { background: rgba(16, 185, 129, 0.1); color: #10b981; }
     .status-lost { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+    .status-pending { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+    .status-approved { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+    .status-rejected { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+    .status-contact { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+    .status-website { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+    .status-referral { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+
+    /* Editable table styles */
+    .editable-cell {
+      cursor: pointer;
+      position: relative;
+    }
+
+    .editable-cell:hover {
+      background: rgba(37, 99, 235, 0.1);
+    }
+
+    .editable-cell input,
+    .editable-cell select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 2px solid var(--primary);
+      border-radius: 4px;
+      background: var(--card);
+      color: var(--text);
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    .editable-cell input:focus,
+    .editable-cell select:focus {
+      outline: none;
+      border-color: var(--success);
+    }
 
     /* ===== MODULES GRID ===== */
     .modules-grid {
@@ -598,8 +632,18 @@
       color: var(--primary);
     }
 
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
     .btn-danger {
       background: var(--danger);
+      color: white;
+    }
+
+    .btn-warning {
+      background: var(--warning);
       color: white;
     }
 
@@ -611,6 +655,7 @@
     .table-actions {
       display: flex;
       gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
     /* ===== DATE PICKER STYLES ===== */
@@ -641,6 +686,210 @@
 
     .date-separator {
       color: var(--muted);
+    }
+
+    /* ===== MODAL STYLES ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--card);
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--primary-light);
+    }
+
+    .modal-header h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .modal-body {
+      margin-bottom: 2rem;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--primary-light);
+    }
+
+    /* ===== FORM STYLES ===== */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--primary-light);
+      border-radius: var(--radius);
+      background: var(--card);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    select.form-control {
+      cursor: pointer;
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* ===== FORECAST STYLES ===== */
+    .forecast-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .forecast-item {
+      text-align: center;
+      padding: 1rem;
+      background: var(--primary-light);
+      border-radius: var(--radius);
+    }
+
+    .forecast-label {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .forecast-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .forecast-positive {
+      color: var(--success);
+    }
+
+    .forecast-negative {
+      color: var(--danger);
+    }
+
+    .probability-slider {
+      width: 100%;
+      margin: 1rem 0;
+    }
+
+    /* ===== COMMISSION STYLES ===== */
+    .commission-tiers {
+      margin-bottom: 1.5rem;
+    }
+
+    .tier-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: var(--primary-light);
+      border-radius: var(--radius);
+      margin-bottom: 0.5rem;
+    }
+
+    .tier-range {
+      font-weight: 600;
+    }
+
+    .tier-rate {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .commission-result {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-align: center;
+      padding: 2rem;
+      background: var(--primary-light);
+      border-radius: var(--radius);
+      margin-top: 1rem;
     }
 
     /* ===== RESPONSIVE ===== */
@@ -717,6 +966,14 @@
       .chart-container {
         height: 250px;
       }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .forecast-summary {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* Mobile Menu Toggle */
@@ -766,6 +1023,32 @@
       margin-top: 3rem;
       color: var(--muted);
       border-top: 1px solid var(--primary-light);
+    }
+
+    /* Search and filter */
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      background: var(--card);
+      border: 1px solid var(--primary-light);
+      border-radius: var(--radius);
+    }
+
+    .search-box i {
+      color: var(--muted);
+    }
+
+    .search-box input {
+      border: none;
+      background: transparent;
+      color: var(--text);
+      width: 200px;
+    }
+
+    .search-box input:focus {
+      outline: none;
     }
   </style>
 </head>
@@ -837,15 +1120,15 @@
 
         <div class="nav-section">
           <div class="nav-section-title">Tools</div>
-          <button class="nav-link" onclick="switchTab('quotations')">
+          <button class="nav-link" onclick="openToolModal('quotation')">
             <span class="nav-link-icon"><i class="fas fa-file-invoice"></i></span>
             <span>Create Quotation</span>
           </button>
-          <button class="nav-link" onclick="openModal('forecastModal')">
+          <button class="nav-link" onclick="openToolModal('forecast')">
             <span class="nav-link-icon"><i class="fas fa-chart-line"></i></span>
             <span>Sales Forecast</span>
           </button>
-          <button class="nav-link" onclick="openModal('commissionModal')">
+          <button class="nav-link" onclick="openToolModal('commission')">
             <span class="nav-link-icon"><i class="fas fa-money-bill-wave"></i></span>
             <span>Commission Calculator</span>
           </button>
@@ -872,6 +1155,10 @@
         </div>
 
         <div class="sales-actions">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search..." id="globalSearch" onkeyup="globalSearch(this.value)">
+          </div>
           <div class="user-profile">
             <div class="user-avatar" aria-hidden="true">SO</div>
             <div class="user-info">
@@ -953,7 +1240,7 @@
           </div>
         </div>
 
-        <!-- Charts - FIXED HEIGHT -->
+        <!-- Charts -->
         <div class="chart-grid">
           <div class="chart-container">
             <div class="card-header">
@@ -1062,7 +1349,7 @@
         <div class="sales-table-container">
           <div class="card-header">
             <div class="card-title">Recent Opportunities</div>
-            <button class="btn btn-primary" onclick="openModal('addOpportunityModal')">
+            <button class="btn btn-primary" onclick="openAddModal('opportunity')">
               <i class="fas fa-plus"></i> Add Opportunity
             </button>
           </div>
@@ -1083,7 +1370,7 @@
           </table>
         </div>
 
-        <!-- Sales Modules - FIXED NAVIGATION -->
+        <!-- Sales Modules -->
         <div class="modules-grid">
           <div class="module-card" onclick="switchTab('leads')">
             <div class="module-icon"><i class="fas fa-bullseye"></i></div>
@@ -1116,9 +1403,15 @@
         <div class="sales-table-container">
           <div class="card-header">
             <div class="card-title">Leads Management</div>
-            <button class="btn btn-primary" onclick="openModal('addLeadModal')">
-              <i class="fas fa-plus"></i> Add Lead
-            </button>
+            <div style="display: flex; gap: 1rem;">
+              <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search leads..." id="leadsSearch" onkeyup="filterTable('leads', this.value)">
+              </div>
+              <button class="btn btn-primary" onclick="openAddModal('lead')">
+                <i class="fas fa-plus"></i> Add Lead
+              </button>
+            </div>
           </div>
           <table class="sales-table" id="leadsTable">
             <thead>
@@ -1145,9 +1438,15 @@
         <div class="sales-table-container">
           <div class="card-header">
             <div class="card-title">Sales Opportunities</div>
-            <button class="btn btn-primary" onclick="openModal('addOpportunityModal')">
-              <i class="fas fa-plus"></i> New Opportunity
-            </button>
+            <div style="display: flex; gap: 1rem;">
+              <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search opportunities..." id="opportunitiesSearch" onkeyup="filterTable('opportunities', this.value)">
+              </div>
+              <button class="btn btn-primary" onclick="openAddModal('opportunity')">
+                <i class="fas fa-plus"></i> New Opportunity
+              </button>
+            </div>
           </div>
           <table class="sales-table" id="opportunitiesTable">
             <thead>
@@ -1174,9 +1473,15 @@
         <div class="sales-table-container">
           <div class="card-header">
             <div class="card-title">Customer Database</div>
-            <button class="btn btn-primary" onclick="openModal('addCustomerModal')">
-              <i class="fas fa-plus"></i> Add Customer
-            </button>
+            <div style="display: flex; gap: 1rem;">
+              <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search customers..." id="customersSearch" onkeyup="filterTable('customers', this.value)">
+              </div>
+              <button class="btn btn-primary" onclick="openAddModal('customer')">
+                <i class="fas fa-plus"></i> Add Customer
+              </button>
+            </div>
           </div>
           <table class="sales-table" id="customersTable">
             <thead>
@@ -1233,9 +1538,15 @@
         <div class="sales-table-container">
           <div class="card-header">
             <div class="card-title">Quotations & Proposals</div>
-            <button class="btn btn-primary" onclick="openModal('addQuotationModal')">
-              <i class="fas fa-plus"></i> Create Quotation
-            </button>
+            <div style="display: flex; gap: 1rem;">
+              <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search quotations..." id="quotationsSearch" onkeyup="filterTable('quotations', this.value)">
+              </div>
+              <button class="btn btn-primary" onclick="openAddModal('quotation')">
+                <i class="fas fa-plus"></i> Create Quotation
+              </button>
+            </div>
           </div>
           <table class="sales-table" id="quotationsTable">
             <thead>
@@ -1262,36 +1573,371 @@
     </main>
   </div>
 
-  <!-- All Modals (simplified version) -->
-  <div class="modal" id="addOpportunityModal" role="dialog" aria-modal="true" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-    <div class="modal-content" style="background: var(--card); border-radius: var(--radius); width: 90%; max-width: 500px; padding: 1.5rem;">
-      <h3>Create New Opportunity</h3>
-      <form id="addOpportunityForm" onsubmit="addOpportunity(event)">
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="Opportunity Name" required>
+  <!-- Add/Edit Modal -->
+  <div class="modal" id="addEditModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add New Item</h3>
+        <button class="modal-close" onclick="closeModal('addEditModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="addEditForm" onsubmit="saveItem(event)">
+          <div id="formFields"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('addEditModal')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quotation Tool Modal -->
+  <div class="modal" id="quotationModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create Quotation</h3>
+        <button class="modal-close" onclick="closeModal('quotationModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="quotationForm" onsubmit="createQuotation(event)">
+          <div class="form-group">
+            <label>Customer</label>
+            <select class="form-control" id="quoteCustomer" required>
+              <option value="">Select Customer</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Valid Until</label>
+            <input type="date" class="form-control" id="quoteValidUntil" required>
+          </div>
+          <div class="form-group">
+            <label>Items</label>
+            <div id="quoteItems">
+              <div class="form-row" style="margin-bottom: 0.5rem;">
+                <input type="text" class="form-control" placeholder="Item description" id="itemDesc1" required>
+                <input type="number" class="form-control" placeholder="Quantity" id="itemQty1" value="1" min="1" required>
+                <input type="number" class="form-control" placeholder="Unit Price" id="itemPrice1" required>
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="addQuoteItem()">
+              <i class="fas fa-plus"></i> Add Item
+            </button>
+          </div>
+          <div class="form-group">
+            <label>Subtotal</label>
+            <input type="text" class="form-control" id="quoteSubtotal" readonly>
+          </div>
+          <div class="form-group">
+            <label>Tax (18%)</label>
+            <input type="text" class="form-control" id="quoteTax" readonly>
+          </div>
+          <div class="form-group">
+            <label>Total</label>
+            <input type="text" class="form-control" id="quoteTotal" readonly style="font-weight: bold; color: var(--primary);">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('quotationModal')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Create Quotation</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forecast Tool Modal -->
+  <div class="modal" id="forecastModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Sales Forecast</h3>
+        <button class="modal-close" onclick="closeModal('forecastModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="forecast-summary">
+          <div class="forecast-item">
+            <div class="forecast-label">Current Pipeline</div>
+            <div class="forecast-value" id="currentPipeline">TZS 24.5M</div>
+          </div>
+          <div class="forecast-item">
+            <div class="forecast-label">Expected Close</div>
+            <div class="forecast-value" id="expectedClose">TZS 18.2M</div>
+          </div>
+          <div class="forecast-item">
+            <div class="forecast-label">Forecast vs Target</div>
+            <div class="forecast-value forecast-positive" id="forecastVsTarget">+12%</div>
+          </div>
         </div>
+
         <div class="form-group">
-          <input type="number" class="form-control" placeholder="Value" required>
-        </div>
-        <div class="form-group">
-          <select class="form-control" required>
-            <option value="">Select Stage</option>
-            <option value="prospect">Prospect</option>
-            <option value="qualified">Qualified</option>
-            <option value="negotiation">Negotiation</option>
-            <option value="closed">Closed</option>
+          <label>Forecast Period</label>
+          <select class="form-control" id="forecastPeriod" onchange="updateForecast()">
+            <option value="month">This Month</option>
+            <option value="quarter">This Quarter</option>
+            <option value="year">This Year</option>
           </select>
         </div>
-        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-          <button type="button" class="btn btn-secondary" onclick="closeModal('addOpportunityModal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Create</button>
+
+        <div class="form-group">
+          <label>Probability Threshold</label>
+          <input type="range" class="probability-slider" id="probabilityThreshold" min="0" max="100" value="50" oninput="updateForecast()">
+          <div style="display: flex; justify-content: space-between;">
+            <span>0%</span>
+            <span id="thresholdValue">50%</span>
+            <span>100%</span>
+          </div>
         </div>
-      </form>
+
+        <div class="chart-container" style="height: 200px;">
+          <canvas id="forecastChart"></canvas>
+        </div>
+
+        <div class="forecast-details" id="forecastDetails">
+          <!-- Forecast details will be loaded here -->
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('forecastModal')">Close</button>
+          <button type="button" class="btn btn-primary" onclick="exportForecast()">
+            <i class="fas fa-download"></i> Export Forecast
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Commission Calculator Modal -->
+  <div class="modal" id="commissionModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Commission Calculator</h3>
+        <button class="modal-close" onclick="closeModal('commissionModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="commission-tiers">
+          <h4>Commission Tiers</h4>
+          <div class="tier-item">
+            <span class="tier-range">TZS 0 - 5M</span>
+            <span class="tier-rate">5%</span>
+          </div>
+          <div class="tier-item">
+            <span class="tier-range">TZS 5M - 10M</span>
+            <span class="tier-rate">7%</span>
+          </div>
+          <div class="tier-item">
+            <span class="tier-range">TZS 10M - 20M</span>
+            <span class="tier-rate">10%</span>
+          </div>
+          <div class="tier-item">
+            <span class="tier-range">Above TZS 20M</span>
+            <span class="tier-rate">12% + Bonus</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Sales Amount (TZS)</label>
+          <input type="number" class="form-control" id="salesAmount" placeholder="Enter sales amount" oninput="calculateCommission()">
+        </div>
+
+        <div class="form-group">
+          <label>Sales Type</label>
+          <select class="form-control" id="salesType" onchange="calculateCommission()">
+            <option value="new">New Customer</option>
+            <option value="existing">Existing Customer</option>
+            <option value="upsell">Upsell/Cross-sell</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Team Size</label>
+          <input type="number" class="form-control" id="teamSize" value="1" min="1" oninput="calculateCommission()">
+        </div>
+
+        <div class="commission-result" id="commissionResult">
+          TZS 0
+        </div>
+
+        <div class="commission-breakdown" id="commissionBreakdown" style="margin-top: 1rem; padding: 1rem; background: var(--primary-light); border-radius: var(--radius); display: none;">
+          <!-- Commission breakdown will be shown here -->
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('commissionModal')">Close</button>
+          <button type="button" class="btn btn-primary" onclick="saveCommissionCalculation()">
+            <i class="fas fa-save"></i> Save Calculation
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal" id="deleteModal" role="dialog" aria-modal="true">
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3>Confirm Delete</h3>
+        <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+        <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+      </div>
     </div>
   </div>
 
   <!-- JavaScript -->
   <script>
+    // ===== DATA MANAGEMENT =====
+    let salesData = {
+      opportunities: [
+        {
+          id: 1,
+          name: "Enterprise Software License",
+          customer: "Tech Solutions Ltd",
+          rep: "Sales Team",
+          value: 2450000,
+          currency: "TZS",
+          stage: "negotiation",
+          probability: 75,
+          closeDate: "2024-02-28",
+          description: "Full enterprise software suite license"
+        },
+        {
+          id: 2,
+          name: "Cloud Infrastructure Setup",
+          customer: "Global Bank Tanzania",
+          rep: "Sales Team",
+          value: 1850000,
+          currency: "TZS",
+          stage: "qualified",
+          probability: 60,
+          closeDate: "2024-03-15",
+          description: "Cloud migration and setup"
+        },
+        {
+          id: 3,
+          name: "Mobile App Development",
+          customer: "Retail Solutions",
+          rep: "Sales Team",
+          value: 980000,
+          currency: "TZS",
+          stage: "prospect",
+          probability: 40,
+          closeDate: "2024-04-01",
+          description: "E-commerce mobile application"
+        }
+      ],
+      
+      leads: [
+        {
+          id: 1,
+          name: "John Mwita",
+          company: "Tech Solutions Ltd",
+          email: "john@techsolutions.co.tz",
+          phone: "+255 712 345 678",
+          source: "website",
+          status: "qualified",
+          created: "2024-01-15",
+          score: 85
+        },
+        {
+          id: 2,
+          name: "Sarah Kato",
+          company: "Global Bank TZ",
+          email: "sarah.k@globalbank.co.tz",
+          phone: "+255 713 456 789",
+          source: "referral",
+          status: "contacted",
+          created: "2024-01-20",
+          score: 65
+        },
+        {
+          id: 3,
+          name: "Michael Johnson",
+          company: "Manufacturing Co",
+          email: "michael@manufacturing.co.tz",
+          phone: "+255 714 567 890",
+          source: "conference",
+          status: "new",
+          created: "2024-01-25",
+          score: 45
+        }
+      ],
+      
+      customers: [
+        {
+          id: 1,
+          company: "Tech Solutions Ltd",
+          contact: "John Mwita",
+          email: "john@techsolutions.co.tz",
+          phone: "+255 712 345 678",
+          type: "Corporate",
+          totalValue: 12500000,
+          lastPurchase: "2024-01-10",
+          interactions: 12
+        },
+        {
+          id: 2,
+          company: "Global Bank Tanzania",
+          contact: "Sarah Kato",
+          email: "sarah.k@globalbank.co.tz",
+          phone: "+255 713 456 789",
+          type: "Enterprise",
+          totalValue: 8500000,
+          lastPurchase: "2023-12-15",
+          interactions: 8
+        },
+        {
+          id: 3,
+          company: "Retail Solutions Ltd",
+          contact: "Peter Mboya",
+          email: "peter@retail.co.tz",
+          phone: "+255 715 678 901",
+          type: "SME",
+          totalValue: 3200000,
+          lastPurchase: "2024-01-05",
+          interactions: 5
+        }
+      ],
+      
+      quotations: [
+        {
+          id: "QT-001",
+          customer: "Tech Solutions Ltd",
+          amount: 2450000,
+          status: "pending",
+          created: "2024-01-15",
+          expires: "2024-02-15",
+          items: ["Enterprise Software License", "1-year Support"]
+        },
+        {
+          id: "QT-002",
+          customer: "Global Bank Tanzania",
+          amount: 1850000,
+          status: "approved",
+          created: "2024-01-10",
+          expires: "2024-02-10",
+          items: ["Cloud Infrastructure Setup", "Migration Services"]
+        },
+        {
+          id: "QT-003",
+          customer: "Retail Solutions Ltd",
+          amount: 980000,
+          status: "draft",
+          created: "2024-01-20",
+          expires: "2024-02-20",
+          items: ["Mobile App Development", "UI/UX Design"]
+        }
+      ]
+    };
+
+    let currentEditId = null;
+    let currentEditType = null;
+    let deleteId = null;
+    let deleteType = null;
+
     // ===== FIXED TAB SYSTEM =====
     function switchTab(tabName) {
       // Update top tabs
@@ -1337,131 +1983,29 @@
         document.body.style.overflow = '';
       }
       
-      // Update charts if needed
+      // Load specific tab data
       if (tabName === 'dashboard') {
         updateCharts();
-      } else if (tabName === 'reports') {
-        updatePerformanceChart('month');
-      }
-      
-      // Load specific tab data
-      if (tabName === 'leads') {
+        loadDashboardData();
+      } else if (tabName === 'leads') {
         loadLeadsData();
       } else if (tabName === 'opportunities') {
         loadOpportunitiesData();
       } else if (tabName === 'customers') {
         loadCustomersData();
+      } else if (tabName === 'reports') {
+        loadReportsData();
+        updatePerformanceChart('month');
       } else if (tabName === 'quotations') {
         loadQuotationsData();
       }
     }
 
-    // ===== DATA MANAGEMENT =====
-    const salesData = {
-      opportunities: [
-        {
-          id: 1,
-          name: "Enterprise Software License",
-          customer: "Tech Solutions Ltd",
-          rep: "Sales Team",
-          value: 2450000,
-          currency: "TZS",
-          stage: "negotiation",
-          probability: 75,
-          closeDate: "2024-02-28",
-          description: "Full enterprise software suite license"
-        },
-        {
-          id: 2,
-          name: "Cloud Infrastructure Setup",
-          customer: "Global Bank Tanzania",
-          rep: "Sales Team",
-          value: 1850000,
-          currency: "TZS",
-          stage: "qualified",
-          probability: 60,
-          closeDate: "2024-03-15",
-          description: "Cloud migration and setup"
-        }
-      ],
-      
-      leads: [
-        {
-          id: 1,
-          name: "John Mwita",
-          company: "Tech Solutions Ltd",
-          email: "john@techsolutions.co.tz",
-          phone: "+255 712 345 678",
-          source: "website",
-          status: "qualified",
-          created: "2024-01-15",
-          score: 85
-        },
-        {
-          id: 2,
-          name: "Sarah Kato",
-          company: "Global Bank TZ",
-          email: "sarah.k@globalbank.co.tz",
-          phone: "+255 713 456 789",
-          source: "referral",
-          status: "contacted",
-          created: "2024-01-20",
-          score: 65
-        }
-      ],
-      
-      customers: [
-        {
-          id: 1,
-          company: "Tech Solutions Ltd",
-          contact: "John Mwita",
-          email: "john@techsolutions.co.tz",
-          phone: "+255 712 345 678",
-          type: "Corporate",
-          totalValue: 12500000,
-          lastPurchase: "2024-01-10",
-          interactions: 12
-        },
-        {
-          id: 2,
-          company: "Global Bank Tanzania",
-          contact: "Sarah Kato",
-          email: "sarah.k@globalbank.co.tz",
-          phone: "+255 713 456 789",
-          type: "Enterprise",
-          totalValue: 8500000,
-          lastPurchase: "2023-12-15",
-          interactions: 8
-        }
-      ],
-      
-      quotations: [
-        {
-          id: "QT-001",
-          customer: "Tech Solutions Ltd",
-          amount: 2450000,
-          status: "pending",
-          created: "2024-01-15",
-          expires: "2024-02-15",
-          items: ["Enterprise Software License", "1-year Support"]
-        },
-        {
-          id: "QT-002",
-          customer: "Global Bank Tanzania",
-          amount: 1850000,
-          status: "approved",
-          created: "2024-01-10",
-          expires: "2024-02-10",
-          items: ["Cloud Infrastructure Setup", "Migration Services"]
-        }
-      ]
-    };
-
     // ===== CHART FUNCTIONS =====
-    let revenueChart, pipelineChart, performanceChart;
+    let revenueChart, pipelineChart, performanceChart, forecastChart;
 
     function initializeCharts() {
-      // Revenue Chart - FIXED ASPECT RATIO
+      // Revenue Chart
       const revenueCtx = document.getElementById('revenueChart');
       if (revenueCtx) {
         revenueChart = new Chart(revenueCtx.getContext('2d'), {
@@ -1499,7 +2043,7 @@
         });
       }
 
-      // Pipeline Chart - FIXED ASPECT RATIO
+      // Pipeline Chart
       const pipelineCtx = document.getElementById('pipelineChart');
       if (pipelineCtx) {
         pipelineChart = new Chart(pipelineCtx.getContext('2d'), {
@@ -1528,7 +2072,7 @@
         });
       }
 
-      // Performance Chart - FIXED ASPECT RATIO
+      // Performance Chart
       const performanceCtx = document.getElementById('performanceChart');
       if (performanceCtx) {
         performanceChart = new Chart(performanceCtx.getContext('2d'), {
@@ -1603,21 +2147,17 @@
       const dateTo = document.getElementById('dateTo').value;
       
       if (!dateFrom || !dateTo) {
-        alert('Please select both dates');
+        showNotification('Please select both dates', 'warning');
         return;
       }
       
-      // In a real app, you would fetch data based on date range
-      // For demo, we'll just show a message and update the chart
-      alert(`Applying date range: ${dateFrom} to ${dateTo}`);
-      
-      // Update chart with new data (mock data for demo)
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-      const mockData = months.map(() => Math.floor(Math.random() * 5000000) + 5000000);
+      // Mock data update based on date range
+      const mockData = [9200000, 10500000, 11200000, 12400000, 11800000, 13500000];
       
       if (revenueChart) {
         revenueChart.data.datasets[0].data = mockData;
         revenueChart.update();
+        showNotification('Date range applied successfully', 'success');
       }
     }
 
@@ -1656,20 +2196,39 @@
 
     // ===== DATA LOADING FUNCTIONS =====
     function loadDashboardData() {
+      // Update stats
+      document.getElementById('monthlyRevenue').textContent = 'TZS 12.4M';
+      document.getElementById('activeLeads').textContent = '156';
+      document.getElementById('conversionRate').textContent = '42%';
+      document.getElementById('avgDealSize').textContent = 'TZS 223K';
+      
+      document.getElementById('prospectsCount').textContent = '45';
+      document.getElementById('qualifiedCount').textContent = '28';
+      document.getElementById('negotiationCount').textContent = '15';
+      document.getElementById('closedCount').textContent = '22';
+
       // Update opportunity table
       const opportunityTbody = document.querySelector('#recentOpportunities tbody');
       if (opportunityTbody) {
         opportunityTbody.innerHTML = salesData.opportunities.map(opp => `
-          <tr>
-            <td><strong>${opp.name}</strong></td>
-            <td>${opp.customer}</td>
-            <td>TZS ${opp.value.toLocaleString()}</td>
-            <td><span class="deal-status status-${opp.stage}">${opp.stage.charAt(0).toUpperCase() + opp.stage.slice(1)}</span></td>
-            <td>${opp.closeDate}</td>
+          <tr data-id="${opp.id}">
+            <td class="editable-cell" onclick="makeEditable(this, 'opportunities', 'name', ${opp.id})">${opp.name}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'opportunities', 'customer', ${opp.id})">${opp.customer}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'opportunities', 'value', ${opp.id})">TZS ${opp.value.toLocaleString()}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'opportunities', 'stage', ${opp.id})">
+              <span class="deal-status status-${opp.stage}">${opp.stage.charAt(0).toUpperCase() + opp.stage.slice(1)}</span>
+            </td>
+            <td class="editable-cell" onclick="makeEditable(this, 'opportunities', 'closeDate', ${opp.id})">${opp.closeDate}</td>
             <td>
               <div class="table-actions">
-                <button class="btn btn-secondary btn-sm" onclick="viewOpportunity(${opp.id})">
-                  <i class="fas fa-eye"></i>
+                <button class="btn btn-secondary btn-sm" onclick="editItem('opportunity', ${opp.id})">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="openDeleteModal('opportunity', ${opp.id})">
+                  <i class="fas fa-trash"></i>
+                </button>
+                <button class="btn btn-success btn-sm" onclick="saveEdit(${opp.id})">
+                  <i class="fas fa-save"></i>
                 </button>
               </div>
             </td>
@@ -1682,18 +2241,28 @@
       const leadsTbody = document.querySelector('#leadsTable tbody');
       if (leadsTbody) {
         leadsTbody.innerHTML = salesData.leads.map(lead => `
-          <tr>
-            <td>${lead.name}</td>
-            <td>${lead.company}</td>
-            <td>${lead.email}</td>
-            <td>${lead.phone}</td>
-            <td>${lead.source}</td>
-            <td><span class="deal-status status-${lead.status}">${lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}</span></td>
-            <td>${lead.created}</td>
+          <tr data-id="${lead.id}">
+            <td class="editable-cell" onclick="makeEditable(this, 'leads', 'name', ${lead.id})">${lead.name}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'leads', 'company', ${lead.id})">${lead.company}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'leads', 'email', ${lead.id})">${lead.email}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'leads', 'phone', ${lead.id})">${lead.phone}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'leads', 'source', ${lead.id})">
+              <span class="deal-status status-${lead.source}">${lead.source.charAt(0).toUpperCase() + lead.source.slice(1)}</span>
+            </td>
+            <td class="editable-cell" onclick="makeEditable(this, 'leads', 'status', ${lead.id})">
+              <span class="deal-status status-${lead.status}">${lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}</span>
+            </td>
+            <td class="editable-cell" onclick="makeEditable(this, 'leads', 'created', ${lead.id})">${lead.created}</td>
             <td>
               <div class="table-actions">
-                <button class="btn btn-secondary btn-sm" onclick="viewLead(${lead.id})">
-                  <i class="fas fa-eye"></i>
+                <button class="btn btn-secondary btn-sm" onclick="editItem('lead', ${lead.id})">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="openDeleteModal('lead', ${lead.id})">
+                  <i class="fas fa-trash"></i>
+                </button>
+                <button class="btn btn-success btn-sm" onclick="saveEdit(${lead.id})">
+                  <i class="fas fa-save"></i>
                 </button>
               </div>
             </td>
@@ -1706,18 +2275,26 @@
       const opportunitiesTbody = document.querySelector('#opportunitiesTable tbody');
       if (opportunitiesTbody) {
         opportunitiesTbody.innerHTML = salesData.opportunities.map(opp => `
-          <tr>
-            <td><strong>${opp.name}</strong></td>
-            <td>${opp.customer}</td>
-            <td>${opp.rep}</td>
-            <td>TZS ${opp.value.toLocaleString()}</td>
-            <td><span class="deal-status status-${opp.stage}">${opp.stage.charAt(0).toUpperCase() + opp.stage.slice(1)}</span></td>
-            <td>${opp.probability}%</td>
-            <td>${opp.closeDate}</td>
+          <tr data-id="${opp.id}">
+            <td class="editable-cell" onclick="makeEditable(this, 'opportunities', 'name', ${opp.id})">${opp.name}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'opportunities', 'customer', ${opp.id})">${opp.customer}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'opportunities', 'rep', ${opp.id})">${opp.rep}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'opportunities', 'value', ${opp.id})">TZS ${opp.value.toLocaleString()}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'opportunities', 'stage', ${opp.id})">
+              <span class="deal-status status-${opp.stage}">${opp.stage.charAt(0).toUpperCase() + opp.stage.slice(1)}</span>
+            </td>
+            <td class="editable-cell" onclick="makeEditable(this, 'opportunities', 'probability', ${opp.id})">${opp.probability}%</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'opportunities', 'closeDate', ${opp.id})">${opp.closeDate}</td>
             <td>
               <div class="table-actions">
-                <button class="btn btn-secondary btn-sm" onclick="viewOpportunity(${opp.id})">
-                  <i class="fas fa-eye"></i>
+                <button class="btn btn-secondary btn-sm" onclick="editItem('opportunity', ${opp.id})">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="openDeleteModal('opportunity', ${opp.id})">
+                  <i class="fas fa-trash"></i>
+                </button>
+                <button class="btn btn-success btn-sm" onclick="saveEdit(${opp.id})">
+                  <i class="fas fa-save"></i>
                 </button>
               </div>
             </td>
@@ -1730,18 +2307,24 @@
       const customersTbody = document.querySelector('#customersTable tbody');
       if (customersTbody) {
         customersTbody.innerHTML = salesData.customers.map(customer => `
-          <tr>
-            <td>${customer.company}</td>
-            <td>${customer.contact}</td>
-            <td>${customer.email}</td>
-            <td>${customer.phone}</td>
-            <td>${customer.type}</td>
-            <td>TZS ${customer.totalValue.toLocaleString()}</td>
-            <td>${customer.lastPurchase}</td>
+          <tr data-id="${customer.id}">
+            <td class="editable-cell" onclick="makeEditable(this, 'customers', 'company', ${customer.id})">${customer.company}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'customers', 'contact', ${customer.id})">${customer.contact}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'customers', 'email', ${customer.id})">${customer.email}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'customers', 'phone', ${customer.id})">${customer.phone}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'customers', 'type', ${customer.id})">${customer.type}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'customers', 'totalValue', ${customer.id})">TZS ${customer.totalValue.toLocaleString()}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'customers', 'lastPurchase', ${customer.id})">${customer.lastPurchase}</td>
             <td>
               <div class="table-actions">
-                <button class="btn btn-secondary btn-sm" onclick="viewCustomer(${customer.id})">
-                  <i class="fas fa-eye"></i>
+                <button class="btn btn-secondary btn-sm" onclick="editItem('customer', ${customer.id})">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="openDeleteModal('customer', ${customer.id})">
+                  <i class="fas fa-trash"></i>
+                </button>
+                <button class="btn btn-success btn-sm" onclick="saveEdit(${customer.id})">
+                  <i class="fas fa-save"></i>
                 </button>
               </div>
             </td>
@@ -1754,17 +2337,25 @@
       const quotationsTbody = document.querySelector('#quotationsTable tbody');
       if (quotationsTbody) {
         quotationsTbody.innerHTML = salesData.quotations.map(quote => `
-          <tr>
-            <td><strong>${quote.id}</strong></td>
-            <td>${quote.customer}</td>
-            <td>TZS ${quote.amount.toLocaleString()}</td>
-            <td><span class="deal-status status-${quote.status}">${quote.status.charAt(0).toUpperCase() + quote.status.slice(1)}</span></td>
-            <td>${quote.created}</td>
-            <td>${quote.expires}</td>
+          <tr data-id="${quote.id}">
+            <td class="editable-cell" onclick="makeEditable(this, 'quotations', 'id', '${quote.id}')">${quote.id}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'quotations', 'customer', '${quote.id}')">${quote.customer}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'quotations', 'amount', '${quote.id}')">TZS ${quote.amount.toLocaleString()}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'quotations', 'status', '${quote.id}')">
+              <span class="deal-status status-${quote.status}">${quote.status.charAt(0).toUpperCase() + quote.status.slice(1)}</span>
+            </td>
+            <td class="editable-cell" onclick="makeEditable(this, 'quotations', 'created', '${quote.id}')">${quote.created}</td>
+            <td class="editable-cell" onclick="makeEditable(this, 'quotations', 'expires', '${quote.id}')">${quote.expires}</td>
             <td>
               <div class="table-actions">
-                <button class="btn btn-secondary btn-sm" onclick="viewQuotation('${quote.id}')">
-                  <i class="fas fa-eye"></i>
+                <button class="btn btn-secondary btn-sm" onclick="editItem('quotation', '${quote.id}')">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="openDeleteModal('quotation', '${quote.id}')">
+                  <i class="fas fa-trash"></i>
+                </button>
+                <button class="btn btn-success btn-sm" onclick="saveEdit('${quote.id}')">
+                  <i class="fas fa-save"></i>
                 </button>
               </div>
             </td>
@@ -1811,56 +2402,812 @@
       }
     }
 
-    // ===== MODAL FUNCTIONS =====
-    function openModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
+    // ===== EDITABLE TABLE FUNCTIONS =====
+    function makeEditable(cell, type, field, id) {
+      const originalContent = cell.innerText;
+      const currentValue = originalContent.replace('TZS ', '').replace(',', '');
+      
+      // Don't make editable if already editing
+      if (cell.querySelector('input') || cell.querySelector('select')) {
+        return;
+      }
+
+      let inputHtml = '';
+      
+      if (field === 'stage' || field === 'status' || field === 'source' || field === 'type') {
+        // Create select dropdown
+        let options = '';
+        if (field === 'stage') {
+          options = `
+            <option value="prospect">Prospect</option>
+            <option value="qualified">Qualified</option>
+            <option value="negotiation">Negotiation</option>
+            <option value="closed">Closed Won</option>
+            <option value="lost">Lost</option>
+          `;
+        } else if (field === 'status') {
+          options = `
+            <option value="new">New</option>
+            <option value="contacted">Contacted</option>
+            <option value="qualified">Qualified</option>
+            <option value="converted">Converted</option>
+            <option value="lost">Lost</option>
+          `;
+        } else if (field === 'source') {
+          options = `
+            <option value="website">Website</option>
+            <option value="referral">Referral</option>
+            <option value="conference">Conference</option>
+            <option value="social">Social Media</option>
+            <option value="coldcall">Cold Call</option>
+          `;
+        } else if (field === 'type') {
+          options = `
+            <option value="Corporate">Corporate</option>
+            <option value="Enterprise">Enterprise</option>
+            <option value="SME">SME</option>
+            <option value="Individual">Individual</option>
+          `;
+        }
+        
+        inputHtml = `<select onchange="updateCell(this, '${type}', '${field}', ${typeof id === 'string' ? "'" + id + "'" : id})" onblur="this.parentElement.innerHTML = this.value">${options}</select>`;
+      } else if (field === 'value' || field === 'amount' || field === 'totalValue' || field === 'probability' || field === 'score') {
+        // Numeric input
+        inputHtml = `<input type="number" value="${currentValue}" onchange="updateCell(this, '${type}', '${field}', ${typeof id === 'string' ? "'" + id + "'" : id})" onblur="this.parentElement.innerHTML = this.value">`;
+      } else if (field === 'created' || field === 'closeDate' || field === 'lastPurchase' || field === 'expires') {
+        // Date input
+        inputHtml = `<input type="date" value="${currentValue}" onchange="updateCell(this, '${type}', '${field}', ${typeof id === 'string' ? "'" + id + "'" : id})" onblur="this.parentElement.innerHTML = this.value">`;
+      } else {
+        // Text input
+        inputHtml = `<input type="text" value="${originalContent}" onchange="updateCell(this, '${type}', '${field}', ${typeof id === 'string' ? "'" + id + "'" : id})" onblur="this.parentElement.innerHTML = this.value">`;
+      }
+      
+      cell.innerHTML = inputHtml;
+      const input = cell.querySelector('input, select');
+      if (input) {
+        input.focus();
       }
     }
 
-    function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
+    function updateCell(input, type, field, id) {
+      const newValue = input.value;
+      
+      // Find and update in data array
+      if (type === 'leads') {
+        const lead = salesData.leads.find(l => l.id === id);
+        if (lead) {
+          lead[field] = field === 'value' ? parseFloat(newValue) : newValue;
+        }
+      } else if (type === 'opportunities') {
+        const opp = salesData.opportunities.find(o => o.id === id);
+        if (opp) {
+          if (field === 'value' || field === 'probability') {
+            opp[field] = parseFloat(newValue);
+          } else {
+            opp[field] = newValue;
+          }
+        }
+      } else if (type === 'customers') {
+        const customer = salesData.customers.find(c => c.id === id);
+        if (customer) {
+          if (field === 'totalValue') {
+            customer[field] = parseFloat(newValue);
+          } else {
+            customer[field] = newValue;
+          }
+        }
+      } else if (type === 'quotations') {
+        const quote = salesData.quotations.find(q => q.id === id);
+        if (quote) {
+          if (field === 'amount') {
+            quote[field] = parseFloat(newValue);
+          } else {
+            quote[field] = newValue;
+          }
+        }
       }
+      
+      // Update display
+      if (field === 'value' || field === 'amount' || field === 'totalValue') {
+        input.parentElement.innerHTML = 'TZS ' + parseFloat(newValue).toLocaleString();
+      } else if (field === 'probability') {
+        input.parentElement.innerHTML = newValue + '%';
+      } else {
+        input.parentElement.innerHTML = newValue;
+      }
+      
+      showNotification('Updated successfully', 'success');
     }
 
-    // ===== UTILITY FUNCTIONS =====
-    function addOpportunity(event) {
+    function saveEdit(id) {
+      // Refresh the current tab
+      const activeTab = document.querySelector('.tab-content.active').id.replace('-tab', '');
+      if (activeTab === 'leads') loadLeadsData();
+      else if (activeTab === 'opportunities') loadOpportunitiesData();
+      else if (activeTab === 'customers') loadCustomersData();
+      else if (activeTab === 'quotations') loadQuotationsData();
+      else if (activeTab === 'dashboard') loadDashboardData();
+      
+      showNotification('Changes saved', 'success');
+    }
+
+    // ===== ADD/EDIT FUNCTIONS =====
+    function openAddModal(type) {
+      currentEditId = null;
+      currentEditType = type;
+      document.getElementById('modalTitle').textContent = `Add New ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+      
+      let formHtml = '';
+      
+      if (type === 'lead') {
+        formHtml = `
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="form-control" id="name" required>
+          </div>
+          <div class="form-group">
+            <label>Company</label>
+            <input type="text" class="form-control" id="company" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" class="form-control" id="email" required>
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" class="form-control" id="phone" required>
+          </div>
+          <div class="form-group">
+            <label>Source</label>
+            <select class="form-control" id="source" required>
+              <option value="website">Website</option>
+              <option value="referral">Referral</option>
+              <option value="conference">Conference</option>
+              <option value="social">Social Media</option>
+              <option value="coldcall">Cold Call</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select class="form-control" id="status" required>
+              <option value="new">New</option>
+              <option value="contacted">Contacted</option>
+              <option value="qualified">Qualified</option>
+              <option value="converted">Converted</option>
+            </select>
+          </div>
+          <input type="hidden" id="created" value="${new Date().toISOString().split('T')[0]}">
+        `;
+      } else if (type === 'opportunity') {
+        formHtml = `
+          <div class="form-group">
+            <label>Opportunity Name</label>
+            <input type="text" class="form-control" id="name" required>
+          </div>
+          <div class="form-group">
+            <label>Customer</label>
+            <input type="text" class="form-control" id="customer" required>
+          </div>
+          <div class="form-group">
+            <label>Sales Rep</label>
+            <input type="text" class="form-control" id="rep" value="Sales Team" required>
+          </div>
+          <div class="form-group">
+            <label>Value (TZS)</label>
+            <input type="number" class="form-control" id="value" required>
+          </div>
+          <div class="form-group">
+            <label>Stage</label>
+            <select class="form-control" id="stage" required>
+              <option value="prospect">Prospect</option>
+              <option value="qualified">Qualified</option>
+              <option value="negotiation">Negotiation</option>
+              <option value="closed">Closed Won</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Probability (%)</label>
+            <input type="number" class="form-control" id="probability" min="0" max="100" value="50" required>
+          </div>
+          <div class="form-group">
+            <label>Close Date</label>
+            <input type="date" class="form-control" id="closeDate" required>
+          </div>
+        `;
+      } else if (type === 'customer') {
+        formHtml = `
+          <div class="form-group">
+            <label>Company</label>
+            <input type="text" class="form-control" id="company" required>
+          </div>
+          <div class="form-group">
+            <label>Contact Person</label>
+            <input type="text" class="form-control" id="contact" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" class="form-control" id="email" required>
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" class="form-control" id="phone" required>
+          </div>
+          <div class="form-group">
+            <label>Type</label>
+            <select class="form-control" id="type" required>
+              <option value="Corporate">Corporate</option>
+              <option value="Enterprise">Enterprise</option>
+              <option value="SME">SME</option>
+              <option value="Individual">Individual</option>
+            </select>
+          </div>
+          <input type="hidden" id="totalValue" value="0">
+          <input type="hidden" id="lastPurchase" value="${new Date().toISOString().split('T')[0]}">
+        `;
+      } else if (type === 'quotation') {
+        formHtml = `
+          <div class="form-group">
+            <label>Customer</label>
+            <input type="text" class="form-control" id="customer" required>
+          </div>
+          <div class="form-group">
+            <label>Amount (TZS)</label>
+            <input type="number" class="form-control" id="amount" required>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select class="form-control" id="status" required>
+              <option value="draft">Draft</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Expires</label>
+            <input type="date" class="form-control" id="expires" value="${new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0]}" required>
+          </div>
+          <div class="form-group">
+            <label>Items (comma separated)</label>
+            <input type="text" class="form-control" id="items" placeholder="e.g., Product A, Service B" required>
+          </div>
+          <input type="hidden" id="created" value="${new Date().toISOString().split('T')[0]}">
+        `;
+      }
+      
+      document.getElementById('formFields').innerHTML = formHtml;
+      document.getElementById('addEditModal').classList.add('active');
+    }
+
+    function saveItem(event) {
       event.preventDefault();
-      alert('Opportunity added!');
-      closeModal('addOpportunityModal');
+      
+      const type = currentEditType;
+      let newItem = {};
+      
+      if (type === 'lead') {
+        newItem = {
+          id: salesData.leads.length + 1,
+          name: document.getElementById('name').value,
+          company: document.getElementById('company').value,
+          email: document.getElementById('email').value,
+          phone: document.getElementById('phone').value,
+          source: document.getElementById('source').value,
+          status: document.getElementById('status').value,
+          created: document.getElementById('created').value,
+          score: 50
+        };
+        salesData.leads.push(newItem);
+      } else if (type === 'opportunity') {
+        newItem = {
+          id: salesData.opportunities.length + 1,
+          name: document.getElementById('name').value,
+          customer: document.getElementById('customer').value,
+          rep: document.getElementById('rep').value,
+          value: parseFloat(document.getElementById('value').value),
+          currency: "TZS",
+          stage: document.getElementById('stage').value,
+          probability: parseFloat(document.getElementById('probability').value),
+          closeDate: document.getElementById('closeDate').value,
+          description: ""
+        };
+        salesData.opportunities.push(newItem);
+      } else if (type === 'customer') {
+        newItem = {
+          id: salesData.customers.length + 1,
+          company: document.getElementById('company').value,
+          contact: document.getElementById('contact').value,
+          email: document.getElementById('email').value,
+          phone: document.getElementById('phone').value,
+          type: document.getElementById('type').value,
+          totalValue: 0,
+          lastPurchase: document.getElementById('lastPurchase').value,
+          interactions: 0
+        };
+        salesData.customers.push(newItem);
+      } else if (type === 'quotation') {
+        const itemsStr = document.getElementById('items').value;
+        const items = itemsStr.split(',').map(item => item.trim());
+        
+        newItem = {
+          id: `QT-${String(salesData.quotations.length + 1).padStart(3, '0')}`,
+          customer: document.getElementById('customer').value,
+          amount: parseFloat(document.getElementById('amount').value),
+          status: document.getElementById('status').value,
+          created: document.getElementById('created').value,
+          expires: document.getElementById('expires').value,
+          items: items
+        };
+        salesData.quotations.push(newItem);
+      }
+      
+      closeModal('addEditModal');
+      
+      // Refresh current tab
+      const activeTab = document.querySelector('.tab-content.active').id.replace('-tab', '');
+      if (activeTab === 'leads') loadLeadsData();
+      else if (activeTab === 'opportunities') loadOpportunitiesData();
+      else if (activeTab === 'customers') loadCustomersData();
+      else if (activeTab === 'quotations') loadQuotationsData();
+      else if (activeTab === 'dashboard') loadDashboardData();
+      
+      showNotification(`${type} added successfully`, 'success');
     }
 
-    function viewOpportunity(id) {
-      const opportunity = salesData.opportunities.find(o => o.id === id);
-      if (opportunity) {
-        alert(`Viewing: ${opportunity.name}\nValue: TZS ${opportunity.value.toLocaleString()}\nStage: ${opportunity.stage}`);
+    function editItem(type, id) {
+      currentEditId = id;
+      currentEditType = type;
+      document.getElementById('modalTitle').textContent = `Edit ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+      
+      let item = null;
+      let formHtml = '';
+      
+      if (type === 'lead') {
+        item = salesData.leads.find(l => l.id === id);
+        if (item) {
+          formHtml = `
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" class="form-control" id="name" value="${item.name}" required>
+            </div>
+            <div class="form-group">
+              <label>Company</label>
+              <input type="text" class="form-control" id="company" value="${item.company}" required>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" class="form-control" id="email" value="${item.email}" required>
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="tel" class="form-control" id="phone" value="${item.phone}" required>
+            </div>
+            <div class="form-group">
+              <label>Source</label>
+              <select class="form-control" id="source" required>
+                <option value="website" ${item.source === 'website' ? 'selected' : ''}>Website</option>
+                <option value="referral" ${item.source === 'referral' ? 'selected' : ''}>Referral</option>
+                <option value="conference" ${item.source === 'conference' ? 'selected' : ''}>Conference</option>
+                <option value="social" ${item.source === 'social' ? 'selected' : ''}>Social Media</option>
+                <option value="coldcall" ${item.source === 'coldcall' ? 'selected' : ''}>Cold Call</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select class="form-control" id="status" required>
+                <option value="new" ${item.status === 'new' ? 'selected' : ''}>New</option>
+                <option value="contacted" ${item.status === 'contacted' ? 'selected' : ''}>Contacted</option>
+                <option value="qualified" ${item.status === 'qualified' ? 'selected' : ''}>Qualified</option>
+                <option value="converted" ${item.status === 'converted' ? 'selected' : ''}>Converted</option>
+              </select>
+            </div>
+            <input type="hidden" id="created" value="${item.created}">
+          `;
+        }
+      }
+      // Similar for other types...
+      
+      if (formHtml) {
+        document.getElementById('formFields').innerHTML = formHtml;
+        document.getElementById('addEditModal').classList.add('active');
       }
     }
 
-    function viewLead(id) {
-      const lead = salesData.leads.find(l => l.id === id);
-      if (lead) {
-        alert(`Viewing: ${lead.name}\nCompany: ${lead.company}\nStatus: ${lead.status}`);
+    // ===== DELETE FUNCTIONS =====
+    function openDeleteModal(type, id) {
+      deleteType = type;
+      deleteId = id;
+      document.getElementById('deleteModal').classList.add('active');
+    }
+
+    function confirmDelete() {
+      if (deleteType && deleteId) {
+        if (deleteType === 'lead') {
+          salesData.leads = salesData.leads.filter(l => l.id !== deleteId);
+        } else if (deleteType === 'opportunity') {
+          salesData.opportunities = salesData.opportunities.filter(o => o.id !== deleteId);
+        } else if (deleteType === 'customer') {
+          salesData.customers = salesData.customers.filter(c => c.id !== deleteId);
+        } else if (deleteType === 'quotation') {
+          salesData.quotations = salesData.quotations.filter(q => q.id !== deleteId);
+        }
+        
+        // Refresh current tab
+        const activeTab = document.querySelector('.tab-content.active').id.replace('-tab', '');
+        if (activeTab === 'leads') loadLeadsData();
+        else if (activeTab === 'opportunities') loadOpportunitiesData();
+        else if (activeTab === 'customers') loadCustomersData();
+        else if (activeTab === 'quotations') loadQuotationsData();
+        else if (activeTab === 'dashboard') loadDashboardData();
+        
+        showNotification('Item deleted successfully', 'success');
+      }
+      
+      closeModal('deleteModal');
+    }
+
+    // ===== TOOL FUNCTIONS =====
+    function openToolModal(tool) {
+      if (tool === 'quotation') {
+        // Load customers into dropdown
+        const select = document.getElementById('quoteCustomer');
+        select.innerHTML = '<option value="">Select Customer</option>' + 
+          salesData.customers.map(c => `<option value="${c.company}">${c.company}</option>`).join('');
+        
+        document.getElementById('quotationModal').classList.add('active');
+      } else if (tool === 'forecast') {
+        updateForecast();
+        document.getElementById('forecastModal').classList.add('active');
+      } else if (tool === 'commission') {
+        document.getElementById('salesAmount').value = '';
+        document.getElementById('commissionResult').innerHTML = 'TZS 0';
+        document.getElementById('commissionBreakdown').style.display = 'none';
+        document.getElementById('commissionModal').classList.add('active');
       }
     }
 
-    function viewCustomer(id) {
-      const customer = salesData.customers.find(c => c.id === id);
-      if (customer) {
-        alert(`Viewing: ${customer.company}\nContact: ${customer.contact}\nTotal Value: TZS ${customer.totalValue.toLocaleString()}`);
+    // Quotation functions
+    let itemCount = 1;
+
+    function addQuoteItem() {
+      itemCount++;
+      const itemsDiv = document.getElementById('quoteItems');
+      const newItem = document.createElement('div');
+      newItem.className = 'form-row';
+      newItem.style.marginBottom = '0.5rem';
+      newItem.innerHTML = `
+        <input type="text" class="form-control" placeholder="Item description" id="itemDesc${itemCount}" required>
+        <input type="number" class="form-control" placeholder="Quantity" id="itemQty${itemCount}" value="1" min="1" required>
+        <input type="number" class="form-control" placeholder="Unit Price" id="itemPrice${itemCount}" required>
+      `;
+      itemsDiv.appendChild(newItem);
+      
+      // Add event listeners for calculation
+      document.getElementById(`itemQty${itemCount}`).addEventListener('input', calculateQuoteTotal);
+      document.getElementById(`itemPrice${itemCount}`).addEventListener('input', calculateQuoteTotal);
+    }
+
+    function calculateQuoteTotal() {
+      let subtotal = 0;
+      
+      for (let i = 1; i <= itemCount; i++) {
+        const qty = parseFloat(document.getElementById(`itemQty${i}`)?.value) || 0;
+        const price = parseFloat(document.getElementById(`itemPrice${i}`)?.value) || 0;
+        subtotal += qty * price;
+      }
+      
+      const tax = subtotal * 0.18; // 18% VAT
+      const total = subtotal + tax;
+      
+      document.getElementById('quoteSubtotal').value = 'TZS ' + subtotal.toLocaleString();
+      document.getElementById('quoteTax').value = 'TZS ' + tax.toLocaleString();
+      document.getElementById('quoteTotal').value = 'TZS ' + total.toLocaleString();
+    }
+
+    function createQuotation(event) {
+      event.preventDefault();
+      
+      const customer = document.getElementById('quoteCustomer').value;
+      const validUntil = document.getElementById('quoteValidUntil').value;
+      
+      // Calculate total
+      let total = 0;
+      let items = [];
+      
+      for (let i = 1; i <= itemCount; i++) {
+        const desc = document.getElementById(`itemDesc${i}`)?.value;
+        const qty = parseFloat(document.getElementById(`itemQty${i}`)?.value) || 0;
+        const price = parseFloat(document.getElementById(`itemPrice${i}`)?.value) || 0;
+        
+        if (desc && qty && price) {
+          items.push(`${desc} (${qty} x TZS ${price.toLocaleString()})`);
+          total += qty * price;
+        }
+      }
+      
+      const tax = total * 0.18;
+      const grandTotal = total + tax;
+      
+      const newQuotation = {
+        id: `QT-${String(salesData.quotations.length + 1).padStart(3, '0')}`,
+        customer: customer,
+        amount: grandTotal,
+        status: 'draft',
+        created: new Date().toISOString().split('T')[0],
+        expires: validUntil,
+        items: items
+      };
+      
+      salesData.quotations.push(newQuotation);
+      
+      closeModal('quotationModal');
+      showNotification('Quotation created successfully', 'success');
+      
+      // Reset form
+      itemCount = 1;
+      document.getElementById('quoteItems').innerHTML = `
+        <div class="form-row" style="margin-bottom: 0.5rem;">
+          <input type="text" class="form-control" placeholder="Item description" id="itemDesc1" required>
+          <input type="number" class="form-control" placeholder="Quantity" id="itemQty1" value="1" min="1" required>
+          <input type="number" class="form-control" placeholder="Unit Price" id="itemPrice1" required>
+        </div>
+      `;
+    }
+
+    // Forecast functions
+    function updateForecast() {
+      const period = document.getElementById('forecastPeriod').value;
+      const threshold = document.getElementById('probabilityThreshold').value;
+      document.getElementById('thresholdValue').textContent = threshold + '%';
+      
+      // Calculate forecast based on opportunities
+      let pipeline = 0;
+      let expected = 0;
+      
+      salesData.opportunities.forEach(opp => {
+        pipeline += opp.value;
+        if (opp.probability >= threshold) {
+          expected += opp.value * (opp.probability / 100);
+        }
+      });
+      
+      const target = period === 'month' ? 15000000 : period === 'quarter' ? 45000000 : 180000000;
+      const vsTarget = ((expected / target) * 100 - 100).toFixed(1);
+      
+      document.getElementById('currentPipeline').innerHTML = 'TZS ' + pipeline.toLocaleString();
+      document.getElementById('expectedClose').innerHTML = 'TZS ' + Math.round(expected).toLocaleString();
+      document.getElementById('forecastVsTarget').innerHTML = (vsTarget > 0 ? '+' : '') + vsTarget + '%';
+      document.getElementById('forecastVsTarget').className = 'forecast-value ' + (vsTarget >= 0 ? 'forecast-positive' : 'forecast-negative');
+      
+      // Update forecast chart
+      updateForecastChart(period, expected, target);
+      
+      // Update details
+      const detailsDiv = document.getElementById('forecastDetails');
+      detailsDiv.innerHTML = `
+        <h4 style="margin-top: 1rem;">Forecast Details</h4>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+          <div class="forecast-item">
+            <div class="forecast-label">High Probability (>75%)</div>
+            <div class="forecast-value">TZS ${salesData.opportunities.filter(o => o.probability >= 75).reduce((sum, o) => sum + o.value, 0).toLocaleString()}</div>
+          </div>
+          <div class="forecast-item">
+            <div class="forecast-label">Medium Probability (50-75%)</div>
+            <div class="forecast-value">TZS ${salesData.opportunities.filter(o => o.probability >= 50 && o.probability < 75).reduce((sum, o) => sum + o.value, 0).toLocaleString()}</div>
+          </div>
+          <div class="forecast-item">
+            <div class="forecast-label">Low Probability (<50%)</div>
+            <div class="forecast-value">TZS ${salesData.opportunities.filter(o => o.probability < 50).reduce((sum, o) => sum + o.value, 0).toLocaleString()}</div>
+          </div>
+          <div class="forecast-item">
+            <div class="forecast-label">Weighted Forecast</div>
+            <div class="forecast-value">TZS ${Math.round(expected).toLocaleString()}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateForecastChart(period, expected, target) {
+      const ctx = document.getElementById('forecastChart')?.getContext('2d');
+      if (!ctx) return;
+      
+      if (forecastChart) {
+        forecastChart.destroy();
+      }
+      
+      forecastChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Forecast', 'Target'],
+          datasets: [{
+            data: [expected, target],
+            backgroundColor: ['#10b981', '#3b82f6']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return 'TZS ' + (value / 1000000).toFixed(1) + 'M';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function exportForecast() {
+      const data = {
+        period: document.getElementById('forecastPeriod').value,
+        pipeline: document.getElementById('currentPipeline').innerHTML,
+        expected: document.getElementById('expectedClose').innerHTML,
+        vsTarget: document.getElementById('forecastVsTarget').innerHTML,
+        timestamp: new Date().toISOString(),
+        opportunities: salesData.opportunities
+      };
+      
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `forecast-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      
+      showNotification('Forecast exported successfully', 'success');
+    }
+
+    // Commission functions
+    function calculateCommission() {
+      const amount = parseFloat(document.getElementById('salesAmount').value) || 0;
+      const type = document.getElementById('salesType').value;
+      const teamSize = parseInt(document.getElementById('teamSize').value) || 1;
+      
+      let rate = 0;
+      let bonus = 0;
+      
+      if (amount <= 5000000) {
+        rate = 0.05;
+      } else if (amount <= 10000000) {
+        rate = 0.07;
+      } else if (amount <= 20000000) {
+        rate = 0.10;
+      } else {
+        rate = 0.12;
+        bonus = amount * 0.02; // 2% bonus for large deals
+      }
+      
+      // Type multiplier
+      let typeMultiplier = 1;
+      if (type === 'new') typeMultiplier = 1.2;
+      else if (type === 'upsell') typeMultiplier = 1.1;
+      
+      // Team division
+      const perPerson = (amount * rate * typeMultiplier) / teamSize;
+      const totalCommission = perPerson * teamSize;
+      const withBonus = totalCommission + bonus;
+      
+      document.getElementById('commissionResult').innerHTML = 'TZS ' + Math.round(withBonus).toLocaleString();
+      
+      // Show breakdown
+      const breakdown = document.getElementById('commissionBreakdown');
+      breakdown.style.display = 'block';
+      breakdown.innerHTML = `
+        <h4 style="margin-bottom: 0.5rem;">Commission Breakdown</h4>
+        <div style="display: flex; justify-content: space-between;">
+          <span>Base Rate:</span>
+          <span>${(rate * 100).toFixed(1)}%</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span>Type Multiplier:</span>
+          <span>${typeMultiplier}x</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span>Team Size:</span>
+          <span>${teamSize}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span>Per Person:</span>
+          <span>TZS ${Math.round(perPerson).toLocaleString()}</span>
+        </div>
+        ${bonus > 0 ? `
+        <div style="display: flex; justify-content: space-between; color: var(--success);">
+          <span>Performance Bonus:</span>
+          <span>TZS ${Math.round(bonus).toLocaleString()}</span>
+        </div>
+        ` : ''}
+      `;
+    }
+
+    function saveCommissionCalculation() {
+      const amount = document.getElementById('salesAmount').value;
+      const result = document.getElementById('commissionResult').innerHTML;
+      
+      if (amount) {
+        const calculation = {
+          amount: amount,
+          result: result,
+          type: document.getElementById('salesType').value,
+          teamSize: document.getElementById('teamSize').value,
+          timestamp: new Date().toISOString()
+        };
+        
+        // Save to localStorage
+        const saved = JSON.parse(localStorage.getItem('commission-calculations') || '[]');
+        saved.push(calculation);
+        localStorage.setItem('commission-calculations', JSON.stringify(saved));
+        
+        showNotification('Calculation saved', 'success');
       }
     }
 
-    function viewQuotation(id) {
-      const quote = salesData.quotations.find(q => q.id === id);
-      if (quote) {
-        alert(`Viewing: ${quote.id}\nCustomer: ${quote.customer}\nAmount: TZS ${quote.amount.toLocaleString()}\nStatus: ${quote.status}`);
+    // ===== FILTER AND SEARCH =====
+    function filterTable(table, searchTerm) {
+      const tbody = document.getElementById(table + 'Table')?.querySelector('tbody');
+      if (!tbody) return;
+      
+      const rows = tbody.getElementsByTagName('tr');
+      searchTerm = searchTerm.toLowerCase();
+      
+      for (let row of rows) {
+        let found = false;
+        const cells = row.getElementsByTagName('td');
+        
+        for (let cell of cells) {
+          if (cell.innerText.toLowerCase().includes(searchTerm)) {
+            found = true;
+            break;
+          }
+        }
+        
+        row.style.display = found ? '' : 'none';
       }
+    }
+
+    function globalSearch(searchTerm) {
+      filterTable('leads', searchTerm);
+      filterTable('opportunities', searchTerm);
+      filterTable('customers', searchTerm);
+      filterTable('quotations', searchTerm);
+    }
+
+    // ===== NOTIFICATION SYSTEM =====
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        background: ${type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : type === 'error' ? '#ef4444' : '#3b82f6'};
+        color: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        z-index: 2000;
+        animation: slideIn 0.3s ease;
+      `;
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+
+    // ===== MODAL FUNCTIONS =====
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
     }
 
     // ===== INITIALIZATION =====
@@ -1941,6 +3288,16 @@
       document.getElementById('dateFrom').value = firstDay.toISOString().split('T')[0];
       document.getElementById('dateTo').value = lastDay.toISOString().split('T')[0];
 
+      // Add animation styles
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes slideOut {
+          from { transform: translateX(0); opacity: 1; }
+          to { transform: translateX(100px); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+
       // Service Worker
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')
@@ -1953,14 +3310,27 @@
     window.switchTab = switchTab;
     window.openModal = openModal;
     window.closeModal = closeModal;
-    window.viewOpportunity = viewOpportunity;
-    window.viewLead = viewLead;
-    window.viewCustomer = viewCustomer;
-    window.viewQuotation = viewQuotation;
-    window.addOpportunity = addOpportunity;
+    window.openAddModal = openAddModal;
+    window.openToolModal = openToolModal;
+    window.editItem = editItem;
+    window.saveItem = saveItem;
+    window.openDeleteModal = openDeleteModal;
+    window.confirmDelete = confirmDelete;
+    window.makeEditable = makeEditable;
+    window.updateCell = updateCell;
+    window.saveEdit = saveEdit;
+    window.filterTable = filterTable;
+    window.globalSearch = globalSearch;
+    window.addQuoteItem = addQuoteItem;
+    window.createQuotation = createQuotation;
+    window.updateForecast = updateForecast;
+    window.exportForecast = exportForecast;
+    window.calculateCommission = calculateCommission;
+    window.saveCommissionCalculation = saveCommissionCalculation;
     window.updateRevenueChart = updateRevenueChart;
     window.updatePerformanceChart = updatePerformanceChart;
     window.applyDateRange = applyDateRange;
+    window.showNotification = showNotification;
   </script>
 </body>
 </html>
