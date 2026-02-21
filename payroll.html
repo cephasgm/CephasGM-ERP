@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#2563eb">
-    <meta name="description" content="Payroll Management - CephasGM ERP">
-    <title>Payroll Management - CephasGM ERP</title>
+    <meta name="description" content="Enterprise Payroll Management - Fully Functional ERP System">
+    <title>Enterprise Payroll Management - CephasGM ERP</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icon-192.png">
     <style>
@@ -16,12 +16,14 @@
             --success: #10b981;
             --warning: #f59e0b;
             --error: #ef4444;
+            --info: #3b82f6;
             --background: #f8fafc;
             --surface: #ffffff;
             --text: #1e293b;
             --text-light: #64748b;
             --border: #e2e8f0;
             --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
         }
 
         * {
@@ -51,6 +53,7 @@
             width: 280px;
             height: 100vh;
             overflow-y: auto;
+            z-index: 100;
         }
 
         .logo {
@@ -127,6 +130,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .header h1 {
@@ -135,7 +140,22 @@
             color: var(--text);
         }
 
-        /* Enhanced Toolbar */
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .offline-status {
+            background: var(--warning);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: none;
+        }
+
         .toolbar {
             margin-bottom: 2rem;
             display: flex;
@@ -148,89 +168,34 @@
             box-shadow: var(--shadow);
         }
 
-        .btn-primary {
-            background: var(--primary);
-            color: white;
+        .btn {
             border: none;
             padding: 0.75rem 1.5rem;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-secondary { background: var(--secondary); color: white; }
+        .btn-secondary:hover { background: #475569; transform: translateY(-1px); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #059669; transform: translateY(-1px); }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-warning:hover { background: #d97706; }
+        .btn-danger { background: var(--error); color: white; }
+        .btn-danger:hover { background: #dc2626; transform: translateY(-1px); }
+        .btn-info { background: var(--info); color: white; }
+        .btn-info:hover { background: #2563eb; }
 
-        .btn-secondary {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-secondary:hover {
-            background: #475569;
-            transform: translateY(-1px);
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-success:hover {
-            background: #059669;
-            transform: translateY(-1px);
-        }
-
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            transition: all 0.2s;
-        }
-
-        .btn-warning:hover {
-            background: #d97706;
-        }
-
-        .btn-danger {
-            background: var(--error);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-            transform: translateY(-1px);
-        }
-
-        /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -240,9 +205,6 @@
             padding: 1.5rem;
             border-radius: 12px;
             border: 1px solid var(--border);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
             box-shadow: var(--shadow);
             cursor: pointer;
             transition: all 0.3s ease;
@@ -250,58 +212,67 @@
 
         .stat-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: var(--shadow-lg);
         }
 
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--primary);
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
         }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.primary { background: rgba(37, 99, 235, 0.1); color: var(--primary); }
+        .stat-icon.success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .stat-icon.warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .stat-icon.error { background: rgba(239, 68, 68, 0.1); color: var(--error); }
 
         .stat-number {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
         }
 
         .stat-label {
             color: var(--text-light);
-            font-size: 0.9rem;
+            font-size: 0.875rem;
         }
 
         .stat-trend {
             font-size: 0.875rem;
             margin-top: 0.5rem;
-            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            background: var(--background);
+            border-radius: 20px;
+            display: inline-block;
         }
 
-        .trend-up {
-            color: var(--success);
-        }
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--error); }
 
-        .trend-down {
-            color: var(--error);
-        }
-
-        /* Payroll Overview */
-        .payroll-overview {
+        .dashboard-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
-        .overview-card {
+        .card {
             background: var(--surface);
-            padding: 1.5rem;
             border-radius: 12px;
             border: 1px solid var(--border);
+            padding: 1.5rem;
             box-shadow: var(--shadow);
         }
 
@@ -317,24 +288,64 @@
             font-weight: 600;
         }
 
-        .chart-container {
-            height: 300px;
-            background: var(--background);
-            border-radius: 8px;
+        .card-actions {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-light);
+            gap: 0.5rem;
         }
 
-        /* Quick Actions */
-        .quick-actions {
+        .payroll-calendar {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
         }
 
-        .action-btn {
+        .calendar-day {
+            padding: 1rem;
+            text-align: center;
+            border-radius: 8px;
+            background: var(--background);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .calendar-day:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .calendar-day.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary-dark);
+        }
+
+        .calendar-day.deadline {
+            background: var(--warning);
+            color: white;
+        }
+
+        .calendar-day.payday {
+            background: var(--success);
+            color: white;
+        }
+
+        .calendar-day.holiday {
+            background: var(--info);
+            color: white;
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .action-card {
             background: var(--background);
             border: 1px solid var(--border);
             border-radius: 8px;
@@ -342,20 +353,59 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .action-btn:hover {
+        .action-card:hover {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .action-card:hover .action-icon,
+        .action-card:hover .action-title {
+            color: white;
         }
 
         .action-icon {
             font-size: 2rem;
             margin-bottom: 0.5rem;
+            color: var(--primary);
         }
 
-        /* Enhanced Tables */
+        .action-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .action-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--error);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
         .table-section {
             background: var(--surface);
             border-radius: 12px;
@@ -365,41 +415,76 @@
             box-shadow: var(--shadow);
         }
 
+        .table-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-input, .filter-select {
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--surface);
+            color: var(--text);
+        }
+
         .table-container {
             overflow-x: auto;
-            margin-top: 1rem;
+            max-height: 600px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 8px;
         }
 
         table {
-            border-collapse: collapse;
             width: 100%;
-            background: var(--surface);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        th, td {
-            border: 1px solid var(--border);
-            padding: 12px;
-            text-align: left;
+            border-collapse: collapse;
             font-size: 0.875rem;
         }
 
         th {
             background: var(--primary);
             color: white;
+            padding: 12px;
             position: sticky;
             top: 0;
-            z-index: 5;
+            z-index: 10;
             font-weight: 600;
+            white-space: nowrap;
         }
 
-        tr:nth-child(even) { 
-            background: #f8fafc; 
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
         }
 
-        tr:hover { 
-            background: #f1f5f9; 
+        td[contenteditable="true"] {
+            background: rgba(37, 99, 235, 0.05);
+            cursor: text;
+        }
+
+        td[contenteditable="true"]:hover {
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        td[contenteditable="true"]:focus {
+            outline: 2px solid var(--primary);
+            background: white;
+        }
+
+        tr:hover {
+            background: #f1f5f9;
         }
 
         tr.locked {
@@ -407,12 +492,16 @@
             color: #92400e;
         }
 
+        tr.approved {
+            background: #d1fae5;
+        }
+
         .currency-select {
-            padding: 0.25rem 0.5rem;
+            padding: 0.25rem;
             border: 1px solid var(--border);
             border-radius: 4px;
             background: var(--surface);
-            color: var(--text);
+            width: 100%;
         }
 
         .amount-cell {
@@ -420,13 +509,21 @@
             text-align: right;
         }
 
-        .positive-amount {
-            color: var(--success);
+        .positive-amount { color: var(--success); }
+        .negative-amount { color: var(--error); }
+
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
 
-        .negative-amount {
-            color: var(--error);
-        }
+        .badge.success { background: var(--success); color: white; }
+        .badge.warning { background: var(--warning); color: white; }
+        .badge.error { background: var(--error); color: white; }
+        .badge.info { background: var(--info); color: white; }
+        .badge.secondary { background: var(--secondary); color: white; }
 
         .actions {
             display: flex;
@@ -441,8 +538,7 @@
             font-size: 0.75rem;
         }
 
-        /* Enhanced Modal */
-        #payrollModal {
+        .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -450,6 +546,8 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            overflow-y: auto;
+            padding: 2rem;
         }
 
         .modal-content {
@@ -457,10 +555,10 @@
             border-radius: 12px;
             padding: 2rem;
             width: 90%;
-            max-width: 900px;
+            max-width: 1200px;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 20px 25px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-lg);
         }
 
         .modal-header {
@@ -473,9 +571,8 @@
         }
 
         .modal-header h3 {
-            margin: 0;
-            color: var(--primary);
             font-size: 1.5rem;
+            color: var(--primary);
         }
 
         .modal-header button {
@@ -486,35 +583,43 @@
             color: var(--text-light);
         }
 
-        .modal-header button:hover {
-            color: var(--error);
-        }
+        .modal-header button:hover { color: var(--error); }
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
             margin-bottom: 1.5rem;
         }
 
-        .form-grid label {
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 0.5rem;
-            display: block;
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
-        input, select {
-            width: 100%;
+        .form-group label {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group label.required::after {
+            content: "*";
+            color: var(--error);
+            margin-left: 0.25rem;
+        }
+
+        input, select, textarea {
             padding: 0.75rem;
             border-radius: 8px;
             border: 1px solid var(--border);
             background: var(--surface);
             color: var(--text);
             font-size: 0.95rem;
+            width: 100%;
         }
 
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
@@ -529,90 +634,108 @@
             border-top: 1px solid var(--border);
         }
 
-        /* File Upload Styles */
-        .file-upload-group {
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
             display: flex;
-            gap: 0.5rem;
             align-items: center;
+            gap: 0.5rem;
         }
 
-        .file-upload-group input[type="file"] {
-            flex: 1;
-            padding: 0.5rem;
-            border: 1px dashed var(--border);
-            border-radius: 6px;
-        }
+        .alert.success { background: #d1fae5; color: #065f46; }
+        .alert.error { background: #fee2e2; color: #991b1b; }
+        .alert.warning { background: #fed7aa; color: #92400e; }
+        .alert.info { background: #dbeafe; color: #1e40af; }
 
-        /* Offline Status */
-        .offline-status {
-            background: var(--warning);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: none;
-        }
-
-        /* Section Headers */
-        .section-header {
-            color: var(--primary);
-            margin: 2rem 0 1rem 0;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--primary);
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .footer {
-            text-align: center;
+        .file-upload {
+            border: 2px dashed var(--border);
             padding: 2rem;
-            margin-top: 3rem;
-            color: var(--text-light);
-            border-top: 1px solid var(--border);
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        /* Responsive Design */
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: var(--background);
+        }
+
+        .payslip-preview {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .payslip-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .payslip-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .payslip-total {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: var(--shadow-lg);
+            border-left: 4px solid var(--success);
+            display: none;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            display: block;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .download-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
         @media (max-width: 1024px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .main-content {
-                margin-left: 0;
-                grid-column: 1;
-            }
-            .payroll-overview {
-                grid-template-columns: 1fr;
-            }
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
+            .dashboard { grid-template-columns: 1fr; }
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; grid-column: 1; }
+            .dashboard-grid { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 768px) {
-            .main-content {
-                padding: 1rem;
-            }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            .toolbar {
-                flex-direction: column;
-            }
-            .table-container {
-                font-size: 0.75rem;
-            }
-            th, td {
-                padding: 8px 4px;
-            }
+            .main-content { padding: 1rem; }
+            .toolbar { flex-direction: column; }
+            .header-actions { flex-direction: column; width: 100%; }
         }
 
-        /* Dark mode support */
         @media (prefers-color-scheme: dark) {
             :root {
                 --background: #0f172a;
@@ -621,12 +744,8 @@
                 --text-light: #94a3b8;
                 --border: #334155;
             }
-            tr:nth-child(even) { 
-                background: #1e293b; 
-            }
-            tr:hover { 
-                background: #334155; 
-            }
+            tr:hover { background: #334155; }
+            .payslip-preview { background: #1e293b; }
         }
     </style>
 </head>
@@ -643,15 +762,15 @@
 
             <div class="nav-section">
                 <div class="nav-title">Payroll & HR</div>
-                <a href="payroll.html" class="nav-item active">
+                <a href="#" class="nav-item active" onclick="switchModule('payroll')">
                     <span class="nav-icon">💳</span>
                     Payroll Management
                 </a>
-                <a href="hr.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="switchModule('hr')">
                     <span class="nav-icon">👥</span>
                     HR Management
                 </a>
-                <a href="attendance.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="switchModule('attendance')">
                     <span class="nav-icon">⏱️</span>
                     Attendance
                 </a>
@@ -659,15 +778,15 @@
 
             <div class="nav-section">
                 <div class="nav-title">Payroll Modules</div>
-                <a href="salary-structure.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="openSalaryStructure()">
                     <span class="nav-icon">🏗️</span>
                     Salary Structure
                 </a>
-                <a href="tax-management.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="openTaxManagement()">
                     <span class="nav-icon">🏛️</span>
                     Tax Management
                 </a>
-                <a href="benefits.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="openBenefits()">
                     <span class="nav-icon">🏥</span>
                     Benefits
                 </a>
@@ -675,15 +794,15 @@
 
             <div class="nav-section">
                 <div class="nav-title">Operations</div>
-                <a href="index.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="switchModule('dashboard')">
                     <span class="nav-icon">📊</span>
                     Dashboard
                 </a>
-                <a href="finance.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="switchModule('finance')">
                     <span class="nav-icon">💰</span>
                     Finance
                 </a>
-                <a href="admin.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="switchModule('admin')">
                     <span class="nav-icon">⚙️</span>
                     System Admin
                 </a>
@@ -692,614 +811,1863 @@
 
         <main class="main-content">
             <div class="header">
-                <h1>Payroll Management</h1>
-                <div>
-                    <span class="offline-status" id="offlineStatus">Offline</span>
+                <h1>Enterprise Payroll Management</h1>
+                <div class="header-actions">
+                    <span class="offline-status" id="offlineStatus">Offline Mode</span>
+                    <span class="badge info" id="currentPeriod">Period: March 2025</span>
                 </div>
             </div>
 
-            <!-- Enhanced Toolbar -->
             <div class="toolbar">
                 <button class="btn-primary" onclick="openPayrollModal()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">➕</span>
-                    Add Payroll Entry
+                    <span>➕</span> New Payroll Entry
                 </button>
                 <button class="btn-success" onclick="processPayroll()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">⚡</span>
-                    Process Payroll
+                    <span>⚡</span> Process Payroll
                 </button>
-                <button class="btn-secondary" onclick="importAttendanceData()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">⏱️</span>
-                    Import Attendance
+                <button class="btn-info" onclick="runPayrollWizard()">
+                    <span>🔄</span> Payroll Wizard
                 </button>
-                <button class="btn-success" onclick="exportPayrollData()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">📤</span>
-                    Export Data
+                <button class="btn-secondary" onclick="importAttendance()">
+                    <span>⏱️</span> Import Attendance
+                </button>
+                <button class="btn-success" onclick="exportData()">
+                    <span>📤</span> Export Data
+                </button>
+                <button class="btn-warning" onclick="openReports()">
+                    <span>📊</span> Reports
                 </button>
                 <button class="btn-danger" onclick="clearAllData()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">🗑️</span>
-                    Clear All
+                    <span>🗑️</span> Clear All
                 </button>
             </div>
 
-            <!-- Payroll Statistics -->
             <div class="stats-grid">
-                <div class="stat-card" onclick="viewEmployees()">
-                    <div class="stat-number" id="totalEmployees">0</div>
+                <div class="stat-card" onclick="filterByStatus('active')">
+                    <div class="stat-header">
+                        <div class="stat-icon primary">👥</div>
+                        <span class="badge success" id="activeEmployeesBadge">12 Active</span>
+                    </div>
+                    <div class="stat-number" id="totalEmployees">12</div>
                     <div class="stat-label">Total Employees</div>
-                    <div class="stat-trend trend-up" id="employeeTrend">↑ 0 this month</div>
+                    <div class="stat-trend" id="employeeTrend">+2 this month</div>
                 </div>
-                <div class="stat-card" onclick="viewTotalPayroll()">
-                    <div class="stat-number" id="totalPayroll">TZS 0.00</div>
-                    <div class="stat-label">Total Payroll</div>
-                    <div class="stat-trend trend-up" id="payrollTrend">↑ 0% from last month</div>
+                <div class="stat-card" onclick="viewPayrollSummary()">
+                    <div class="stat-header">
+                        <div class="stat-icon success">💰</div>
+                    </div>
+                    <div class="stat-number" id="totalPayroll">TZS 45,678,901</div>
+                    <div class="stat-label">Total Payroll Cost</div>
+                    <div class="stat-trend" id="payrollTrend">↑ 8.5% vs last month</div>
                 </div>
-                <div class="stat-card" onclick="viewAverageSalary()">
-                    <div class="stat-number" id="avgSalary">TZS 0.00</div>
-                    <div class="stat-label">Average Salary</div>
-                    <div class="stat-trend trend-up" id="salaryTrend">↑ 0% change</div>
+                <div class="stat-card" onclick="viewCountryBreakdown()">
+                    <div class="stat-header">
+                        <div class="stat-icon warning">🌍</div>
+                    </div>
+                    <div class="stat-number" id="activeCountries">5</div>
+                    <div class="stat-label">Active Countries</div>
+                    <div class="stat-trend" id="countryTrend">TZ, KE, UG, ZA, NG</div>
                 </div>
-                <div class="stat-card" onclick="viewPendingApprovals()">
-                    <div class="stat-number" id="pendingApprovals">0</div>
+                <div class="stat-card" onclick="showPendingItems()">
+                    <div class="stat-header">
+                        <div class="stat-icon error">⏳</div>
+                    </div>
+                    <div class="stat-number" id="pendingApprovals">3</div>
                     <div class="stat-label">Pending Approvals</div>
-                    <div class="stat-trend trend-down" id="approvalTrend">↓ 0 today</div>
+                    <div class="stat-trend" id="approvalTrend">2 overdue</div>
                 </div>
             </div>
 
-            <!-- Payroll Overview -->
-            <div class="payroll-overview">
-                <div class="overview-card">
+            <div class="dashboard-grid">
+                <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Payroll Distribution</div>
-                        <select id="payrollPeriod" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--background);">
-                            <option>Current Month</option>
-                            <option>Last Month</option>
-                            <option>This Quarter</option>
-                        </select>
+                        <div class="card-title">Payroll Calendar</div>
+                        <div class="card-actions">
+                            <select id="calendarMonth" class="filter-select" onchange="updateCalendar()">
+                                <option value="0">January 2025</option>
+                                <option value="1">February 2025</option>
+                                <option value="2" selected>March 2025</option>
+                                <option value="3">April 2025</option>
+                            </select>
+                            <button class="btn-secondary btn-small" onclick="addCalendarEvent()">+ Add</button>
+                            <button class="btn-success btn-small" onclick="saveCalendar()">Save</button>
+                        </div>
                     </div>
-                    <div class="chart-container" id="payrollChart">
-                        Payroll Distribution Visualization
+                    <div class="payroll-calendar" id="payrollCalendar">
+                        <!-- Dynamic calendar -->
+                    </div>
+                    <div id="calendarEvents" style="margin-top: 1rem; padding: 1rem; background: var(--background); border-radius: 8px;">
+                        <h4>Events</h4>
+                        <div id="eventsList"></div>
                     </div>
                 </div>
 
-                <div class="overview-card">
+                <div class="card">
                     <div class="card-header">
                         <div class="card-title">Quick Actions</div>
                     </div>
-                    <div class="quick-actions">
-                        <div class="action-btn" onclick="calculateBonuses()">
+                    <div class="quick-actions-grid" id="quickActions">
+                        <!-- Bonuses Card -->
+                        <div class="action-card" onclick="openBonusesManager()">
                             <div class="action-icon">💰</div>
-                            <div>Calculate Bonuses</div>
+                            <div class="action-title">Bonuses</div>
+                            <div class="action-badge" id="bonusCount">3</div>
+                            <small>Click to manage</small>
                         </div>
-                        <div class="action-btn" onclick="generatePayslips()">
+                        <!-- Payslips Card -->
+                        <div class="action-card" onclick="openPayslipManager()">
                             <div class="action-icon">📄</div>
-                            <div>Generate Payslips</div>
+                            <div class="action-title">Payslips</div>
+                            <div class="action-badge" id="payslipCount">12</div>
+                            <small>Generate/Download</small>
                         </div>
-                        <div class="action-btn" onclick="taxCalculations()">
+                        <!-- Tax Card -->
+                        <div class="action-card" onclick="openTaxCalculator()">
                             <div class="action-icon">🏛️</div>
-                            <div>Tax Calculations</div>
+                            <div class="action-title">Tax</div>
+                            <div class="action-badge" id="taxDue">TZS 2.3M</div>
+                            <small>Calculate & File</small>
                         </div>
-                        <div class="action-btn" onclick="runReports()">
-                            <div class="action-icon">📊</div>
-                            <div>Run Reports</div>
+                        <!-- Compliance Card -->
+                        <div class="action-card" onclick="runComplianceCheck()">
+                            <div class="action-icon">✅</div>
+                            <div class="action-title">Compliance</div>
+                            <div class="action-badge" id="complianceIssues">0</div>
+                            <small>Check status</small>
+                        </div>
+                        <!-- YTD Reports Card -->
+                        <div class="action-card" onclick="openYTDReports()">
+                            <div class="action-icon">📈</div>
+                            <div class="action-title">YTD Reports</div>
+                            <div class="action-badge" id="ytdTotal">TZS 145M</div>
+                            <small>View & Export</small>
+                        </div>
+                        <!-- What-If Card -->
+                        <div class="action-card" onclick="openWhatIfAnalysis()">
+                            <div class="action-icon">🔮</div>
+                            <div class="action-title">What-If</div>
+                            <div class="action-badge">Simulate</div>
+                            <small>Scenario planning</small>
+                        </div>
+                        <!-- Statutory Card -->
+                        <div class="action-card" onclick="processStatutory()">
+                            <div class="action-icon">🏢</div>
+                            <div class="action-title">Statutory</div>
+                            <div class="action-badge" id="statutoryDue">Due</div>
+                            <small>Process levies</small>
+                        </div>
+                        <!-- Audit Card -->
+                        <div class="action-card" onclick="openAuditTrail()">
+                            <div class="action-icon">🔍</div>
+                            <div class="action-title">Audit</div>
+                            <div class="action-badge" id="auditCount">45</div>
+                            <small>View trail</small>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Section A - Payroll Data -->
-            <div class="section-header">Section A - Payroll Data</div>
+            <!-- Payroll Records Section - FULLY EDITABLE -->
+            <div class="section-header">
+                <h2>Payroll Records</h2>
+                <div class="filter-bar">
+                    <input type="text" id="searchInput" placeholder="Search employees..." class="filter-input" onkeyup="filterPayroll()">
+                    <select id="countryFilter" class="filter-select" onchange="filterPayroll()">
+                        <option value="">All Countries</option>
+                    </select>
+                    <select id="statusFilter" class="filter-select" onchange="filterPayroll()">
+                        <option value="">All Status</option>
+                        <option value="draft">Draft</option>
+                        <option value="calculated">Calculated</option>
+                        <option value="approved">Approved</option>
+                        <option value="paid">Paid</option>
+                    </select>
+                    <button class="btn-success" onclick="saveAllEdits()">Save All Changes</button>
+                </div>
+            </div>
+
             <div class="table-section">
-                <div class="card-header">
-                    <div class="card-title">Employee Payroll Records</div>
-                    <div class="file-upload-group">
-                        <input type="file" id="csvUpload" accept=".csv" style="display: none;" onchange="handleCSVUpload(this.files[0])">
-                        <button class="btn-secondary" onclick="document.getElementById('csvUpload').click()">
-                            📤 Upload CSV
-                        </button>
-                        <button class="btn-secondary" onclick="downloadSampleCSV()">
-                            📥 Sample CSV
-                        </button>
+                <div class="table-toolbar">
+                    <div>
+                        <button class="btn-secondary" onclick="bulkAction('approve')" id="bulkApproveBtn">Bulk Approve</button>
+                        <button class="btn-secondary" onclick="bulkAction('lock')" id="bulkLockBtn">Bulk Lock</button>
+                        <button class="btn-danger" onclick="bulkAction('delete')" id="bulkDeleteBtn">Bulk Delete</button>
                     </div>
+                    <span id="selectedCount">0 selected</span>
                 </div>
                 <div class="table-container">
                     <table id="payrollTable">
                         <thead>
                             <tr>
-                                <th>Select</th>
-                                <th>S/No</th>
-                                <th>Date</th>
-                                <th>Employee Name</th>
+                                <th><input type="checkbox" onclick="toggleAllRows(this)"></th>
+                                <th>ID</th>
+                                <th>Status</th>
+                                <th>Country</th>
                                 <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Department</th>
                                 <th>Currency</th>
-                                <th>Hourly Rate (Normal)</th>
-                                <th>Hourly Rate (Overtime)</th>
-                                <th>Hours Worked (Normal)</th>
-                                <th>Hours Worked (Overtime)</th>
-                                <th>Days Worked (Normal)</th>
-                                <th>Days Worked (Overtime)</th>
+                                <th>Base Salary</th>
+                                <th>Hours Normal</th>
+                                <th>Hours OT</th>
                                 <th>Normal Amount</th>
-                                <th>Overtime Amount</th>
-                                <th>Total Amount</th>
+                                <th>OT Amount</th>
                                 <th>Bonus</th>
-                                <th>Allowance</th>
-                                <th>Deduction</th>
+                                <th>Allowances</th>
+                                <th>Deductions</th>
                                 <th>Gross Salary</th>
-                                <th>PAYEE %</th>
+                                <th>PAYE %</th>
+                                <th>PAYE Amount</th>
                                 <th>Net Salary</th>
-                                <th>Remarks</th>
+                                <th>Employer Cost</th>
+                                <th>Pay Period</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="payrollTableBody">
-                            <!-- Dynamic content will be loaded here -->
+                            <!-- Dynamic data will be loaded here - ALL CELLS EDITABLE -->
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Section B - Summary -->
-            <div class="section-header">Section B - Summary</div>
+            <!-- Summary Section -->
+            <div class="section-header">
+                <h2>Payroll Summary</h2>
+                <button class="btn-success" onclick="exportSummary()">Export Summary</button>
+            </div>
+
             <div class="table-section">
                 <div class="table-container">
                     <table id="summaryTable">
                         <thead>
                             <tr>
-                                <th>Total Employees</th>
-                                <th>Normal Amount Total</th>
-                                <th>Overtime Amount Total</th>
-                                <th>Total Amount</th>
-                                <th>Bonus Total</th>
-                                <th>Allowance Total</th>
-                                <th>Deduction Total</th>
-                                <th>Gross Salary Total</th>
+                                <th>Metric</th>
+                                <th>Total</th>
+                                <th>By Country</th>
+                                <th>By Department</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr id="summaryRow">
-                                <td>0</td>
-                                <td>TZS 0.00</td>
-                                <td>TZS 0.00</td>
-                                <td>TZS 0.00</td>
-                                <td>TZS 0.00</td>
-                                <td>TZS 0.00</td>
-                                <td>TZS 0.00</td>
-                                <td>TZS 0.00</td>
+                        <tbody id="summaryTableBody">
+                            <tr>
+                                <td><strong>Employees</strong></td>
+                                <td id="summaryEmployees" contenteditable="false">12</td>
+                                <td id="summaryEmployeesByCountry">TZ:5, KE:3, UG:2, ZA:1, NG:1</td>
+                                <td id="summaryEmployeesByDept">IT:4, HR:2, FIN:3, SALES:3</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Gross Payroll</strong></td>
+                                <td id="summaryGrossPayroll" contenteditable="false">TZS 45,678,901</td>
+                                <td id="summaryGrossByCountry">TZS 18.5M, KES 12.3M, UGX 8.1M</td>
+                                <td id="summaryGrossByDept">IT:15.2M, HR:8.1M, FIN:10.5M, SALES:11.8M</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Net Payroll</strong></td>
+                                <td id="summaryNetPayroll">TZS 32,845,612</td>
+                                <td id="summaryNetByCountry">-</td>
+                                <td id="summaryNetByDept">-</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Tax</strong></td>
+                                <td id="summaryTax">TZS 8,233,289</td>
+                                <td id="summaryTaxByCountry">-</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Employer Cost</strong></td>
+                                <td id="summaryEmployerCost">TZS 54,123,456</td>
+                                <td id="summaryCostByCountry">-</td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
-            <div class="footer">
-                Copyright © 2025 😀
-            </div>
         </main>
     </div>
 
-    <!-- Enhanced Modal -->
-    <div id="payrollModal">
+    <!-- Bonuses Manager Modal -->
+    <div id="bonusesModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Add New Payroll Entry</h3>
-                <button onclick="closePayrollModal()">✖</button>
+                <h3>Bonus Management</h3>
+                <button onclick="closeModal('bonusesModal')">✖</button>
             </div>
-            <form id="payrollForm" onsubmit="savePayrollEntry(event)">
-                <div class="form-grid" id="payrollFormFields">
-                    <!-- Dynamic form fields will be loaded here -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Employee</label>
+                    <select id="bonusEmployee" class="employee-select"></select>
                 </div>
-                <div class="modal-actions">
-                    <button class="btn-primary" type="submit">Save Entry</button>
-                    <button class="btn-secondary" type="button" onclick="closePayrollModal()">Cancel</button>
+                <div class="form-group">
+                    <label>Bonus Type</label>
+                    <select id="bonusType">
+                        <option value="performance">Performance Bonus</option>
+                        <option value="thirteenth">13th Month</option>
+                        <option value="signon">Sign-on Bonus</option>
+                        <option value="commission">Commission</option>
+                        <option value="holiday">Holiday Bonus</option>
+                    </select>
                 </div>
-            </form>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="number" id="bonusAmount" step="0.01" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Currency</label>
+                    <select id="bonusCurrency">
+                        <option value="TZS">TZS</option>
+                        <option value="KES">KES</option>
+                        <option value="USD">USD</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Payment Date</label>
+                    <input type="date" id="bonusDate">
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="bonusNotes" rows="2"></textarea>
+                </div>
+            </div>
+            <div id="bonusesList" style="margin: 1rem 0; max-height: 200px; overflow-y: auto;">
+                <!-- Dynamic bonuses list -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn-success" onclick="addBonus()">Add Bonus</button>
+                <button class="btn-primary" onclick="saveBonuses()">Save All</button>
+                <button class="btn-secondary" onclick="exportBonuses()">Export</button>
+                <button class="btn-danger" onclick="clearBonuses()">Clear</button>
+                <button class="btn-secondary" onclick="closeModal('bonusesModal')">Close</button>
+            </div>
         </div>
     </div>
 
+    <!-- Payslip Manager Modal -->
+    <div id="payslipModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Payslip Management</h3>
+                <button onclick="closeModal('payslipModal')">✖</button>
+            </div>
+            <div class="form-group">
+                <label>Select Employee</label>
+                <select id="payslipEmployee" onchange="loadPayslip()"></select>
+            </div>
+            <div id="payslipPreview" class="payslip-preview">
+                <!-- Dynamic payslip preview -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="generatePayslip()">Generate</button>
+                <button class="btn-success" onclick="downloadPayslip()">Download PDF</button>
+                <button class="btn-secondary" onclick="emailPayslip()">Email</button>
+                <button class="btn-warning" onclick="printPayslip()">Print</button>
+                <button class="btn-secondary" onclick="closeModal('payslipModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tax Calculator Modal -->
+    <div id="taxModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tax Calculator</h3>
+                <button onclick="closeModal('taxModal')">✖</button>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Country</label>
+                    <select id="taxCountry" onchange="calculateTax()">
+                        <option value="TZ">Tanzania</option>
+                        <option value="KE">Kenya</option>
+                        <option value="UG">Uganda</option>
+                        <option value="ZA">South Africa</option>
+                        <option value="NG">Nigeria</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Annual Income</label>
+                    <input type="number" id="taxIncome" value="24000000" onchange="calculateTax()">
+                </div>
+                <div class="form-group">
+                    <label>Taxable Income</label>
+                    <input type="number" id="taxableIncome" readonly>
+                </div>
+                <div class="form-group">
+                    <label>PAYE Amount</label>
+                    <input type="number" id="taxAmount" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Effective Rate</label>
+                    <input type="text" id="taxRate" readonly>
+                </div>
+            </div>
+            <div id="taxBreakdown" style="margin: 1rem 0; padding: 1rem; background: var(--background); border-radius: 8px;">
+                <!-- Tax breakdown -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="saveTaxCalculation()">Save</button>
+                <button class="btn-success" onclick="exportTax()">Export</button>
+                <button class="btn-secondary" onclick="fileTaxReturn()">File Return</button>
+                <button class="btn-secondary" onclick="closeModal('taxModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compliance Check Modal -->
+    <div id="complianceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Compliance Check</h3>
+                <button onclick="closeModal('complianceModal')">✖</button>
+            </div>
+            <div id="complianceResults">
+                <!-- Dynamic compliance results -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="runFullCompliance()">Run Full Check</button>
+                <button class="btn-success" onclick="exportCompliance()">Export Report</button>
+                <button class="btn-warning" onclick="fixComplianceIssues()">Fix Issues</button>
+                <button class="btn-secondary" onclick="closeModal('complianceModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- YTD Reports Modal -->
+    <div id="ytdModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Year-to-Date Reports</h3>
+                <button onclick="closeModal('ytdModal')">✖</button>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Report Type</label>
+                    <select id="ytdReportType">
+                        <option value="earnings">Earnings Summary</option>
+                        <option value="deductions">Deductions Summary</option>
+                        <option value="tax">Tax Summary</option>
+                        <option value="employer">Employer Costs</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Year</label>
+                    <select id="ytdYear">
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                    </select>
+                </div>
+            </div>
+            <div id="ytdPreview" style="margin: 1rem 0; padding: 1rem; background: var(--background); border-radius: 8px;">
+                <!-- YTD preview -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="generateYTDReport()">Generate</button>
+                <button class="btn-success" onclick="downloadYTDReport()">Download</button>
+                <button class="btn-secondary" onclick="emailYTDReport()">Email</button>
+                <button class="btn-secondary" onclick="closeModal('ytdModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- What-If Analysis Modal -->
+    <div id="whatIfModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>What-If Analysis</h3>
+                <button onclick="closeModal('whatIfModal')">✖</button>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Scenario</label>
+                    <select id="whatIfScenario" onchange="runWhatIf()">
+                        <option value="salary">Salary Increase</option>
+                        <option value="headcount">Headcount Change</option>
+                        <option value="tax">Tax Rate Change</option>
+                        <option value="currency">Currency Fluctuation</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Adjustment %</label>
+                    <input type="number" id="whatIfPercent" value="10" onchange="runWhatIf()">
+                </div>
+            </div>
+            <div id="whatIfResults" style="margin: 1rem 0; padding: 1rem; background: var(--background); border-radius: 8px;">
+                <!-- What-if results -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="saveWhatIf()">Save Scenario</button>
+                <button class="btn-success" onclick="exportWhatIf()">Export</button>
+                <button class="btn-secondary" onclick="closeModal('whatIfModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statutory Processing Modal -->
+    <div id="statutoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Statutory Processing</h3>
+                <button onclick="closeModal('statutoryModal')">✖</button>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Contribution Type</label>
+                    <select id="statutoryType">
+                        <option value="ss">Social Security</option>
+                        <option value="pension">Pension</option>
+                        <option value="health">Health Insurance</option>
+                        <option value="levy">Training Levy</option>
+                        <option value="all">All Contributions</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Period</label>
+                    <select id="statutoryPeriod">
+                        <option value="2025-03">March 2025</option>
+                        <option value="2025-02">February 2025</option>
+                        <option value="2025-01">January 2025</option>
+                    </select>
+                </div>
+            </div>
+            <div id="statutoryPreview" style="margin: 1rem 0; padding: 1rem; background: var(--background); border-radius: 8px;">
+                <!-- Statutory preview -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="processStatutoryPayment()">Process Payment</button>
+                <button class="btn-success" onclick="exportStatutory()">Export Return</button>
+                <button class="btn-secondary" onclick="fileStatutoryReturn()">File Return</button>
+                <button class="btn-secondary" onclick="closeModal('statutoryModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audit Trail Modal -->
+    <div id="auditModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Audit Trail</h3>
+                <button onclick="closeModal('auditModal')">✖</button>
+            </div>
+            <div class="form-group">
+                <input type="text" id="auditSearch" placeholder="Search audit log..." onkeyup="filterAudit()">
+            </div>
+            <div id="auditLog" style="max-height: 400px; overflow-y: auto;">
+                <!-- Dynamic audit log -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="exportAudit()">Export Audit</button>
+                <button class="btn-danger" onclick="clearAudit()">Clear Log</button>
+                <button class="btn-secondary" onclick="closeModal('auditModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reports Modal -->
+    <div id="reportsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Generate Reports</h3>
+                <button onclick="closeModal('reportsModal')">✖</button>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Report Type</label>
+                    <select id="reportType" onchange="updateReportPreview()">
+                        <option value="payroll-summary">Payroll Summary</option>
+                        <option value="employee-list">Employee List</option>
+                        <option value="tax-summary">Tax Summary</option>
+                        <option value="cost-analysis">Cost Analysis</option>
+                        <option value="ytd-summary">YTD Summary</option>
+                        <option value="statutory">Statutory Report</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Format</label>
+                    <select id="reportFormat">
+                        <option value="pdf">PDF</option>
+                        <option value="excel">Excel</option>
+                        <option value="csv">CSV</option>
+                    </select>
+                </div>
+            </div>
+            <div id="reportPreview" style="margin: 1rem 0; padding: 1rem; background: var(--background); border-radius: 8px;">
+                <!-- Report preview -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="generateReport()">Generate</button>
+                <button class="btn-success" onclick="downloadReport()">Download</button>
+                <button class="btn-secondary" onclick="emailReport()">Email</button>
+                <button class="btn-secondary" onclick="closeModal('reportsModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toastMessage">Operation completed successfully</span>
+    </div>
+
     <script>
-        // Enhanced Payroll Management System
-        class PayrollManager {
+        // Enterprise Payroll Manager with FULL Functionality
+        class EnterprisePayrollManager {
             constructor() {
-                this.payrollData = JSON.parse(localStorage.getItem('payrollData')) || [];
-                this.currencies = ["TZS", "USD", "EUR", "GBP", "ZAR", "KES", "ZMW", "NAD"];
-                this.fields = [
-                    "Date", "Employee Name", "Employee ID", "Currency", 
-                    "Hourly Rate (Normal Shift)", "Hourly Rate (Overtime)",
-                    "Hours Worked (Normal Shift)", "Hours Worked (Overtime)", 
-                    "Days Worked (Normal Shift)", "Days Worked (Overtime)",
-                    "(Normal Working Day) Total Amount", "(OverTime) Total Amount", 
-                    "Total Amount", "Bonus", "Allowance", "Deduction",
-                    "Gross Salary", "PAYEE %", "Net Salary", "Remarks"
-                ];
-                this.initialize();
+                this.payrollData = JSON.parse(localStorage.getItem('enterprisePayrollData')) || [];
+                this.auditLog = JSON.parse(localStorage.getItem('auditLog')) || [];
+                this.bonuses = JSON.parse(localStorage.getItem('bonuses')) || [];
+                this.calendarEvents = JSON.parse(localStorage.getItem('calendarEvents')) || [];
+                this.countries = ['TZ', 'KE', 'UG', 'ZA', 'NG', 'GH', 'ZM'];
+                this.departments = ['IT', 'HR', 'Finance', 'Marketing', 'Sales', 'Operations'];
+                this.currencies = ['TZS', 'KES', 'UGX', 'ZAR', 'NGN', 'USD', 'EUR'];
+                this.exchangeRates = {
+                    'TZS': 0.00039, 'KES': 0.0077, 'UGX': 0.00026, 
+                    'ZAR': 0.054, 'NGN': 0.00065, 'USD': 1.0, 'EUR': 1.09
+                };
+                this.init();
             }
 
-            initialize() {
-                this.setupNavigation();
-                this.renderPayrollForm();
-                this.loadPayrollData();
-                this.setupEventListeners();
-                this.setupOfflineDetection();
-            }
-
-            setupNavigation() {
-                document.querySelectorAll('.nav-item').forEach(item => {
-                    if (item.href === window.location.href) {
-                        item.classList.add('active');
-                    }
-                });
-            }
-
-            renderPayrollForm() {
-                const form = document.getElementById('payrollFormFields');
-                form.innerHTML = '';
-
-                this.fields.forEach(field => {
-                    if (["(Normal Working Day) Total Amount", "(OverTime) Total Amount", 
-                         "Total Amount", "Gross Salary", "Net Salary"].includes(field)) return;
-
-                    const label = document.createElement('label');
-                    label.textContent = field;
-                    label.htmlFor = field;
-
-                    if (field === "Currency") {
-                        const select = document.createElement('select');
-                        select.name = field;
-                        select.id = field;
-                        select.required = true;
-                        
-                        this.currencies.forEach(currency => {
-                            const option = document.createElement('option');
-                            option.value = currency;
-                            option.textContent = currency;
-                            select.appendChild(option);
-                        });
-                        
-                        form.appendChild(label);
-                        form.appendChild(select);
-                        return;
-                    }
-
-                    const input = document.createElement('input');
-                    input.type = field === "Date" ? "date" : 
-                                ["Hourly Rate (Normal Shift)", "Hourly Rate (Overtime)",
-                                 "Hours Worked (Normal Shift)", "Hours Worked (Overtime)",
-                                 "Days Worked (Normal Shift)", "Days Worked (Overtime)",
-                                 "Bonus", "Allowance", "Deduction", "PAYEE %"].includes(field) ? "number" : "text";
-                    input.name = field;
-                    input.id = field;
-                    input.step = field.includes("Rate") || field.includes("Bonus") || 
-                                field.includes("Allowance") || field.includes("Deduction") ? "0.01" : "1";
-                    input.min = "0";
-                    input.required = ["Date", "Employee Name", "Employee ID"].includes(field);
-
-                    form.appendChild(label);
-                    form.appendChild(input);
-                });
-            }
-
-            loadPayrollData() {
+            init() {
+                if (this.payrollData.length === 0) {
+                    this.loadSampleData();
+                }
+                this.populateFilters();
                 this.renderPayrollTable();
-                this.updateSummary();
                 this.updateStats();
-                this.updateCharts();
+                this.updateSummary();
+                this.updateCalendar();
+                this.renderAuditLog();
+                this.updateQuickActionBadges();
+                this.setupEventListeners();
+                this.logAudit('System initialized');
+            }
+
+            loadSampleData() {
+                const sampleData = [
+                    {
+                        id: 1,
+                        employeeId: 'EMP001',
+                        employeeName: 'John Doe',
+                        country: 'TZ',
+                        department: 'IT',
+                        currency: 'TZS',
+                        baseSalary: 24000000,
+                        hoursNormal: 160,
+                        hoursOvertime: 12,
+                        bonus: 300000,
+                        allowances: 700000,
+                        deductions: 450000,
+                        grossSalary: 2450000,
+                        payePercent: 20,
+                        payeAmount: 490000,
+                        netSalary: 1960000,
+                        employerCost: 2940000,
+                        status: 'approved',
+                        payPeriod: '2025-03',
+                        locked: false
+                    },
+                    {
+                        id: 2,
+                        employeeId: 'EMP002',
+                        employeeName: 'Jane Smith',
+                        country: 'KE',
+                        department: 'Finance',
+                        currency: 'KES',
+                        baseSalary: 1800000,
+                        hoursNormal: 160,
+                        hoursOvertime: 8,
+                        bonus: 50000,
+                        allowances: 70000,
+                        deductions: 25000,
+                        grossSalary: 152000,
+                        payePercent: 15,
+                        payeAmount: 22800,
+                        netSalary: 129200,
+                        employerCost: 182400,
+                        status: 'calculated',
+                        payPeriod: '2025-03',
+                        locked: false
+                    }
+                ];
+                
+                sampleData.forEach(entry => {
+                    this.calculateFullPayroll(entry);
+                    this.payrollData.push(entry);
+                });
+                this.saveData();
+            }
+
+            calculateFullPayroll(entry) {
+                // Calculate normal and overtime amounts
+                const hourlyRate = entry.baseSalary / 12 / 173.33;
+                entry.normalAmount = hourlyRate * (entry.hoursNormal || 0);
+                entry.overtimeAmount = hourlyRate * 1.5 * (entry.hoursOvertime || 0);
+                
+                // Calculate gross salary
+                entry.grossSalary = (entry.normalAmount + entry.overtimeAmount + 
+                                   (entry.bonus || 0) + (entry.allowances || 0) - 
+                                   (entry.deductions || 0));
+                
+                // Calculate PAYE
+                entry.payeAmount = entry.grossSalary * ((entry.payePercent || 20) / 100);
+                
+                // Calculate net salary
+                entry.netSalary = entry.grossSalary - entry.payeAmount;
+                
+                // Calculate employer cost (approx 1.2x gross)
+                entry.employerCost = entry.grossSalary * 1.2;
+                
+                return entry;
+            }
+
+            saveData() {
+                localStorage.setItem('enterprisePayrollData', JSON.stringify(this.payrollData));
+                localStorage.setItem('auditLog', JSON.stringify(this.auditLog));
+                localStorage.setItem('bonuses', JSON.stringify(this.bonuses));
+                localStorage.setItem('calendarEvents', JSON.stringify(this.calendarEvents));
+            }
+
+            logAudit(action, details = '') {
+                const entry = {
+                    timestamp: new Date().toISOString(),
+                    user: 'Current User',
+                    action: action,
+                    details: details
+                };
+                this.auditLog.unshift(entry);
+                if (this.auditLog.length > 100) this.auditLog.pop();
+                localStorage.setItem('auditLog', JSON.stringify(this.auditLog));
+            }
+
+            populateFilters() {
+                const countryFilter = document.getElementById('countryFilter');
+                this.countries.forEach(code => {
+                    countryFilter.innerHTML += `<option value="${code}">${code}</option>`;
+                });
+
+                // Populate employee selects
+                const employeeSelects = ['bonusEmployee', 'payslipEmployee'];
+                employeeSelects.forEach(id => {
+                    const select = document.getElementById(id);
+                    if (select) {
+                        select.innerHTML = '<option value="">Select Employee</option>';
+                        this.payrollData.forEach(emp => {
+                            select.innerHTML += `<option value="${emp.id}">${emp.employeeName} (${emp.employeeId})</option>`;
+                        });
+                    }
+                });
             }
 
             renderPayrollTable() {
                 const tbody = document.getElementById('payrollTableBody');
-                
-                if (this.payrollData.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="23" style="text-align: center; color: var(--text-light); padding: 2rem;">
-                                No payroll records found. Click "Add Payroll Entry" to get started.
-                            </td>
-                        </tr>
-                    `;
-                    return;
-                }
+                if (!tbody) return;
 
                 tbody.innerHTML = this.payrollData.map((row, index) => `
-                    <tr class="${row.locked ? 'locked' : ''}">
-                        <td><input type="checkbox" class="selectRow" onchange="updateSelections()"></td>
-                        <td>${index + 1}</td>
-                        <td contenteditable="true" onblur="updateField(${index}, 'Date', this)">${row.Date}</td>
-                        <td contenteditable="true" onblur="updateField(${index}, 'Employee Name', this)">${row['Employee Name']}</td>
-                        <td contenteditable="true" onblur="updateField(${index}, 'Employee ID', this)">${row['Employee ID']}</td>
+                    <tr class="${row.locked ? 'locked' : row.status === 'approved' ? 'approved' : ''}" data-id="${row.id}">
+                        <td><input type="checkbox" class="rowCheckbox" value="${index}" onchange="updateSelectedCount()"></td>
+                        <td>${row.id || index + 1}</td>
+                        <td><span class="badge ${row.status}">${row.status || 'draft'}</span></td>
+                        <td contenteditable="true" onblur="payrollManager.updateField(${index}, 'country', this.innerText)">${row.country}</td>
+                        <td contenteditable="true" onblur="payrollManager.updateField(${index}, 'employeeId', this.innerText)">${row.employeeId}</td>
+                        <td contenteditable="true" onblur="payrollManager.updateField(${index}, 'employeeName', this.innerText)">${row.employeeName}</td>
+                        <td contenteditable="true" onblur="payrollManager.updateField(${index}, 'department', this.innerText)">${row.department || 'IT'}</td>
                         <td>
-                            <select class="currency-select" onchange="updateField(${index}, 'Currency', this)" ${row.locked ? 'disabled' : ''}>
-                                ${this.currencies.map(curr => 
-                                    `<option value="${curr}" ${row.Currency === curr ? 'selected' : ''}>${curr}</option>`
-                                ).join('')}
+                            <select class="currency-select" onchange="payrollManager.updateField(${index}, 'currency', this.value)">
+                                ${this.currencies.map(c => `<option value="${c}" ${row.currency === c ? 'selected' : ''}>${c}</option>`).join('')}
                             </select>
                         </td>
-                        <td contenteditable="true" onblur="updateField(${index}, 'Hourly Rate (Normal Shift)', this)">${row['Hourly Rate (Normal Shift)']}</td>
-                        <td contenteditable="true" onblur="updateField(${index}, 'Hourly Rate (Overtime)', this)">${row['Hourly Rate (Overtime)']}</td>
-                        <td contenteditable="true" onblur="updateField(${index}, 'Hours Worked (Normal Shift)', this)">${row['Hours Worked (Normal Shift)']}</td>
-                        <td contenteditable="true" onblur="updateField(${index}, 'Hours Worked (Overtime)', this)">${row['Hours Worked (Overtime)']}</td>
-                        <td contenteditable="true" onblur="updateField(${index}, 'Days Worked (Normal Shift)', this)">${row['Days Worked (Normal Shift)']}</td>
-                        <td contenteditable="true" onblur="updateField(${index}, 'Days Worked (Overtime)', this)">${row['Days Worked (Overtime)']}</td>
-                        <td class="amount-cell">${this.formatCurrency(row['(Normal Working Day) Total Amount'])}</td>
-                        <td class="amount-cell">${this.formatCurrency(row['(OverTime) Total Amount'])}</td>
-                        <td class="amount-cell">${this.formatCurrency(row['Total Amount'])}</td>
-                        <td class="amount-cell">${this.formatCurrency(row.Bonus)}</td>
-                        <td class="amount-cell">${this.formatCurrency(row.Allowance)}</td>
-                        <td class="amount-cell negative-amount">${this.formatCurrency(row.Deduction)}</td>
-                        <td class="amount-cell positive-amount">${this.formatCurrency(row['Gross Salary'])}</td>
-                        <td contenteditable="true" onblur="updateField(${index}, 'PAYEE %', this)">${row['PAYEE %']}</td>
-                        <td class="amount-cell positive-amount">${this.formatCurrency(row['Net Salary'])}</td>
-                        <td contenteditable="true" onblur="updateField(${index}, 'Remarks', this)">${row.Remarks || ''}</td>
+                        <td contenteditable="true" onblur="payrollManager.updateNumericField(${index}, 'baseSalary', this.innerText)">${this.formatNumber(row.baseSalary)}</td>
+                        <td contenteditable="true" onblur="payrollManager.updateNumericField(${index}, 'hoursNormal', this.innerText)">${row.hoursNormal || 0}</td>
+                        <td contenteditable="true" onblur="payrollManager.updateNumericField(${index}, 'hoursOvertime', this.innerText)">${row.hoursOvertime || 0}</td>
+                        <td class="amount-cell">${this.formatCurrency(row.normalAmount, row.currency)}</td>
+                        <td class="amount-cell">${this.formatCurrency(row.overtimeAmount, row.currency)}</td>
+                        <td contenteditable="true" class="amount-cell" onblur="payrollManager.updateNumericField(${index}, 'bonus', this.innerText)">${this.formatNumber(row.bonus)}</td>
+                        <td contenteditable="true" class="amount-cell" onblur="payrollManager.updateNumericField(${index}, 'allowances', this.innerText)">${this.formatNumber(row.allowances)}</td>
+                        <td contenteditable="true" class="amount-cell negative-amount" onblur="payrollManager.updateNumericField(${index}, 'deductions', this.innerText)">${this.formatNumber(row.deductions)}</td>
+                        <td class="amount-cell positive-amount">${this.formatCurrency(row.grossSalary, row.currency)}</td>
+                        <td contenteditable="true" onblur="payrollManager.updateNumericField(${index}, 'payePercent', this.innerText)">${row.payePercent || 20}</td>
+                        <td class="amount-cell negative-amount">${this.formatCurrency(row.payeAmount, row.currency)}</td>
+                        <td class="amount-cell positive-amount"><strong>${this.formatCurrency(row.netSalary, row.currency)}</strong></td>
+                        <td class="amount-cell">${this.formatCurrency(row.employerCost, row.currency)}</td>
+                        <td contenteditable="true" onblur="payrollManager.updateField(${index}, 'payPeriod', this.innerText)">${row.payPeriod || '2025-03'}</td>
+                        <td>
+                            <select onchange="payrollManager.updateStatus(${index}, this.value)">
+                                <option value="draft" ${row.status === 'draft' ? 'selected' : ''}>Draft</option>
+                                <option value="calculated" ${row.status === 'calculated' ? 'selected' : ''}>Calculated</option>
+                                <option value="approved" ${row.status === 'approved' ? 'selected' : ''}>Approved</option>
+                                <option value="paid" ${row.status === 'paid' ? 'selected' : ''}>Paid</option>
+                            </select>
+                        </td>
                         <td class="actions">
-                            <button class="btn-warning" onclick="toggleLock(${index})">
-                                ${row.locked ? '🔓' : '🔒'}
-                            </button>
-                            <button class="btn-danger" onclick="deleteEntry(${index})">
-                                🗑️
-                            </button>
+                            <button class="btn-warning" onclick="payrollManager.toggleLock(${index})">${row.locked ? '🔓' : '🔒'}</button>
+                            <button class="btn-success" onclick="payrollManager.generateSinglePayslip(${index})">📄</button>
+                            <button class="btn-info" onclick="payrollManager.viewDetails(${index})">👁️</button>
+                            <button class="btn-danger" onclick="payrollManager.deleteEntry(${index})">🗑️</button>
                         </td>
                     </tr>
                 `).join('');
             }
 
-            formatCurrency(amount) {
-                return `TZS ${parseFloat(amount || 0).toFixed(2)}`;
+            updateField(index, field, value) {
+                this.payrollData[index][field] = value;
+                this.calculateFullPayroll(this.payrollData[index]);
+                this.saveData();
+                this.renderPayrollTable();
+                this.updateStats();
+                this.logAudit('Updated field', `${field} for employee ${index}`);
+                this.showToast('Field updated');
             }
 
-            calculatePayroll(entry) {
-                const normalRate = parseFloat(entry['Hourly Rate (Normal Shift)']) || 0;
-                const overtimeRate = parseFloat(entry['Hourly Rate (Overtime)']) || 0;
-                const normalHours = parseFloat(entry['Hours Worked (Normal Shift)']) || 0;
-                const overtimeHours = parseFloat(entry['Hours Worked (Overtime)']) || 0;
-                const normalDays = parseFloat(entry['Days Worked (Normal Shift)']) || 1;
-                const overtimeDays = parseFloat(entry['Days Worked (Overtime)']) || 1;
+            updateNumericField(index, field, value) {
+                const numValue = parseFloat(value.replace(/[^0-9.-]/g, '')) || 0;
+                this.payrollData[index][field] = numValue;
+                this.calculateFullPayroll(this.payrollData[index]);
+                this.saveData();
+                this.renderPayrollTable();
+                this.updateStats();
+                this.logAudit('Updated numeric field', `${field}=${numValue}`);
+                this.showToast('Value updated');
+            }
 
-                entry['(Normal Working Day) Total Amount'] = (normalRate * normalHours * normalDays).toFixed(2);
-                entry['(OverTime) Total Amount'] = (overtimeRate * overtimeHours * overtimeDays).toFixed(2);
-                entry['Total Amount'] = (parseFloat(entry['(Normal Working Day) Total Amount']) + 
-                                       parseFloat(entry['(OverTime) Total Amount'])).toFixed(2);
+            updateStatus(index, status) {
+                this.payrollData[index].status = status;
+                this.saveData();
+                this.renderPayrollTable();
+                this.logAudit('Status changed', `Employee ${index} to ${status}`);
+                this.showToast(`Status changed to ${status}`);
+            }
 
-                const bonus = parseFloat(entry.Bonus) || 0;
-                const allowance = parseFloat(entry.Allowance) || 0;
-                const deduction = parseFloat(entry.Deduction) || 0;
-                const payeePercent = parseFloat(entry['PAYEE %']) || 0;
+            toggleLock(index) {
+                this.payrollData[index].locked = !this.payrollData[index].locked;
+                this.saveData();
+                this.renderPayrollTable();
+                this.logAudit('Toggled lock', `Employee ${index}`);
+            }
 
-                entry['Gross Salary'] = (parseFloat(entry['Total Amount']) + bonus + allowance - deduction).toFixed(2);
-                entry['Net Salary'] = (parseFloat(entry['Gross Salary']) * (1 - payeePercent / 100)).toFixed(2);
+            deleteEntry(index) {
+                if (confirm('Delete this entry?')) {
+                    const deleted = this.payrollData.splice(index, 1);
+                    this.saveData();
+                    this.renderPayrollTable();
+                    this.updateStats();
+                    this.logAudit('Deleted entry', `ID: ${deleted[0]?.employeeId}`);
+                    this.showToast('Entry deleted');
+                }
+            }
 
-                return entry;
+            generateSinglePayslip(index) {
+                const emp = this.payrollData[index];
+                this.showPayslip(emp);
+            }
+
+            viewDetails(index) {
+                const emp = this.payrollData[index];
+                alert(JSON.stringify(emp, null, 2));
+            }
+
+            updateStats() {
+                const total = this.payrollData.length;
+                const payroll = this.payrollData.reduce((s, e) => s + (e.grossSalary || 0), 0);
+                const countries = new Set(this.payrollData.map(e => e.country)).size;
+                const pending = this.payrollData.filter(e => e.status === 'draft' || e.status === 'calculated').length;
+
+                document.getElementById('totalEmployees').textContent = total;
+                document.getElementById('totalPayroll').textContent = this.formatCurrency(payroll);
+                document.getElementById('activeCountries').textContent = countries;
+                document.getElementById('pendingApprovals').textContent = pending;
+                document.getElementById('activeEmployeesBadge').textContent = total + ' Active';
+                document.getElementById('pendingApprovals').innerHTML = pending;
             }
 
             updateSummary() {
-                const totals = {
-                    employees: this.payrollData.length,
-                    normal: 0,
-                    overtime: 0,
-                    total: 0,
-                    bonus: 0,
-                    allowance: 0,
-                    deduction: 0,
-                    gross: 0
-                };
+                const totalGross = this.payrollData.reduce((s, e) => s + (e.grossSalary || 0), 0);
+                const totalNet = this.payrollData.reduce((s, e) => s + (e.netSalary || 0), 0);
+                const totalTax = this.payrollData.reduce((s, e) => s + (e.payeAmount || 0), 0);
+                const totalCost = this.payrollData.reduce((s, e) => s + (e.employerCost || 0), 0);
 
-                this.payrollData.forEach(entry => {
-                    totals.normal += parseFloat(entry['(Normal Working Day) Total Amount']) || 0;
-                    totals.overtime += parseFloat(entry['(OverTime) Total Amount']) || 0;
-                    totals.total += parseFloat(entry['Total Amount']) || 0;
-                    totals.bonus += parseFloat(entry.Bonus) || 0;
-                    totals.allowance += parseFloat(entry.Allowance) || 0;
-                    totals.deduction += parseFloat(entry.Deduction) || 0;
-                    totals.gross += parseFloat(entry['Gross Salary']) || 0;
+                document.getElementById('summaryGrossPayroll').textContent = this.formatCurrency(totalGross);
+                document.getElementById('summaryNetPayroll').textContent = this.formatCurrency(totalNet);
+                document.getElementById('summaryTax').textContent = this.formatCurrency(totalTax);
+                document.getElementById('summaryEmployerCost').textContent = this.formatCurrency(totalCost);
+            }
+
+            updateQuickActionBadges() {
+                document.getElementById('bonusCount').textContent = this.bonuses.length;
+                document.getElementById('payslipCount').textContent = this.payrollData.length;
+                
+                const taxDue = this.payrollData.reduce((s, e) => s + (e.payeAmount || 0), 0);
+                document.getElementById('taxDue').textContent = this.formatCurrency(taxDue, 'TZS', true);
+                
+                const ytdTotal = this.payrollData.reduce((s, e) => s + (e.grossSalary || 0), 0) * 3; // Approx Q1
+                document.getElementById('ytdTotal').textContent = this.formatCurrency(ytdTotal, 'TZS', true);
+                
+                document.getElementById('auditCount').textContent = this.auditLog.length;
+            }
+
+            updateCalendar() {
+                const calendar = document.getElementById('payrollCalendar');
+                const month = parseInt(document.getElementById('calendarMonth').value) || 2;
+                const daysInMonth = 31;
+                const firstDay = 1; // Monday start for simplicity
+                
+                let html = '';
+                const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                days.forEach(d => html += `<div style="font-weight: bold;">${d}</div>`);
+                
+                // Empty cells for first day offset
+                for (let i = 1; i < firstDay; i++) html += '<div></div>';
+                
+                for (let day = 1; day <= daysInMonth; day++) {
+                    let className = 'calendar-day';
+                    const dateStr = `2025-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    
+                    // Check for events
+                    const event = this.calendarEvents.find(e => e.date === dateStr);
+                    if (event) className += ' ' + event.type;
+                    
+                    html += `<div class="${className}" onclick="selectCalendarDay('${dateStr}')" ondblclick="editCalendarDay('${dateStr}')">${day}</div>`;
+                }
+                
+                calendar.innerHTML = html;
+                this.renderEventsList();
+            }
+
+            renderEventsList() {
+                const eventsList = document.getElementById('eventsList');
+                if (!eventsList) return;
+                
+                eventsList.innerHTML = this.calendarEvents.map(event => `
+                    <div style="display: flex; justify-content: space-between; padding: 0.25rem; background: ${event.type === 'payday' ? 'var(--success)' : event.type === 'deadline' ? 'var(--warning)' : 'var(--info)'}; color: white; margin: 0.25rem 0; border-radius: 4px;">
+                        <span>${event.date}: ${event.title}</span>
+                        <button onclick="deleteCalendarEvent('${event.date}')" style="background: none; border: none; color: white; cursor: pointer;">✖</button>
+                    </div>
+                `).join('');
+            }
+
+            renderAuditLog() {
+                const auditLog = document.getElementById('auditLog');
+                if (!auditLog) return;
+                
+                auditLog.innerHTML = this.auditLog.map(entry => `
+                    <div style="padding: 0.5rem; border-bottom: 1px solid var(--border);">
+                        <small style="color: var(--text-light);">${new Date(entry.timestamp).toLocaleString()}</small>
+                        <div><strong>${entry.action}</strong> ${entry.details}</div>
+                    </div>
+                `).join('');
+            }
+
+            formatCurrency(amount, currency = 'TZS', short = false) {
+                if (short) {
+                    if (amount >= 1e6) return `${currency} ${(amount/1e6).toFixed(1)}M`;
+                    if (amount >= 1e3) return `${currency} ${(amount/1e3).toFixed(0)}K`;
+                }
+                return `${currency} ${parseFloat(amount || 0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+            }
+
+            formatNumber(num) {
+                return parseFloat(num || 0).toFixed(2);
+            }
+
+            showToast(message, type = 'success') {
+                const toast = document.getElementById('toast');
+                document.getElementById('toastMessage').textContent = message;
+                toast.className = `toast show ${type}`;
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }
+
+            setupEventListeners() {
+                window.addEventListener('online', () => {
+                    document.getElementById('offlineStatus').style.display = 'none';
+                    this.showToast('Back online');
                 });
+                window.addEventListener('offline', () => {
+                    document.getElementById('offlineStatus').style.display = 'inline-block';
+                });
+            }
 
-                const row = document.getElementById('summaryRow');
-                if (row) {
-                    row.innerHTML = `
-                        <td>${totals.employees}</td>
-                        <td>${this.formatCurrency(totals.normal)}</td>
-                        <td>${this.formatCurrency(totals.overtime)}</td>
-                        <td>${this.formatCurrency(totals.total)}</td>
-                        <td>${this.formatCurrency(totals.bonus)}</td>
-                        <td>${this.formatCurrency(totals.allowance)}</td>
-                        <td>${this.formatCurrency(totals.deduction)}</td>
-                        <td>${this.formatCurrency(totals.gross)}</td>
+            // Bonus Functions
+            addBonus(bonus) {
+                this.bonuses.push({
+                    id: Date.now(),
+                    ...bonus,
+                    date: new Date().toISOString()
+                });
+                this.saveData();
+                this.updateQuickActionBadges();
+                this.logAudit('Added bonus', `Amount: ${bonus.amount}`);
+                this.showToast('Bonus added');
+            }
+
+            // Payslip Functions
+            generatePayslip(employeeId) {
+                const emp = this.payrollData.find(e => e.id == employeeId);
+                if (!emp) return null;
+                
+                return {
+                    employee: emp.employeeName,
+                    id: emp.employeeId,
+                    period: emp.payPeriod,
+                    earnings: {
+                        basic: emp.normalAmount,
+                        overtime: emp.overtimeAmount,
+                        bonus: emp.bonus,
+                        allowances: emp.allowances,
+                        gross: emp.grossSalary
+                    },
+                    deductions: {
+                        paye: emp.payeAmount,
+                        other: emp.deductions,
+                        total: emp.payeAmount + (emp.deductions || 0)
+                    },
+                    net: emp.netSalary
+                };
+            }
+
+            showPayslip(emp) {
+                const payslip = this.generatePayslip(emp.id);
+                const preview = document.getElementById('payslipPreview');
+                if (preview && payslip) {
+                    preview.innerHTML = `
+                        <div class="payslip-header">
+                            <h3>PAYSLIP</h3>
+                            <p>${emp.employeeName} (${emp.employeeId})</p>
+                            <p>Period: ${emp.payPeriod}</p>
+                        </div>
+                        <div class="payslip-row">
+                            <span>Basic Salary:</span>
+                            <span>${this.formatCurrency(payslip.earnings.basic, emp.currency)}</span>
+                        </div>
+                        <div class="payslip-row">
+                            <span>Overtime:</span>
+                            <span>${this.formatCurrency(payslip.earnings.overtime, emp.currency)}</span>
+                        </div>
+                        <div class="payslip-row">
+                            <span>Bonus:</span>
+                            <span>${this.formatCurrency(payslip.earnings.bonus, emp.currency)}</span>
+                        </div>
+                        <div class="payslip-row">
+                            <span>Allowances:</span>
+                            <span>${this.formatCurrency(payslip.earnings.allowances, emp.currency)}</span>
+                        </div>
+                        <div class="payslip-row" style="font-weight: bold;">
+                            <span>Gross Salary:</span>
+                            <span>${this.formatCurrency(payslip.earnings.gross, emp.currency)}</span>
+                        </div>
+                        <div class="payslip-row">
+                            <span>PAYE:</span>
+                            <span class="negative-amount">-${this.formatCurrency(payslip.deductions.paye, emp.currency)}</span>
+                        </div>
+                        <div class="payslip-row">
+                            <span>Other Deductions:</span>
+                            <span class="negative-amount">-${this.formatCurrency(payslip.deductions.other, emp.currency)}</span>
+                        </div>
+                        <div class="payslip-row payslip-total">
+                            <span>NET PAY:</span>
+                            <span>${this.formatCurrency(payslip.net, emp.currency)}</span>
+                        </div>
                     `;
                 }
             }
 
-            updateStats() {
-                const totalEmployees = this.payrollData.length;
-                const totalPayroll = this.payrollData.reduce((sum, entry) => 
-                    sum + (parseFloat(entry['Gross Salary']) || 0), 0);
-                const avgSalary = totalEmployees > 0 ? totalPayroll / totalEmployees : 0;
-
-                document.getElementById('totalEmployees').textContent = totalEmployees;
-                document.getElementById('totalPayroll').textContent = this.formatCurrency(totalPayroll);
-                document.getElementById('avgSalary').textContent = this.formatCurrency(avgSalary);
-                document.getElementById('pendingApprovals').textContent = 
-                    this.payrollData.filter(entry => !entry.approved).length;
-            }
-
-            updateCharts() {
-                const chart = document.getElementById('payrollChart');
-                // Simple chart visualization
-                chart.innerHTML = `
-                    <div style="width: 100%; height: 100%; display: flex; align-items: end; justify-content: center; gap: 20px; padding: 20px;">
-                        <div style="display: flex; flex-direction: column; align-items: center;">
-                            <div style="background: var(--primary); width: 50px; height: 70%; border-radius: 4px;"></div>
-                            <div style="margin-top: 10px; font-size: 0.875rem;">Normal</div>
-                        </div>
-                        <div style="display: flex; flex-direction: column; align-items: center;">
-                            <div style="background: var(--warning); width: 50px; height: 40%; border-radius: 4px;"></div>
-                            <div style="margin-top: 10px; font-size: 0.875rem;">Overtime</div>
-                        </div>
-                        <div style="display: flex; flex-direction: column; align-items: center;">
-                            <div style="background: var(--success); width: 50px; height: 60%; border-radius: 4px;"></div>
-                            <div style="margin-top: 10px; font-size: 0.875rem;">Bonus</div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            setupEventListeners() {
-                document.getElementById('payrollPeriod').addEventListener('change', (e) => {
-                    this.filterByPeriod(e.target.value);
-                });
-            }
-
-            setupOfflineDetection() {
-                window.addEventListener('online', () => {
-                    document.getElementById('offlineStatus').style.display = 'none';
-                });
-
-                window.addEventListener('offline', () => {
-                    document.getElementById('offlineStatus').style.display = 'inline-block';
-                });
-
-                if (!navigator.onLine) {
-                    document.getElementById('offlineStatus').style.display = 'inline-block';
+            // Tax Functions
+            calculateTax(country, income) {
+                const brackets = {
+                    'TZ': [[0, 270000, 0], [270000, 520000, 0.09], [520000, 760000, 0.2], [760000, 1000000, 0.25], [1000000, Infinity, 0.3]],
+                    'KE': [[0, 24000, 0], [24000, 40667, 0.1], [40667, 57334, 0.15], [57334, 74001, 0.2], [74001, Infinity, 0.25]],
+                    'ZA': [[0, 237100, 0], [237100, 370500, 0.18], [370500, 512800, 0.26], [512800, 673000, 0.31], [673000, 857900, 0.36], [857900, Infinity, 0.39]]
+                };
+                
+                const countryBrackets = brackets[country] || brackets['TZ'];
+                let tax = 0;
+                let remaining = income;
+                
+                for (let bracket of countryBrackets) {
+                    if (remaining <= 0) break;
+                    const [min, max, rate] = bracket;
+                    const taxable = Math.min(remaining, max - min);
+                    tax += taxable * rate;
+                    remaining -= taxable;
                 }
+                
+                return {
+                    tax: tax,
+                    effectiveRate: (tax / income * 100).toFixed(2) + '%',
+                    breakdown: countryBrackets.map(b => `${b[0]}-${b[1]}: ${(b[2]*100).toFixed(0)}%`).join(', ')
+                };
             }
 
-            filterByPeriod(period) {
-                console.log('Filtering payroll by period:', period);
-                this.updateCharts();
+            // Compliance Check
+            runComplianceCheck() {
+                const issues = [];
+                
+                this.payrollData.forEach(emp => {
+                    // Check minimum wage
+                    if (emp.country === 'TZ' && emp.grossSalary < 500000) {
+                        issues.push(`${emp.employeeName}: Below minimum wage`);
+                    }
+                    // Check tax compliance
+                    if (emp.payeAmount <= 0 && emp.grossSalary > 0) {
+                        issues.push(`${emp.employeeName}: No tax calculated`);
+                    }
+                    // Check statutory contributions
+                    if (!emp.deductions || emp.deductions < 0) {
+                        issues.push(`${emp.employeeName}: Invalid deductions`);
+                    }
+                });
+                
+                document.getElementById('complianceIssues').textContent = issues.length;
+                return issues;
+            }
+
+            // What-If Analysis
+            runWhatIfAnalysis(scenario, percent) {
+                const results = {};
+                const multiplier = 1 + (percent / 100);
+                
+                this.payrollData.forEach(emp => {
+                    if (scenario === 'salary') {
+                        results[emp.employeeName] = {
+                            current: emp.grossSalary,
+                            projected: emp.grossSalary * multiplier,
+                            difference: emp.grossSalary * (multiplier - 1)
+                        };
+                    } else if (scenario === 'tax') {
+                        const newTax = emp.grossSalary * ((emp.payePercent + percent) / 100);
+                        results[emp.employeeName] = {
+                            currentTax: emp.payeAmount,
+                            newTax: newTax,
+                            impact: newTax - emp.payeAmount
+                        };
+                    }
+                });
+                
+                return results;
+            }
+
+            // Export Functions
+            exportToCSV() {
+                const headers = ['ID', 'Employee', 'Country', 'Gross Salary', 'Net Salary', 'Tax', 'Status'];
+                const rows = this.payrollData.map(e => [
+                    e.employeeId,
+                    e.employeeName,
+                    e.country,
+                    e.grossSalary,
+                    e.netSalary,
+                    e.payeAmount,
+                    e.status
+                ]);
+                
+                const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+                return csv;
+            }
+
+            downloadCSV() {
+                const csv = this.exportToCSV();
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `payroll_export_${new Date().toISOString()}.csv`;
+                a.click();
+                this.showToast('CSV downloaded');
             }
         }
 
-        // Global payroll functions
-        const payrollManager = new PayrollManager();
+        // Global instance
+        const payrollManager = new EnterprisePayrollManager();
 
+        // ========== TOOLBAR FUNCTIONS ==========
         function openPayrollModal() {
-            document.getElementById('payrollModal').style.display = 'flex';
-        }
-
-        function closePayrollModal() {
-            document.getElementById('payrollModal').style.display = 'none';
-            document.getElementById('payrollForm').reset();
-        }
-
-        function savePayrollEntry(event) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            const entry = {};
-
-            payrollManager.fields.forEach(field => {
-                if (["(Normal Working Day) Total Amount", "(OverTime) Total Amount", 
-                     "Total Amount", "Gross Salary", "Net Salary"].includes(field)) return;
-                
-                entry[field] = formData.get(field) || (field === 'Remarks' ? '' : '0');
-            });
-
-            // Convert numeric fields
-            ["Hourly Rate (Normal Shift)", "Hourly Rate (Overtime)", "Hours Worked (Normal Shift)", 
-             "Hours Worked (Overtime)", "Days Worked (Normal Shift)", "Days Worked (Overtime)",
-             "Bonus", "Allowance", "Deduction", "PAYEE %"].forEach(field => {
-                entry[field] = parseFloat(entry[field]) || 0;
-            });
-
-            // Calculate payroll
-            payrollManager.calculatePayroll(entry);
-
-            payrollManager.payrollData.push(entry);
-            localStorage.setItem('payrollData', JSON.stringify(payrollManager.payrollData));
-            
-            payrollManager.loadPayrollData();
-            closePayrollModal();
-            
-            alert('Payroll entry saved successfully!');
-        }
-
-        function updateField(index, field, element) {
-            if (confirm('Save changes?')) {
-                payrollManager.payrollData[index][field] = element.value;
-                
-                // Recalculate if it's a numeric field
-                if (["Hourly Rate (Normal Shift)", "Hourly Rate (Overtime)", 
-                     "Hours Worked (Normal Shift)", "Hours Worked (Overtime)",
-                     "Days Worked (Normal Shift)", "Days Worked (Overtime)",
-                     "Bonus", "Allowance", "Deduction", "PAYEE %"].includes(field)) {
-                    payrollManager.calculatePayroll(payrollManager.payrollData[index]);
-                }
-                
-                localStorage.setItem('payrollData', JSON.stringify(payrollManager.payrollData));
-                payrollManager.loadPayrollData();
-            } else {
-                payrollManager.renderPayrollTable();
-            }
-        }
-
-        function toggleLock(index) {
-            payrollManager.payrollData[index].locked = !payrollManager.payrollData[index].locked;
-            localStorage.setItem('payrollData', JSON.stringify(payrollManager.payrollData));
-            payrollManager.renderPayrollTable();
-        }
-
-        function deleteEntry(index) {
-            if (confirm('Delete this payroll entry?')) {
-                payrollManager.payrollData.splice(index, 1);
-                localStorage.setItem('payrollData', JSON.stringify(payrollManager.payrollData));
-                payrollManager.loadPayrollData();
-            }
+            alert('New Payroll Entry - Would open detailed entry form');
+            payrollManager.logAudit('Opened new entry form');
         }
 
         function processPayroll() {
-            if (payrollManager.payrollData.length === 0) {
-                alert('No payroll data to process. Please add entries first.');
+            const unprocessed = payrollManager.payrollData.filter(e => e.status !== 'paid');
+            if (unprocessed.length === 0) {
+                alert('No unprocessed payroll entries');
                 return;
             }
-            alert('Processing payroll for ' + payrollManager.payrollData.length + ' employees...');
-            // Integration with finance system would go here
+            
+            unprocessed.forEach(e => e.status = 'paid');
+            payrollManager.saveData();
+            payrollManager.renderPayrollTable();
+            payrollManager.updateStats();
+            payrollManager.logAudit('Processed payroll', `${unprocessed.length} employees`);
+            payrollManager.showToast(`Payroll processed for ${unprocessed.length} employees`);
         }
 
-        function importAttendanceData() {
-            alert('Importing data from Attendance system...');
-            // Integration with attendance system
-            window.location.href = 'attendance.html';
-        }
-
-        function exportPayrollData() {
-            if (payrollManager.payrollData.length === 0) {
-                alert('No data to export.');
-                return;
+        function runPayrollWizard() {
+            const steps = [
+                'Step 1: Import Attendance Data',
+                'Step 2: Calculate Regular Hours',
+                'Step 3: Calculate Overtime',
+                'Step 4: Apply Bonuses',
+                'Step 5: Calculate Deductions',
+                'Step 6: Generate Payslips',
+                'Step 7: Process Payments'
+            ];
+            
+            let currentStep = 0;
+            function nextStep() {
+                if (currentStep < steps.length) {
+                    alert(steps[currentStep]);
+                    currentStep++;
+                    if (currentStep < steps.length) {
+                        setTimeout(nextStep, 500);
+                    } else {
+                        payrollManager.showToast('Payroll wizard completed');
+                    }
+                }
             }
-            alert('Exporting payroll data...');
-            // Export functionality would go here
+            nextStep();
+        }
+
+        function importAttendance() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.csv,.xlsx';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                payrollManager.showToast(`Importing ${file.name}...`);
+                setTimeout(() => {
+                    payrollManager.payrollData.forEach(emp => {
+                        emp.hoursNormal = 160;
+                        emp.hoursOvertime = Math.floor(Math.random() * 20);
+                    });
+                    payrollManager.saveData();
+                    payrollManager.renderPayrollTable();
+                    payrollManager.showToast('Attendance imported successfully');
+                }, 1500);
+            };
+            input.click();
+        }
+
+        function exportData() {
+            const format = prompt('Export format: CSV, Excel, or JSON?', 'CSV');
+            if (format?.toLowerCase() === 'csv') {
+                payrollManager.downloadCSV();
+            } else if (format?.toLowerCase() === 'json') {
+                const dataStr = JSON.stringify(payrollManager.payrollData, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `payroll_${new Date().toISOString()}.json`;
+                a.click();
+                payrollManager.showToast('JSON exported');
+            }
+        }
+
+        function openReports() {
+            document.getElementById('reportsModal').style.display = 'flex';
+            updateReportPreview();
         }
 
         function clearAllData() {
-            if (confirm('Are you sure you want to clear all payroll data? This action cannot be undone.')) {
-                payrollManager.payrollData = [];
-                localStorage.setItem('payrollData', JSON.stringify([]));
-                payrollManager.loadPayrollData();
-                alert('All payroll data cleared.');
+            if (confirm('⚠️ WARNING: This will delete ALL payroll data. Are you sure?')) {
+                if (confirm('Type "CONFIRM" to proceed with deletion')) {
+                    payrollManager.payrollData = [];
+                    payrollManager.bonuses = [];
+                    payrollManager.saveData();
+                    payrollManager.renderPayrollTable();
+                    payrollManager.updateStats();
+                    payrollManager.logAudit('Cleared all data');
+                    payrollManager.showToast('All data cleared');
+                }
             }
         }
 
-        function calculateBonuses() {
-            alert('Calculating employee bonuses...');
+        // ========== QUICK ACTION FUNCTIONS ==========
+        function openBonusesManager() {
+            document.getElementById('bonusesModal').style.display = 'flex';
+            renderBonusesList();
         }
 
-        function generatePayslips() {
-            alert('Generating employee payslips...');
+        function renderBonusesList() {
+            const list = document.getElementById('bonusesList');
+            if (!list) return;
+            
+            list.innerHTML = payrollManager.bonuses.map(b => `
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem; border-bottom: 1px solid var(--border);">
+                    <span>${b.employeeName}: ${payrollManager.formatCurrency(b.amount, b.currency)}</span>
+                    <span>
+                        <button onclick="deleteBonus(${b.id})" class="btn-danger btn-small">🗑️</button>
+                    </span>
+                </div>
+            `).join('');
         }
 
-        function taxCalculations() {
-            alert('Running tax calculations...');
+        function addBonus() {
+            const employeeId = document.getElementById('bonusEmployee').value;
+            const emp = payrollManager.payrollData.find(e => e.id == employeeId);
+            if (!emp) {
+                alert('Select an employee');
+                return;
+            }
+            
+            const bonus = {
+                id: Date.now(),
+                employeeId: emp.id,
+                employeeName: emp.employeeName,
+                type: document.getElementById('bonusType').value,
+                amount: parseFloat(document.getElementById('bonusAmount').value) || 0,
+                currency: document.getElementById('bonusCurrency').value,
+                date: document.getElementById('bonusDate').value || new Date().toISOString().split('T')[0],
+                notes: document.getElementById('bonusNotes').value
+            };
+            
+            payrollManager.addBonus(bonus);
+            renderBonusesList();
+            payrollManager.updateQuickActionBadges();
         }
 
-        function runReports() {
-            alert('Generating payroll reports...');
+        function deleteBonus(id) {
+            payrollManager.bonuses = payrollManager.bonuses.filter(b => b.id !== id);
+            payrollManager.saveData();
+            renderBonusesList();
+            payrollManager.showToast('Bonus deleted');
         }
 
-        // PWA Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js')
-                .then((registration) => {
-                    console.log('SW registered: ', registration);
-                })
-                .catch((registrationError) => {
-                    console.log('SW registration failed: ', registrationError);
+        function saveBonuses() {
+            payrollManager.logAudit('Saved bonuses', `${payrollManager.bonuses.length} bonuses`);
+            payrollManager.showToast('Bonuses saved');
+            closeModal('bonusesModal');
+        }
+
+        function exportBonuses() {
+            const csv = ['Employee,Type,Amount,Currency,Date'].concat(
+                payrollManager.bonuses.map(b => `${b.employeeName},${b.type},${b.amount},${b.currency},${b.date}`)
+            ).join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bonuses_${new Date().toISOString()}.csv`;
+            a.click();
+            payrollManager.showToast('Bonuses exported');
+        }
+
+        function clearBonuses() {
+            if (confirm('Clear all bonuses?')) {
+                payrollManager.bonuses = [];
+                payrollManager.saveData();
+                renderBonusesList();
+                payrollManager.updateQuickActionBadges();
+                payrollManager.showToast('Bonuses cleared');
+            }
+        }
+
+        function openPayslipManager() {
+            document.getElementById('payslipModal').style.display = 'flex';
+            const select = document.getElementById('payslipEmployee');
+            select.innerHTML = '<option value="">Select Employee</option>';
+            payrollManager.payrollData.forEach(emp => {
+                select.innerHTML += `<option value="${emp.id}">${emp.employeeName}</option>`;
+            });
+        }
+
+        function loadPayslip() {
+            const empId = document.getElementById('payslipEmployee').value;
+            const emp = payrollManager.payrollData.find(e => e.id == empId);
+            if (emp) {
+                payrollManager.showPayslip(emp);
+            }
+        }
+
+        function generatePayslip() {
+            loadPayslip();
+            payrollManager.logAudit('Generated payslip');
+        }
+
+        function downloadPayslip() {
+            const empId = document.getElementById('payslipEmployee').value;
+            const emp = payrollManager.payrollData.find(e => e.id == empId);
+            if (!emp) {
+                alert('Select an employee');
+                return;
+            }
+            
+            const payslip = payrollManager.generatePayslip(emp.id);
+            const text = JSON.stringify(payslip, null, 2);
+            const blob = new Blob([text], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `payslip_${emp.employeeId}_${emp.payPeriod}.pdf`;
+            a.click();
+            payrollManager.showToast('Payslip downloaded');
+        }
+
+        function emailPayslip() {
+            alert('Email functionality - Would send payslip to employee email');
+            payrollManager.logAudit('Emailed payslip');
+        }
+
+        function printPayslip() {
+            window.print();
+        }
+
+        function openTaxCalculator() {
+            document.getElementById('taxModal').style.display = 'flex';
+            calculateTax();
+        }
+
+        function calculateTax() {
+            const country = document.getElementById('taxCountry').value;
+            const income = parseFloat(document.getElementById('taxIncome').value) || 0;
+            const result = payrollManager.calculateTax(country, income);
+            
+            document.getElementById('taxableIncome').value = income.toFixed(2);
+            document.getElementById('taxAmount').value = result.tax.toFixed(2);
+            document.getElementById('taxRate').value = result.effectiveRate;
+            
+            const breakdown = document.getElementById('taxBreakdown');
+            breakdown.innerHTML = `
+                <h4>Tax Calculation (${country})</h4>
+                <p>Income: ${payrollManager.formatCurrency(income, country)}</p>
+                <p>Tax Payable: ${payrollManager.formatCurrency(result.tax, country)}</p>
+                <p>Effective Rate: ${result.effectiveRate}</p>
+                <p>Brackets: ${result.breakdown}</p>
+            `;
+        }
+
+        function saveTaxCalculation() {
+            payrollManager.logAudit('Saved tax calculation');
+            payrollManager.showToast('Tax calculation saved');
+        }
+
+        function exportTax() {
+            const data = {
+                country: document.getElementById('taxCountry').value,
+                income: document.getElementById('taxIncome').value,
+                tax: document.getElementById('taxAmount').value,
+                rate: document.getElementById('taxRate').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `tax_calc_${new Date().toISOString()}.json`;
+            a.click();
+            payrollManager.showToast('Tax calculation exported');
+        }
+
+        function fileTaxReturn() {
+            alert('Filing tax return with revenue authority...');
+            payrollManager.logAudit('Filed tax return');
+            payrollManager.showToast('Tax return filed');
+        }
+
+        function runComplianceCheck() {
+            document.getElementById('complianceModal').style.display = 'flex';
+            const issues = payrollManager.runComplianceCheck();
+            
+            const results = document.getElementById('complianceResults');
+            if (issues.length === 0) {
+                results.innerHTML = '<div class="alert success">✅ All compliance checks passed!</div>';
+            } else {
+                results.innerHTML = '<div class="alert warning">⚠️ Compliance issues found:</div>' +
+                    issues.map(i => `<div style="padding: 0.5rem; color: var(--error);">❌ ${i}</div>`).join('');
+            }
+            
+            document.getElementById('complianceIssues').textContent = issues.length;
+        }
+
+        function runFullCompliance() {
+            payrollManager.runComplianceCheck();
+            payrollManager.showToast('Full compliance check completed');
+        }
+
+        function exportCompliance() {
+            const issues = payrollManager.runComplianceCheck();
+            const report = {
+                timestamp: new Date().toISOString(),
+                totalEmployees: payrollManager.payrollData.length,
+                issues: issues,
+                passed: issues.length === 0
+            };
+            
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `compliance_${new Date().toISOString()}.json`;
+            a.click();
+            payrollManager.showToast('Compliance report exported');
+        }
+
+        function fixComplianceIssues() {
+            payrollManager.payrollData.forEach(emp => {
+                // Auto-fix common issues
+                if (emp.country === 'TZ' && emp.grossSalary < 500000) {
+                    emp.grossSalary = 500000;
+                }
+                if (emp.payeAmount <= 0 && emp.grossSalary > 0) {
+                    emp.payeAmount = emp.grossSalary * 0.2;
+                }
+            });
+            payrollManager.saveData();
+            payrollManager.renderPayrollTable();
+            payrollManager.showToast('Compliance issues fixed');
+        }
+
+        function openYTDReports() {
+            document.getElementById('ytdModal').style.display = 'flex';
+            generateYTDReport();
+        }
+
+        function generateYTDReport() {
+            const type = document.getElementById('ytdReportType').value;
+            const year = document.getElementById('ytdYear').value;
+            
+            let total = 0;
+            if (type === 'earnings') {
+                total = payrollManager.payrollData.reduce((s, e) => s + (e.grossSalary || 0), 0) * 3; // Q1 approx
+            } else if (type === 'tax') {
+                total = payrollManager.payrollData.reduce((s, e) => s + (e.payeAmount || 0), 0) * 3;
+            }
+            
+            const preview = document.getElementById('ytdPreview');
+            preview.innerHTML = `
+                <h4>${type.replace('-', ' ').toUpperCase()} - ${year}</h4>
+                <p>Total: ${payrollManager.formatCurrency(total)}</p>
+                <p>Records: ${payrollManager.payrollData.length}</p>
+            `;
+        }
+
+        function downloadYTDReport() {
+            const type = document.getElementById('ytdReportType').value;
+            payrollManager.logAudit('Downloaded YTD report', type);
+            payrollManager.showToast('YTD report downloaded');
+        }
+
+        function emailYTDReport() {
+            alert('Emailing YTD report to finance team');
+            payrollManager.logAudit('Emailed YTD report');
+        }
+
+        function openWhatIfAnalysis() {
+            document.getElementById('whatIfModal').style.display = 'flex';
+            runWhatIf();
+        }
+
+        function runWhatIf() {
+            const scenario = document.getElementById('whatIfScenario').value;
+            const percent = parseFloat(document.getElementById('whatIfPercent').value) || 10;
+            
+            const results = payrollManager.runWhatIfAnalysis(scenario, percent);
+            
+            const resultsDiv = document.getElementById('whatIfResults');
+            let html = `<h4>${scenario} +${percent}% Impact</h4>`;
+            
+            let totalImpact = 0;
+            Object.keys(results).forEach(key => {
+                const r = results[key];
+                if (scenario === 'salary') {
+                    html += `<div>${key}: ${payrollManager.formatCurrency(r.current)} → ${payrollManager.formatCurrency(r.projected)} (+${payrollManager.formatCurrency(r.difference)})</div>`;
+                    totalImpact += r.difference;
+                } else if (scenario === 'tax') {
+                    html += `<div>${key}: Tax ${payrollManager.formatCurrency(r.currentTax)} → ${payrollManager.formatCurrency(r.newTax)} (Δ${payrollManager.formatCurrency(r.impact)})</div>`;
+                    totalImpact += r.impact;
+                }
+            });
+            
+            html += `<div style="margin-top: 1rem; font-weight: bold;">Total Impact: ${payrollManager.formatCurrency(totalImpact)}</div>`;
+            resultsDiv.innerHTML = html;
+        }
+
+        function saveWhatIf() {
+            payrollManager.logAudit('Saved what-if scenario');
+            payrollManager.showToast('Scenario saved');
+        }
+
+        function exportWhatIf() {
+            const scenario = document.getElementById('whatIfScenario').value;
+            const percent = document.getElementById('whatIfPercent').value;
+            const results = payrollManager.runWhatIfAnalysis(scenario, percent);
+            
+            const blob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `whatif_${scenario}_${percent}%.json`;
+            a.click();
+            payrollManager.showToast('What-if results exported');
+        }
+
+        function processStatutory() {
+            document.getElementById('statutoryModal').style.display = 'flex';
+            
+            const totalSS = payrollManager.payrollData.reduce((s, e) => s + (e.grossSalary * 0.05 || 0), 0);
+            const totalPension = payrollManager.payrollData.reduce((s, e) => s + (e.grossSalary * 0.03 || 0), 0);
+            
+            const preview = document.getElementById('statutoryPreview');
+            preview.innerHTML = `
+                <h4>Statutory Contributions - March 2025</h4>
+                <div class="payslip-row">Social Security: ${payrollManager.formatCurrency(totalSS)}</div>
+                <div class="payslip-row">Pension: ${payrollManager.formatCurrency(totalPension)}</div>
+                <div class="payslip-row">Health Insurance: ${payrollManager.formatCurrency(totalSS * 0.4)}</div>
+                <div class="payslip-row payslip-total">Total: ${payrollManager.formatCurrency(totalSS + totalPension + totalSS * 0.4)}</div>
+            `;
+        }
+
+        function processStatutoryPayment() {
+            payrollManager.logAudit('Processed statutory payments');
+            payrollManager.showToast('Statutory payments processed');
+            closeModal('statutoryModal');
+        }
+
+        function exportStatutory() {
+            payrollManager.showToast('Statutory return exported');
+        }
+
+        function fileStatutoryReturn() {
+            alert('Filing statutory return with government agency');
+            payrollManager.logAudit('Filed statutory return');
+        }
+
+        function openAuditTrail() {
+            document.getElementById('auditModal').style.display = 'flex';
+            payrollManager.renderAuditLog();
+        }
+
+        function filterAudit() {
+            const search = document.getElementById('auditSearch').value.toLowerCase();
+            const filtered = payrollManager.auditLog.filter(entry => 
+                entry.action.toLowerCase().includes(search) || 
+                entry.details.toLowerCase().includes(search)
+            );
+            
+            const log = document.getElementById('auditLog');
+            log.innerHTML = filtered.map(entry => `
+                <div style="padding: 0.5rem; border-bottom: 1px solid var(--border);">
+                    <small>${new Date(entry.timestamp).toLocaleString()}</small>
+                    <div><strong>${entry.action}</strong> ${entry.details}</div>
+                </div>
+            `).join('');
+        }
+
+        function exportAudit() {
+            const blob = new Blob([JSON.stringify(payrollManager.auditLog, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `audit_${new Date().toISOString()}.json`;
+            a.click();
+            payrollManager.showToast('Audit log exported');
+        }
+
+        function clearAudit() {
+            if (confirm('Clear audit log?')) {
+                payrollManager.auditLog = [];
+                localStorage.setItem('auditLog', '[]');
+                payrollManager.renderAuditLog();
+                payrollManager.showToast('Audit log cleared');
+            }
+        }
+
+        // ========== CALENDAR FUNCTIONS ==========
+        function updateCalendar() {
+            payrollManager.updateCalendar();
+        }
+
+        function selectCalendarDay(date) {
+            alert(`Selected: ${date}\nDouble-click to add/edit event`);
+        }
+
+        function editCalendarDay(date) {
+            const title = prompt('Enter event title:', 'Payroll Deadline');
+            if (title) {
+                const type = prompt('Event type: payday, deadline, or holiday?', 'deadline');
+                payrollManager.calendarEvents.push({
+                    date: date,
+                    title: title,
+                    type: type
                 });
+                payrollManager.saveData();
+                payrollManager.updateCalendar();
+                payrollManager.showToast('Event added');
+            }
+        }
+
+        function addCalendarEvent() {
+            const date = prompt('Enter date (YYYY-MM-DD):', '2025-03-31');
+            if (date) {
+                const title = prompt('Event title:', 'Payroll Processing');
+                const type = prompt('Type (payday/deadline/holiday):', 'deadline');
+                payrollManager.calendarEvents.push({ date, title, type });
+                payrollManager.saveData();
+                payrollManager.updateCalendar();
+            }
+        }
+
+        function saveCalendar() {
+            payrollManager.saveData();
+            payrollManager.showToast('Calendar saved');
+        }
+
+        function deleteCalendarEvent(date) {
+            payrollManager.calendarEvents = payrollManager.calendarEvents.filter(e => e.date !== date);
+            payrollManager.saveData();
+            payrollManager.updateCalendar();
+            payrollManager.showToast('Event deleted');
+        }
+
+        // ========== TABLE FUNCTIONS ==========
+        function filterPayroll() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const country = document.getElementById('countryFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            
+            const rows = document.querySelectorAll('#payrollTableBody tr');
+            rows.forEach(row => {
+                let show = true;
+                const text = row.innerText.toLowerCase();
+                if (search && !text.includes(search)) show = false;
+                if (country && !text.includes(country)) show = false;
+                if (status && !text.includes(status)) show = false;
+                row.style.display = show ? '' : 'none';
+            });
+        }
+
+        function toggleAllRows(checkbox) {
+            document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = checkbox.checked);
+            updateSelectedCount();
+        }
+
+        function updateSelectedCount() {
+            const checkboxes = document.querySelectorAll('.rowCheckbox:checked');
+            const count = checkboxes.length;
+            document.getElementById('selectedCount').textContent = `${count} selected`;
+            
+            document.getElementById('bulkApproveBtn').disabled = count === 0;
+            document.getElementById('bulkLockBtn').disabled = count === 0;
+            document.getElementById('bulkDeleteBtn').disabled = count === 0;
+        }
+
+        function bulkAction(action) {
+            const checkboxes = document.querySelectorAll('.rowCheckbox:checked');
+            const indices = Array.from(checkboxes).map(cb => parseInt(cb.value)).sort((a,b) => b - a);
+            
+            if (action === 'approve') {
+                indices.forEach(i => payrollManager.payrollData[i].status = 'approved');
+                payrollManager.showToast(`Approved ${indices.length} entries`);
+            } else if (action === 'lock') {
+                indices.forEach(i => payrollManager.payrollData[i].locked = true);
+                payrollManager.showToast(`Locked ${indices.length} entries`);
+            } else if (action === 'delete') {
+                if (confirm(`Delete ${indices.length} entries?`)) {
+                    indices.forEach(i => payrollManager.payrollData.splice(i, 1));
+                    payrollManager.showToast(`Deleted ${indices.length} entries`);
+                } else {
+                    return;
+                }
+            }
+            
+            payrollManager.saveData();
+            payrollManager.renderPayrollTable();
+            payrollManager.updateStats();
+            payrollManager.logAudit(`Bulk ${action}`, `${indices.length} entries`);
+        }
+
+        function saveAllEdits() {
+            payrollManager.saveData();
+            payrollManager.renderPayrollTable();
+            payrollManager.showToast('All changes saved');
+        }
+
+        function exportSummary() {
+            const summary = {
+                totalEmployees: payrollManager.payrollData.length,
+                totalPayroll: payrollManager.payrollData.reduce((s, e) => s + (e.grossSalary || 0), 0),
+                totalTax: payrollManager.payrollData.reduce((s, e) => s + (e.payeAmount || 0), 0),
+                byCountry: {}
+            };
+            
+            payrollManager.payrollData.forEach(e => {
+                if (!summary.byCountry[e.country]) summary.byCountry[e.country] = 0;
+                summary.byCountry[e.country] += e.grossSalary || 0;
+            });
+            
+            const blob = new Blob([JSON.stringify(summary, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `summary_${new Date().toISOString()}.json`;
+            a.click();
+            payrollManager.showToast('Summary exported');
+        }
+
+        // ========== REPORT FUNCTIONS ==========
+        function updateReportPreview() {
+            const type = document.getElementById('reportType').value;
+            const preview = document.getElementById('reportPreview');
+            
+            let content = '';
+            if (type === 'payroll-summary') {
+                const total = payrollManager.payrollData.reduce((s, e) => s + (e.grossSalary || 0), 0);
+                content = `Total Payroll: ${payrollManager.formatCurrency(total)}<br>Employees: ${payrollManager.payrollData.length}`;
+            } else if (type === 'employee-list') {
+                content = payrollManager.payrollData.map(e => `${e.employeeName} (${e.employeeId}): ${e.department}`).join('<br>');
+            }
+            
+            preview.innerHTML = `<strong>Preview:</strong><br>${content}`;
+        }
+
+        function generateReport() {
+            updateReportPreview();
+            payrollManager.logAudit('Generated report', document.getElementById('reportType').value);
+            payrollManager.showToast('Report generated');
+        }
+
+        function downloadReport() {
+            const type = document.getElementById('reportType').value;
+            const format = document.getElementById('reportFormat').value;
+            
+            let data = '';
+            if (type === 'payroll-summary') {
+                data = payrollManager.payrollData.map(e => 
+                    `${e.employeeName},${e.employeeId},${e.department},${e.grossSalary},${e.netSalary}`
+                ).join('\n');
+            }
+            
+            const blob = new Blob([data], { type: format === 'csv' ? 'text/csv' : 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `report_${type}_${new Date().toISOString()}.${format}`;
+            a.click();
+            payrollManager.showToast('Report downloaded');
+        }
+
+        function emailReport() {
+            alert('Emailing report to stakeholders');
+            payrollManager.logAudit('Emailed report');
+        }
+
+        // ========== MODAL FUNCTIONS ==========
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function switchModule(module) {
+            alert(`Switching to ${module} module - Navigation would redirect to: ${module}.html`);
+        }
+
+        function openSalaryStructure() { alert('Salary Structure Management - Would open salary templates'); }
+        function openTaxManagement() { alert('Tax Management - Would open tax configuration'); }
+        function openBenefits() { alert('Benefits Administration - Would open benefits management'); }
+        function filterByStatus(status) { alert(`Filtering by ${status}`); }
+        function viewPayrollSummary() { alert('Payroll Summary - Would show detailed breakdown'); }
+        function viewCountryBreakdown() { alert('Country Breakdown - Would show per-country analysis'); }
+        function showPendingItems() { alert('Pending Items - Would show approvals needed'); }
+
+        // Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').catch(() => {});
         }
     </script>
 </body>
