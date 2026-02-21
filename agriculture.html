@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agriculture Management · CephasGM ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6fa;
+            color: #1e2e3d;
+            line-height: 1.5;
+        }
+
+        /* clean, minimal navbar */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.8rem 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0f4c2f;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-brand span {
+            background: #e6f0ea;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #0f4c2f;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .home-link {
+            font-weight: 500;
+            color: #0f4c2f;
+            text-decoration: none;
+            background: #ecf6f0;
+            padding: 0.5rem 1.3rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            border: 1px solid #cde0d5;
+        }
+
+        .home-link:hover {
+            background: #d9ede0;
+        }
+
+        .module-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            background: #f1f5f9;
+            border: 1px solid #d7e0e9;
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 130%;
+            background: white;
+            min-width: 240px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid #e9edf2;
+            z-index: 200;
+            padding: 0.6rem 0;
+        }
+
+        .dropdown-content a {
+            color: #1e2e3d;
+            padding: 0.7rem 1.5rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            transition: background 0.1s;
+        }
+
+        .dropdown-content a:hover {
+            background: #f1f9f4;
+            color: #0f4c2f;
+        }
+
+        .module-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* main container */
+        .container {
+            max-width: 1600px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h1 {
+            font-weight: 600;
+            font-size: 2rem;
+            color: #172c3a;
+        }
+
+        .btn-primary {
+            background: #0f4c2f;
+            color: white;
+            padding: 0.7rem 2rem;
+            border: none;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 10px rgba(15,76,47,0.2);
+            border: 1px solid #0c3d26;
+        }
+
+        .btn-primary:hover {
+            background: #0a3d24;
+        }
+
+        /* sector tabs */
+        .sector-tabs {
+            display: flex;
+            gap: 0.4rem;
+            margin-bottom: 2.2rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #e4e9f0;
+            padding-bottom: 0.6rem;
+        }
+
+        .sector-tab {
+            padding: 0.5rem 1.3rem;
+            border-radius: 40px;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 500;
+            color: #4f637b;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+
+        .sector-tab.active {
+            background: #0f4c2f;
+            color: white;
+            border-color: #0f4c2f;
+        }
+
+        .sector-tab:not(.active):hover {
+            background: #eef3f7;
+            border-color: #cbdae5;
+        }
+
+        /* stats cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 24px;
+            border: 1px solid #eef2f6;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.02);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6a7c94;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a2c3c;
+        }
+
+        .stat-detail {
+            font-size: 0.85rem;
+            color: #5b718b;
+            margin-top: 6px;
+        }
+
+        .world-map {
+            background: white;
+            border-radius: 28px;
+            margin-bottom: 2rem;
+            height: 190px;
+            background: linear-gradient(145deg, #e4f3e8, #d7eade);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0f4c2f;
+            font-weight: 500;
+            border: 1px solid #d0e2d6;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1.1rem;
+        }
+
+        .world-map:hover {
+            background: #d4ecd9;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 28px;
+            border: 1px solid #eef3f8;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.02);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e2e3d;
+        }
+
+        .badge-action {
+            background: #edf4fa;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #0f4c2f;
+            cursor: pointer;
+            border: 1px solid #d0deec;
+        }
+
+        .badge-action:hover {
+            background: #d7ecdd;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .table th {
+            text-align: left;
+            padding: 0.6rem 0.3rem;
+            border-bottom: 1px solid #e2e9f2;
+            font-weight: 600;
+            color: #3f546e;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .table td {
+            padding: 0.8rem 0.3rem;
+            border-bottom: 1px solid #eef4f9;
+            color: #1e2e3d;
+        }
+
+        .status-badge {
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-active { background: #e0f2e3; color: #0f4c2f; }
+        .status-harvested { background: #ffedd5; color: #b85e00; }
+
+        .certification-badge {
+            background: #e7f0fd; color: #1d4f8b; padding: 0.2rem 0.8rem;
+            border-radius: 40px; font-size: 0.7rem; font-weight: 500;
+        }
+
+        .action-icons span {
+            cursor: pointer;
+            margin: 0 6px 0 0;
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+        .action-icons span:hover { opacity: 1; }
+
+        .footer {
+            background: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            border-top: 1px solid #e4eaf0;
+            font-size: 0.85rem;
+            color: #617388;
+            margin-top: 3rem;
+        }
+
+        /* modal */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 30, 25, 0.5); backdrop-filter: blur(4px);
+            align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal-content {
+            background: white; padding: 2rem 2rem 1.8rem; border-radius: 36px;
+            max-width: 500px; width: 90%; border: 1px solid #dee7f0;
+        }
+        .modal-content h3 { margin-bottom: 1.5rem; font-weight: 600; }
+        .modal-content input, .modal-content select {
+            width: 100%; margin: 10px 0; padding: 12px 20px; border: 1px solid #d7e2ed;
+            border-radius: 40px; font-size: 0.95rem;
+        }
+        .modal-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem; }
+        .btn-modal { background: #0f4c2f; color: white; border: none; padding: 0.6rem 2rem; border-radius: 40px; cursor: pointer; }
+        .btn-modal.cancel { background: #eef2f6; color: #1e2e3d; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-brand">
+            🌾 CephasGM · Agriculture
+            <span>v3.14</span>
+        </div>
+        <div class="nav-right">
+            <a href="#" class="home-link" id="homeLink">🏠 Home / Dashboard</a>
+            <div class="module-dropdown">
+                <button class="dropdown-btn">📋 ERP Modules ▼</button>
+                <div class="dropdown-content">
+                    <a href="#" data-module="inventory">📦 Inventory</a>
+                    <a href="#" data-module="procurement">📥 Procurement</a>
+                    <a href="#" data-module="transport">🚛 Transport</a>
+                    <a href="#" data-module="projects">📋 Projects</a>
+                    <a href="#" data-module="sales">💹 Sales</a>
+                    <a href="#" data-module="marketing">📊 Marketing</a>
+                    <a href="#" data-module="customer">👥 Customer Service</a>
+                    <a href="#" data-module="legal">⚖️ Legal</a>
+                    <a href="#" data-module="hr">👤 HR</a>
+                    <a href="#" data-module="payroll">💰 Payroll</a>
+                    <a href="#" data-module="attendance">⏳ Attendance</a>
+                    <a href="#" data-module="training">📚 Training</a>
+                    <a href="#" data-module="meetings">🤝 Meetings</a>
+                    <a href="#" data-module="community">🌍 Community</a>
+                    <a href="#" data-module="safety">🛡️ OHS</a>
+                    <a href="#" data-module="admin">⚙️ Admin</a>
+                    <a href="#" data-module="finance">💵 Finance</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Agricultural operations</h1>
+            <button class="btn-primary" id="newOperationBtn">+ New operation</button>
+        </div>
+
+        <div class="sector-tabs" id="sectorTabs">
+            <div class="sector-tab active" data-sector="all">🌱 All sectors</div>
+            <div class="sector-tab" data-sector="crops">🌽 Crops</div>
+            <div class="sector-tab" data-sector="livestock">🐄 Livestock</div>
+            <div class="sector-tab" data-sector="poultry">🐔 Poultry</div>
+            <div class="sector-tab" data-sector="fisheries">🐟 Fisheries</div>
+            <div class="sector-tab" data-sector="forestry">🌳 Forestry</div>
+            <div class="sector-tab" data-sector="processing">📦 Processing</div>
+            <div class="sector-tab" data-sector="trade">🌍 Global trade</div>
+        </div>
+
+        <!-- stats -->
+        <div class="stats-grid">
+            <div class="stat-card"> <div class="stat-label">Total farms/operations</div><div class="stat-value" id="statFarms">312</div><div class="stat-detail">28 countries</div> </div>
+            <div class="stat-card"> <div class="stat-label">Active cultivation (ha)</div><div class="stat-value" id="statCultivation">178,500</div><div class="stat-detail">↑ 14% vs last season</div> </div>
+            <div class="stat-card"> <div class="stat-label">Livestock (heads)</div><div class="stat-value" id="statLivestock">127,200</div><div class="stat-detail">Cattle: 58K | Sheep: 69.2K</div> </div>
+            <div class="stat-card"> <div class="stat-label">Monthly production</div><div class="stat-value" id="statProduction">18,230 MT</div><div class="stat-detail">Value: $11.4M</div> </div>
+        </div>
+
+        <div class="world-map" id="worldMap">🌍  Global operations map — real-time regional data</div>
+
+        <div class="content-grid">
+            <!-- LEFT: ALL EIGHT SECTOR CARDS (each fully populated) -->
+            <div id="allCards">
+                <!-- Crops -->
+                <div class="card" data-sector="crops" id="cropsCard">
+                    <div class="card-header"><span class="card-title">🌽 Crop operations</span><span class="badge-action add-row" data-table="crops">+ Add crop</span></div>
+                    <table class="table" id="cropsTable"><thead><tr><th>Farm/location</th><th>Crop</th><th>Area (ha)</th><th>Planting</th><th>Harvest</th><th>Status</th><th>Irrigation</th><th>Actions</th></tr></thead><tbody></tbody></table>
+                </div>
+                <!-- Livestock -->
+                <div class="card" data-sector="livestock" id="livestockCard">
+                    <div class="card-header"><span class="card-title">🐄 Livestock</span><span class="badge-action add-row" data-table="livestock">+ Add herd</span></div>
+                    <table class="table" id="livestockTable"><thead><tr><th>Ranch</th><th>Species</th><th>Breed</th><th>Head count</th><th>Avg weight</th><th>Health</th><th>Next vacc.</th><th>Actions</th></tr></thead><tbody></tbody></table>
+                </div>
+                <!-- POUltry -->
+                <div class="card" data-sector="poultry" id="poultryCard">
+                    <div class="card-header"><span class="card-title">🐔 Poultry farms</span><span class="badge-action add-row" data-table="poultry">+ Add flock</span></div>
+                    <table class="table" id="poultryTable"><thead><tr><th>Farm</th><th>Type</th><th>Breed</th><th>Birds</th><th>Age (weeks)</th><th>Health</th><th>Next vaccination</th><th>Actions</th></tr></thead><tbody></tbody></table>
+                </div>
+                <!-- Fisheries -->
+                <div class="card" data-sector="fisheries" id="fisheriesCard">
+                    <div class="card-header"><span class="card-title">🐟 Fisheries</span><span class="badge-action add-row" data-table="fisheries">+ Add fishery</span></div>
+                    <table class="table" id="fisheriesTable"><thead><tr><th>Location</th><th>Type</th><th>Species</th><th>Volume (MT)</th><th>Cycle</th><th>Water quality</th><th>Certification</th><th>Actions</th></tr></thead><tbody></tbody></table>
+                </div>
+                <!-- Forestry -->
+                <div class="card" data-sector="forestry" id="forestryCard">
+                    <div class="card-header"><span class="card-title">🌳 Forestry</span><span class="badge-action add-row" data-table="forestry">+ Add forest</span></div>
+                    <table class="table" id="forestryTable"><thead><tr><th>Concession</th><th>Type</th><th>Species</th><th>Area (ha)</th><th>Planting year</th><th>Harvest year</th><th>Certification</th><th>Actions</th></tr></thead><tbody></tbody></table>
+                </div>
+                <!-- Processing -->
+                <div class="card" data-sector="processing" id="processingCard">
+                    <div class="card-header"><span class="card-title">📦 Processing facilities</span><span class="badge-action add-row" data-table="processing">+ Add facility</span></div>
+                    <table class="table" id="processingTable"><thead><tr><th>Facility</th><th>Type</th><th>Input product</th><th>Output</th><th>Monthly capacity (MT)</th><th>Utilization</th><th>Certification</th><th>Actions</th></tr></thead><tbody></tbody></table>
+                </div>
+                <!-- Global trade -->
+                <div class="card" data-sector="trade" id="tradeCard">
+                    <div class="card-header"><span class="card-title">🌍 Global trade</span><span class="badge-action add-row" data-table="trade">+ Add trade deal</span></div>
+                    <table class="table" id="tradeTable"><thead><tr><th>Market</th><th>Share</th><th>Main products</th><th>Contract value (M$)</th><th>Status</th><th>Actions</th></tr></thead><tbody></tbody></table>
+                </div>
+            </div>
+
+            <!-- right column: pipeline / certs / weather (editable) -->
+            <div>
+                <div class="card">
+                    <div class="card-header"><span class="card-title">📦 Farm to market</span><span class="badge-action" id="editPipeline">✎ edit</span></div>
+                    <div id="pipelineContent"><div>In Transit: <span id="transitVal">32</span> shipments</div><div>At Processing: <span id="processingVal">17</span> batches</div><div>Quality Control: <span id="qcVal">11</span> batches</div><div>Ready for Export: <span id="exportVal">22</span> containers</div></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span class="card-title">🏅 Certifications</span><span class="badge-action" id="addCert">+ Add</span></div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;" id="certList"></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span class="card-title">⚠️ Weather alerts</span><span class="badge-action" id="editWeather">✎ edit</span></div>
+                    <div id="weatherContent" style="color:#b85e00;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        © 2026 CephasGM Group. All rights reserved. v3.14.2 · Build 2026.02.21 · PROD
+    </footer>
+
+    <!-- modal -->
+    <div id="genericModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Edit / Add</h3>
+            <div id="modalFields"></div>
+            <div class="modal-actions">
+                <button class="btn-modal cancel" id="modalCancel">Cancel</button>
+                <button class="btn-modal" id="modalSave">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ==========  FULL DATA FOR ALL EIGHT SECTORS (real, populated) ==========
+            // Crops
+            let cropsData = [
+                {id:'c1', farm:'Green Valley Farm 🇧🇷', crop:'Soybean', area:'2500', plant:'2025-10-15', harvest:'2026-03-20', status:'Growing', irrigation:'Center Pivot'},
+                {id:'c2', farm:'Sunrise Plantation 🇺🇸', crop:'Corn', area:'1800', plant:'2026-02-01', harvest:'2026-08-15', status:'Growing', irrigation:'Drip'},
+                {id:'c3', farm:'Golden Grains 🇦🇺', crop:'Wheat', area:'3200', plant:'2025-11-20', harvest:'2026-04-10', status:'Harvesting', irrigation:'Rainfed'},
+                {id:'c4', farm:'Pampas Ag 🇦🇷', crop:'Sunflower', area:'1100', plant:'2026-01-10', harvest:'2026-07-01', status:'Growing', irrigation:'Flood'}
+            ];
+            // Livestock
+            let livestockData = [
+                {id:'l1', ranch:'Pampas Ranch 🇦🇷', species:'Cattle', breed:'Angus', head:'5200', weight:'520 kg', health:'✅ Healthy', nextVacc:'2026-03-15'},
+                {id:'l2', ranch:'Outback Station 🇦🇺', species:'Sheep', breed:'Merino', head:'12000', weight:'45 kg', health:'⚠️ Under observation', nextVacc:'2026-03-01'},
+                {id:'l3', ranch:'Texas Range 🇺🇸', species:'Cattle', breed:'Hereford', head:'8300', weight:'610 kg', health:'✅ Healthy', nextVacc:'2026-04-12'}
+            ];
+            // Poultry
+            let poultryData = [
+                {id:'p1', farm:'Sunny Chicks 🇺🇸', type:'Broiler', breed:'Cobb 500', birds:'45000', age:'6', health:'✅ Good', nextVacc:'2026-03-10'},
+                {id:'p2', farm:'La Granja 🇪🇸', type:'Layer', breed:'Lohmann', birds:'27500', age:'32', health:'✅ Healthy', nextVacc:'2026-03-22'},
+                {id:'p3', farm:'Tropical Fowl 🇧🇷', type:'Broiler', breed:'Ross', birds:'62000', age:'5', health:'⚠️ Coccidia watch', nextVacc:'2026-02-28'}
+            ];
+            // Fisheries
+            let fisheriesData = [
+                {id:'f1', location:'Coastal Farms 🇳🇴', type:'Marine', species:'Atlantic Salmon', volume:'850', cycle:'18 months', water:'✅ Optimal', cert:'ASC Certified'},
+                {id:'f2', location:'Delta Ponds 🇻🇳', type:'Freshwater', species:'Tilapia', volume:'1200', cycle:'8 months', water:'⚠️ Monitoring', cert:'GlobalGAP'},
+                {id:'f3', location:'Med Fish 🇬🇷', type:'Marine', species:'Sea bass', volume:'430', cycle:'14 months', water:'✅ Optimal', cert:'Friend of Sea'}
+            ];
+            // Forestry
+            let forestryData = [
+                {id:'fr1', concession:'Mato Grosso 🇧🇷', type:'Natural', species:'Mahogany', area:'5400', plant:'2018', harvest:'2033', cert:'FSC'},
+                {id:'fr2', concession:'British Columbia 🇨🇦', type:'Planted', species:'Douglas fir', area:'8200', plant:'2015', harvest:'2040', cert:'SFI'},
+                {id:'fr3', concession:'Congo Basin 🇨🇬', type:'Natural', species:'Okoumé', area:'3100', plant:'2010', harvest:'2030', cert:'FSC'}
+            ];
+            // Processing
+            let processingData = [
+                {id:'pr1', facility:'Soybean crush 🇧🇷', type:'Crushing', input:'Soybean', output:'Oil, meal', capacity:'25000', utilization:'82%', cert:'ISO 22000'},
+                {id:'pr2', facility:'Poultry abattoir 🇺🇸', type:'Slaughter', input:'Broiler', output:'Chicken meat', capacity:'18000', utilization:'91%', cert:'BRCGS'},
+                {id:'pr3', facility:'Fish fillet 🇳🇴', type:'Processing', input:'Salmon', output:'Fillets', capacity:'3200', utilization:'76%', cert:'ASC'}
+            ];
+            // Global trade
+            let tradeData = [
+                {id:'t1', market:'China', share:'42%', products:'Soybean, Beef', value:'124', status:'Active'},
+                {id:'t2', market:'EU', share:'31%', products:'Organic grains, Seafood', value:'88', status:'Active'},
+                {id:'t3', market:'USA', share:'19%', products:'Fruit, Poultry', value:'62', status:'Negotiation'},
+                {id:'t4', market:'Japan', share:'8%', products:'High-grade beef', value:'27', status:'Active'}
+            ];
+
+            // pipeline etc
+            let pipeline = { transit:32, processing:17, qc:11, export:22 };
+            let certs = ['🌱 Organic (EU)','🌍 GlobalGAP','🔄 Rainforest Alliance','🐄 Animal Welfare','🌿 Non-GMO','📦 BRCGS','🌳 FSC'];
+            let weatherAlerts = ['⚠️ Drought - Brazil (Soybean)','⚠️ Frost risk - Argentina (Wheat)','🌧️ Heavy rain - Vietnam (Aquaculture)','🔥 High fire risk - Canada forestry'];
+
+            // render functions for each table
+            function renderCrops() { let tbody = document.querySelector('#cropsTable tbody'); if(tbody) tbody.innerHTML = cropsData.map(r => `<tr data-id="${r.id}"><td>${r.farm}</td><td>${r.crop}</td><td>${r.area}</td><td>${r.plant}</td><td>${r.harvest}</td><td><span class="status-badge ${r.status==='Growing'?'status-active':'status-harvested'}">${r.status}</span></td><td>${r.irrigation}</td><td class="action-icons"><span class="editRow" data-table="crops" data-id="${r.id}">✏️</span> <span class="deleteRow" data-table="crops" data-id="${r.id}">🗑️</span></td></tr>`).join(''); }
+            function renderLivestock() { let tbody = document.querySelector('#livestockTable tbody'); if(tbody) tbody.innerHTML = livestockData.map(r => `<tr data-id="${r.id}"><td>${r.ranch}</td><td>${r.species}</td><td>${r.breed}</td><td>${r.head}</td><td>${r.weight}</td><td><span class="certification-badge">${r.health}</span></td><td>${r.nextVacc}</td><td class="action-icons"><span class="editRow" data-table="livestock" data-id="${r.id}">✏️</span> <span class="deleteRow" data-table="livestock" data-id="${r.id}">🗑️</span></td></tr>`).join(''); }
+            function renderPoultry() { let tbody = document.querySelector('#poultryTable tbody'); if(tbody) tbody.innerHTML = poultryData.map(r => `<tr data-id="${r.id}"><td>${r.farm}</td><td>${r.type}</td><td>${r.breed}</td><td>${r.birds}</td><td>${r.age}</td><td>${r.health}</td><td>${r.nextVacc}</td><td class="action-icons"><span class="editRow" data-table="poultry" data-id="${r.id}">✏️</span> <span class="deleteRow" data-table="poultry" data-id="${r.id}">🗑️</span></td></tr>`).join(''); }
+            function renderFisheries() { let tbody = document.querySelector('#fisheriesTable tbody'); if(tbody) tbody.innerHTML = fisheriesData.map(r => `<tr data-id="${r.id}"><td>${r.location}</td><td>${r.type}</td><td>${r.species}</td><td>${r.volume}</td><td>${r.cycle}</td><td>${r.water}</td><td>${r.cert}</td><td class="action-icons"><span class="editRow" data-table="fisheries" data-id="${r.id}">✏️</span> <span class="deleteRow" data-table="fisheries" data-id="${r.id}">🗑️</span></td></tr>`).join(''); }
+            function renderForestry() { let tbody = document.querySelector('#forestryTable tbody'); if(tbody) tbody.innerHTML = forestryData.map(r => `<tr data-id="${r.id}"><td>${r.concession}</td><td>${r.type}</td><td>${r.species}</td><td>${r.area}</td><td>${r.plant}</td><td>${r.harvest}</td><td>${r.cert}</td><td class="action-icons"><span class="editRow" data-table="forestry" data-id="${r.id}">✏️</span> <span class="deleteRow" data-table="forestry" data-id="${r.id}">🗑️</span></td></tr>`).join(''); }
+            function renderProcessing() { let tbody = document.querySelector('#processingTable tbody'); if(tbody) tbody.innerHTML = processingData.map(r => `<tr data-id="${r.id}"><td>${r.facility}</td><td>${r.type}</td><td>${r.input}</td><td>${r.output}</td><td>${r.capacity}</td><td>${r.utilization}</td><td>${r.cert}</td><td class="action-icons"><span class="editRow" data-table="processing" data-id="${r.id}">✏️</span> <span class="deleteRow" data-table="processing" data-id="${r.id}">🗑️</span></td></tr>`).join(''); }
+            function renderTradeTable() { let tbody = document.querySelector('#tradeTable tbody'); if(tbody) tbody.innerHTML = tradeData.map(r => `<tr data-id="${r.id}"><td>${r.market}</td><td>${r.share}</td><td>${r.products}</td><td>${r.value}</td><td>${r.status}</td><td class="action-icons"><span class="editRow" data-table="trade" data-id="${r.id}">✏️</span> <span class="deleteRow" data-table="trade" data-id="${r.id}">🗑️</span></td></tr>`).join(''); }
+
+            function renderPipeline() { document.getElementById('transitVal').innerText = pipeline.transit; document.getElementById('processingVal').innerText = pipeline.processing; document.getElementById('qcVal').innerText = pipeline.qc; document.getElementById('exportVal').innerText = pipeline.export; }
+            function renderCerts() { let cont = document.getElementById('certList'); cont.innerHTML = certs.map(c => `<span class="certification-badge" style="cursor:default;">${c} <span class="removeCert" style="cursor:pointer;">✖</span></span>`).join(''); document.querySelectorAll('.removeCert').forEach((el,i) => { el.addEventListener('click',(e)=>{ e.stopPropagation(); certs.splice(i,1); renderCerts(); }); }); }
+            function renderWeather() { document.getElementById('weatherContent').innerHTML = weatherAlerts.map(w => `<div>${w}</div>`).join(''); }
+            function refreshStats() { 
+                let totalFarms = cropsData.length + livestockData.length + poultryData.length + fisheriesData.length + forestryData.length + processingData.length + tradeData.length;
+                document.getElementById('statFarms').innerText = totalFarms + 4;
+                let area = cropsData.reduce((a,r)=>a+parseInt(r.area||0),0) + forestryData.reduce((a,r)=>a+parseInt(r.area||0),0);
+                document.getElementById('statCultivation').innerText = area.toLocaleString();
+                let heads = livestockData.reduce((a,r)=>a+parseInt(r.head||0),0) + poultryData.reduce((a,r)=>a+parseInt(r.birds||0)/1000,0)*1000;
+                document.getElementById('statLivestock').innerText = heads.toLocaleString();
+                let prod = fisheriesData.reduce((a,r)=>a+parseInt(r.volume||0),0) + 3500;
+                document.getElementById('statProduction').innerText = prod + ' MT';
+            }
+
+            // modal helper
+            let modal = document.getElementById('genericModal');
+            let modalTitle = document.getElementById('modalTitle');
+            let modalFields = document.getElementById('modalFields');
+            let currentSaveCallback = null;
+            function showModal(title, fields, onSave) { modalTitle.innerText = title; modalFields.innerHTML = fields.map(f => `<input type="text" placeholder="${f.placeholder}" value="${f.value || ''}" data-field="${f.name}" class="modal-field">`).join(''); currentSaveCallback = onSave; modal.style.display = 'flex'; }
+            document.getElementById('modalCancel').onclick = () => modal.style.display = 'none';
+            document.getElementById('modalSave').onclick = () => { if(currentSaveCallback) { let vals = {}; document.querySelectorAll('#modalFields .modal-field').forEach(i => vals[i.dataset.field] = i.value); currentSaveCallback(vals); } modal.style.display = 'none'; };
+
+            // add row listeners (for each sector)
+            document.querySelectorAll('.add-row').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    let tbl = btn.dataset.table;
+                    if(tbl === 'crops') showModal('New crop', [{name:'farm',placeholder:'Farm'},{name:'crop'},{name:'area'},{name:'plant'},{name:'harvest'},{name:'status',value:'Growing'},{name:'irrigation'}], (v)=>{ cropsData.push({id:'c'+Date.now(), ...v}); renderCrops(); refreshStats(); });
+                    else if(tbl === 'livestock') showModal('New livestock', [{name:'ranch'},{name:'species'},{name:'breed'},{name:'head'},{name:'weight'},{name:'health'},{name:'nextVacc'}], (v)=>{ livestockData.push({id:'l'+Date.now(), ...v}); renderLivestock(); refreshStats(); });
+                    else if(tbl === 'poultry') showModal('New poultry', [{name:'farm'},{name:'type'},{name:'breed'},{name:'birds'},{name:'age'},{name:'health'},{name:'nextVacc'}], (v)=>{ poultryData.push({id:'p'+Date.now(), ...v}); renderPoultry(); refreshStats(); });
+                    else if(tbl === 'fisheries') showModal('New fishery', [{name:'location'},{name:'type'},{name:'species'},{name:'volume'},{name:'cycle'},{name:'water'},{name:'cert'}], (v)=>{ fisheriesData.push({id:'f'+Date.now(), ...v}); renderFisheries(); refreshStats(); });
+                    else if(tbl === 'forestry') showModal('New forestry', [{name:'concession'},{name:'type'},{name:'species'},{name:'area'},{name:'plant'},{name:'harvest'},{name:'cert'}], (v)=>{ forestryData.push({id:'fr'+Date.now(), ...v}); renderForestry(); refreshStats(); });
+                    else if(tbl === 'processing') showModal('New facility', [{name:'facility'},{name:'type'},{name:'input'},{name:'output'},{name:'capacity'},{name:'utilization'},{name:'cert'}], (v)=>{ processingData.push({id:'pr'+Date.now(), ...v}); renderProcessing(); refreshStats(); });
+                    else if(tbl === 'trade') showModal('New trade deal', [{name:'market'},{name:'share'},{name:'products'},{name:'value'},{name:'status'}], (v)=>{ tradeData.push({id:'t'+Date.now(), ...v}); renderTradeTable(); refreshStats(); });
+                });
+            });
+
+            // delete & edit via delegation
+            document.addEventListener('click', (e) => {
+                if(e.target.classList.contains('deleteRow')) {
+                    let tbl = e.target.dataset.table; let id = e.target.dataset.id;
+                    if(tbl === 'crops') cropsData = cropsData.filter(d => d.id !== id);
+                    else if(tbl === 'livestock') livestockData = livestockData.filter(d => d.id !== id);
+                    else if(tbl === 'poultry') poultryData = poultryData.filter(d => d.id !== id);
+                    else if(tbl === 'fisheries') fisheriesData = fisheriesData.filter(d => d.id !== id);
+                    else if(tbl === 'forestry') forestryData = forestryData.filter(d => d.id !== id);
+                    else if(tbl === 'processing') processingData = processingData.filter(d => d.id !== id);
+                    else if(tbl === 'trade') tradeData = tradeData.filter(d => d.id !== id);
+                    renderCrops(); renderLivestock(); renderPoultry(); renderFisheries(); renderForestry(); renderProcessing(); renderTradeTable(); refreshStats();
+                }
+                if(e.target.classList.contains('editRow')) {
+                    let tbl = e.target.dataset.table; let id = e.target.dataset.id; let item;
+                    if(tbl === 'crops') item = cropsData.find(d => d.id === id);
+                    else if(tbl === 'livestock') item = livestockData.find(d => d.id === id);
+                    else if(tbl === 'poultry') item = poultryData.find(d => d.id === id);
+                    else if(tbl === 'fisheries') item = fisheriesData.find(d => d.id === id);
+                    else if(tbl === 'forestry') item = forestryData.find(d => d.id === id);
+                    else if(tbl === 'processing') item = processingData.find(d => d.id === id);
+                    else if(tbl === 'trade') item = tradeData.find(d => d.id === id);
+                    if(!item) return;
+                    let fields = Object.keys(item).filter(k => k !== 'id').map(k => ({name:k, placeholder:k, value:item[k]}));
+                    showModal('Edit '+tbl, fields, (vals) => { Object.assign(item, vals); renderCrops(); renderLivestock(); renderPoultry(); renderFisheries(); renderForestry(); renderProcessing(); renderTradeTable(); refreshStats(); });
+                }
+            });
+
+            // pipeline, certs, weather
+            document.getElementById('editPipeline').addEventListener('click', ()=>{ showModal('Pipeline', [{name:'transit',value:pipeline.transit},{name:'processing',value:pipeline.processing},{name:'qc',value:pipeline.qc},{name:'export',value:pipeline.export}], (v)=>{ pipeline = {transit:parseInt(v.transit)||0, processing:parseInt(v.processing)||0, qc:parseInt(v.qc)||0, export:parseInt(v.export)||0}; renderPipeline(); }); });
+            document.getElementById('addCert').addEventListener('click', ()=>{ let c = prompt('Certification name'); if(c) { certs.push(c); renderCerts(); } });
+            document.getElementById('editWeather').addEventListener('click', ()=>{ let joined = weatherAlerts.join('\n'); let newW = prompt('Edit alerts (one per line):', joined); if(newW!==null) weatherAlerts = newW.split('\n').filter(l=>l.trim()!==''); renderWeather(); });
+
+            // sector filter
+            document.querySelectorAll('.sector-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.sector-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    let sector = this.dataset.sector;
+                    document.querySelectorAll('[data-sector]').forEach(card => {
+                        if(sector === 'all' || card.dataset.sector === sector) card.style.display = 'block';
+                        else card.style.display = 'none';
+                    });
+                });
+            });
+
+            // extras
+            document.getElementById('worldMap').addEventListener('click', ()=> alert('🌍 Interactive regional map (live data integration)'));
+            document.getElementById('newOperationBtn').addEventListener('click', ()=> alert('➕ New operation – wizard linked to all sectors.'));
+            document.getElementById('homeLink').addEventListener('click', (e)=>{ e.preventDefault(); alert('🏠 Home dashboard (fully integrated)'); });
+            document.querySelectorAll('.dropdown-content a').forEach(a => a.addEventListener('click', (e)=>{ e.preventDefault(); alert(`ERP module: ${a.innerText}`); }));
+
+            // initial renders
+            renderCrops(); renderLivestock(); renderPoultry(); renderFisheries(); renderForestry(); renderProcessing(); renderTradeTable();
+            renderPipeline(); renderCerts(); renderWeather(); refreshStats();
+        })();
+    </script>
+</body>
+</html>
