@@ -1,0 +1,2637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CephasGM ERP - Integrated Asset Operations (Enterprise)</title>
+    <link rel="manifest" href="manifest.json">
+    <!-- Flatpickr for Date Selection -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            color: #1e293b;
+            line-height: 1.5;
+        }
+
+        /* Professional Header */
+        .top-bar {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 0.875rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            border-bottom: 3px solid #2563eb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        .logo {
+            background: #2563eb;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 4px rgba(37,99,235,0.3);
+        }
+
+        .home-link {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.2s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .home-link:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-1px);
+        }
+
+        .page-title {
+            margin-left: auto;
+            font-weight: 400;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Date Control Bar */
+        .date-controls {
+            background: white;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .date-range-picker {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: #f8fafc;
+            padding: 0.5rem 1.25rem;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .date-range-picker i {
+            color: #64748b;
+        }
+
+        #dateRange {
+            border: none;
+            background: transparent;
+            padding: 0.25rem;
+            font-size: 0.95rem;
+            width: 260px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .global-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-left: auto;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #475569;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            transform: translateY(-1px);
+        }
+
+        .action-btn.primary {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: #1d4ed8;
+        }
+
+        /* Main Container */
+        .container {
+            padding: 2rem;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .kpi-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .kpi-icon {
+            color: #2563eb;
+            font-size: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .kpi-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .kpi-trend {
+            font-size: 0.875rem;
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: #d1fae5;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            width: fit-content;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 14px;
+            margin-bottom: 2rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .tab-btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            background: transparent;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .tab-btn:hover {
+            background: #f8fafc;
+            color: #2563eb;
+        }
+
+        .tab-btn.active {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(37,99,235,0.3);
+        }
+
+        /* Panels */
+        .module-panel {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            padding: 2rem;
+            margin-top: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+        }
+
+        .module-panel.active {
+            display: block;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .panel-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0f172a, #334155);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2);
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(37,99,235,0.3);
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-outline:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            transform: translateY(-1px);
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            margin-top: 1rem;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th {
+            text-align: left;
+            padding: 1.25rem 1rem;
+            background: #f8fafc;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #475569;
+            border-bottom: 2px solid #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #1e293b;
+            font-size: 0.95rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 1rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .badge-warning {
+            background: #fed7aa;
+            color: #92400e;
+            border: 1px solid #fdba74;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .badge-neutral {
+            background: #e2e8f0;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+
+        /* Action Icons */
+        .row-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .row-actions button {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.2s;
+            border-radius: 6px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .row-actions button:hover {
+            background: #e2e8f0;
+            color: #2563eb;
+        }
+
+        .row-actions .delete:hover {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* Info Cards */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .info-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .info-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #0f172a;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.75rem;
+        }
+
+        .info-card h3 i {
+            color: #2563eb;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.75rem;
+            cursor: pointer;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: #0f172a;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.875rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        /* Chart Containers */
+        .chart-container {
+            height: 300px;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #0f172a;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: right;
+            padding: 1.5rem 2rem;
+            color: #64748b;
+            font-size: 0.85rem;
+            border-top: 1px solid #e2e8f0;
+            background: white;
+            margin-top: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .top-bar {
+                padding: 0.75rem 1rem;
+                flex-wrap: wrap;
+            }
+            .page-title {
+                margin-left: 0;
+                width: 100%;
+            }
+            .kpi-value {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="top-bar">
+        <div class="logo-area">
+            <span class="logo">CG</span>
+            <span>CephasGM</span>
+        </div>
+        <a href="https://cephasgm.github.io/CephasGM-ERP/index.html" class="home-link">
+            <i class="fas fa-arrow-left"></i> Global Command Center
+        </a>
+        <div class="page-title">Enterprise Asset Operations • v2.1.0</div>
+    </div>
+
+    <!-- Universal Date Selector -->
+    <div class="date-controls">
+        <div class="date-range-picker">
+            <i class="fas fa-calendar-alt"></i>
+            <input type="text" id="dateRange" placeholder="Select reporting period...">
+            <i class="fas fa-chevron-down" style="color: #94a3b8;"></i>
+        </div>
+        <div class="global-actions">
+            <button class="action-btn" id="exportAllBtn"><i class="fas fa-download"></i> Export All</button>
+            <button class="action-btn" id="importDataBtn"><i class="fas fa-upload"></i> Import</button>
+            <button class="action-btn" id="saveSnapshotBtn"><i class="fas fa-camera"></i> Save Snapshot</button>
+            <button class="action-btn primary" id="refreshDataBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-label">Total Assets Value</span>
+                    <i class="fas fa-chart-line kpi-icon"></i>
+                </div>
+                <div class="kpi-value" id="totalAssetsValue">$45.2M</div>
+                <div class="kpi-trend"><i class="fas fa-arrow-up"></i> +3.2% vs last month</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-label">Facilities Utilization</span>
+                    <i class="fas fa-building kpi-icon"></i>
+                </div>
+                <div class="kpi-value" id="facilitiesUtilization">78%</div>
+                <div class="kpi-trend"><i class="fas fa-info-circle"></i> 12/15 active</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-label">Fleet Fuel Efficiency</span>
+                    <i class="fas fa-gas-pump kpi-icon"></i>
+                </div>
+                <div class="kpi-value" id="fleetEfficiency">8.2 L/100km</div>
+                <div class="kpi-trend"><i class="fas fa-arrow-down"></i> 0.4 improvement</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-label">Open Work Orders</span>
+                    <i class="fas fa-tools kpi-icon"></i>
+                </div>
+                <div class="kpi-value" id="openWorkOrders">23</div>
+                <div class="kpi-trend"><i class="fas fa-exclamation-circle"></i> 8 high priority</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs" id="moduleTabs">
+            <button class="tab-btn active" data-tab="assets"><i class="fas fa-boxes"></i> Assets</button>
+            <button class="tab-btn" data-tab="facilities"><i class="fas fa-building"></i> Facilities</button>
+            <button class="tab-btn" data-tab="fleet"><i class="fas fa-truck"></i> Fleet</button>
+            <button class="tab-btn" data-tab="maintenance"><i class="fas fa-wrench"></i> Maintenance</button>
+        </div>
+
+        <!-- ASSETS PANEL -->
+        <div id="assets-panel" class="module-panel active">
+            <div class="panel-header">
+                <h2><i class="fas fa-boxes" style="color: #2563eb;"></i> Capital Assets Registry</h2>
+                <div class="btn-group">
+                    <button class="btn-primary" id="addAssetBtn"><i class="fas fa-plus"></i> Register Asset</button>
+                    <button class="btn-outline" id="exportAssetsBtn"><i class="fas fa-download"></i> Export</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="assetsTable">
+                    <thead>
+                        <tr>
+                            <th>Asset ID</th>
+                            <th>Name/Model</th>
+                            <th>Category</th>
+                            <th>Acquisition Date</th>
+                            <th>Cost (USD)</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assetsTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="grid-2">
+                <!-- 📅 Upcoming Maintenance Card -->
+                <div class="info-card">
+                    <h3><i class="fas fa-calendar-alt" style="color: #2563eb;"></i> 📅 Upcoming Maintenance</h3>
+                    <div class="table-container" style="margin-top: 0;">
+                        <table id="upcomingMaintenanceTable">
+                            <thead>
+                                <tr>
+                                    <th>Asset</th>
+                                    <th>Due Date</th>
+                                    <th>Type</th>
+                                    <th>Priority</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="upcomingMaintenanceBody"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 1rem; text-align: right;">
+                        <button class="btn-outline" id="scheduleMaintenanceBtn"><i class="fas fa-plus"></i> Schedule New</button>
+                    </div>
+                </div>
+
+                <!-- 📊 Depreciation Schedule Card -->
+                <div class="info-card">
+                    <h3><i class="fas fa-chart-pie" style="color: #2563eb;"></i> 📊 Depreciation Schedule</h3>
+                    <div class="table-container" style="margin-top: 0;">
+                        <table id="depreciationTable">
+                            <thead>
+                                <tr>
+                                    <th>Asset</th>
+                                    <th>Current Value</th>
+                                    <th>YTD Depreciation</th>
+                                    <th>Method</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="depreciationBody"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <div class="chart-container">
+                            <canvas id="depreciationChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FACILITIES PANEL -->
+        <div id="facilities-panel" class="module-panel">
+            <div class="panel-header">
+                <h2><i class="fas fa-building" style="color: #2563eb;"></i> Facilities & Space Management</h2>
+                <div class="btn-group">
+                    <button class="btn-primary" id="addFacilityBtn"><i class="fas fa-plus"></i> Add Space</button>
+                    <button class="btn-outline" id="exportFacilitiesBtn"><i class="fas fa-download"></i> Export</button>
+                </div>
+            </div>
+            
+            <!-- Floor Plan Viewer -->
+            <div style="background: linear-gradient(145deg, #f0f9ff, #e0f2fe); padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem; border: 1px solid #bae6fd; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <i class="fas fa-map" style="font-size: 2rem; color: #0284c7;"></i>
+                    <div>
+                        <strong style="font-size: 1.1rem;">HQ Floor 3 - East Wing</strong>
+                        <div style="color: #0369a1; font-size: 0.9rem;">78% occupancy • 24 workstations available</div>
+                    </div>
+                </div>
+                <button class="btn-outline" id="viewFloorPlanBtn"><i class="fas fa-expand"></i> Open Interactive Map</button>
+            </div>
+
+            <div class="table-container">
+                <table id="facilitiesTable">
+                    <thead>
+                        <tr>
+                            <th>Building</th>
+                            <th>Floor</th>
+                            <th>Space</th>
+                            <th>Allocated To</th>
+                            <th>Area (sq m)</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="facilitiesTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="grid-2">
+                <!-- 🧹 Cleaning Schedule Card -->
+                <div class="info-card">
+                    <h3><i class="fas fa-broom" style="color: #2563eb;"></i> 🧹 Cleaning Schedule</h3>
+                    <div class="table-container" style="margin-top: 0;">
+                        <table id="cleaningTable">
+                            <thead>
+                                <tr>
+                                    <th>Area</th>
+                                    <th>Frequency</th>
+                                    <th>Last Cleaned</th>
+                                    <th>Next Due</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cleaningBody"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                        <button class="btn-outline" id="addCleaningTaskBtn"><i class="fas fa-plus"></i> Add Task</button>
+                        <button class="btn-outline" id="generateCleaningReportBtn"><i class="fas fa-file-pdf"></i> Report</button>
+                    </div>
+                </div>
+
+                <!-- ⚡ Utilities & Visitor Log Card -->
+                <div class="info-card">
+                    <h3><i class="fas fa-chart-bar" style="color: #2563eb;"></i> ⚡ Utilities & Visitor Log</h3>
+                    <div class="table-container" style="margin-top: 0;">
+                        <table id="utilitiesTable">
+                            <thead>
+                                <tr>
+                                    <th>Utility</th>
+                                    <th>Usage (MTD)</th>
+                                    <th>Status</th>
+                                    <th>Trend</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="utilitiesBody"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 1rem; background: #f8fafc; padding: 1rem; border-radius: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span><i class="fas fa-users" style="color: #2563eb;"></i> <strong>Visitor Management</strong></span>
+                            <span id="visitorCount">0</span>
+                        </div>
+                        <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem;">
+                            <button class="btn-outline" style="flex:1;" id="checkInVisitorBtn"><i class="fas fa-sign-in-alt"></i> Check In</button>
+                            <button class="btn-outline" style="flex:1;" id="viewVisitorLogBtn"><i class="fas fa-list"></i> View Log</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FLEET PANEL -->
+        <div id="fleet-panel" class="module-panel">
+            <div class="panel-header">
+                <h2><i class="fas fa-truck" style="color: #2563eb;"></i> Fleet & Vehicle Operations</h2>
+                <div class="btn-group">
+                    <button class="btn-primary" id="addVehicleBtn"><i class="fas fa-plus"></i> Add Vehicle</button>
+                    <button class="btn-outline" id="exportFleetBtn"><i class="fas fa-download"></i> Export</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="fleetTable">
+                    <thead>
+                        <tr>
+                            <th>Vehicle ID</th>
+                            <th>Make/Model</th>
+                            <th>Year</th>
+                            <th>Fuel Efficiency</th>
+                            <th>Driver</th>
+                            <th>Insurance Renewal</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fleetTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="grid-2">
+                <!-- ⛽ Fuel Tracking Card -->
+                <div class="info-card">
+                    <h3><i class="fas fa-gas-pump" style="color: #2563eb;"></i> ⛽ Fuel Tracking (Last 5 Trips)</h3>
+                    <div class="table-container" style="margin-top: 0;">
+                        <table id="fuelTable">
+                            <thead>
+                                <tr>
+                                    <th>Vehicle</th>
+                                    <th>Date</th>
+                                    <th>Liters</th>
+                                    <th>Cost</th>
+                                    <th>Fuel Efficiency</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fuelBody"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                        <button class="btn-outline" id="addFuelTripBtn"><i class="fas fa-plus"></i> Log Trip</button>
+                        <button class="btn-outline" id="fuelAnalyticsBtn"><i class="fas fa-chart-line"></i> Analytics</button>
+                    </div>
+                </div>
+
+                <!-- 📋 Upcoming Renewals Card -->
+                <div class="info-card">
+                    <h3><i class="fas fa-calendar-check" style="color: #2563eb;"></i> 📋 Upcoming Renewals</h3>
+                    <div class="table-container" style="margin-top: 0;">
+                        <table id="renewalsTable">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Vehicle</th>
+                                    <th>Due Date</th>
+                                    <th>Days Left</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="renewalsBody"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <div class="chart-container">
+                            <canvas id="renewalsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAINTENANCE PANEL -->
+        <div id="maintenance-panel" class="module-panel">
+            <div class="panel-header">
+                <h2><i class="fas fa-wrench" style="color: #2563eb;"></i> Work Orders & Maintenance</h2>
+                <div class="btn-group">
+                    <button class="btn-primary" id="addWorkOrderBtn"><i class="fas fa-plus"></i> New Work Order</button>
+                    <button class="btn-outline" id="exportMaintenanceBtn"><i class="fas fa-download"></i> Export</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="maintenanceTable">
+                    <thead>
+                        <tr>
+                            <th>WO ID</th>
+                            <th>Asset</th>
+                            <th>Type</th>
+                            <th>Scheduled</th>
+                            <th>Assigned To</th>
+                            <th>Status</th>
+                            <th>Priority</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="maintenanceTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="grid-2">
+                <!-- 🔧 Maintenance History Card -->
+                <div class="info-card">
+                    <h3><i class="fas fa-history" style="color: #2563eb;"></i> 🔧 Maintenance History (Last 5)</h3>
+                    <div class="table-container" style="margin-top: 0;">
+                        <table id="maintenanceHistoryTable">
+                            <thead>
+                                <tr>
+                                    <th>Asset</th>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Cost</th>
+                                    <th>Technician</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="maintenanceHistoryBody"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                        <button class="btn-outline" id="viewFullHistoryBtn"><i class="fas fa-history"></i> Full History</button>
+                        <button class="btn-outline" id="exportHistoryBtn"><i class="fas fa-download"></i> Export</button>
+                    </div>
+                </div>
+
+                <!-- ⚠️ Downtime Analysis Card -->
+                <div class="info-card">
+                    <h3><i class="fas fa-exclamation-triangle" style="color: #2563eb;"></i> ⚠️ Downtime Analysis</h3>
+                    <div class="table-container" style="margin-top: 0;">
+                        <table id="downtimeTable">
+                            <thead>
+                                <tr>
+                                    <th>Asset</th>
+                                    <th>MTBF (days)</th>
+                                    <th>MTTR (hrs)</th>
+                                    <th>Availability</th>
+                                    <th>Total Downtime</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="downtimeBody"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <div class="chart-container">
+                            <canvas id="downtimeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Add/Edit -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Edit Record</h3>
+                <button class="close-modal" id="closeModalBtn">&times;</button>
+            </div>
+            <div id="modalBody">
+                <!-- Dynamic form content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast" style="display: none;">
+        <i class="fas fa-check-circle" style="color: #10b981;"></i>
+        <span id="toastMessage">Operation completed successfully</span>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <i class="far fa-clock"></i> Last synchronized: <span id="footerTimestamp">2026-02-21 14:30 UTC</span> • Data persisted locally • Enterprise Version 2.1.0
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // ==================== ENTERPRISE DATA MODEL ====================
+        class EnterpriseDataModel {
+            constructor() {
+                this.data = {
+                    assets: [],
+                    facilities: [],
+                    cleaning: [],
+                    utilities: [],
+                    fleet: [],
+                    fuelTrips: [],
+                    renewals: [],
+                    workOrders: [],
+                    maintenanceHistory: [],
+                    downtime: [],
+                    visitors: []
+                };
+                this.charts = {};
+                this.loadData();
+            }
+
+            // Load from localStorage with fallback to sample data
+            loadData() {
+                const saved = localStorage.getItem('cephasgm_enterprise_asset_ops');
+                if (saved) {
+                    this.data = JSON.parse(saved);
+                } else {
+                    this.initializeSampleData();
+                }
+                this.saveData();
+            }
+
+            initializeSampleData() {
+                // Assets with detailed fields for depreciation
+                this.data.assets = [
+                    { id: 'AST-CNC-001', name: 'CNC Mill VF-4', category: 'Machinery', acquisitionDate: '2024-06-15', cost: 87500, depreciationMethod: 'Straight-Line', usefulLife: 10, salvageValue: 5000, warrantyUntil: '2027-06-15', location: 'Frankfurt Plant', status: 'Operational', purchaseDate: '2024-06-15', lastMaintenance: '2026-02-01' },
+                    { id: 'AST-FORK-023', name: 'Toyota Forklift 8FGU25', category: 'Material Handling', acquisitionDate: '2023-11-20', cost: 42300, depreciationMethod: 'Declining Balance', usefulLife: 7, salvageValue: 2500, warrantyUntil: '2026-11-20', location: 'NJ Warehouse', status: 'Under Maintenance', purchaseDate: '2023-11-20', lastMaintenance: '2026-02-15' },
+                    { id: 'AST-SRVR-089', name: 'Dell PowerEdge R750', category: 'IT Equipment', acquisitionDate: '2025-01-10', cost: 15800, depreciationMethod: 'Straight-Line', usefulLife: 4, salvageValue: 800, warrantyUntil: '2028-01-10', location: 'NY Data Center', status: 'Operational', purchaseDate: '2025-01-10', lastMaintenance: '2026-02-10' },
+                    { id: 'AST-BLDG-HQ', name: 'HQ Building - Main', category: 'Real Estate', acquisitionDate: '2018-04-01', cost: 4200000, depreciationMethod: 'Straight-Line', usefulLife: 40, salvageValue: 800000, warrantyUntil: 'N/A', location: 'Dar es Salaam', status: 'Operational', purchaseDate: '2018-04-01', lastMaintenance: '2026-01-15' },
+                    { id: 'AST-HVAC-012', name: 'HVAC System Chiller', category: 'Facilities', acquisitionDate: '2022-03-15', cost: 145000, depreciationMethod: 'Straight-Line', usefulLife: 15, salvageValue: 15000, warrantyUntil: '2027-03-15', location: 'HQ Dar es Salaam', status: 'Operational', purchaseDate: '2022-03-15', lastMaintenance: '2026-02-05' }
+                ];
+
+                // Facilities
+                this.data.facilities = [
+                    { id: 'FAC-001', building: 'HQ Dar es Salaam', floor: 3, space: '3A-05', allocatedTo: 'Finance Team', area: 45, type: 'Open Plan', status: 'Occupied', occupancy: 8, capacity: 10 },
+                    { id: 'FAC-002', building: 'HQ Dar es Salaam', floor: 4, space: '4B-12', allocatedTo: 'Legal Dept', area: 28, type: 'Private Office', status: 'Occupied', occupancy: 3, capacity: 4 },
+                    { id: 'FAC-003', building: 'NJ Warehouse', floor: 1, space: 'Break Room', allocatedTo: 'All Staff', area: 60, type: 'Common Area', status: 'Available', occupancy: 0, capacity: 25 },
+                    { id: 'FAC-004', building: 'Frankfurt Plant', floor: 2, space: '2A-01', allocatedTo: 'R&D Lab', area: 120, type: 'Laboratory', status: 'Occupied', occupancy: 6, capacity: 8 },
+                    { id: 'FAC-005', building: 'London Office', floor: 5, space: '5C-10', allocatedTo: 'Sales Team', area: 85, type: 'Open Plan', status: 'Occupied', occupancy: 12, capacity: 15 }
+                ];
+
+                // Cleaning Schedule
+                this.data.cleaning = [
+                    { id: 'CLN-001', area: 'HQ Floor 3 - Open Plan', frequency: 'Daily', lastCleaned: '2026-02-21 06:00', nextDue: '2026-02-22 06:00', status: 'Completed', assignedTo: 'CleanCo Ltd' },
+                    { id: 'CLN-002', area: 'HQ Floor 4 - Executive', frequency: 'Daily', lastCleaned: '2026-02-21 07:30', nextDue: '2026-02-22 07:30', status: 'Completed', assignedTo: 'CleanCo Ltd' },
+                    { id: 'CLN-003', area: 'NJ Warehouse', frequency: 'Weekly', lastCleaned: '2026-02-19', nextDue: '2026-02-26', status: 'Scheduled', assignedTo: 'Facility Masters' },
+                    { id: 'CLN-004', area: 'Frankfurt Plant', frequency: 'Weekly', lastCleaned: '2026-02-18', nextDue: '2026-02-25', status: 'Scheduled', assignedTo: 'Reinigung GmbH' },
+                    { id: 'CLN-005', area: 'London Office', frequency: 'Daily', lastCleaned: '2026-02-21 08:00', nextDue: '2026-02-22 08:00', status: 'Completed', assignedTo: 'CleanTech UK' }
+                ];
+
+                // Utilities
+                this.data.utilities = [
+                    { id: 'UTIL-001', utility: 'Electricity', usage: '142,500 kWh', cost: 28500, status: 'Online', trend: '+2.3%', meterReading: 142500, unit: 'kWh' },
+                    { id: 'UTIL-002', utility: 'Water', usage: '850 m³', cost: 4250, status: 'Online', trend: '-1.5%', meterReading: 850, unit: 'm³' },
+                    { id: 'UTIL-003', utility: 'Internet', usage: '98.2% uptime', cost: 5500, status: 'Stable', trend: '+0.3%', bandwidth: '1 Gbps' },
+                    { id: 'UTIL-004', utility: 'Gas', usage: '12,500 m³', cost: 8750, status: 'Online', trend: '-0.8%', meterReading: 12500, unit: 'm³' }
+                ];
+
+                // Fleet
+                this.data.fleet = [
+                    { id: 'VH-TOY-001', makeModel: 'Toyota Hilux 2.8L', year: 2023, vin: 'JTEBU11FXK5401234', fuelEfficiency: 9.2, driver: 'J. Mwangi', insuranceRenewal: '2026-05-12', registration: '2026-08-01', status: 'Active', mileage: 45230, lastService: '2026-01-20' },
+                    { id: 'VH-FORD-003', makeModel: 'Ford F-150 Lariat', year: 2024, vin: '1FTFW1E53PFA5678', fuelEfficiency: 11.5, driver: 'Unassigned', insuranceRenewal: '2026-03-20', registration: '2026-07-15', status: 'In Shop', mileage: 12340, lastService: '2026-02-10' },
+                    { id: 'VH-MERC-012', makeModel: 'Mercedes Sprinter 316', year: 2022, vin: 'W1W4EBV21NT9012', fuelEfficiency: 10.8, driver: 'K. Schmidt', insuranceRenewal: '2026-04-05', registration: '2026-09-10', status: 'Active', mileage: 67890, lastService: '2026-02-01' },
+                    { id: 'VH-VOL-007', makeModel: 'Volvo FH16', year: 2023, vin: 'YV2RT02C7PA34567', fuelEfficiency: 24.5, driver: 'S. Andersson', insuranceRenewal: '2026-06-15', registration: '2026-11-20', status: 'Active', mileage: 89230, lastService: '2026-02-05' }
+                ];
+
+                // Fuel Trips
+                this.data.fuelTrips = [
+                    { id: 'FUL-001', vehicle: 'VH-TOY-001', date: '2026-02-20', liters: 55, cost: 165, odometer: 45180, efficiency: 9.1, location: 'Dar es Salaam' },
+                    { id: 'FUL-002', vehicle: 'VH-MERC-012', date: '2026-02-19', liters: 78, cost: 234, odometer: 67820, efficiency: 10.5, location: 'Frankfurt' },
+                    { id: 'FUL-003', vehicle: 'VH-VOL-007', date: '2026-02-18', liters: 210, cost: 630, odometer: 89100, efficiency: 24.2, location: 'Hamburg' },
+                    { id: 'FUL-004', vehicle: 'VH-TOY-001', date: '2026-02-15', liters: 52, cost: 156, odometer: 45020, efficiency: 9.3, location: 'Dar es Salaam' },
+                    { id: 'FUL-005', vehicle: 'VH-MERC-012', date: '2026-02-12', liters: 75, cost: 225, odometer: 67700, efficiency: 10.9, location: 'Munich' }
+                ];
+
+                // Renewals
+                this.data.renewals = [
+                    { id: 'REN-001', item: 'Insurance', vehicle: 'VH-FORD-003', dueDate: '2026-03-20', cost: 2450, status: 'Upcoming', reminder: '30 days' },
+                    { id: 'REN-002', item: 'Registration', vehicle: 'VH-TOY-001', dueDate: '2026-08-01', cost: 180, status: 'Upcoming', reminder: '150 days' },
+                    { id: 'REN-003', item: 'Insurance', vehicle: 'VH-MERC-012', dueDate: '2026-04-05', cost: 3200, status: 'Upcoming', reminder: '45 days' },
+                    { id: 'REN-004', item: 'Insurance', vehicle: 'VH-VOL-007', dueDate: '2026-06-15', cost: 5800, status: 'Upcoming', reminder: '90 days' },
+                    { id: 'REN-005', item: 'Registration', vehicle: 'VH-VOL-007', dueDate: '2026-11-20', cost: 350, status: 'Upcoming', reminder: '270 days' }
+                ];
+
+                // Work Orders
+                this.data.workOrders = [
+                    { id: 'WO-2026-021', assetId: 'AST-FORK-023', assetName: 'Toyota Forklift', type: 'Corrective', scheduledDate: '2026-02-18', completedDate: '2026-02-19', assignedTo: 'M. Chen', laborHours: 4.5, partsUsed: 'Hydraulic seal', downtimeHours: 16, issue: 'Leaking fluid', status: 'Completed', priority: 'High' },
+                    { id: 'WO-2026-045', assetId: 'AST-CNC-001', assetName: 'CNC Mill VF-4', type: 'Preventive', scheduledDate: '2026-02-25', completedDate: '', assignedTo: 'F. Wagner', laborHours: 0, partsUsed: 'Lubricants', downtimeHours: 0, issue: 'Routine service', status: 'Scheduled', priority: 'Medium' },
+                    { id: 'WO-2026-052', assetId: 'VH-FORD-003', assetName: 'Ford F-150', type: 'Emergency', scheduledDate: '2026-02-20', completedDate: '', assignedTo: 'J. Garza', laborHours: 2.0, partsUsed: 'Diagnostic', downtimeHours: 24, issue: 'Engine misfire', status: 'In Progress', priority: 'Critical' },
+                    { id: 'WO-2026-058', assetId: 'AST-SRVR-089', assetName: 'Dell PowerEdge', type: 'Corrective', scheduledDate: '2026-02-21', completedDate: '', assignedTo: 'IT Team', laborHours: 0, partsUsed: 'Cooling fan', downtimeHours: 0, issue: 'Overheating alert', status: 'Pending Parts', priority: 'High' },
+                    { id: 'WO-2026-062', assetId: 'AST-HVAC-012', assetName: 'HVAC Chiller', type: 'Preventive', scheduledDate: '2026-02-28', completedDate: '', assignedTo: 'E. Mwamba', laborHours: 0, partsUsed: 'Filters, Coolant', downtimeHours: 0, issue: 'Seasonal maintenance', status: 'Scheduled', priority: 'Medium' }
+                ];
+
+                // Maintenance History
+                this.data.maintenanceHistory = [
+                    { id: 'MH-001', asset: 'AST-FORK-023', assetName: 'Toyota Forklift', date: '2026-02-19', type: 'Corrective', cost: 230, technician: 'M. Chen', description: 'Replaced hydraulic seal' },
+                    { id: 'MH-002', asset: 'VH-TOY-001', assetName: 'Toyota Hilux', date: '2026-02-10', type: 'Preventive', cost: 145, technician: 'J. Mwangi', description: 'Oil change, filter replacement' },
+                    { id: 'MH-003', asset: 'AST-CNC-001', assetName: 'CNC Mill', date: '2026-02-01', type: 'Preventive', cost: 320, technician: 'F. Wagner', description: 'Calibration, lubrication' },
+                    { id: 'MH-004', asset: 'VH-MERC-012', assetName: 'Mercedes Sprinter', date: '2026-01-28', type: 'Corrective', cost: 560, technician: 'K. Schmidt', description: 'Brake pad replacement' },
+                    { id: 'MH-005', asset: 'AST-HVAC-012', assetName: 'HVAC Chiller', date: '2026-01-15', type: 'Preventive', cost: 890, technician: 'E. Mwamba', description: 'Annual service, coolant top-up' }
+                ];
+
+                // Downtime Analysis
+                this.data.downtime = [
+                    { asset: 'AST-CNC-001', assetName: 'CNC Mill VF-4', mtbf: 45, mttr: 3.2, availability: 99.3, totalDowntime: 28, incidents: 4, lastIncident: '2026-02-01' },
+                    { asset: 'VH-FORD-003', assetName: 'Ford F-150', mtbf: 12, mttr: 8.5, availability: 97.8, totalDowntime: 42, incidents: 3, lastIncident: '2026-02-20' },
+                    { asset: 'AST-FORK-023', assetName: 'Toyota Forklift', mtbf: 28, mttr: 4.2, availability: 98.5, totalDowntime: 24, incidents: 5, lastIncident: '2026-02-19' },
+                    { asset: 'AST-HVAC-012', assetName: 'HVAC Chiller', mtbf: 65, mttr: 5.1, availability: 99.1, totalDowntime: 12, incidents: 2, lastIncident: '2026-01-15' }
+                ];
+
+                // Visitors
+                this.data.visitors = [
+                    { id: 'VIS-001', name: 'John Smith', company: 'Tech Solutions', checkIn: '2026-02-21 09:30', checkOut: '', host: 'A. Mbeki', badge: 'VS-123' },
+                    { id: 'VIS-002', name: 'Emma Wilson', company: 'Consulting Group', checkIn: '2026-02-21 10:15', checkOut: '', host: 'P. Omondi', badge: 'VS-124' },
+                    { id: 'VIS-003', name: 'Michael Chen', company: 'Supplier Inc', checkIn: '2026-02-21 11:00', checkOut: '2026-02-21 14:30', host: 'K. Schmidt', badge: 'VS-125' }
+                ];
+            }
+
+            saveData() {
+                localStorage.setItem('cephasgm_enterprise_asset_ops', JSON.stringify(this.data));
+            }
+
+            // Generic CRUD methods
+            create(collection, item) {
+                if (!this.data[collection]) this.data[collection] = [];
+                item.id = item.id || `${collection}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                this.data[collection].push(item);
+                this.saveData();
+                return item;
+            }
+
+            update(collection, id, updates) {
+                const index = this.data[collection].findIndex(item => item.id === id);
+                if (index !== -1) {
+                    this.data[collection][index] = { ...this.data[collection][index], ...updates };
+                    this.saveData();
+                    return this.data[collection][index];
+                }
+                return null;
+            }
+
+            delete(collection, id) {
+                this.data[collection] = this.data[collection].filter(item => item.id !== id);
+                this.saveData();
+            }
+
+            get(collection, id) {
+                return this.data[collection].find(item => item.id === id);
+            }
+
+            getAll(collection) {
+                return this.data[collection] || [];
+            }
+        }
+
+        // ==================== APPLICATION CONTROLLER ====================
+        class AppController {
+            constructor() {
+                this.model = new EnterpriseDataModel();
+                this.currentEditId = null;
+                this.currentCollection = null;
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.setupDatePicker();
+                this.renderAll();
+                this.initCharts();
+                this.updateKPIs();
+            }
+
+            setupDatePicker() {
+                flatpickr("#dateRange", {
+                    mode: "range",
+                    dateFormat: "Y-m-d",
+                    defaultDate: ["today", "today"],
+                    onChange: (dates) => {
+                        if (dates.length === 2) {
+                            this.showToast(`Date range: ${dates[0].toLocaleDateString()} - ${dates[1].toLocaleDateString()}`);
+                            this.renderAll(); // Re-render with date filter if needed
+                        }
+                    }
+                });
+            }
+
+            setupEventListeners() {
+                // Tab switching
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.module-panel').forEach(p => p.classList.remove('active'));
+                        e.target.closest('.tab-btn').classList.add('active');
+                        const tabId = e.target.closest('.tab-btn').getAttribute('data-tab');
+                        document.getElementById(`${tabId}-panel`).classList.add('active');
+                    });
+                });
+
+                // Global actions
+                document.getElementById('exportAllBtn').addEventListener('click', () => this.exportAllData());
+                document.getElementById('importDataBtn').addEventListener('click', () => this.importData());
+                document.getElementById('saveSnapshotBtn').addEventListener('click', () => this.saveSnapshot());
+                document.getElementById('refreshDataBtn').addEventListener('click', () => {
+                    this.renderAll();
+                    this.showToast('Data refreshed');
+                });
+
+                // Asset panel buttons
+                document.getElementById('addAssetBtn').addEventListener('click', () => this.openAssetModal());
+                document.getElementById('exportAssetsBtn').addEventListener('click', () => this.exportCollection('assets'));
+                document.getElementById('scheduleMaintenanceBtn').addEventListener('click', () => this.openWorkOrderModal());
+
+                // Facilities panel buttons
+                document.getElementById('addFacilityBtn').addEventListener('click', () => this.openFacilityModal());
+                document.getElementById('exportFacilitiesBtn').addEventListener('click', () => this.exportCollection('facilities'));
+                document.getElementById('viewFloorPlanBtn').addEventListener('click', () => this.showToast('Opening interactive floor map...'));
+                document.getElementById('addCleaningTaskBtn').addEventListener('click', () => this.openCleaningModal());
+                document.getElementById('generateCleaningReportBtn').addEventListener('click', () => this.generateReport('cleaning'));
+                document.getElementById('checkInVisitorBtn').addEventListener('click', () => this.openVisitorModal());
+                document.getElementById('viewVisitorLogBtn').addEventListener('click', () => this.showVisitorLog());
+
+                // Fleet panel buttons
+                document.getElementById('addVehicleBtn').addEventListener('click', () => this.openVehicleModal());
+                document.getElementById('exportFleetBtn').addEventListener('click', () => this.exportCollection('fleet'));
+                document.getElementById('addFuelTripBtn').addEventListener('click', () => this.openFuelTripModal());
+                document.getElementById('fuelAnalyticsBtn').addEventListener('click', () => this.showFuelAnalytics());
+
+                // Maintenance panel buttons
+                document.getElementById('addWorkOrderBtn').addEventListener('click', () => this.openWorkOrderModal());
+                document.getElementById('exportMaintenanceBtn').addEventListener('click', () => this.exportCollection('workOrders'));
+                document.getElementById('viewFullHistoryBtn').addEventListener('click', () => this.showFullHistory());
+                document.getElementById('exportHistoryBtn').addEventListener('click', () => this.exportCollection('maintenanceHistory'));
+
+                // Modal close
+                document.getElementById('closeModalBtn').addEventListener('click', () => this.closeModal());
+            }
+
+            // ==================== RENDERING ====================
+            renderAll() {
+                this.renderAssets();
+                this.renderUpcomingMaintenance();
+                this.renderDepreciation();
+                this.renderFacilities();
+                this.renderCleaning();
+                this.renderUtilities();
+                this.renderFleet();
+                this.renderFuelTrips();
+                this.renderRenewals();
+                this.renderWorkOrders();
+                this.renderMaintenanceHistory();
+                this.renderDowntime();
+                this.updateKPIs();
+                this.updateFooterTimestamp();
+            }
+
+            renderAssets() {
+                const tbody = document.getElementById('assetsTableBody');
+                tbody.innerHTML = this.model.getAll('assets').map(asset => `
+                    <tr>
+                        <td><span class="font-mono">${asset.id}</span></td>
+                        <td><strong>${asset.name}</strong></td>
+                        <td>${asset.category}</td>
+                        <td>${asset.acquisitionDate}</td>
+                        <td>$${asset.cost.toLocaleString()}</td>
+                        <td>${asset.location}</td>
+                        <td><span class="badge ${asset.status === 'Operational' ? 'badge-success' : asset.status === 'Under Maintenance' ? 'badge-warning' : 'badge-neutral'}">${asset.status}</span></td>
+                        <td class="row-actions">
+                            <button onclick="app.editAsset('${asset.id}')" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button onclick="app.viewAsset('${asset.id}')" title="View"><i class="fas fa-eye"></i></button>
+                            <button onclick="app.deleteAsset('${asset.id}')" title="Delete" class="delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            renderUpcomingMaintenance() {
+                const tbody = document.getElementById('upcomingMaintenanceBody');
+                const upcoming = this.model.getAll('workOrders')
+                    .filter(w => w.status === 'Scheduled' || w.status === 'Pending Parts')
+                    .sort((a, b) => new Date(a.scheduledDate) - new Date(b.scheduledDate))
+                    .slice(0, 5);
+                
+                tbody.innerHTML = upcoming.map(wo => `
+                    <tr>
+                        <td><strong>${wo.assetName || wo.assetId}</strong></td>
+                        <td>${wo.scheduledDate}</td>
+                        <td>${wo.type}</td>
+                        <td><span class="badge ${wo.priority === 'Critical' ? 'badge-danger' : wo.priority === 'High' ? 'badge-warning' : 'badge-info'}">${wo.priority || 'Normal'}</span></td>
+                        <td class="row-actions">
+                            <button onclick="app.editWorkOrder('${wo.id}')"><i class="fas fa-edit"></i></button>
+                            <button onclick="app.viewWorkOrder('${wo.id}')"><i class="fas fa-eye"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            renderDepreciation() {
+                const tbody = document.getElementById('depreciationBody');
+                tbody.innerHTML = this.model.getAll('assets').slice(0, 5).map(asset => {
+                    const yearsUsed = (new Date().getFullYear() - new Date(asset.acquisitionDate).getFullYear());
+                    const depreciationRate = asset.depreciationMethod === 'Straight-Line' ? 
+                        (asset.cost - asset.salvageValue) / asset.usefulLife : 
+                        (asset.cost - asset.salvageValue) * 0.2; // Simplified declining
+                    const currentValue = Math.max(asset.cost - (depreciationRate * yearsUsed), asset.salvageValue);
+                    const ytdDep = depreciationRate * (new Date().getMonth() + 1) / 12;
+                    
+                    return `
+                        <tr>
+                            <td><strong>${asset.name}</strong></td>
+                            <td>$${Math.round(currentValue).toLocaleString()}</td>
+                            <td>$${Math.round(ytdDep).toLocaleString()}</td>
+                            <td>${asset.depreciationMethod}</td>
+                            <td class="row-actions">
+                                <button onclick="app.viewAsset('${asset.id}')"><i class="fas fa-chart-line"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            renderFacilities() {
+                const tbody = document.getElementById('facilitiesTableBody');
+                tbody.innerHTML = this.model.getAll('facilities').map(f => `
+                    <tr>
+                        <td>${f.building}</td>
+                        <td>Floor ${f.floor}</td>
+                        <td>${f.space}</td>
+                        <td>${f.allocatedTo}</td>
+                        <td>${f.area} m²</td>
+                        <td>${f.type}</td>
+                        <td><span class="badge ${f.status === 'Occupied' ? 'badge-success' : 'badge-neutral'}">${f.status}</span></td>
+                        <td class="row-actions">
+                            <button onclick="app.editFacility('${f.id}')"><i class="fas fa-edit"></i></button>
+                            <button onclick="app.viewFacility('${f.id}')"><i class="fas fa-eye"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            renderCleaning() {
+                const tbody = document.getElementById('cleaningBody');
+                tbody.innerHTML = this.model.getAll('cleaning').map(c => {
+                    const today = new Date().toISOString().split('T')[0];
+                    const nextDue = new Date(c.nextDue);
+                    const today_date = new Date(today);
+                    const status = nextDue < today_date ? 'Overdue' : 
+                                  nextDue.toDateString() === today_date.toDateString() ? 'Due Today' : 'Scheduled';
+                    
+                    return `
+                        <tr>
+                            <td>${c.area}</td>
+                            <td>${c.frequency}</td>
+                            <td>${c.lastCleaned}</td>
+                            <td>${c.nextDue}</td>
+                            <td><span class="badge ${status === 'Overdue' ? 'badge-danger' : status === 'Due Today' ? 'badge-warning' : 'badge-success'}">${status}</span></td>
+                            <td class="row-actions">
+                                <button onclick="app.editCleaning('${c.id}')"><i class="fas fa-edit"></i></button>
+                                <button onclick="app.completeCleaning('${c.id}')"><i class="fas fa-check"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            renderUtilities() {
+                const tbody = document.getElementById('utilitiesBody');
+                tbody.innerHTML = this.model.getAll('utilities').map(u => `
+                    <tr>
+                        <td><strong>${u.utility}</strong></td>
+                        <td>${u.usage}</td>
+                        <td><span class="badge badge-success">${u.status}</span></td>
+                        <td>${u.trend || '0%'}</td>
+                        <td class="row-actions">
+                            <button onclick="app.editUtility('${u.id}')"><i class="fas fa-edit"></i></button>
+                            <button onclick="app.viewUtilityHistory('${u.id}')"><i class="fas fa-chart-line"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+
+                // Update visitor count
+                const checkedIn = this.model.getAll('visitors').filter(v => !v.checkOut).length;
+                document.getElementById('visitorCount').innerHTML = `<strong>${checkedIn}</strong> checked in · ${this.model.getAll('visitors').length} today`;
+            }
+
+            renderFleet() {
+                const tbody = document.getElementById('fleetTableBody');
+                tbody.innerHTML = this.model.getAll('fleet').map(v => {
+                    const daysToRenewal = Math.ceil((new Date(v.insuranceRenewal) - new Date()) / (1000*60*60*24));
+                    return `
+                        <tr>
+                            <td><span class="font-mono">${v.id}</span></td>
+                            <td><strong>${v.makeModel}</strong></td>
+                            <td>${v.year}</td>
+                            <td>${v.fuelEfficiency} L/100km</td>
+                            <td>${v.driver}</td>
+                            <td>${v.insuranceRenewal} (${daysToRenewal} days)</td>
+                            <td><span class="badge ${v.status === 'Active' ? 'badge-success' : 'badge-warning'}">${v.status}</span></td>
+                            <td class="row-actions">
+                                <button onclick="app.editVehicle('${v.id}')"><i class="fas fa-edit"></i></button>
+                                <button onclick="app.viewVehicle('${v.id}')"><i class="fas fa-eye"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            renderFuelTrips() {
+                const tbody = document.getElementById('fuelBody');
+                tbody.innerHTML = this.model.getAll('fuelTrips')
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .slice(0, 5)
+                    .map(f => `
+                        <tr>
+                            <td><strong>${f.vehicle}</strong></td>
+                            <td>${f.date}</td>
+                            <td>${f.liters} L</td>
+                            <td>$${f.cost}</td>
+                            <td>${f.efficiency || (f.liters / (f.odometer ? 100 : 1)).toFixed(1)} L/100km</td>
+                            <td class="row-actions">
+                                <button onclick="app.editFuelTrip('${f.id}')"><i class="fas fa-edit"></i></button>
+                                <button onclick="app.viewFuelTrip('${f.id}')"><i class="fas fa-eye"></i></button>
+                            </td>
+                        </tr>
+                    `).join('');
+            }
+
+            renderRenewals() {
+                const tbody = document.getElementById('renewalsBody');
+                tbody.innerHTML = this.model.getAll('renewals')
+                    .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
+                    .map(r => {
+                        const daysLeft = Math.ceil((new Date(r.dueDate) - new Date()) / (1000*60*60*24));
+                        const status = daysLeft < 0 ? 'Expired' : daysLeft < 30 ? 'Urgent' : daysLeft < 60 ? 'Soon' : 'OK';
+                        return `
+                            <tr>
+                                <td>${r.item}</td>
+                                <td>${r.vehicle}</td>
+                                <td>${r.dueDate}</td>
+                                <td><strong>${daysLeft}</strong></td>
+                                <td><span class="badge ${status === 'Expired' ? 'badge-danger' : status === 'Urgent' ? 'badge-warning' : 'badge-info'}">${status}</span></td>
+                                <td class="row-actions">
+                                    <button onclick="app.editRenewal('${r.id}')"><i class="fas fa-edit"></i></button>
+                                    <button onclick="app.processRenewal('${r.id}')"><i class="fas fa-check"></i></button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+            }
+
+            renderWorkOrders() {
+                const tbody = document.getElementById('maintenanceTableBody');
+                tbody.innerHTML = this.model.getAll('workOrders').map(wo => `
+                    <tr>
+                        <td><span class="font-mono">${wo.id}</span></td>
+                        <td><strong>${wo.assetName || wo.assetId}</strong></td>
+                        <td>${wo.type}</td>
+                        <td>${wo.scheduledDate}</td>
+                        <td>${wo.assignedTo}</td>
+                        <td><span class="badge ${wo.status === 'Completed' ? 'badge-success' : wo.status === 'In Progress' ? 'badge-danger' : wo.status === 'Scheduled' ? 'badge-info' : 'badge-warning'}">${wo.status}</span></td>
+                        <td><span class="badge ${wo.priority === 'Critical' ? 'badge-danger' : wo.priority === 'High' ? 'badge-warning' : 'badge-info'}">${wo.priority || 'Normal'}</span></td>
+                        <td class="row-actions">
+                            <button onclick="app.editWorkOrder('${wo.id}')"><i class="fas fa-edit"></i></button>
+                            <button onclick="app.viewWorkOrder('${wo.id}')"><i class="fas fa-eye"></i></button>
+                            <button onclick="app.deleteWorkOrder('${wo.id}')" class="delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            renderMaintenanceHistory() {
+                const tbody = document.getElementById('maintenanceHistoryBody');
+                tbody.innerHTML = this.model.getAll('maintenanceHistory')
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .slice(0, 5)
+                    .map(m => `
+                        <tr>
+                            <td><strong>${m.assetName || m.asset}</strong></td>
+                            <td>${m.date}</td>
+                            <td>${m.type}</td>
+                            <td>$${m.cost}</td>
+                            <td>${m.technician}</td>
+                            <td class="row-actions">
+                                <button onclick="app.viewMaintenanceDetail('${m.id}')"><i class="fas fa-eye"></i></button>
+                                <button onclick="app.repeatMaintenance('${m.id}')"><i class="fas fa-redo"></i></button>
+                            </td>
+                        </tr>
+                    `).join('');
+            }
+
+            renderDowntime() {
+                const tbody = document.getElementById('downtimeBody');
+                tbody.innerHTML = this.model.getAll('downtime').map(d => {
+                    const availability = (d.mtbf / (d.mtbf + d.mttr/24) * 100).toFixed(1);
+                    return `
+                        <tr>
+                            <td><strong>${d.assetName || d.asset}</strong></td>
+                            <td>${d.mtbf}</td>
+                            <td>${d.mttr}</td>
+                            <td>${availability}%</td>
+                            <td>${d.totalDowntime || 0} hrs</td>
+                            <td class="row-actions">
+                                <button onclick="app.analyzeDowntime('${d.asset}')"><i class="fas fa-chart-bar"></i></button>
+                                <button onclick="app.viewDowntimeDetails('${d.asset}')"><i class="fas fa-info-circle"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            updateKPIs() {
+                const assets = this.model.getAll('assets');
+                const totalValue = assets.reduce((sum, a) => sum + a.cost, 0);
+                document.getElementById('totalAssetsValue').textContent = `$${(totalValue / 1000000).toFixed(1)}M`;
+                
+                const facilities = this.model.getAll('facilities');
+                const occupied = facilities.filter(f => f.status === 'Occupied').length;
+                const util = facilities.length ? Math.round((occupied / facilities.length) * 100) : 0;
+                document.getElementById('facilitiesUtilization').textContent = util + '%';
+                
+                const fleet = this.model.getAll('fleet');
+                const avgEfficiency = fleet.reduce((sum, v) => sum + v.fuelEfficiency, 0) / fleet.length;
+                document.getElementById('fleetEfficiency').textContent = avgEfficiency.toFixed(1) + ' L/100km';
+                
+                const openOrders = this.model.getAll('workOrders').filter(w => w.status !== 'Completed').length;
+                document.getElementById('openWorkOrders').textContent = openOrders;
+            }
+
+            updateFooterTimestamp() {
+                document.getElementById('footerTimestamp').textContent = new Date().toISOString().replace('T', ' ').substr(0, 19) + ' UTC';
+            }
+
+            // ==================== CHARTS ====================
+            initCharts() {
+                this.initDepreciationChart();
+                this.initRenewalsChart();
+                this.initDowntimeChart();
+            }
+
+            initDepreciationChart() {
+                const ctx = document.getElementById('depreciationChart').getContext('2d');
+                const assets = this.model.getAll('assets').slice(0, 5);
+                
+                this.charts.depreciation = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: assets.map(a => a.name.split(' ')[0]),
+                        datasets: [{
+                            label: 'Current Value',
+                            data: assets.map(a => {
+                                const yearsUsed = (new Date().getFullYear() - new Date(a.acquisitionDate).getFullYear());
+                                const depreciationRate = (a.cost - a.salvageValue) / a.usefulLife;
+                                return Math.max(a.cost - (depreciationRate * yearsUsed), a.salvageValue);
+                            }),
+                            backgroundColor: '#2563eb',
+                            borderRadius: 6
+                        }, {
+                            label: 'Depreciated',
+                            data: assets.map(a => {
+                                const yearsUsed = (new Date().getFullYear() - new Date(a.acquisitionDate).getFullYear());
+                                const depreciationRate = (a.cost - a.salvageValue) / a.usefulLife;
+                                return depreciationRate * yearsUsed;
+                            }),
+                            backgroundColor: '#94a3b8',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+
+            initRenewalsChart() {
+                const ctx = document.getElementById('renewalsChart').getContext('2d');
+                const renewals = this.model.getAll('renewals');
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+                
+                this.charts.renewals = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Upcoming Renewals',
+                            data: months.map((m, i) => renewals.filter(r => new Date(r.dueDate).getMonth() === i).length),
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37,99,235,0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+
+            initDowntimeChart() {
+                const ctx = document.getElementById('downtimeChart').getContext('2d');
+                const downtime = this.model.getAll('downtime').slice(0, 5);
+                
+                this.charts.downtime = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: downtime.map(d => d.assetName || d.asset),
+                        datasets: [{
+                            label: 'MTBF (days)',
+                            data: downtime.map(d => d.mtbf),
+                            backgroundColor: '#10b981',
+                            borderRadius: 6
+                        }, {
+                            label: 'MTTR (hours)',
+                            data: downtime.map(d => d.mttr),
+                            backgroundColor: '#ef4444',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+
+            // ==================== CRUD OPERATIONS ====================
+            openAssetModal(assetId = null) {
+                const asset = assetId ? this.model.get('assets', assetId) : null;
+                this.currentCollection = 'assets';
+                this.currentEditId = assetId;
+                
+                const title = assetId ? 'Edit Asset' : 'Register New Asset';
+                const modalBody = document.getElementById('modalBody');
+                
+                modalBody.innerHTML = `
+                    <form id="assetForm">
+                        <div class="form-group">
+                            <label>Asset ID</label>
+                            <input type="text" id="assetId" value="${asset ? asset.id : ''}" ${asset ? 'readonly' : ''} placeholder="e.g., AST-CNC-001">
+                        </div>
+                        <div class="form-group">
+                            <label>Name/Model</label>
+                            <input type="text" id="assetName" value="${asset ? asset.name : ''}" placeholder="e.g., CNC Mill VF-4">
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="assetCategory">
+                                <option value="Machinery" ${asset && asset.category === 'Machinery' ? 'selected' : ''}>Machinery</option>
+                                <option value="Material Handling" ${asset && asset.category === 'Material Handling' ? 'selected' : ''}>Material Handling</option>
+                                <option value="IT Equipment" ${asset && asset.category === 'IT Equipment' ? 'selected' : ''}>IT Equipment</option>
+                                <option value="Real Estate" ${asset && asset.category === 'Real Estate' ? 'selected' : ''}>Real Estate</option>
+                                <option value="Facilities" ${asset && asset.category === 'Facilities' ? 'selected' : ''}>Facilities</option>
+                                <option value="Vehicles" ${asset && asset.category === 'Vehicles' ? 'selected' : ''}>Vehicles</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Acquisition Date</label>
+                            <input type="text" id="assetAcqDate" class="datepicker" value="${asset ? asset.acquisitionDate : ''}" placeholder="YYYY-MM-DD">
+                        </div>
+                        <div class="form-group">
+                            <label>Cost (USD)</label>
+                            <input type="number" id="assetCost" value="${asset ? asset.cost : ''}" step="1000">
+                        </div>
+                        <div class="form-group">
+                            <label>Depreciation Method</label>
+                            <select id="assetDepMethod">
+                                <option value="Straight-Line" ${asset && asset.depreciationMethod === 'Straight-Line' ? 'selected' : ''}>Straight-Line</option>
+                                <option value="Declining Balance" ${asset && asset.depreciationMethod === 'Declining Balance' ? 'selected' : ''}>Declining Balance</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Useful Life (years)</label>
+                            <input type="number" id="assetUsefulLife" value="${asset ? asset.usefulLife : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Salvage Value</label>
+                            <input type="number" id="assetSalvage" value="${asset ? asset.salvageValue : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Warranty Until</label>
+                            <input type="text" id="assetWarranty" class="datepicker" value="${asset ? asset.warrantyUntil : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" id="assetLocation" value="${asset ? asset.location : ''}" placeholder="e.g., Frankfurt Plant">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="assetStatus">
+                                <option value="Operational" ${asset && asset.status === 'Operational' ? 'selected' : ''}>Operational</option>
+                                <option value="Under Maintenance" ${asset && asset.status === 'Under Maintenance' ? 'selected' : ''}>Under Maintenance</option>
+                                <option value="Disposed" ${asset && asset.status === 'Disposed' ? 'selected' : ''}>Disposed</option>
+                            </select>
+                        </div>
+                    </form>
+                    <div class="form-actions">
+                        <button class="btn-outline" onclick="app.closeModal()">Cancel</button>
+                        <button class="btn-primary" onclick="app.saveAsset()">Save Asset</button>
+                    </div>
+                `;
+                
+                flatpickr(".datepicker", { dateFormat: "Y-m-d" });
+                document.getElementById('modalTitle').textContent = title;
+                document.getElementById('modal').classList.add('active');
+            }
+
+            saveAsset() {
+                const assetData = {
+                    id: document.getElementById('assetId').value,
+                    name: document.getElementById('assetName').value,
+                    category: document.getElementById('assetCategory').value,
+                    acquisitionDate: document.getElementById('assetAcqDate').value,
+                    cost: parseFloat(document.getElementById('assetCost').value),
+                    depreciationMethod: document.getElementById('assetDepMethod').value,
+                    usefulLife: parseInt(document.getElementById('assetUsefulLife').value),
+                    salvageValue: parseFloat(document.getElementById('assetSalvage').value),
+                    warrantyUntil: document.getElementById('assetWarranty').value,
+                    location: document.getElementById('assetLocation').value,
+                    status: document.getElementById('assetStatus').value
+                };
+
+                if (this.currentEditId) {
+                    this.model.update('assets', this.currentEditId, assetData);
+                    this.showToast('Asset updated successfully');
+                } else {
+                    this.model.create('assets', assetData);
+                    this.showToast('Asset created successfully');
+                }
+
+                this.closeModal();
+                this.renderAll();
+                this.initDepreciationChart();
+            }
+
+            deleteAsset(id) {
+                if (confirm('Are you sure you want to delete this asset? This action cannot be undone.')) {
+                    this.model.delete('assets', id);
+                    this.showToast('Asset deleted');
+                    this.renderAll();
+                    this.initDepreciationChart();
+                }
+            }
+
+            viewAsset(id) {
+                const asset = this.model.get('assets', id);
+                this.showToast(`Viewing ${asset.name} - details shown in console (demo)`);
+                console.log('Asset details:', asset);
+            }
+
+            editAsset(id) {
+                this.openAssetModal(id);
+            }
+
+            // Work Order operations
+            openWorkOrderModal(id = null) {
+                const wo = id ? this.model.get('workOrders', id) : null;
+                this.currentCollection = 'workOrders';
+                this.currentEditId = id;
+                
+                const assets = this.model.getAll('assets').map(a => 
+                    `<option value="${a.id}" ${wo && wo.assetId === a.id ? 'selected' : ''}>${a.name} (${a.id})</option>`
+                ).join('');
+                
+                const modalBody = document.getElementById('modalBody');
+                modalBody.innerHTML = `
+                    <form id="woForm">
+                        <div class="form-group">
+                            <label>Asset</label>
+                            <select id="woAssetId" required>
+                                <option value="">Select Asset</option>
+                                ${assets}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Work Order Type</label>
+                            <select id="woType">
+                                <option value="Preventive" ${wo && wo.type === 'Preventive' ? 'selected' : ''}>Preventive</option>
+                                <option value="Corrective" ${wo && wo.type === 'Corrective' ? 'selected' : ''}>Corrective</option>
+                                <option value="Emergency" ${wo && wo.type === 'Emergency' ? 'selected' : ''}>Emergency</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Scheduled Date</label>
+                            <input type="text" id="woScheduledDate" class="datepicker" value="${wo ? wo.scheduledDate : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Assigned To</label>
+                            <input type="text" id="woAssignedTo" value="${wo ? wo.assignedTo : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Issue Description</label>
+                            <textarea id="woIssue" rows="3">${wo ? wo.issue : ''}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Priority</label>
+                            <select id="woPriority">
+                                <option value="Low" ${wo && wo.priority === 'Low' ? 'selected' : ''}>Low</option>
+                                <option value="Medium" ${wo && wo.priority === 'Medium' ? 'selected' : ''}>Medium</option>
+                                <option value="High" ${wo && wo.priority === 'High' ? 'selected' : ''}>High</option>
+                                <option value="Critical" ${wo && wo.priority === 'Critical' ? 'selected' : ''}>Critical</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="woStatus">
+                                <option value="Scheduled" ${wo && wo.status === 'Scheduled' ? 'selected' : ''}>Scheduled</option>
+                                <option value="In Progress" ${wo && wo.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="Pending Parts" ${wo && wo.status === 'Pending Parts' ? 'selected' : ''}>Pending Parts</option>
+                                <option value="Completed" ${wo && wo.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                            </select>
+                        </div>
+                    </form>
+                    <div class="form-actions">
+                        <button class="btn-outline" onclick="app.closeModal()">Cancel</button>
+                        <button class="btn-primary" onclick="app.saveWorkOrder()">Save Work Order</button>
+                    </div>
+                `;
+                
+                flatpickr(".datepicker", { dateFormat: "Y-m-d" });
+                document.getElementById('modalTitle').textContent = id ? 'Edit Work Order' : 'New Work Order';
+                document.getElementById('modal').classList.add('active');
+            }
+
+            saveWorkOrder() {
+                const assetId = document.getElementById('woAssetId').value;
+                const asset = this.model.get('assets', assetId);
+                
+                const woData = {
+                    id: this.currentEditId || `WO-${Date.now()}`,
+                    assetId: assetId,
+                    assetName: asset ? asset.name : '',
+                    type: document.getElementById('woType').value,
+                    scheduledDate: document.getElementById('woScheduledDate').value,
+                    assignedTo: document.getElementById('woAssignedTo').value,
+                    issue: document.getElementById('woIssue').value,
+                    priority: document.getElementById('woPriority').value,
+                    status: document.getElementById('woStatus').value,
+                    completedDate: '',
+                    laborHours: 0,
+                    partsUsed: '',
+                    downtimeHours: 0
+                };
+
+                if (this.currentEditId) {
+                    this.model.update('workOrders', this.currentEditId, woData);
+                    this.showToast('Work order updated');
+                } else {
+                    this.model.create('workOrders', woData);
+                    this.showToast('Work order created');
+                }
+
+                this.closeModal();
+                this.renderAll();
+            }
+
+            editWorkOrder(id) {
+                this.openWorkOrderModal(id);
+            }
+
+            deleteWorkOrder(id) {
+                if (confirm('Delete this work order?')) {
+                    this.model.delete('workOrders', id);
+                    this.showToast('Work order deleted');
+                    this.renderAll();
+                }
+            }
+
+            viewWorkOrder(id) {
+                const wo = this.model.get('workOrders', id);
+                this.showToast(`Work Order ${id}: ${wo.status}`);
+            }
+
+            // Fuel Trip operations
+            openFuelTripModal(id = null) {
+                const trip = id ? this.model.get('fuelTrips', id) : null;
+                const vehicles = this.model.getAll('fleet').map(v => 
+                    `<option value="${v.id}" ${trip && trip.vehicle === v.id ? 'selected' : ''}>${v.makeModel}</option>`
+                ).join('');
+                
+                const modalBody = document.getElementById('modalBody');
+                modalBody.innerHTML = `
+                    <form id="fuelForm">
+                        <div class="form-group">
+                            <label>Vehicle</label>
+                            <select id="fuelVehicle" required>${vehicles}</select>
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="text" id="fuelDate" class="datepicker" value="${trip ? trip.date : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Liters</label>
+                            <input type="number" id="fuelLiters" step="0.1" value="${trip ? trip.liters : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Cost ($)</label>
+                            <input type="number" id="fuelCost" step="0.01" value="${trip ? trip.cost : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Odometer (km)</label>
+                            <input type="number" id="fuelOdometer" value="${trip ? trip.odometer : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" id="fuelLocation" value="${trip ? trip.location : ''}">
+                        </div>
+                    </form>
+                    <div class="form-actions">
+                        <button class="btn-outline" onclick="app.closeModal()">Cancel</button>
+                        <button class="btn-primary" onclick="app.saveFuelTrip()">Save Trip</button>
+                    </div>
+                `;
+                
+                flatpickr(".datepicker", { dateFormat: "Y-m-d" });
+                document.getElementById('modalTitle').textContent = id ? 'Edit Fuel Trip' : 'Log Fuel Trip';
+                document.getElementById('modal').classList.add('active');
+            }
+
+            saveFuelTrip() {
+                const vehicleId = document.getElementById('fuelVehicle').value;
+                const vehicle = this.model.get('fleet', vehicleId);
+                
+                const tripData = {
+                    id: this.currentEditId || `FUL-${Date.now()}`,
+                    vehicle: vehicleId,
+                    vehicleName: vehicle ? vehicle.makeModel : vehicleId,
+                    date: document.getElementById('fuelDate').value,
+                    liters: parseFloat(document.getElementById('fuelLiters').value),
+                    cost: parseFloat(document.getElementById('fuelCost').value),
+                    odometer: parseInt(document.getElementById('fuelOdometer').value),
+                    location: document.getElementById('fuelLocation').value,
+                    efficiency: 0 // Calculate later
+                };
+
+                if (this.currentEditId) {
+                    this.model.update('fuelTrips', this.currentEditId, tripData);
+                } else {
+                    this.model.create('fuelTrips', tripData);
+                }
+
+                this.closeModal();
+                this.renderAll();
+                this.showToast('Fuel trip saved');
+            }
+
+            editFuelTrip(id) {
+                this.openFuelTripModal(id);
+            }
+
+            // Renewal operations
+            openRenewalModal(id = null) {
+                const renewal = id ? this.model.get('renewals', id) : null;
+                const vehicles = this.model.getAll('fleet').map(v => 
+                    `<option value="${v.id}" ${renewal && renewal.vehicle === v.id ? 'selected' : ''}>${v.makeModel}</option>`
+                ).join('');
+                
+                const modalBody = document.getElementById('modalBody');
+                modalBody.innerHTML = `
+                    <form id="renewalForm">
+                        <div class="form-group">
+                            <label>Item</label>
+                            <select id="renewalItem">
+                                <option value="Insurance" ${renewal && renewal.item === 'Insurance' ? 'selected' : ''}>Insurance</option>
+                                <option value="Registration" ${renewal && renewal.item === 'Registration' ? 'selected' : ''}>Registration</option>
+                                <option value="Inspection" ${renewal && renewal.item === 'Inspection' ? 'selected' : ''}>Inspection</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Vehicle</label>
+                            <select id="renewalVehicle" required>${vehicles}</select>
+                        </div>
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <input type="text" id="renewalDueDate" class="datepicker" value="${renewal ? renewal.dueDate : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Cost ($)</label>
+                            <input type="number" id="renewalCost" value="${renewal ? renewal.cost : ''}">
+                        </div>
+                    </form>
+                    <div class="form-actions">
+                        <button class="btn-outline" onclick="app.closeModal()">Cancel</button>
+                        <button class="btn-primary" onclick="app.saveRenewal()">Save Renewal</button>
+                    </div>
+                `;
+                
+                flatpickr(".datepicker", { dateFormat: "Y-m-d" });
+                document.getElementById('modalTitle').textContent = id ? 'Edit Renewal' : 'Add Renewal';
+                document.getElementById('modal').classList.add('active');
+            }
+
+            saveRenewal() {
+                const renewalData = {
+                    id: this.currentEditId || `REN-${Date.now()}`,
+                    item: document.getElementById('renewalItem').value,
+                    vehicle: document.getElementById('renewalVehicle').value,
+                    dueDate: document.getElementById('renewalDueDate').value,
+                    cost: parseFloat(document.getElementById('renewalCost').value),
+                    status: 'Upcoming'
+                };
+
+                if (this.currentEditId) {
+                    this.model.update('renewals', this.currentEditId, renewalData);
+                } else {
+                    this.model.create('renewals', renewalData);
+                }
+
+                this.closeModal();
+                this.renderAll();
+                this.initRenewalsChart();
+                this.showToast('Renewal saved');
+            }
+
+            editRenewal(id) {
+                this.openRenewalModal(id);
+            }
+
+            processRenewal(id) {
+                if (confirm('Mark this renewal as completed?')) {
+                    this.model.delete('renewals', id);
+                    this.showToast('Renewal processed');
+                    this.renderAll();
+                }
+            }
+
+            // Cleaning operations
+            openCleaningModal(id = null) {
+                const cleaning = id ? this.model.get('cleaning', id) : null;
+                
+                const modalBody = document.getElementById('modalBody');
+                modalBody.innerHTML = `
+                    <form id="cleaningForm">
+                        <div class="form-group">
+                            <label>Area</label>
+                            <input type="text" id="cleaningArea" value="${cleaning ? cleaning.area : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select id="cleaningFrequency">
+                                <option value="Daily" ${cleaning && cleaning.frequency === 'Daily' ? 'selected' : ''}>Daily</option>
+                                <option value="Weekly" ${cleaning && cleaning.frequency === 'Weekly' ? 'selected' : ''}>Weekly</option>
+                                <option value="Bi-Weekly" ${cleaning && cleaning.frequency === 'Bi-Weekly' ? 'selected' : ''}>Bi-Weekly</option>
+                                <option value="Monthly" ${cleaning && cleaning.frequency === 'Monthly' ? 'selected' : ''}>Monthly</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Cleaned</label>
+                            <input type="text" id="cleaningLast" class="datepicker" value="${cleaning ? cleaning.lastCleaned : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Assigned To</label>
+                            <input type="text" id="cleaningAssigned" value="${cleaning ? cleaning.assignedTo : ''}">
+                        </div>
+                    </form>
+                    <div class="form-actions">
+                        <button class="btn-outline" onclick="app.closeModal()">Cancel</button>
+                        <button class="btn-primary" onclick="app.saveCleaning()">Save Task</button>
+                    </div>
+                `;
+                
+                flatpickr(".datepicker", { dateFormat: "Y-m-d H:i", enableTime: true });
+                document.getElementById('modalTitle').textContent = id ? 'Edit Cleaning Task' : 'Add Cleaning Task';
+                document.getElementById('modal').classList.add('active');
+            }
+
+            saveCleaning() {
+                const cleaningData = {
+                    id: this.currentEditId || `CLN-${Date.now()}`,
+                    area: document.getElementById('cleaningArea').value,
+                    frequency: document.getElementById('cleaningFrequency').value,
+                    lastCleaned: document.getElementById('cleaningLast').value,
+                    assignedTo: document.getElementById('cleaningAssigned').value,
+                    nextDue: this.calculateNextDue(
+                        document.getElementById('cleaningLast').value,
+                        document.getElementById('cleaningFrequency').value
+                    )
+                };
+
+                if (this.currentEditId) {
+                    this.model.update('cleaning', this.currentEditId, cleaningData);
+                } else {
+                    this.model.create('cleaning', cleaningData);
+                }
+
+                this.closeModal();
+                this.renderAll();
+                this.showToast('Cleaning task saved');
+            }
+
+            calculateNextDue(lastCleaned, frequency) {
+                const date = new Date(lastCleaned);
+                switch(frequency) {
+                    case 'Daily': date.setDate(date.getDate() + 1); break;
+                    case 'Weekly': date.setDate(date.getDate() + 7); break;
+                    case 'Bi-Weekly': date.setDate(date.getDate() + 14); break;
+                    case 'Monthly': date.setMonth(date.getMonth() + 1); break;
+                }
+                return date.toISOString().split('T')[0];
+            }
+
+            editCleaning(id) {
+                this.openCleaningModal(id);
+            }
+
+            completeCleaning(id) {
+                const cleaning = this.model.get('cleaning', id);
+                const today = new Date().toISOString().split('T')[0];
+                const nextDue = this.calculateNextDue(today, cleaning.frequency);
+                
+                this.model.update('cleaning', id, {
+                    lastCleaned: today + ' ' + new Date().toLocaleTimeString(),
+                    nextDue: nextDue
+                });
+                
+                this.showToast('Cleaning marked as completed');
+                this.renderAll();
+            }
+
+            // Utility operations
+            editUtility(id) {
+                const utility = this.model.get('utilities', id);
+                // In a real app, open meter reading modal
+                this.showToast(`Record reading for ${utility.utility}`);
+            }
+
+            viewUtilityHistory(id) {
+                const utility = this.model.get('utilities', id);
+                this.showToast(`Showing usage history for ${utility.utility}`);
+            }
+
+            // Visitor operations
+            openVisitorModal() {
+                const modalBody = document.getElementById('modalBody');
+                modalBody.innerHTML = `
+                    <form id="visitorForm">
+                        <div class="form-group">
+                            <label>Visitor Name</label>
+                            <input type="text" id="visitorName" placeholder="Full name">
+                        </div>
+                        <div class="form-group">
+                            <label>Company</label>
+                            <input type="text" id="visitorCompany" placeholder="Company name">
+                        </div>
+                        <div class="form-group">
+                            <label>Host</label>
+                            <input type="text" id="visitorHost" placeholder="Employee name">
+                        </div>
+                        <div class="form-group">
+                            <label>Badge Number</label>
+                            <input type="text" id="visitorBadge" value="VS-" + Math.floor(Math.random()*1000)>
+                        </div>
+                    </form>
+                    <div class="form-actions">
+                        <button class="btn-outline" onclick="app.closeModal()">Cancel</button>
+                        <button class="btn-primary" onclick="app.checkInVisitor()">Check In</button>
+                    </div>
+                `;
+                
+                document.getElementById('modalTitle').textContent = 'Visitor Check-In';
+                document.getElementById('modal').classList.add('active');
+            }
+
+            checkInVisitor() {
+                const visitorData = {
+                    id: `VIS-${Date.now()}`,
+                    name: document.getElementById('visitorName').value,
+                    company: document.getElementById('visitorCompany').value,
+                    host: document.getElementById('visitorHost').value,
+                    badge: document.getElementById('visitorBadge').value,
+                    checkIn: new Date().toISOString().replace('T', ' ').substr(0, 16),
+                    checkOut: null
+                };
+
+                this.model.create('visitors', visitorData);
+                this.closeModal();
+                this.renderAll();
+                this.showToast(`${visitorData.name} checked in successfully`);
+            }
+
+            showVisitorLog() {
+                const visitors = this.model.getAll('visitors');
+                const logText = visitors.map(v => 
+                    `${v.name} (${v.company}) - In: ${v.checkIn} ${v.checkOut ? 'Out: ' + v.checkOut : 'Checked In'}`
+                ).join('\n');
+                
+                alert('Visitor Log:\n' + logText);
+            }
+
+            // Facility operations
+            openFacilityModal(id = null) {
+                const facility = id ? this.model.get('facilities', id) : null;
+                
+                const modalBody = document.getElementById('modalBody');
+                modalBody.innerHTML = `
+                    <form id="facilityForm">
+                        <div class="form-group">
+                            <label>Building</label>
+                            <input type="text" id="facBuilding" value="${facility ? facility.building : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Floor</label>
+                            <input type="number" id="facFloor" value="${facility ? facility.floor : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Space/Office</label>
+                            <input type="text" id="facSpace" value="${facility ? facility.space : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Allocated To</label>
+                            <input type="text" id="facAllocated" value="${facility ? facility.allocatedTo : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Area (sq m)</label>
+                            <input type="number" id="facArea" value="${facility ? facility.area : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <input type="text" id="facType" value="${facility ? facility.type : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="facStatus">
+                                <option value="Occupied" ${facility && facility.status === 'Occupied' ? 'selected' : ''}>Occupied</option>
+                                <option value="Available" ${facility && facility.status === 'Available' ? 'selected' : ''}>Available</option>
+                                <option value="Maintenance" ${facility && facility.status === 'Maintenance' ? 'selected' : ''}>Under Maintenance</option>
+                            </select>
+                        </div>
+                    </form>
+                    <div class="form-actions">
+                        <button class="btn-outline" onclick="app.closeModal()">Cancel</button>
+                        <button class="btn-primary" onclick="app.saveFacility()">Save Space</button>
+                    </div>
+                `;
+                
+                document.getElementById('modalTitle').textContent = id ? 'Edit Facility' : 'Add Facility';
+                document.getElementById('modal').classList.add('active');
+            }
+
+            saveFacility() {
+                const facilityData = {
+                    id: this.currentEditId || `FAC-${Date.now()}`,
+                    building: document.getElementById('facBuilding').value,
+                    floor: parseInt(document.getElementById('facFloor').value),
+                    space: document.getElementById('facSpace').value,
+                    allocatedTo: document.getElementById('facAllocated').value,
+                    area: parseInt(document.getElementById('facArea').value),
+                    type: document.getElementById('facType').value,
+                    status: document.getElementById('facStatus').value
+                };
+
+                if (this.currentEditId) {
+                    this.model.update('facilities', this.currentEditId, facilityData);
+                } else {
+                    this.model.create('facilities', facilityData);
+                }
+
+                this.closeModal();
+                this.renderAll();
+                this.showToast('Facility saved');
+            }
+
+            editFacility(id) {
+                this.openFacilityModal(id);
+            }
+
+            viewFacility(id) {
+                const facility = this.model.get('facilities', id);
+                this.showToast(`Viewing ${facility.building} Floor ${facility.floor} - ${facility.space}`);
+            }
+
+            // Vehicle operations
+            openVehicleModal(id = null) {
+                const vehicle = id ? this.model.get('fleet', id) : null;
+                
+                const modalBody = document.getElementById('modalBody');
+                modalBody.innerHTML = `
+                    <form id="vehicleForm">
+                        <div class="form-group">
+                            <label>Vehicle ID</label>
+                            <input type="text" id="vehId" value="${vehicle ? vehicle.id : ''}" ${vehicle ? 'readonly' : ''}>
+                        </div>
+                        <div class="form-group">
+                            <label>Make/Model</label>
+                            <input type="text" id="vehModel" value="${vehicle ? vehicle.makeModel : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Year</label>
+                            <input type="number" id="vehYear" value="${vehicle ? vehicle.year : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>VIN</label>
+                            <input type="text" id="vehVin" value="${vehicle ? vehicle.vin : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Fuel Efficiency (L/100km)</label>
+                            <input type="number" step="0.1" id="vehEfficiency" value="${vehicle ? vehicle.fuelEfficiency : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Driver</label>
+                            <input type="text" id="vehDriver" value="${vehicle ? vehicle.driver : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Insurance Renewal</label>
+                            <input type="text" id="vehInsurance" class="datepicker" value="${vehicle ? vehicle.insuranceRenewal : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Registration Due</label>
+                            <input type="text" id="vehRegistration" class="datepicker" value="${vehicle ? vehicle.registration : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="vehStatus">
+                                <option value="Active" ${vehicle && vehicle.status === 'Active' ? 'selected' : ''}>Active</option>
+                                <option value="In Shop" ${vehicle && vehicle.status === 'In Shop' ? 'selected' : ''}>In Shop</option>
+                                <option value="Out of Service" ${vehicle && vehicle.status === 'Out of Service' ? 'selected' : ''}>Out of Service</option>
+                            </select>
+                        </div>
+                    </form>
+                    <div class="form-actions">
+                        <button class="btn-outline" onclick="app.closeModal()">Cancel</button>
+                        <button class="btn-primary" onclick="app.saveVehicle()">Save Vehicle</button>
+                    </div>
+                `;
+                
+                flatpickr(".datepicker", { dateFormat: "Y-m-d" });
+                document.getElementById('modalTitle').textContent = id ? 'Edit Vehicle' : 'Add Vehicle';
+                document.getElementById('modal').classList.add('active');
+            }
+
+            saveVehicle() {
+                const vehicleData = {
+                    id: document.getElementById('vehId').value,
+                    makeModel: document.getElementById('vehModel').value,
+                    year: parseInt(document.getElementById('vehYear').value),
+                    vin: document.getElementById('vehVin').value,
+                    fuelEfficiency: parseFloat(document.getElementById('vehEfficiency').value),
+                    driver: document.getElementById('vehDriver').value,
+                    insuranceRenewal: document.getElementById('vehInsurance').value,
+                    registration: document.getElementById('vehRegistration').value,
+                    status: document.getElementById('vehStatus').value
+                };
+
+                if (this.currentEditId) {
+                    this.model.update('fleet', this.currentEditId, vehicleData);
+                } else {
+                    this.model.create('fleet', vehicleData);
+                }
+
+                this.closeModal();
+                this.renderAll();
+                this.showToast('Vehicle saved');
+            }
+
+            editVehicle(id) {
+                this.openVehicleModal(id);
+            }
+
+            viewVehicle(id) {
+                const vehicle = this.model.get('fleet', id);
+                this.showToast(`${vehicle.makeModel} - Mileage: ${vehicle.mileage || 'N/A'}`);
+            }
+
+            deleteVehicle(id) {
+                if (confirm('Delete this vehicle? This will also remove related fuel trips and renewals.')) {
+                    this.model.delete('fleet', id);
+                    // Also clean up related data
+                    this.model.data.fuelTrips = this.model.data.fuelTrips.filter(f => f.vehicle !== id);
+                    this.model.data.renewals = this.model.data.renewals.filter(r => r.vehicle !== id);
+                    this.model.saveData();
+                    this.showToast('Vehicle deleted');
+                    this.renderAll();
+                }
+            }
+
+            // Maintenance History operations
+            viewMaintenanceDetail(id) {
+                const history = this.model.get('maintenanceHistory', id);
+                this.showToast(`Maintenance: ${history.description || 'Details available'}`);
+            }
+
+            repeatMaintenance(id) {
+                const history = this.model.get('maintenanceHistory', id);
+                this.openWorkOrderModal();
+                // Pre-fill form with similar data (would be implemented in real app)
+                this.showToast(`Creating work order based on previous maintenance`);
+            }
+
+            // Downtime Analysis operations
+            analyzeDowntime(assetId) {
+                const asset = this.model.get('assets', assetId) || { name: assetId };
+                this.showToast(`Running detailed analysis for ${asset.name}`);
+                // In real app, open detailed analytics dashboard
+            }
+
+            viewDowntimeDetails(assetId) {
+                const downtime = this.model.getAll('downtime').find(d => d.asset === assetId);
+                this.showToast(`Last incident: ${downtime?.lastIncident || 'N/A'}, Total downtime: ${downtime?.totalDowntime || 0} hrs`);
+            }
+
+            // Fuel Analytics
+            showFuelAnalytics() {
+                const trips = this.model.getAll('fuelTrips');
+                const totalLiters = trips.reduce((sum, t) => sum + t.liters, 0);
+                const totalCost = trips.reduce((sum, t) => sum + t.cost, 0);
+                
+                this.showToast(`Fuel Analytics - Total: ${totalLiters}L, Cost: $${totalCost}, Avg: $${(totalCost/totalLiters).toFixed(2)}/L`);
+            }
+
+            // Full History
+            showFullHistory() {
+                const history = this.model.getAll('maintenanceHistory');
+                const totalCost = history.reduce((sum, h) => sum + h.cost, 0);
+                this.showToast(`Complete History: ${history.length} records, Total Cost: $${totalCost}`);
+            }
+
+            // Export/Import functions
+            exportAllData() {
+                const dataStr = JSON.stringify(this.model.data, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `cephasgm_enterprise_backup_${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                this.showToast('Complete system backup exported');
+            }
+
+            exportCollection(collection) {
+                const data = this.model.getAll(collection);
+                const dataStr = JSON.stringify(data, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `cephasgm_${collection}_${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                this.showToast(`Exported ${collection} (${data.length} records)`);
+            }
+
+            importData() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        try {
+                            const imported = JSON.parse(event.target.result);
+                            if (imported.assets || imported.fleet || imported.workOrders) {
+                                // Full backup import
+                                this.model.data = imported;
+                                this.model.saveData();
+                                this.showToast('Full system data imported');
+                            } else if (Array.isArray(imported)) {
+                                // Assume it's a collection, but need to know which one
+                                this.showToast('Please use collection-specific import buttons');
+                                return;
+                            }
+                            this.renderAll();
+                            this.initCharts();
+                        } catch (err) {
+                            alert('Invalid JSON file');
+                        }
+                    };
+                    reader.readAsText(file);
+                };
+                input.click();
+            }
+
+            saveSnapshot() {
+                const snapshot = {
+                    timestamp: new Date().toISOString(),
+                    data: this.model.data
+                };
+                localStorage.setItem('cephasgm_snapshot_' + Date.now(), JSON.stringify(snapshot));
+                this.showToast('Snapshot saved to browser storage');
+            }
+
+            generateReport(type) {
+                this.showToast(`Generating ${type} report... (demo)`);
+                // In real app, generate PDF/Excel
+            }
+
+            // Utility functions
+            showToast(message) {
+                const toast = document.getElementById('toast');
+                document.getElementById('toastMessage').textContent = message;
+                toast.style.display = 'flex';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 3000);
+            }
+
+            closeModal() {
+                document.getElementById('modal').classList.remove('active');
+                this.currentEditId = null;
+                this.currentCollection = null;
+            }
+        }
+
+        // Initialize the application
+        const app = new AppController();
+
+        // Make app globally accessible for onclick handlers
+        window.app = app;
+    </script>
+</body>
+</html>
