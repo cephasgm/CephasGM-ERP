@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CephasGM Social · fully interactive</title>
+    <title>CephasGM Social · Company Connect</title>
     <style>
+        /* ===== complete style from previous ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
         }
-
-        /* ===== AUTH MODALS ===== */
         .modal {
             display: none;
             position: fixed;
@@ -96,11 +95,9 @@
         .auth-footer { text-align: center; margin-top: 1.5rem; color: #65676b; }
         .auth-footer span { color: #0066cc; cursor: pointer; font-weight: 500; }
 
-        /* ===== MAIN APP (Visible after login) ===== */
         .app-container { display: none; }
         .app-container.logged-in { display: block; }
 
-        /* Top Navigation */
         .top-nav {
             background: white;
             padding: 0.5rem 2rem;
@@ -231,7 +228,6 @@
         .dropdown-item:hover { background: #f0f2f5; }
         .dropdown-item.logout { color: #e41e3f; border-top: 1px solid #f0f2f5; }
 
-        /* Main Layout */
         .main-container {
             max-width: 1400px;
             margin: 1rem auto;
@@ -303,7 +299,6 @@
             border: none;
         }
 
-        /* Feed */
         .feed-container {
             background: white;
             border-radius: 16px;
@@ -362,7 +357,6 @@
         }
         .delete-comment:hover { color: #e41e3f; }
 
-        /* Profile */
         .profile-page { background: white; border-radius: 16px; overflow: hidden; }
         .profile-cover { height: 200px; background: linear-gradient(135deg, #0066cc, #00aaff); position: relative; }
         .edit-cover { position: absolute; bottom: 1rem; right: 1rem; background: white; padding: 0.5rem; border-radius: 30px; cursor: pointer; }
@@ -466,7 +460,7 @@
                 <div class="auth-tab" onclick="switchAuthTab('signup')">Create Account</div>
             </div>
             <div class="auth-form active" id="loginForm">
-                <div class="form-group"><label>Work Email</label><input type="email" id="loginEmail" value="abc@cephasgm.com"></div>
+                <div class="form-group"><label>Work Email</label><input type="email" id="loginEmail" value="john@cephasgm.com"></div>
                 <div class="form-group"><label>Password</label><input type="password" id="loginPassword" value="123456"></div>
                 <button class="btn-auth" onclick="login()">Log In</button>
                 <div class="auth-footer"><span onclick="alert('Demo: reset link sent')">Forgot password?</span></div>
@@ -485,10 +479,10 @@
 
     <!-- Main App -->
     <div class="app-container" id="appContainer">
-        <!-- Top Nav -->
         <div class="top-nav">
             <div class="nav-left">
-                <div class="logo" onclick="showFeed()">CephasGM Social</div>
+                <!-- LOGO now redirects to ERP landing page (company-connect.html) -->
+                <div class="logo" onclick="goToLanding()">CephasGM Social</div>
                 <div class="search-bar">
                     <span>🔍</span>
                     <input type="text" placeholder="Search employees..." id="searchInput" onkeyup="searchUsers()">
@@ -496,6 +490,7 @@
                 </div>
             </div>
             <div class="nav-middle">
+                <!-- HOME icon now explicitly returns to social feed (internal) -->
                 <div class="nav-icon active" onclick="showFeed()">🏠</div>
                 <div class="nav-icon" onclick="showFriends()">👥</div>
                 <div class="nav-icon" onclick="showProfile()">👤</div>
@@ -504,7 +499,7 @@
             </div>
             <div class="nav-right">
                 <div class="profile-badge" onclick="toggleProfileDropdown()">
-                    <div class="avatar" id="currentUserAvatar">CGM</div><span id="currentUserName">Cephas GM</span>
+                    <div class="avatar" id="currentUserAvatar">JD</div><span id="currentUserName">John Doe</span>
                 </div>
                 <div class="profile-dropdown" id="profileDropdown">
                     <div class="dropdown-item" onclick="viewMyProfile()">👤 View Profile</div>
@@ -533,7 +528,7 @@
             <!-- Left sidebar -->
             <div class="left-sidebar">
                 <div class="sidebar-card">
-                    <div class="sidebar-item" onclick="viewMyProfile()"><div class="avatar" id="sidebarAvatar">JD</div><div><div>Cephas GM</div><div style="color:#65676b;">Software Developer</div></div></div>
+                    <div class="sidebar-item" onclick="viewMyProfile()"><div class="avatar" id="sidebarAvatar">JD</div><div><div>John Doe</div><div style="color:#65676b;">Software Developer</div></div></div>
                     <div class="sidebar-item" onclick="showFeed()"><div class="sidebar-icon">📰</div> News Feed</div>
                     <div class="sidebar-item" onclick="showFriends()"><div class="sidebar-icon">👥</div> Friends <span class="badge-count">124</span></div>
                     <div class="sidebar-item" onclick="showGroups()"><div class="sidebar-icon">👥</div> Groups <span class="badge-count">8</span></div>
@@ -541,7 +536,7 @@
                 <div class="sidebar-card">
                     <div style="display:flex; justify-content:space-between;"><span>Friend Requests</span><span style="color:#0066cc; cursor:pointer;" onclick="alert('show all')">See All</span></div>
                     <div class="friend-request-item" data-request="alex">
-                        <div class="avatar">AL</div><div><div>Cephas GM</div><div style="font-size:0.7rem;">3 mutual</div></div>
+                        <div class="avatar">AL</div><div><div>Alex Lee</div><div style="font-size:0.7rem;">3 mutual</div></div>
                         <div class="friend-request-actions"><button class="btn-accept" onclick="acceptRequest(this)">✓</button><button class="btn-decline" onclick="declineRequest(this)">✗</button></div>
                     </div>
                     <div class="friend-request-item" data-request="maria">
@@ -557,11 +552,10 @@
                     <div class="stories-header"><span>Stories</span><span style="color:#0066cc; cursor:pointer;" onclick="alert('all stories')">See All</span></div>
                     <div class="stories-grid">
                         <div class="story-item" onclick="addStory()"><div class="story-ring" style="background:#0066cc;"><div class="story-avatar" style="background:#0066cc;">+</div></div><span>Add</span></div>
-                        <div class="story-item" onclick="viewStory('Cephas')"><div class="story-ring"><div class="story-avatar">👩‍💼</div></div><span>Sarah</span></div>
-                        <div class="story-item" onclick="viewStory('Prince')"><div class="story-ring"><div class="story-avatar">👨‍💻</div></div><span>Mike</span></div>
+                        <div class="story-item" onclick="viewStory('sarah')"><div class="story-ring"><div class="story-avatar">👩‍💼</div></div><span>Sarah</span></div>
+                        <div class="story-item" onclick="viewStory('mike')"><div class="story-ring"><div class="story-avatar">👨‍💻</div></div><span>Mike</span></div>
                     </div>
                 </div>
-                <!-- Create Post -->
                 <div class="create-post">
                     <div class="avatar" id="postAvatar">JD</div>
                     <div class="post-input" onclick="openCreatePostModal()">What's on your mind?</div>
@@ -571,11 +565,7 @@
                     <div class="post-action" onclick="postVideo()">🎥 Video</div>
                     <div class="post-action" onclick="postFeeling()">😊 Feeling</div>
                 </div>
-
-                <!-- Dynamic posts container -->
-                <div id="postsContainer">
-                    <!-- posts will be injected via js -->
-                </div>
+                <div id="postsContainer"></div>
             </div>
 
             <!-- Profile View -->
@@ -588,7 +578,7 @@
                     </div>
                     <div class="profile-info">
                         <div class="profile-header">
-                            <div><div class="profile-name" id="profileName">Cephas GM</div><div class="profile-title" id="profileTitle">Inventory Control Secialist at MMS</div></div>
+                            <div><div class="profile-name" id="profileName">John Doe</div><div class="profile-title" id="profileTitle">Software Developer at Engineering</div></div>
                             <div><button class="btn-follow" onclick="editProfile()">Edit Profile</button></div>
                         </div>
                         <div class="profile-bio" id="profileBio">Passionate developer. <span class="edit-info" onclick="editBio()">Edit</span></div>
@@ -639,7 +629,6 @@
         </div>
     </div>
 
-    <!-- Hidden create post modal (simple prompt simulation) -->
     <script>
         (function() {
             // ---------- GLOBAL STATE ----------
@@ -648,19 +637,17 @@
                 { id: 'p1', author: 'Sarah Wilson', authorId: 'sarah', avatar: 'SW', time: '2h ago', content: 'Just finished Q1 strategy! Who is excited for offsite? 🚀', likes: 12, liked: false, comments: [{ author:'John Doe', authorId:'john', text:'Can\'t wait!' }, { author:'Mike', authorId:'mike', text:'Great job!' }] },
                 { id: 'p2', author: 'Mike Johnson', authorId: 'mike', avatar: 'MK', time: '5h ago', content: '5 years at CephasGM! 🎉', likes: 24, liked: true, comments: [] }
             ];
-            let friendRequests = [
-                { name: 'Alex Lee', mutual: 3, id: 'alex' },
-                { name: 'Maria Rodriguez', mutual: 2, id: 'maria' }
-            ];
             let friends = [
-                { name:'Sarah Wilson', title:'PM', avatar:'SW', mutual:0, id:'sarah' },
-                { name:'Mike Johnson', title:'UX', avatar:'MK', mutual:0, id:'mike' },
-                { name:'Emily Chen', title:'Data', avatar:'EC', mutual:0, id:'emily' }
+                { name:'Sarah Wilson', title:'PM', avatar:'SW', id:'sarah' },
+                { name:'Mike Johnson', title:'UX', avatar:'MK', id:'mike' },
+                { name:'Emily Chen', title:'Data', avatar:'EC', id:'emily' }
             ];
-            let suggestions = [
-                { name:'Alex Thompson', mutual:5, avatar:'AT' },
-                { name:'Lisa Wang', mutual:3, avatar:'LW' }
-            ];
+
+            // ---------- ERP LANDING REDIRECT (logo click) ----------
+            window.goToLanding = function() {
+                // Redirect to ERP landing page (company-connect.html)
+                window.location.href = 'company-connect.html';
+            };
 
             // ---------- AUTH ----------
             window.switchAuthTab = (tab) => {
@@ -678,7 +665,7 @@
             window.login = () => {
                 const email = document.getElementById('loginEmail').value;
                 if (email) {
-                    currentUser = { name: 'Cephas GM', email, avatar: 'CGM', title: 'Software Developer', dept: 'Engineering' };
+                    currentUser = { name: 'John Doe', email, avatar: 'JD', title: 'Software Developer', dept: 'Engineering' };
                     document.getElementById('authModal').classList.remove('active');
                     document.getElementById('appContainer').classList.add('logged-in');
                     updateUI();
@@ -767,7 +754,6 @@
             };
             window.sharePost = (id) => { alert('Post shared'); };
 
-            // create post
             window.openCreatePostModal = () => {
                 let content = prompt('Write your post:');
                 if (content && currentUser) {
@@ -787,21 +773,18 @@
                 }
             };
 
-            // profile posts
             function renderProfilePosts() {
                 let myPosts = posts.filter(p => p.authorId === 'john' || p.author === currentUser?.name);
                 let html = myPosts.map(p => `<div class="post-card"><div class="post-content">${p.content}</div><div class="post-engagement"><div class="engage-btn">❤️ ${p.likes}</div></div></div>`).join('');
                 document.getElementById('profilePosts').innerHTML = html || '<p>No posts yet</p>';
             }
 
-            // friends
             function renderFriends() {
                 let fhtml = friends.map(f => `<div class="friend-card" onclick="viewProfile('${f.id}')"><div class="friend-avatar">${f.avatar}</div><div class="friend-name">${f.name}</div><div class="friend-title">${f.title}</div><button class="btn-friends" onclick="event.stopPropagation(); messageFriend('${f.name}')">Message</button></div>`).join('');
                 document.getElementById('friendsGrid') && (document.getElementById('friendsGrid').innerHTML = fhtml);
                 document.getElementById('allFriendsGrid') && (document.getElementById('allFriendsGrid').innerHTML = fhtml);
             }
 
-            // requests
             window.acceptRequest = (btn) => {
                 let item = btn.closest('.friend-request-item');
                 if (item) { item.remove(); alert('Friend added'); }
@@ -812,7 +795,7 @@
             };
             window.sendFriendRequest = (btn) => { btn.textContent = '✓ Sent'; btn.disabled = true; };
 
-            // ---------- NAV ----------
+            // ---------- NAVIGATION (internal) ----------
             window.showFeed = () => {
                 document.getElementById('feedView').style.display = 'block';
                 document.getElementById('profileView').style.display = 'none';
@@ -861,7 +844,6 @@
                 else if(tab==='friends') { document.querySelectorAll('.profile-tab')[2].classList.add('active'); document.getElementById('profileFriends').classList.add('active'); renderFriends(); }
             };
 
-            // search
             window.searchUsers = () => {
                 let q = document.getElementById('searchInput').value;
                 let res = document.getElementById('searchResults');
@@ -871,7 +853,6 @@
             };
             document.addEventListener('click', (e) => { if (!e.target.closest('.search-bar')) document.getElementById('searchResults').classList.remove('active'); });
 
-            // misc
             window.postPhoto = () => alert('Post photo');
             window.postVideo = () => alert('Post video');
             window.postFeeling = () => alert('Feeling');
@@ -888,7 +869,7 @@
                 renderProfilePosts();
             }
 
-            // initial demo data (will be overwritten after login)
+            // initial call to show feed after login
             window.showFeed();
         })();
     </script>
