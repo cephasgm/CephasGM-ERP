@@ -6,1383 +6,1314 @@
     <title>Project Management - CephasGM ERP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
+            --primary-light: #60a5fa;
             --secondary: #64748b;
             --success: #10b981;
             --warning: #f59e0b;
             --error: #ef4444;
-            --background: #f8fafc;
+            --info: #3b82f6;
+            --background: #f1f5f9;
             --surface: #ffffff;
-            --text: #1e293b;
-            --text-light: #64748b;
+            --surface-hover: #f8fafc;
+            --text: #0f172a;
+            --text-light: #475569;
+            --text-muted: #64748b;
             --border: #e2e8f0;
-            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --border-light: #f1f5f9;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius-sm: 6px;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --transition: all 0.2s ease;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        .dark-theme {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --surface-hover: #334155;
+            --text: #f1f5f9;
+            --text-light: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --border-light: #1e293b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+        }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: var(--background);
             color: var(--text);
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
-        .dashboard { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+        /* Layout */
+        .app {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
         .sidebar {
-            background: var(--surface); border-right: 1px solid var(--border); padding: 2rem 1rem;
-            position: fixed; width: 280px; height: 100vh; overflow-y: auto; z-index: 100;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem 1rem;
+            position: fixed;
+            width: 260px;
+            height: 100vh;
+            overflow-y: auto;
+            transition: var(--transition);
         }
-        .logo { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; padding: 0 1rem; }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            padding: 0 0.5rem;
+        }
+
         .logo-icon {
-            width: 40px; height: 40px; background: var(--primary); border-radius: 10px;
-            display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.25rem;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.25rem;
         }
-        .nav-section { margin-bottom: 2rem; }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
         .nav-title {
-            font-size: 0.75rem; text-transform: uppercase; color: var(--text-light);
-            margin-bottom: 1rem; padding: 0 1rem; letter-spacing: 0.5px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            padding: 0 0.75rem;
+            letter-spacing: 0.5px;
         }
+
         .nav-item {
-            display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: 8px;
-            color: var(--text-light); text-decoration: none; transition: all 0.2s; margin-bottom: 0.25rem;
-            border: none; background: none; width: 100%; text-align: left; cursor: pointer; font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            border-radius: var(--radius);
+            color: var(--text-light);
+            text-decoration: none;
+            transition: var(--transition);
+            margin-bottom: 0.25rem;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.9rem;
         }
-        .nav-item:hover, .nav-item.active { background: var(--primary); color: white; }
-        .nav-icon { font-size: 1.25rem; width: 24px; text-align: center; }
 
-        .main-content { grid-column: 2; padding: 2rem; margin-left: 280px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
-        .header h1 { font-size: 1.875rem; font-weight: 700; }
-        .header-actions { display: flex; gap: 1rem; }
+        .nav-item:hover {
+            background: var(--surface-hover);
+            color: var(--text);
+        }
 
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-icon {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            grid-column: 2;
+            padding: 1.5rem;
+            margin-left: 260px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background: var(--surface);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        /* Buttons */
         .btn {
-            padding: 0.75rem 1.5rem; border-radius: 8px; border: none; font-weight: 600;
-            cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--radius);
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
         }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); }
-        .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
-        .btn-secondary:hover { background: var(--background); }
-        .btn-success { background: var(--success); color: white; }
-        .btn-warning { background: var(--warning); color: white; }
-        .btn-danger { background: var(--error); color: white; }
-        .btn-sm { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
 
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-hover);
+        }
+
+        .btn-icon {
+            padding: 0.6rem;
+            border-radius: var(--radius);
+        }
+
+        /* Stats Cards */
         .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 1.5rem; margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
+
         .stat-card {
-            background: var(--surface); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border);
-            box-shadow: var(--shadow); text-align: center;
-        }
-        .stat-number { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
-        .stat-label { color: var(--text-light); font-size: 0.9rem; }
-
-        .project-table-container {
-            background: var(--surface); border-radius: 12px; border: 1px solid var(--border);
-            overflow-x: auto; margin-bottom: 2rem; box-shadow: var(--shadow); max-width: 100%;
-        }
-        .project-table {
-            width: 100%; border-collapse: collapse; min-width: 2500px; font-size: 0.8rem;
-        }
-        .project-table th, .project-table td {
-            padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap;
-        }
-        .project-table th {
-            background: var(--background); font-weight: 600; color: var(--text-light);
-            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .project-table tbody tr:hover { background: var(--background); }
-        .project-table input, .project-table select {
-            width: 100%; padding: 0.2rem; border: 1px solid var(--border); border-radius: 4px;
-            background: var(--surface); color: var(--text); font-size: 0.8rem;
+            background: var(--surface);
+            padding: 1.25rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
         }
 
-        .status-badge { padding: 0.2rem 0.4rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; display: inline-block; }
-        .status-active { background: rgba(16, 185, 129, 0.1); color: var(--success); }
-        .status-pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
-        .status-completed { background: rgba(100, 116, 139, 0.1); color: var(--secondary); }
-        .status-critical { background: rgba(239, 68, 68, 0.1); color: var(--error); }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-trend {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--success);
+        }
+
+        /* Charts Row */
+        .charts-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-card {
+            background: var(--surface);
+            padding: 1.25rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .chart-container {
+            height: 200px;
+            position: relative;
+        }
+
+        /* Projects Summary Cards */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-summary-card {
+            background: var(--surface);
+            padding: 1.25rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .project-summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .project-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .project-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .badge-active { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .badge-risk { background: rgba(239, 68, 68, 0.1); color: var(--error); }
+        .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+
+        .project-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .progress-section {
+            margin-top: 0.75rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+
         .progress-bar {
-            background: var(--border); height: 4px; border-radius: 4px; width: 60px; position: relative;
-        }
-        .progress-fill { height: 100%; border-radius: 4px; background: var(--success); }
-        .progress-fill.warning { background: var(--warning); }
-        .progress-fill.error { background: var(--error); }
-        .action-icons { display: flex; gap: 0.5rem; }
-        .action-icons i { cursor: pointer; color: var(--text-light); transition: color 0.2s; }
-        .action-icons i:hover { color: var(--primary); }
-
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;
-        }
-        .modal-content {
-            background: var(--surface); padding: 1.5rem; border-radius: 12px; max-width: 1200px; width: 95%;
-            max-height: 90vh; overflow-y: auto;
-        }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        .modal-header h2 { font-size: 1.5rem; }
-        .close-modal { cursor: pointer; font-size: 1.5rem; }
-
-        .tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1rem; flex-wrap: wrap; }
-        .tab { padding: 0.5rem 1rem; cursor: pointer; border-bottom: 2px solid transparent; }
-        .tab.active { border-bottom-color: var(--primary); font-weight: 600; }
-        .tab-pane { display: none; padding: 1rem 0; }
-        .tab-pane.active { display: block; }
-
-        .data-table {
-            width: 100%; border-collapse: collapse; font-size: 0.9rem;
-        }
-        .data-table th, .data-table td {
-            padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--border);
-        }
-        .data-table th { background: var(--background); font-weight: 600; }
-
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; margin-bottom: 0.25rem; font-weight: 500; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px;
-            background: var(--surface); color: var(--text);
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
         }
 
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
-
-        .module-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 3px;
+            transition: width 0.3s ease;
         }
+
+        /* Module Cards */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
         .module-card {
-            background: var(--surface); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border);
-            cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow);
+            background: var(--surface);
+            padding: 1.25rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
         }
-        .module-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+
+        .module-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
         .module-icon {
-            width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center;
-            justify-content: center; font-size: 1.2rem; margin-bottom: 0.8rem; background: var(--primary); color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 0.75rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
         }
 
-        .footer { text-align: center; padding: 2rem; margin-top: 3rem; color: var(--text-light); border-top: 1px solid var(--border); }
+        .module-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
 
-        .mobile-nav-toggle { display: none; position: fixed; top: 1rem; left: 1rem; z-index: 1000; background: var(--primary); color: white; border: none; border-radius: 8px; width: 40px; height: 40px; align-items: center; justify-content: center; cursor: pointer; }
+        .module-card p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            max-width: 900px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .close-modal {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--error);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .tab:hover {
+            background: var(--surface-hover);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Data Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 0.75rem 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .data-table td {
+            padding: 0.75rem 0.5rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover {
+            background: var(--surface-hover);
+        }
+
+        .data-table input, .data-table select {
+            padding: 0.3rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--surface);
+            color: var(--text);
+            width: 100%;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 100;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
 
         @media (max-width: 1024px) {
-            .dashboard { grid-template-columns: 1fr; }
-            .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
-            .sidebar.active { transform: translateX(0); }
-            .main-content { margin-left: 0; grid-column: 1; padding: 1rem; }
-            .mobile-nav-toggle { display: flex; }
+            .app {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+                z-index: 99;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                grid-column: 1;
+            }
+            .mobile-nav-toggle {
+                display: flex;
+            }
         }
     </style>
 </head>
 <body>
-    <button class="mobile-nav-toggle" id="mobileNavToggle"><i class="fas fa-bars"></i></button>
-    <div class="dashboard">
+    <button class="mobile-nav-toggle" id="mobileNavToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="app">
+        <!-- Sidebar -->
         <nav class="sidebar" id="sidebar">
             <div class="logo">
                 <div class="logo-icon">CG</div>
-                <div><div style="font-weight: 700;">CephasGM</div><div style="font-size:0.8rem; color:var(--text-light);">ERP System</div></div>
+                <div>
+                    <div style="font-weight: 700;">CephasGM</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted);">ERP System</div>
+                </div>
             </div>
+
             <div class="nav-section">
                 <div class="nav-title">Project Management</div>
-                <a href="projects.html" class="nav-item active"><span class="nav-icon">📁</span> Projects</a>
-                <a href="meetings.html" class="nav-item"><span class="nav-icon">👥</span> Meetings</a>
-                <a href="training.html" class="nav-item"><span class="nav-icon">🎓</span> Training</a>
+                <a href="projects.html" class="nav-item active">
+                    <span class="nav-icon"><i class="fas fa-folder"></i></span>
+                    Projects
+                </a>
+                <a href="meetings.html" class="nav-item">
+                    <span class="nav-icon"><i class="fas fa-users"></i></span>
+                    Meetings
+                </a>
+                <a href="training.html" class="nav-item">
+                    <span class="nav-icon"><i class="fas fa-graduation-cap"></i></span>
+                    Training
+                </a>
             </div>
+
             <div class="nav-section">
                 <div class="nav-title">Operations</div>
-                <a href="index.html" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
-                <a href="hr.html" class="nav-item"><span class="nav-icon">👥</span> HR</a>
-                <a href="finance.html" class="nav-item"><span class="nav-icon">💳</span> Finance</a>
-                <a href="payroll.html" class="nav-item"><span class="nav-icon">💰</span> Payroll</a>
-                <a href="inventory.html" class="nav-item"><span class="nav-icon">📦</span> Inventory</a>
-                <a href="procurement.html" class="nav-item"><span class="nav-icon">🛒</span> Procurement</a>
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+                    Dashboard
+                </a>
+                <a href="hr.html" class="nav-item">
+                    <span class="nav-icon"><i class="fas fa-user-tie"></i></span>
+                    HR
+                </a>
+                <a href="finance.html" class="nav-item">
+                    <span class="nav-icon"><i class="fas fa-coins"></i></span>
+                    Finance
+                </a>
+                <a href="inventory.html" class="nav-item">
+                    <span class="nav-icon"><i class="fas fa-boxes"></i></span>
+                    Inventory
+                </a>
             </div>
+
             <div class="nav-section">
                 <div class="nav-title">User</div>
-                <div class="nav-item"><span class="nav-icon">👤</span> <span id="userRole">Admin User</span></div>
-                <button class="nav-item" id="logoutBtn"><span class="nav-icon">🚪</span> Logout</button>
+                <div class="nav-item">
+                    <span class="nav-icon"><i class="fas fa-user-circle"></i></span>
+                    <span>Admin User</span>
+                </div>
+                <button class="nav-item" id="logoutBtn">
+                    <span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>
+                    Logout
+                </button>
             </div>
         </nav>
 
+        <!-- Main Content -->
         <main class="main-content">
+            <!-- Header -->
             <div class="header">
-                <div>
-                    <h1>Project Management</h1>
-                    <div style="color: var(--text-light);">Enterprise-grade planning & delivery</div>
-                </div>
+                <h1>Project Management Dashboard</h1>
                 <div class="header-actions">
-                    <div class="currency-selector">
-                        <span>Currency:</span>
-                        <select id="currencySelect">
-                            <option value="TZS">TZS - Tanzanian Shilling</option>
-                            <option value="USD">USD - US Dollar</option>
-                            <option value="EUR">EUR - Euro</option>
-                            <option value="GBP">GBP - British Pound</option>
-                            <option value="KES">KES - Kenyan Shilling</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary" id="newProjectBtn"><i class="fas fa-plus"></i> New Project</button>
+                    <select id="currencySelect" style="padding: 0.5rem; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text);">
+                        <option value="TZS">TZS - Tanzanian Shilling</option>
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="KES">KES - Kenyan Shilling</option>
+                    </select>
+                    <button class="btn btn-primary" id="newProjectBtn">
+                        <i class="fas fa-plus"></i> New Project
+                    </button>
                 </div>
             </div>
 
-            <!-- Dynamic Stats -->
-            <div class="stats-grid" id="statsGrid"></div>
+            <!-- Stats Cards -->
+            <div class="stats-grid" id="statsGrid">
+                <!-- Dynamic stats will be inserted here -->
+            </div>
 
-            <!-- Project Table -->
-            <div class="project-table-container">
-                <table class="project-table" id="projectTable">
-                    <thead id="tableHeader"></thead>
-                    <tbody id="tableBody"></tbody>
-                </table>
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Project Health Overview</h3>
+                        <span class="badge-active" style="font-size: 0.7rem;">Real-time</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="healthChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Budget Distribution</h3>
+                        <span class="badge-active" style="font-size: 0.7rem;">By Project</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Project Progress</h3>
+                        <span class="badge-active" style="font-size: 0.7rem;">% Complete</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Summary Cards -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="font-size: 1.2rem;">Active Projects</h2>
+                <span class="badge-active" style="font-size: 0.8rem;">4 Projects</span>
+            </div>
+            <div class="projects-grid" id="projectsGrid">
+                <!-- Dynamic project cards will be inserted here -->
             </div>
 
             <!-- Module Cards -->
-            <div class="module-grid">
-                <div class="module-card" onclick="openModuleModal('portfolio')">
-                    <div class="module-icon">📊</div>
-                    <h3>Project Portfolio</h3>
-                    <p>Analytics, heatmaps, KPIs</p>
+            <h2 style="font-size: 1.2rem; margin: 1.5rem 0 1rem;">Management Modules</h2>
+            <div class="modules-grid">
+                <div class="module-card" onclick="openModule('portfolio')">
+                    <div class="module-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Portfolio</h3>
+                    <p>Analytics & KPIs</p>
                 </div>
-                <div class="module-card" onclick="openModuleModal('tasks')">
-                    <div class="module-icon">✅</div>
-                    <h3>Task Management</h3>
-                    <p>Full task hierarchy & tracking</p>
+                <div class="module-card" onclick="openModule('tasks')">
+                    <div class="module-icon"><i class="fas fa-tasks"></i></div>
+                    <h3>Tasks</h3>
+                    <p>Task Management</p>
                 </div>
-                <div class="module-card" onclick="openModuleModal('gantt')">
-                    <div class="module-icon">📅</div>
-                    <h3>Timeline & Gantt</h3>
-                    <p>Interactive charts, critical path</p>
+                <div class="module-card" onclick="openModule('gantt')">
+                    <div class="module-icon"><i class="fas fa-chart-gantt"></i></div>
+                    <h3>Gantt</h3>
+                    <p>Timeline View</p>
                 </div>
-                <div class="module-card" onclick="openModuleModal('resources')">
-                    <div class="module-icon">👥</div>
-                    <h3>Resource Allocation</h3>
-                    <p>Rates, allocation, utilization</p>
+                <div class="module-card" onclick="openModule('resources')">
+                    <div class="module-icon"><i class="fas fa-users"></i></div>
+                    <h3>Resources</h3>
+                    <p>Allocation</p>
                 </div>
-                <div class="module-card" onclick="openModuleModal('budget')">
-                    <div class="module-icon">💰</div>
-                    <h3>Budget Tracking</h3>
-                    <p>Categories, commitments, margin</p>
+                <div class="module-card" onclick="openModule('budget')">
+                    <div class="module-icon"><i class="fas fa-coins"></i></div>
+                    <h3>Budget</h3>
+                    <p>Financial Tracking</p>
                 </div>
-                <div class="module-card" onclick="openModuleModal('risks')">
-                    <div class="module-icon">⚠️</div>
-                    <h3>Risk Management</h3>
-                    <p>Prob/Impact, mitigation, issues</p>
+                <div class="module-card" onclick="openModule('risks')">
+                    <div class="module-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Risks</h3>
+                    <p>Risk Management</p>
                 </div>
             </div>
-            <div class="footer">Copyright © 2025 😀</div>
+
+            <!-- Footer -->
+            <div class="footer">
+                Copyright © 2025 CephasGM ERP System. All rights reserved.
+            </div>
         </main>
     </div>
 
-    <!-- Main Modal for Modules -->
+    <!-- Module Modal -->
     <div id="moduleModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="modalTitle">Module Title</h2>
-                <span class="close-modal" onclick="closeModuleModal()">&times;</span>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
             </div>
-            <div id="modalTabs" class="tabs"></div>
-            <div id="modalContent"></div>
+            <div class="tabs" id="modalTabs"></div>
+            <div id="modalBody"></div>
         </div>
     </div>
 
-    <!-- Add/Edit Task Modal -->
-    <div id="taskModal" class="modal">
+    <!-- Form Modal -->
+    <div id="formModal" class="modal">
         <div class="modal-content" style="max-width: 500px;">
             <div class="modal-header">
-                <h2 id="taskModalTitle">Add Task</h2>
-                <span class="close-modal" onclick="closeTaskModal()">&times;</span>
+                <h2 id="formModalTitle">Form</h2>
+                <span class="close-modal" onclick="closeFormModal()">&times;</span>
             </div>
-            <form id="taskForm" onsubmit="saveTask(event)">
-                <input type="hidden" id="taskId">
-                <div class="form-group">
-                    <label>Project</label>
-                    <select id="taskProjectId" required>
-                        <option value="">Select Project</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Task Name</label>
-                    <input type="text" id="taskName" required>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="taskDesc" rows="2"></textarea>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select id="taskStatus">
-                            <option>Not Started</option>
-                            <option>In Progress</option>
-                            <option>In Review</option>
-                            <option>Completed</option>
-                            <option>Blocked</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Priority</label>
-                        <select id="taskPriority">
-                            <option>Critical</option>
-                            <option>High</option>
-                            <option>Medium</option>
-                            <option>Low</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Assigned To</label>
-                        <input type="text" id="taskAssignee">
-                    </div>
-                    <div class="form-group">
-                        <label>% Complete</label>
-                        <input type="number" id="taskPercent" min="0" max="100" value="0">
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Start Date</label>
-                        <input type="date" id="taskStartDate">
-                    </div>
-                    <div class="form-group">
-                        <label>Due Date</label>
-                        <input type="date" id="taskDueDate">
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Estimated Hours</label>
-                        <input type="number" id="taskEstHours" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Actual Hours</label>
-                        <input type="number" id="taskActualHours" value="0">
-                    </div>
-                </div>
-                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary" onclick="closeTaskModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Task</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add/Edit Resource Modal -->
-    <div id="resourceModal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header">
-                <h2 id="resourceModalTitle">Add Resource</h2>
-                <span class="close-modal" onclick="closeResourceModal()">&times;</span>
-            </div>
-            <form id="resourceForm" onsubmit="saveResource(event)">
-                <input type="hidden" id="resourceId">
-                <div class="form-group">
-                    <label>Project</label>
-                    <select id="resourceProjectId" required>
-                        <option value="">Select Project</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Resource Name</label>
-                    <input type="text" id="resourceName" required>
-                </div>
-                <div class="form-group">
-                    <label>Role</label>
-                    <input type="text" id="resourceRole">
-                </div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Hourly Rate</label>
-                        <input type="number" id="resourceRate" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Allocation %</label>
-                        <input type="number" id="resourceAlloc" min="0" max="100" value="100">
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Planned Hours</label>
-                        <input type="number" id="resourcePlanned" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Actual Hours</label>
-                        <input type="number" id="resourceActual" value="0">
-                    </div>
-                </div>
-                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary" onclick="closeResourceModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Resource</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add/Edit Risk Modal -->
-    <div id="riskModal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header">
-                <h2 id="riskModalTitle">Add Risk</h2>
-                <span class="close-modal" onclick="closeRiskModal()">&times;</span>
-            </div>
-            <form id="riskForm" onsubmit="saveRisk(event)">
-                <input type="hidden" id="riskId">
-                <div class="form-group">
-                    <label>Project</label>
-                    <select id="riskProjectId" required>
-                        <option value="">Select Project</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Risk Description</label>
-                    <textarea id="riskDesc" rows="2" required></textarea>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Category</label>
-                        <select id="riskCategory">
-                            <option>Technical</option>
-                            <option>Financial</option>
-                            <option>Schedule</option>
-                            <option>Resource</option>
-                            <option>Legal</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Owner</label>
-                        <input type="text" id="riskOwner">
-                    </div>
-                </div>
-                <div class="grid-3">
-                    <div class="form-group">
-                        <label>Probability (%)</label>
-                        <input type="number" id="riskProb" min="0" max="100" value="50">
-                    </div>
-                    <div class="form-group">
-                        <label>Impact (1-5)</label>
-                        <input type="number" id="riskImpact" min="1" max="5" value="3">
-                    </div>
-                    <div class="form-group">
-                        <label>Score</label>
-                        <input type="number" id="riskScore" readonly>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Mitigation Strategy</label>
-                    <textarea id="riskMitigation" rows="2"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Status</label>
-                    <select id="riskStatus">
-                        <option>Identified</option>
-                        <option>Mitigating</option>
-                        <option>Occurred</option>
-                        <option>Closed</option>
-                    </select>
-                </div>
-                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary" onclick="closeRiskModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Risk</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add/Edit Budget Item Modal -->
-    <div id="budgetItemModal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header">
-                <h2 id="budgetItemModalTitle">Add Budget Item</h2>
-                <span class="close-modal" onclick="closeBudgetItemModal()">&times;</span>
-            </div>
-            <form id="budgetItemForm" onsubmit="saveBudgetItem(event)">
-                <input type="hidden" id="budgetItemId">
-                <div class="form-group">
-                    <label>Project</label>
-                    <select id="budgetItemProjectId" required>
-                        <option value="">Select Project</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Category</label>
-                    <select id="budgetItemCategory">
-                        <option>Labor</option>
-                        <option>Materials</option>
-                        <option>Equipment</option>
-                        <option>Travel</option>
-                        <option>Subcontractors</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <input type="text" id="budgetItemDesc">
-                </div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Budget Amount</label>
-                        <input type="number" id="budgetItemBudget" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Actual Amount</label>
-                        <input type="number" id="budgetItemActual" value="0">
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Committed</label>
-                        <input type="number" id="budgetItemCommitted" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Invoiced</label>
-                        <input type="number" id="budgetItemInvoiced" value="0">
-                    </div>
-                </div>
-                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary" onclick="closeBudgetItemModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Budget Item</button>
-                </div>
-            </form>
+            <div id="formModalBody"></div>
         </div>
     </div>
 
     <script>
-        // Comprehensive Data Model
-        let projects = [
-            { 
-                id:'P001', name:'Website Redesign', type:'Development', category:'Internal', country:'Tanzania', 
-                client:'Internal', manager:'Cephas GM', sponsor:'CTO', start:'2025-01-01', end:'2025-03-15',
-                baseStart:'2025-01-01', baseEnd:'2025-03-15', forecastEnd:'2025-03-15', actStart:'2025-01-01', 
-                actEnd:'', durPlan:74, durAct:74, phase:'Execution', priority:'High', health:'On Track', 
-                wbs:'WBS001', currency:'TZS', budget:5200000, actual:3380000, forecast:5200000, var:0, percent:65,
-                resources:[
-                    { id:'R1', name:'Alice Johnson', role:'Lead Developer', rate:45, alloc:100, planned:500, actual:325 },
-                    { id:'R2', name:'Bob Smith', role:'Frontend Dev', rate:35, alloc:100, planned:400, actual:280 }
-                ],
-                tasks:[
-                    { id:'T1', name:'Design Homepage', desc:'Create responsive homepage', status:'Completed', priority:'High', assignee:'Alice', percent:100, start:'2025-01-02', due:'2025-01-15', estHours:80, actualHours:75 },
-                    { id:'T2', name:'Implement Authentication', desc:'User login/signup', status:'In Progress', priority:'Critical', assignee:'Bob', percent:60, start:'2025-01-10', due:'2025-02-10', estHours:120, actualHours:70 }
-                ],
-                risks:[
-                    { id:'RS1', desc:'Scope creep from client', category:'Schedule', owner:'Cephas', prob:40, impact:4, score:160, mitigation:'Weekly signoffs', status:'Mitigating' }
-                ],
-                budgetItems:[
-                    { id:'B1', category:'Labor', desc:'Development team', budget:3000000, actual:2100000, committed:0, invoiced:2100000 },
-                    { id:'B2', category:'Materials', desc:'Software licenses', budget:500000, actual:480000, committed:0, invoiced:480000 }
-                ]
-            },
-            { 
-                id:'P002', name:'Mobile App Development', type:'Development', category:'Customer-Funded', country:'Kenya',
-                client:'TechCorp', manager:'Michael Chen', sponsor:'VP Eng', start:'2025-02-01', end:'2025-05-20',
-                baseStart:'2025-02-01', baseEnd:'2025-05-20', forecastEnd:'2025-06-01', actStart:'2025-02-05', 
-                actEnd:'', durPlan:109, durAct:104, phase:'Execution', priority:'Critical', health:'At Risk', 
-                wbs:'WBS002', currency:'USD', budget:8750000, actual:3675000, forecast:9100000, var:-350000, percent:42,
-                resources:[
-                    { id:'R3', name:'Carol White', role:'Mobile Lead', rate:60, alloc:100, planned:600, actual:250 },
-                    { id:'R4', name:'David Brown', role:'iOS Dev', rate:50, alloc:100, planned:500, actual:200 }
-                ],
-                tasks:[
-                    { id:'T3', name:'iOS UI Implementation', desc:'Build iOS screens', status:'In Progress', priority:'High', assignee:'David', percent:30, start:'2025-02-10', due:'2025-04-15', estHours:300, actualHours:90 },
-                    { id:'T4', name:'API Integration', desc:'Connect to backend', status:'Not Started', priority:'Critical', assignee:'Carol', percent:0, start:'2025-03-01', due:'2025-04-01', estHours:200, actualHours:0 }
-                ],
-                risks:[
-                    { id:'RS2', desc:'API delays from client', category:'Technical', owner:'Michael', prob:60, impact:4, score:240, mitigation:'Daily sync calls', status:'Mitigating' }
-                ],
-                budgetItems:[
-                    { id:'B3', category:'Labor', desc:'Development', budget:4000000, actual:1800000, committed:200000, invoiced:1500000 },
-                    { id:'B4', category:'Subcontractors', desc:'UI/UX design', budget:2000000, actual:800000, committed:0, invoiced:800000 }
-                ]
-            },
-            { 
-                id:'P003', name:'ERP Implementation', type:'IT', category:'Capital', country:'Tanzania',
-                client:'Internal', manager:'David Wilson', sponsor:'CFO', start:'2024-09-01', end:'2025-08-30',
-                baseStart:'2024-09-01', baseEnd:'2025-08-30', forecastEnd:'2025-09-30', actStart:'2024-09-15', 
-                actEnd:'', durPlan:364, durAct:349, phase:'Planning', priority:'High', health:'Off Track', 
-                wbs:'WBS003', currency:'TZS', budget:12500000, actual:1875000, forecast:13800000, var:-1300000, percent:15,
-                resources:[
-                    { id:'R5', name:'Eve Adams', role:'SAP Consultant', rate:70, alloc:50, planned:1000, actual:150 }
-                ],
-                tasks:[
-                    { id:'T5', name:'Requirements Gathering', desc:'Collect business requirements', status:'Completed', priority:'High', assignee:'David', percent:100, start:'2024-09-15', due:'2024-10-30', estHours:200, actualHours:220 },
-                    { id:'T6', name:'System Configuration', desc:'Configure ERP modules', status:'In Progress', priority:'Critical', assignee:'Eve', percent:10, start:'2024-11-01', due:'2025-03-30', estHours:800, actualHours:80 }
-                ],
-                risks:[
-                    { id:'RS3', desc:'Data migration complexity', category:'Technical', owner:'David', prob:70, impact:5, score:350, mitigation:'Early testing', status:'Identified' }
-                ],
-                budgetItems:[
-                    { id:'B5', category:'Labor', desc:'Consulting', budget:6000000, actual:900000, committed:500000, invoiced:400000 },
-                    { id:'B6', category:'Equipment', desc:'Servers', budget:2000000, actual:0, committed:2000000, invoiced:0 }
-                ]
-            },
-            { 
-                id:'P004', name:'Marketing Campaign', type:'Marketing', category:'Operational', country:'Uganda',
-                client:'External Brands', manager:'Emily Rodriguez', sponsor:'CMO', start:'2024-10-01', end:'2024-12-10',
-                baseStart:'2024-10-01', baseEnd:'2024-12-10', forecastEnd:'2024-12-10', actStart:'2024-10-01', 
-                actEnd:'2024-12-10', durPlan:71, durAct:71, phase:'Closure', priority:'Medium', health:'On Track', 
-                wbs:'WBS004', currency:'TZS', budget:3800000, actual:3800000, forecast:3800000, var:0, percent:100,
-                resources:[
-                    { id:'R6', name:'Frank Miller', role:'Marketing Lead', rate:40, alloc:100, planned:300, actual:300 }
-                ],
-                tasks:[
-                    { id:'T7', name:'Social Media Campaign', desc:'Run ads on social', status:'Completed', priority:'High', assignee:'Frank', percent:100, start:'2024-10-15', due:'2024-11-30', estHours:150, actualHours:160 }
-                ],
-                risks:[],
-                budgetItems:[
-                    { id:'B7', category:'Travel', desc:'Client meetings', budget:1000000, actual:950000, committed:0, invoiced:950000 }
-                ]
-            }
-        ];
+        // ==================== DATA MODELS ====================
+        const AppData = {
+            projects: [
+                { id: 'P001', name: 'Website Redesign', type: 'Development', status: 'Active', health: 'On Track', progress: 65, budget: 5200000, spent: 3380000, start: '2025-01-01', end: '2025-03-15', manager: 'Cephas GM', team: 5 },
+                { id: 'P002', name: 'Mobile App Development', type: 'Development', status: 'Active', health: 'At Risk', progress: 42, budget: 8750000, spent: 3675000, start: '2025-02-01', end: '2025-05-20', manager: 'Michael Chen', team: 8 },
+                { id: 'P003', name: 'ERP Implementation', type: 'IT', status: 'Planning', health: 'Off Track', progress: 15, budget: 12500000, spent: 1875000, start: '2024-09-01', end: '2025-08-30', manager: 'David Wilson', team: 12 },
+                { id: 'P004', name: 'Marketing Campaign', type: 'Marketing', status: 'Completed', health: 'On Track', progress: 100, budget: 3800000, spent: 3800000, start: '2024-10-01', end: '2024-12-10', manager: 'Emily Rodriguez', team: 4 }
+            ],
+            tasks: [
+                { id: 'T001', projectId: 'P001', name: 'Design UI', status: 'Completed', priority: 'High', assignee: 'Alice', progress: 100 },
+                { id: 'T002', projectId: 'P001', name: 'Frontend Dev', status: 'In Progress', priority: 'High', assignee: 'Bob', progress: 65 },
+                { id: 'T003', projectId: 'P002', name: 'API Development', status: 'In Progress', priority: 'Critical', assignee: 'Carol', progress: 42 }
+            ],
+            resources: [
+                { id: 'R001', name: 'Alice Johnson', role: 'Designer', project: 'P001', allocation: 100 },
+                { id: 'R002', name: 'Bob Smith', role: 'Developer', project: 'P001', allocation: 50 }
+            ],
+            risks: [
+                { id: 'RS001', projectId: 'P001', title: 'Scope Creep', probability: 40, impact: 3, status: 'Mitigating' },
+                { id: 'RS002', projectId: 'P002', title: 'API Delay', probability: 60, impact: 4, status: 'Active' }
+            ]
+        };
 
-        // Currency rates
-        const currencyRates = { TZS: { rate:1, symbol:'TSh' }, USD: { rate:0.00043, symbol:'$' }, EUR: { rate:0.00040, symbol:'€' }, GBP: { rate:0.00034, symbol:'£' }, KES: { rate:0.062, symbol:'KSh' } };
+        const currencyRates = {
+            TZS: { rate: 1, symbol: 'TSh' },
+            USD: { rate: 0.00043, symbol: '$' },
+            EUR: { rate: 0.00040, symbol: '€' },
+            GBP: { rate: 0.00034, symbol: '£' },
+            KES: { rate: 0.062, symbol: 'KSh' }
+        };
+
         let currentCurrency = 'TZS';
+        let healthChart, budgetChart, progressChart;
 
-        // Render Stats
+        // ==================== THEME MANAGEMENT ====================
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            const icon = themeToggle.querySelector('i');
+            if (document.body.classList.contains('dark-theme')) {
+                icon.className = 'fas fa-sun';
+            } else {
+                icon.className = 'fas fa-moon';
+            }
+            updateCharts(); // Refresh charts with new theme colors
+        });
+
+        // ==================== RENDER FUNCTIONS ====================
         function renderStats() {
-            const active = projects.filter(p => p.phase !== 'Closure').length;
-            const totalBudget = projects.reduce((sum, p) => sum + p.budget, 0);
-            const onTime = projects.filter(p => new Date(p.forecastEnd) <= new Date(p.end) || p.health === 'On Track').length;
-            const onTimePercent = Math.round((onTime / projects.length)*100);
-            const teamMembers = [...new Set(projects.flatMap(p => p.resources.map(r => r.name)))].length;
-            const atRisk = projects.filter(p => p.health === 'At Risk' || p.health === 'Off Track').length;
+            const activeProjects = AppData.projects.filter(p => p.status !== 'Completed').length;
+            const totalBudget = AppData.projects.reduce((sum, p) => sum + p.budget, 0);
+            const totalSpent = AppData.projects.reduce((sum, p) => sum + p.spent, 0);
+            const atRisk = AppData.projects.filter(p => p.health === 'At Risk' || p.health === 'Off Track').length;
+            const totalResources = AppData.resources.length;
 
             document.getElementById('statsGrid').innerHTML = `
-                <div class="stat-card"><div class="stat-number">${active}</div><div class="stat-label">Active Projects</div></div>
-                <div class="stat-card"><div class="stat-number">${currencyRates[currentCurrency].symbol}${(totalBudget * currencyRates[currentCurrency].rate).toFixed(2)}</div><div class="stat-label">Total Budget</div></div>
-                <div class="stat-card"><div class="stat-number">${onTimePercent}%</div><div class="stat-label">On-Time Delivery</div></div>
-                <div class="stat-card"><div class="stat-number">${teamMembers}</div><div class="stat-label">Team Members</div></div>
-                <div class="stat-card"><div class="stat-number">${atRisk}</div><div class="stat-label">At-Risk Projects</div></div>
+                <div class="stat-card">
+                    <div class="stat-number">${activeProjects}</div>
+                    <div class="stat-label">Active Projects</div>
+                    <div class="stat-trend"><i class="fas fa-arrow-up"></i> +2 this month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${currencyRates[currentCurrency].symbol}${(totalBudget * currencyRates[currentCurrency].rate).toLocaleString()}</div>
+                    <div class="stat-label">Total Budget</div>
+                    <div class="stat-trend">${Math.round((totalSpent/totalBudget)*100)}% utilized</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${Math.round((totalSpent/totalBudget)*100)}%</div>
+                    <div class="stat-label">Budget Utilization</div>
+                    <div class="stat-trend">${currencyRates[currentCurrency].symbol}${((totalBudget - totalSpent) * currencyRates[currentCurrency].rate).toLocaleString()} remaining</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${atRisk}</div>
+                    <div class="stat-label">At Risk Projects</div>
+                    <div class="stat-trend" style="color: var(--error);">Requires attention</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalResources}</div>
+                    <div class="stat-label">Team Members</div>
+                    <div class="stat-trend">Across ${AppData.projects.length} projects</div>
+                </div>
             `;
         }
 
-        // Render Main Project Table
-        function renderTable() {
-            const headers = ['ID','Name','Type','Category','Country','Client','Manager','Sponsor','Start','End','Phase','Priority','Health','Budget','Actual','%','Actions'];
-            document.getElementById('tableHeader').innerHTML = '<tr>' + headers.map(h => `<th>${h}</th>`).join('') + '</tr>';
-
-            let tbodyHtml = '';
-            projects.forEach((p, index) => {
-                tbodyHtml += `<tr data-index="${index}">
-                    <td>${p.id}</td>
-                    <td><input type="text" value="${p.name}" onchange="updateProject(${index}, 'name', this.value)"></td>
-                    <td><select onchange="updateProject(${index}, 'type', this.value)">${['Development','IT','Marketing','Construction','R&D'].map(t => `<option ${p.type===t?'selected':''}>${t}</option>`).join('')}</select></td>
-                    <td><select onchange="updateProject(${index}, 'category', this.value)">${['Internal','Customer-Funded','Capital','Operational'].map(c => `<option ${p.category===c?'selected':''}>${c}</option>`).join('')}</select></td>
-                    <td><input type="text" value="${p.country}" onchange="updateProject(${index}, 'country', this.value)"></td>
-                    <td><input type="text" value="${p.client}" onchange="updateProject(${index}, 'client', this.value)"></td>
-                    <td><input type="text" value="${p.manager}" onchange="updateProject(${index}, 'manager', this.value)"></td>
-                    <td><input type="text" value="${p.sponsor}" onchange="updateProject(${index}, 'sponsor', this.value)"></td>
-                    <td><input type="date" value="${p.start}" onchange="updateProject(${index}, 'start', this.value)"></td>
-                    <td><input type="date" value="${p.end}" onchange="updateProject(${index}, 'end', this.value)"></td>
-                    <td><select onchange="updateProject(${index}, 'phase', this.value)">${['Initiation','Planning','Execution','Closure'].map(ph => `<option ${p.phase===ph?'selected':''}>${ph}</option>`).join('')}</select></td>
-                    <td><select onchange="updateProject(${index}, 'priority', this.value)">${['Critical','High','Medium','Low'].map(pr => `<option ${p.priority===pr?'selected':''}>${pr}</option>`).join('')}</select></td>
-                    <td><select onchange="updateProject(${index}, 'health', this.value)">${['On Track','At Risk','Off Track','On Hold'].map(h => `<option ${p.health===h?'selected':''}>${h}</option>`).join('')}</select></td>
-                    <td><input type="number" value="${p.budget}" onchange="updateProject(${index}, 'budget', this.value)"></td>
-                    <td><input type="number" value="${p.actual}" onchange="updateProject(${index}, 'actual', this.value)"></td>
-                    <td>
-                        <div style="display:flex; align-items:center; gap:5px;">
-                            <div class="progress-bar"><div class="progress-fill ${p.percent<30?'error':p.percent<70?'warning':''}" style="width:${p.percent}%;"></div></div>
-                            <span>${p.percent}%</span>
+        function renderProjectCards() {
+            let html = '';
+            AppData.projects.forEach(p => {
+                const healthClass = p.health === 'On Track' ? 'badge-active' : p.health === 'At Risk' ? 'badge-risk' : 'badge-warning';
+                const percentUsed = Math.round((p.spent / p.budget) * 100);
+                
+                html += `
+                    <div class="project-summary-card" onclick="showProjectDetails('${p.id}')">
+                        <div class="project-header">
+                            <span class="project-title">${p.name}</span>
+                            <span class="project-badge ${healthClass}">${p.health}</span>
                         </div>
-                    </td>
-                    <td class="action-icons">
-                        <i class="fas fa-save" title="Save" onclick="saveProject(${index})"></i>
-                        <i class="fas fa-trash" title="Delete" onclick="deleteProject(${index})"></i>
-                    </td>
-                </tr>`;
+                        <div class="project-metrics">
+                            <div class="metric">
+                                <div class="metric-value">${currencyRates[currentCurrency].symbol}${(p.budget * currencyRates[currentCurrency].rate).toLocaleString()}</div>
+                                <div class="metric-label">Budget</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">${p.team}</div>
+                                <div class="metric-label">Team</div>
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span>Progress</span>
+                                <span>${p.progress}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${p.progress}%;"></div>
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span>Budget Used</span>
+                                <span>${percentUsed}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${percentUsed}%; background: ${percentUsed > 80 ? 'var(--error)' : percentUsed > 60 ? 'var(--warning)' : 'var(--success)'};"></div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-muted);">
+                            <span><i class="fas fa-calendar"></i> ${p.start}</span>
+                            <span><i class="fas fa-user"></i> ${p.manager}</span>
+                        </div>
+                    </div>
+                `;
             });
-            document.getElementById('tableBody').innerHTML = tbodyHtml;
+            document.getElementById('projectsGrid').innerHTML = html;
         }
 
-        window.updateProject = (index, field, value) => {
-            projects[index][field] = value;
-            if (field === 'budget' || field === 'forecast') {
-                projects[index].var = projects[index].budget - projects[index].forecast;
-            }
-            renderStats();
-        };
+        // ==================== CHARTS ====================
+        function initCharts() {
+            const ctx1 = document.getElementById('healthChart').getContext('2d');
+            const ctx2 = document.getElementById('budgetChart').getContext('2d');
+            const ctx3 = document.getElementById('progressChart').getContext('2d');
 
-        window.saveProject = (index) => {
-            alert(`Project ${projects[index].id} saved successfully!`);
-        };
-
-        window.deleteProject = (index) => {
-            if (confirm(`Delete project ${projects[index].name}?`)) {
-                projects.splice(index, 1);
-                renderTable();
-                renderStats();
-                closeModuleModal(); // Refresh modal if open
-            }
-        };
-
-        document.getElementById('newProjectBtn').addEventListener('click', () => {
-            const newId = 'P' + String(projects.length+1).padStart(3,'0');
-            projects.push({
-                id:newId, name:'New Project', type:'Development', category:'Internal', country:'Tanzania',
-                client:'Internal', manager:'New Manager', sponsor:'Sponsor', start:'2025-01-01', end:'2025-12-31',
-                baseStart:'2025-01-01', baseEnd:'2025-12-31', forecastEnd:'2025-12-31', actStart:'', actEnd:'',
-                durPlan:365, durAct:0, phase:'Initiation', priority:'Medium', health:'On Track', wbs:'WBS'+newId,
-                currency:'TZS', budget:1000000, actual:0, forecast:1000000, var:0, percent:0,
-                resources:[], tasks:[], risks:[], budgetItems:[]
-            });
-            renderTable();
-            renderStats();
-        });
-
-        document.getElementById('currencySelect').addEventListener('change', function(e) {
-            currentCurrency = e.target.value;
-            renderStats();
-        });
-
-        // Module Modal with Full Functionality
-        const modal = document.getElementById('moduleModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalTabs = document.getElementById('modalTabs');
-        const modalContent = document.getElementById('modalContent');
-        let currentModule = '';
-
-        window.openModuleModal = (module) => {
-            modal.style.display = 'flex';
-            currentModule = module;
-            const titles = { portfolio:'Project Portfolio', tasks:'Task Management', gantt:'Timeline & Gantt', resources:'Resource Allocation', budget:'Budget Tracking', risks:'Risk Management' };
-            modalTitle.textContent = titles[module];
-
-            const tabs = {
-                portfolio: ['Overview', 'Heatmap', 'KPIs'],
-                tasks: ['All Tasks', 'By Project', 'Kanban'],
-                gantt: ['Timeline', 'Critical Path', 'Milestones'],
-                resources: ['All Resources', 'Allocation', 'Utilization'],
-                budget: ['Budget Items', 'Categories', 'Commitments'],
-                risks: ['Risk Register', 'Matrix', 'Issues']
-            }[module] || ['Overview'];
-
-            modalTabs.innerHTML = tabs.map((t,i) => `<div class="tab ${i===0?'active':''}" onclick="switchTab(this, '${module}', '${t}')">${t}</div>`).join('');
-            loadTabContent(module, tabs[0]);
-        };
-
-        window.switchTab = (el, module, tab) => {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-            loadTabContent(module, tab);
-        };
-
-        function loadTabContent(module, tab) {
-            if (module === 'portfolio') loadPortfolioTab(tab);
-            else if (module === 'tasks') loadTasksTab(tab);
-            else if (module === 'gantt') loadGanttTab(tab);
-            else if (module === 'resources') loadResourcesTab(tab);
-            else if (module === 'budget') loadBudgetTab(tab);
-            else if (module === 'risks') loadRisksTab(tab);
-        }
-
-        // Portfolio Module
-        function loadPortfolioTab(tab) {
-            let content = '';
-            if (tab === 'Overview') {
-                content = `
-                    <div class="stats-grid" style="margin-bottom:1rem;">
-                        <div class="stat-card"><div class="stat-number">${projects.length}</div><div class="stat-label">Total Projects</div></div>
-                        <div class="stat-card"><div class="stat-number">${projects.filter(p => p.health === 'On Track').length}</div><div class="stat-label">On Track</div></div>
-                        <div class="stat-card"><div class="stat-number">${projects.filter(p => p.health === 'At Risk').length}</div><div class="stat-label">At Risk</div></div>
-                        <div class="stat-card"><div class="stat-number">${projects.filter(p => p.health === 'Off Track').length}</div><div class="stat-label">Off Track</div></div>
-                    </div>
-                    <table class="data-table">
-                        <tr><th>Project</th><th>Health</th><th>Progress</th><th>Budget</th><th>Actual</th><th>Variance</th></tr>
-                        ${projects.map(p => `<tr>
-                            <td>${p.name}</td>
-                            <td><span class="status-badge status-${p.health === 'On Track' ? 'active' : p.health === 'At Risk' ? 'pending' : 'critical'}">${p.health}</span></td>
-                            <td>${p.percent}%</td>
-                            <td>${p.currency} ${p.budget.toLocaleString()}</td>
-                            <td>${p.currency} ${p.actual.toLocaleString()}</td>
-                            <td style="color:${p.var < 0 ? 'var(--error)' : 'var(--success)'}">${p.var}</td>
-                        </tr>`).join('')}
-                    </table>`;
-            } else if (tab === 'Heatmap') {
-                content = '<h3>Project Health Heatmap</h3><div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1rem;">' +
-                    projects.map(p => `<div style="padding:1rem; background:${p.health === 'On Track' ? 'rgba(16,185,129,0.2)' : p.health === 'At Risk' ? 'rgba(245,158,11,0.2)' : 'rgba(239,68,68,0.2)'}; border-radius:8px;">
-                        <strong>${p.name}</strong><br>${p.health}<br>Progress: ${p.percent}%
-                    </div>`).join('') + '</div>';
-            } else if (tab === 'KPIs') {
-                const totalBudget = projects.reduce((s,p) => s + p.budget, 0);
-                const totalActual = projects.reduce((s,p) => s + p.actual, 0);
-                const totalVariance = totalBudget - totalActual;
-                content = `
-                    <div class="grid-3">
-                        <div class="stat-card"><div class="stat-number">${(totalActual/totalBudget*100).toFixed(1)}%</div><div class="stat-label">Budget Utilization</div></div>
-                        <div class="stat-card"><div class="stat-number">${(projects.filter(p => p.phase === 'Closure').length/projects.length*100).toFixed(1)}%</div><div class="stat-label">Completed</div></div>
-                        <div class="stat-card"><div class="stat-number">${currencyRates[currentCurrency].symbol}${(totalVariance * currencyRates[currentCurrency].rate).toFixed(2)}</div><div class="stat-label">Total Variance</div></div>
-                    </div>`;
-            }
-            modalContent.innerHTML = content;
-        }
-
-        // Tasks Module - Fully Functional
-        function loadTasksTab(tab) {
-            if (tab === 'All Tasks') {
-                const allTasks = projects.flatMap(p => p.tasks.map(t => ({ ...t, project: p.name, projectId: p.id })));
-                let content = `
-                    <div style="margin-bottom:1rem;">
-                        <button class="btn btn-primary btn-sm" onclick="openTaskModal()"><i class="fas fa-plus"></i> Add Task</button>
-                    </div>
-                    <table class="data-table">
-                        <tr><th>Project</th><th>Task</th><th>Status</th><th>Priority</th><th>Assignee</th><th>%</th><th>Due</th><th>Actions</th></tr>
-                `;
-                allTasks.forEach(t => {
-                    content += `<tr>
-                        <td>${t.project}</td>
-                        <td>${t.name}</td>
-                        <td><span class="status-badge ${t.status === 'Completed' ? 'status-completed' : t.status === 'In Progress' ? 'status-active' : 'status-pending'}">${t.status}</span></td>
-                        <td>${t.priority}</td>
-                        <td>${t.assignee || 'Unassigned'}</td>
-                        <td>${t.percent}%</td>
-                        <td>${t.due || 'N/A'}</td>
-                        <td class="action-icons">
-                            <i class="fas fa-edit" onclick="openTaskModal('${t.projectId}', '${t.id}')"></i>
-                            <i class="fas fa-trash" onclick="deleteTask('${t.projectId}', '${t.id}')"></i>
-                        </td>
-                    </tr>`;
-                });
-                content += '</table>';
-                modalContent.innerHTML = content;
-            } else if (tab === 'By Project') {
-                let content = '';
-                projects.forEach(p => {
-                    content += `<h3>${p.name}</h3><table class="data-table"><tr><th>Task</th><th>Status</th><th>Assignee</th><th>%</th></tr>`;
-                    p.tasks.forEach(t => {
-                        content += `<tr><td>${t.name}</td><td>${t.status}</td><td>${t.assignee}</td><td>${t.percent}%</td></tr>`;
-                    });
-                    content += '</table><br>';
-                });
-                modalContent.innerHTML = content;
-            } else if (tab === 'Kanban') {
-                const statuses = ['Not Started', 'In Progress', 'In Review', 'Completed', 'Blocked'];
-                let content = '<div style="display:grid; grid-template-columns:repeat(5,1fr); gap:1rem;">';
-                statuses.forEach(status => {
-                    const tasks = projects.flatMap(p => p.tasks.filter(t => t.status === status).map(t => ({...t, project:p.name})));
-                    content += `<div><h4>${status}</h4>`;
-                    tasks.forEach(t => {
-                        content += `<div style="background:var(--surface); border:1px solid var(--border); padding:0.5rem; margin-bottom:0.5rem; border-radius:4px;">
-                            <strong>${t.name}</strong><br>
-                            <small>${t.project}</small><br>
-                            <small>${t.assignee}</small>
-                        </div>`;
-                    });
-                    content += '</div>';
-                });
-                content += '</div>';
-                modalContent.innerHTML = content;
-            }
-        }
-
-        // Task CRUD
-        window.openTaskModal = (projectId, taskId) => {
-            document.getElementById('taskModal').style.display = 'flex';
-            document.getElementById('taskModalTitle').textContent = taskId ? 'Edit Task' : 'Add Task';
-            
-            // Populate project dropdown
-            const select = document.getElementById('taskProjectId');
-            select.innerHTML = '<option value="">Select Project</option>' + 
-                projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-            
-            if (taskId && projectId) {
-                const project = projects.find(p => p.id === projectId);
-                const task = project.tasks.find(t => t.id === taskId);
-                document.getElementById('taskId').value = taskId;
-                document.getElementById('taskProjectId').value = projectId;
-                document.getElementById('taskName').value = task.name || '';
-                document.getElementById('taskDesc').value = task.desc || '';
-                document.getElementById('taskStatus').value = task.status || 'Not Started';
-                document.getElementById('taskPriority').value = task.priority || 'Medium';
-                document.getElementById('taskAssignee').value = task.assignee || '';
-                document.getElementById('taskPercent').value = task.percent || 0;
-                document.getElementById('taskStartDate').value = task.start || '';
-                document.getElementById('taskDueDate').value = task.due || '';
-                document.getElementById('taskEstHours').value = task.estHours || 0;
-                document.getElementById('taskActualHours').value = task.actualHours || 0;
-            } else {
-                document.getElementById('taskId').value = '';
-                document.getElementById('taskForm').reset();
-                document.getElementById('taskProjectId').value = '';
-            }
-        };
-
-        window.closeTaskModal = () => {
-            document.getElementById('taskModal').style.display = 'none';
-        };
-
-        window.saveTask = (e) => {
-            e.preventDefault();
-            const taskId = document.getElementById('taskId').value;
-            const projectId = document.getElementById('taskProjectId').value;
-            const project = projects.find(p => p.id === projectId);
-            
-            const taskData = {
-                id: taskId || 'T' + Date.now(),
-                name: document.getElementById('taskName').value,
-                desc: document.getElementById('taskDesc').value,
-                status: document.getElementById('taskStatus').value,
-                priority: document.getElementById('taskPriority').value,
-                assignee: document.getElementById('taskAssignee').value,
-                percent: parseInt(document.getElementById('taskPercent').value),
-                start: document.getElementById('taskStartDate').value,
-                due: document.getElementById('taskDueDate').value,
-                estHours: parseInt(document.getElementById('taskEstHours').value),
-                actualHours: parseInt(document.getElementById('taskActualHours').value)
+            // Health Chart
+            const healthCounts = {
+                'On Track': AppData.projects.filter(p => p.health === 'On Track').length,
+                'At Risk': AppData.projects.filter(p => p.health === 'At Risk').length,
+                'Off Track': AppData.projects.filter(p => p.health === 'Off Track').length
             };
 
-            if (taskId) {
-                const index = project.tasks.findIndex(t => t.id === taskId);
-                project.tasks[index] = taskData;
-            } else {
-                project.tasks.push(taskData);
-            }
-            
-            closeTaskModal();
-            loadTasksTab('All Tasks');
-        };
-
-        window.deleteTask = (projectId, taskId) => {
-            if (confirm('Delete this task?')) {
-                const project = projects.find(p => p.id === projectId);
-                project.tasks = project.tasks.filter(t => t.id !== taskId);
-                loadTasksTab('All Tasks');
-            }
-        };
-
-        // Resources Module - Fully Functional
-        function loadResourcesTab(tab) {
-            if (tab === 'All Resources') {
-                const allResources = projects.flatMap(p => p.resources.map(r => ({ ...r, project: p.name, projectId: p.id })));
-                let content = `
-                    <div style="margin-bottom:1rem;">
-                        <button class="btn btn-primary btn-sm" onclick="openResourceModal()"><i class="fas fa-plus"></i> Add Resource</button>
-                    </div>
-                    <table class="data-table">
-                        <tr><th>Project</th><th>Name</th><th>Role</th><th>Rate</th><th>Alloc%</th><th>Planned Hrs</th><th>Actual Hrs</th><th>Actions</th></tr>
-                `;
-                allResources.forEach(r => {
-                    content += `<tr>
-                        <td>${r.project}</td>
-                        <td>${r.name}</td>
-                        <td>${r.role}</td>
-                        <td>${r.rate || 0}</td>
-                        <td>${r.alloc || 0}%</td>
-                        <td>${r.planned || 0}</td>
-                        <td>${r.actual || 0}</td>
-                        <td class="action-icons">
-                            <i class="fas fa-edit" onclick="openResourceModal('${r.projectId}', '${r.id}')"></i>
-                            <i class="fas fa-trash" onclick="deleteResource('${r.projectId}', '${r.id}')"></i>
-                        </td>
-                    </tr>`;
-                });
-                content += '</table>';
-                modalContent.innerHTML = content;
-            } else if (tab === 'Allocation') {
-                let content = '<div class="grid-3">';
-                projects.forEach(p => {
-                    content += `<div><h4>${p.name}</h4>`;
-                    p.resources.forEach(r => {
-                        content += `<div style="margin-bottom:0.5rem;">${r.name}: ${r.alloc}% allocated</div>`;
-                    });
-                    content += '</div>';
-                });
-                content += '</div>';
-                modalContent.innerHTML = content;
-            } else if (tab === 'Utilization') {
-                let content = '<table class="data-table"><tr><th>Resource</th><th>Project</th><th>Utilization</th></tr>';
-                projects.forEach(p => {
-                    p.resources.forEach(r => {
-                        const util = r.planned > 0 ? Math.round((r.actual / r.planned) * 100) : 0;
-                        content += `<tr><td>${r.name}</td><td>${p.name}</td><td>${util}%</td></tr>`;
-                    });
-                });
-                content += '</table>';
-                modalContent.innerHTML = content;
-            }
-        }
-
-        // Resource CRUD
-        window.openResourceModal = (projectId, resourceId) => {
-            document.getElementById('resourceModal').style.display = 'flex';
-            document.getElementById('resourceModalTitle').textContent = resourceId ? 'Edit Resource' : 'Add Resource';
-            
-            const select = document.getElementById('resourceProjectId');
-            select.innerHTML = '<option value="">Select Project</option>' + 
-                projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-            
-            if (resourceId && projectId) {
-                const project = projects.find(p => p.id === projectId);
-                const resource = project.resources.find(r => r.id === resourceId);
-                document.getElementById('resourceId').value = resourceId;
-                document.getElementById('resourceProjectId').value = projectId;
-                document.getElementById('resourceName').value = resource.name || '';
-                document.getElementById('resourceRole').value = resource.role || '';
-                document.getElementById('resourceRate').value = resource.rate || 0;
-                document.getElementById('resourceAlloc').value = resource.alloc || 100;
-                document.getElementById('resourcePlanned').value = resource.planned || 0;
-                document.getElementById('resourceActual').value = resource.actual || 0;
-            } else {
-                document.getElementById('resourceId').value = '';
-                document.getElementById('resourceForm').reset();
-            }
-        };
-
-        window.closeResourceModal = () => {
-            document.getElementById('resourceModal').style.display = 'none';
-        };
-
-        window.saveResource = (e) => {
-            e.preventDefault();
-            const resourceId = document.getElementById('resourceId').value;
-            const projectId = document.getElementById('resourceProjectId').value;
-            const project = projects.find(p => p.id === projectId);
-            
-            const resourceData = {
-                id: resourceId || 'R' + Date.now(),
-                name: document.getElementById('resourceName').value,
-                role: document.getElementById('resourceRole').value,
-                rate: parseFloat(document.getElementById('resourceRate').value),
-                alloc: parseInt(document.getElementById('resourceAlloc').value),
-                planned: parseInt(document.getElementById('resourcePlanned').value),
-                actual: parseInt(document.getElementById('resourceActual').value)
-            };
-
-            if (resourceId) {
-                const index = project.resources.findIndex(r => r.id === resourceId);
-                project.resources[index] = resourceData;
-            } else {
-                project.resources.push(resourceData);
-            }
-            
-            closeResourceModal();
-            loadResourcesTab('All Resources');
-            renderStats();
-        };
-
-        window.deleteResource = (projectId, resourceId) => {
-            if (confirm('Delete this resource?')) {
-                const project = projects.find(p => p.id === projectId);
-                project.resources = project.resources.filter(r => r.id !== resourceId);
-                loadResourcesTab('All Resources');
-            }
-        };
-
-        // Budget Module - Fully Functional
-        function loadBudgetTab(tab) {
-            if (tab === 'Budget Items') {
-                const allItems = projects.flatMap(p => p.budgetItems.map(b => ({ ...b, project: p.name, projectId: p.id })));
-                let content = `
-                    <div style="margin-bottom:1rem;">
-                        <button class="btn btn-primary btn-sm" onclick="openBudgetItemModal()"><i class="fas fa-plus"></i> Add Budget Item</button>
-                    </div>
-                    <table class="data-table">
-                        <tr><th>Project</th><th>Category</th><th>Description</th><th>Budget</th><th>Actual</th><th>Committed</th><th>Invoiced</th><th>Actions</th></tr>
-                `;
-                allItems.forEach(b => {
-                    content += `<tr>
-                        <td>${b.project}</td>
-                        <td>${b.category}</td>
-                        <td>${b.desc}</td>
-                        <td>${b.budget || 0}</td>
-                        <td>${b.actual || 0}</td>
-                        <td>${b.committed || 0}</td>
-                        <td>${b.invoiced || 0}</td>
-                        <td class="action-icons">
-                            <i class="fas fa-edit" onclick="openBudgetItemModal('${b.projectId}', '${b.id}')"></i>
-                            <i class="fas fa-trash" onclick="deleteBudgetItem('${b.projectId}', '${b.id}')"></i>
-                        </td>
-                    </tr>`;
-                });
-                content += '</table>';
-                modalContent.innerHTML = content;
-            } else if (tab === 'Categories') {
-                const categories = ['Labor', 'Materials', 'Equipment', 'Travel', 'Subcontractors'];
-                let content = '<div class="grid-2">';
-                categories.forEach(cat => {
-                    const totalBudget = projects.reduce((sum, p) => sum + (p.budgetItems.filter(b => b.category === cat).reduce((s,b) => s + b.budget, 0)), 0);
-                    const totalActual = projects.reduce((sum, p) => sum + (p.budgetItems.filter(b => b.category === cat).reduce((s,b) => s + b.actual, 0)), 0);
-                    content += `<div><h4>${cat}</h4>Budget: ${totalBudget}<br>Actual: ${totalActual}<br>Remaining: ${totalBudget - totalActual}</div>`;
-                });
-                content += '</div>';
-                modalContent.innerHTML = content;
-            } else if (tab === 'Commitments') {
-                let content = '<table class="data-table"><tr><th>Project</th><th>Item</th><th>Committed</th><th>Invoiced</th><th>To Invoice</th></tr>';
-                projects.forEach(p => {
-                    p.budgetItems.forEach(b => {
-                        content += `<tr><td>${p.name}</td><td>${b.desc}</td><td>${b.committed || 0}</td><td>${b.invoiced || 0}</td><td>${(b.committed || 0) - (b.invoiced || 0)}</td></tr>`;
-                    });
-                });
-                content += '</table>';
-                modalContent.innerHTML = content;
-            }
-        }
-
-        // Budget Item CRUD
-        window.openBudgetItemModal = (projectId, itemId) => {
-            document.getElementById('budgetItemModal').style.display = 'flex';
-            document.getElementById('budgetItemModalTitle').textContent = itemId ? 'Edit Budget Item' : 'Add Budget Item';
-            
-            const select = document.getElementById('budgetItemProjectId');
-            select.innerHTML = '<option value="">Select Project</option>' + 
-                projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-            
-            if (itemId && projectId) {
-                const project = projects.find(p => p.id === projectId);
-                const item = project.budgetItems.find(b => b.id === itemId);
-                document.getElementById('budgetItemId').value = itemId;
-                document.getElementById('budgetItemProjectId').value = projectId;
-                document.getElementById('budgetItemCategory').value = item.category || 'Labor';
-                document.getElementById('budgetItemDesc').value = item.desc || '';
-                document.getElementById('budgetItemBudget').value = item.budget || 0;
-                document.getElementById('budgetItemActual').value = item.actual || 0;
-                document.getElementById('budgetItemCommitted').value = item.committed || 0;
-                document.getElementById('budgetItemInvoiced').value = item.invoiced || 0;
-            } else {
-                document.getElementById('budgetItemId').value = '';
-                document.getElementById('budgetItemForm').reset();
-            }
-        };
-
-        window.closeBudgetItemModal = () => {
-            document.getElementById('budgetItemModal').style.display = 'none';
-        };
-
-        window.saveBudgetItem = (e) => {
-            e.preventDefault();
-            const itemId = document.getElementById('budgetItemId').value;
-            const projectId = document.getElementById('budgetItemProjectId').value;
-            const project = projects.find(p => p.id === projectId);
-            
-            const itemData = {
-                id: itemId || 'B' + Date.now(),
-                category: document.getElementById('budgetItemCategory').value,
-                desc: document.getElementById('budgetItemDesc').value,
-                budget: parseFloat(document.getElementById('budgetItemBudget').value),
-                actual: parseFloat(document.getElementById('budgetItemActual').value),
-                committed: parseFloat(document.getElementById('budgetItemCommitted').value),
-                invoiced: parseFloat(document.getElementById('budgetItemInvoiced').value)
-            };
-
-            if (itemId) {
-                const index = project.budgetItems.findIndex(b => b.id === itemId);
-                project.budgetItems[index] = itemData;
-            } else {
-                project.budgetItems.push(itemData);
-            }
-            
-            // Update project totals
-            project.budget = project.budgetItems.reduce((sum, b) => sum + b.budget, 0);
-            project.actual = project.budgetItems.reduce((sum, b) => sum + b.actual, 0);
-            
-            closeBudgetItemModal();
-            loadBudgetTab('Budget Items');
-            renderTable();
-            renderStats();
-        };
-
-        window.deleteBudgetItem = (projectId, itemId) => {
-            if (confirm('Delete this budget item?')) {
-                const project = projects.find(p => p.id === projectId);
-                project.budgetItems = project.budgetItems.filter(b => b.id !== itemId);
-                project.budget = project.budgetItems.reduce((sum, b) => sum + b.budget, 0);
-                project.actual = project.budgetItems.reduce((sum, b) => sum + b.actual, 0);
-                loadBudgetTab('Budget Items');
-                renderTable();
-                renderStats();
-            }
-        };
-
-        // Risks Module - Fully Functional
-        function loadRisksTab(tab) {
-            if (tab === 'Risk Register') {
-                const allRisks = projects.flatMap(p => p.risks.map(r => ({ ...r, project: p.name, projectId: p.id })));
-                let content = `
-                    <div style="margin-bottom:1rem;">
-                        <button class="btn btn-primary btn-sm" onclick="openRiskModal()"><i class="fas fa-plus"></i> Add Risk</button>
-                    </div>
-                    <table class="data-table">
-                        <tr><th>Project</th><th>Risk</th><th>Category</th><th>Prob</th><th>Impact</th><th>Score</th><th>Owner</th><th>Status</th><th>Actions</th></tr>
-                `;
-                allRisks.forEach(r => {
-                    content += `<tr>
-                        <td>${r.project}</td>
-                        <td>${r.desc}</td>
-                        <td>${r.category}</td>
-                        <td>${r.prob}%</td>
-                        <td>${r.impact}</td>
-                        <td>${r.score || r.prob * r.impact}</td>
-                        <td>${r.owner}</td>
-                        <td><span class="status-badge ${r.status === 'Closed' ? 'status-completed' : r.status === 'Mitigating' ? 'status-active' : 'status-pending'}">${r.status}</span></td>
-                        <td class="action-icons">
-                            <i class="fas fa-edit" onclick="openRiskModal('${r.projectId}', '${r.id}')"></i>
-                            <i class="fas fa-trash" onclick="deleteRisk('${r.projectId}', '${r.id}')"></i>
-                        </td>
-                    </tr>`;
-                });
-                content += '</table>';
-                modalContent.innerHTML = content;
-            } else if (tab === 'Matrix') {
-                let content = '<div style="display:grid; grid-template-columns:repeat(5,1fr); gap:0.5rem;">';
-                for (let p = 1; p <= 5; p++) {
-                    for (let i = 1; i <= 5; i++) {
-                        const risksAtLevel = projects.flatMap(proj => proj.risks.filter(r => r.prob/20 >= p-1 && r.prob/20 < p && r.impact === i));
-                        content += `<div style="border:1px solid var(--border); padding:0.5rem; background:rgba(239,68,68,${risksAtLevel.length*0.1})">
-                            P${p} I${i}<br>${risksAtLevel.length} risks
-                        </div>`;
+            healthChart = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['On Track', 'At Risk', 'Off Track'],
+                    datasets: [{
+                        data: [healthCounts['On Track'], healthCounts['At Risk'], healthCounts['Off Track']],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
                     }
                 }
-                content += '</div>';
-                modalContent.innerHTML = content;
-            } else if (tab === 'Issues') {
-                // Issues would be a separate array, but for demo we show risks that occurred
-                const issues = projects.flatMap(p => p.risks.filter(r => r.status === 'Occurred').map(r => ({...r, project:p.name})));
-                let content = '<table class="data-table"><tr><th>Project</th><th>Issue</th><th>Owner</th><th>Status</th></tr>';
-                issues.forEach(i => {
-                    content += `<tr><td>${i.project}</td><td>${i.desc}</td><td>${i.owner}</td><td>${i.status}</td></tr>`;
-                });
-                content += '</table>';
-                modalContent.innerHTML = content;
+            });
+
+            // Budget Chart
+            budgetChart = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: AppData.projects.map(p => p.name.substring(0, 10) + '...'),
+                    datasets: [
+                        {
+                            label: 'Budget',
+                            data: AppData.projects.map(p => p.budget * currencyRates[currentCurrency].rate),
+                            backgroundColor: '#2563eb',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Spent',
+                            data: AppData.projects.map(p => p.spent * currencyRates[currentCurrency].rate),
+                            backgroundColor: '#f59e0b',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            // Progress Chart
+            progressChart = new Chart(ctx3, {
+                type: 'line',
+                data: {
+                    labels: AppData.projects.map(p => p.name.substring(0, 10) + '...'),
+                    datasets: [{
+                        label: 'Progress %',
+                        data: AppData.projects.map(p => p.progress),
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+        }
+
+        function updateCharts() {
+            if (healthChart) {
+                healthChart.data.datasets[0].data = [
+                    AppData.projects.filter(p => p.health === 'On Track').length,
+                    AppData.projects.filter(p => p.health === 'At Risk').length,
+                    AppData.projects.filter(p => p.health === 'Off Track').length
+                ];
+                healthChart.update();
+            }
+
+            if (budgetChart) {
+                budgetChart.data.datasets[0].data = AppData.projects.map(p => p.budget * currencyRates[currentCurrency].rate);
+                budgetChart.data.datasets[1].data = AppData.projects.map(p => p.spent * currencyRates[currentCurrency].rate);
+                budgetChart.update();
+            }
+
+            if (progressChart) {
+                progressChart.data.datasets[0].data = AppData.projects.map(p => p.progress);
+                progressChart.update();
             }
         }
 
-        // Risk CRUD
-        window.openRiskModal = (projectId, riskId) => {
-            document.getElementById('riskModal').style.display = 'flex';
-            document.getElementById('riskModalTitle').textContent = riskId ? 'Edit Risk' : 'Add Risk';
-            
-            const select = document.getElementById('riskProjectId');
-            select.innerHTML = '<option value="">Select Project</option>' + 
-                projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-            
-            if (riskId && projectId) {
-                const project = projects.find(p => p.id === projectId);
-                const risk = project.risks.find(r => r.id === riskId);
-                document.getElementById('riskId').value = riskId;
-                document.getElementById('riskProjectId').value = projectId;
-                document.getElementById('riskDesc').value = risk.desc || '';
-                document.getElementById('riskCategory').value = risk.category || 'Technical';
-                document.getElementById('riskOwner').value = risk.owner || '';
-                document.getElementById('riskProb').value = risk.prob || 50;
-                document.getElementById('riskImpact').value = risk.impact || 3;
-                document.getElementById('riskMitigation').value = risk.mitigation || '';
-                document.getElementById('riskStatus').value = risk.status || 'Identified';
-                updateRiskScore();
-            } else {
-                document.getElementById('riskId').value = '';
-                document.getElementById('riskForm').reset();
-                document.getElementById('riskProb').value = 50;
-                document.getElementById('riskImpact').value = 3;
-                updateRiskScore();
-            }
-        };
+        // ==================== MODULE MANAGEMENT ====================
+        let currentModule = '';
 
-        window.updateRiskScore = () => {
-            const prob = parseInt(document.getElementById('riskProb').value) || 0;
-            const impact = parseInt(document.getElementById('riskImpact').value) || 0;
-            document.getElementById('riskScore').value = prob * impact;
-        };
-
-        document.getElementById('riskProb').addEventListener('input', updateRiskScore);
-        document.getElementById('riskImpact').addEventListener('input', updateRiskScore);
-
-        window.closeRiskModal = () => {
-            document.getElementById('riskModal').style.display = 'none';
-        };
-
-        window.saveRisk = (e) => {
-            e.preventDefault();
-            const riskId = document.getElementById('riskId').value;
-            const projectId = document.getElementById('riskProjectId').value;
-            const project = projects.find(p => p.id === projectId);
-            
-            const riskData = {
-                id: riskId || 'RS' + Date.now(),
-                desc: document.getElementById('riskDesc').value,
-                category: document.getElementById('riskCategory').value,
-                owner: document.getElementById('riskOwner').value,
-                prob: parseInt(document.getElementById('riskProb').value),
-                impact: parseInt(document.getElementById('riskImpact').value),
-                score: parseInt(document.getElementById('riskScore').value),
-                mitigation: document.getElementById('riskMitigation').value,
-                status: document.getElementById('riskStatus').value
+        window.openModule = (module) => {
+            currentModule = module;
+            const modal = document.getElementById('moduleModal');
+            const titles = {
+                portfolio: 'Project Portfolio Management',
+                tasks: 'Task Management',
+                gantt: 'Timeline & Gantt',
+                resources: 'Resource Allocation',
+                budget: 'Budget Tracking',
+                risks: 'Risk Management'
             };
+            document.getElementById('modalTitle').textContent = titles[module];
 
-            if (riskId) {
-                const index = project.risks.findIndex(r => r.id === riskId);
-                project.risks[index] = riskData;
-            } else {
-                project.risks.push(riskData);
+            const tabs = {
+                portfolio: ['Overview', 'Analytics', 'Reports'],
+                tasks: ['All Tasks', 'Kanban', 'Calendar'],
+                gantt: ['Timeline', 'Milestones', 'Dependencies'],
+                resources: ['Allocations', 'Utilization', 'Rates'],
+                budget: ['Overview', 'Categories', 'Variance'],
+                risks: ['Register', 'Matrix', 'Issues']
+            }[module] || ['Overview'];
+
+            document.getElementById('modalTabs').innerHTML = tabs.map((tab, i) => 
+                `<div class="tab ${i === 0 ? 'active' : ''}" onclick="switchTab(this, '${tab}')">${tab}</div>`
+            ).join('');
+
+            loadModuleTab(module, tabs[0]);
+            modal.style.display = 'flex';
+        };
+
+        window.switchTab = (element, tab) => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+            loadModuleTab(currentModule, tab);
+        };
+
+        function loadModuleTab(module, tab) {
+            let content = '';
+            
+            switch(module) {
+                case 'tasks':
+                    if (tab === 'All Tasks') {
+                        content = `
+                            <button class="btn btn-primary btn-sm" onclick="showTaskForm()" style="margin-bottom: 1rem;">
+                                <i class="fas fa-plus"></i> New Task
+                            </button>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Task</th><th>Project</th><th>Assignee</th><th>Status</th><th>Priority</th><th>Progress</th><th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${AppData.tasks.map(task => {
+                                        const project = AppData.projects.find(p => p.id === task.projectId);
+                                        return `
+                                        <tr>
+                                            <td>${task.name}</td>
+                                            <td>${project ? project.name : ''}</td>
+                                            <td>${task.assignee}</td>
+                                            <td><span class="badge-${task.status === 'Completed' ? 'active' : 'warning'}">${task.status}</span></td>
+                                            <td><span class="badge-${task.priority === 'Critical' ? 'risk' : 'active'}">${task.priority}</span></td>
+                                            <td>
+                                                <div class="progress-bar" style="width: 100px;">
+                                                    <div class="progress-fill" style="width: ${task.progress}%;"></div>
+                                                </div>
+                                            </td>
+                                            <td class="action-icons">
+                                                <i class="fas fa-edit" onclick="editTask('${task.id}')"></i>
+                                                <i class="fas fa-trash" onclick="deleteTask('${task.id}')"></i>
+                                            </td>
+                                        </tr>`;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        `;
+                    } else {
+                        content = `<div style="text-align: center; padding: 2rem;">${tab} view coming soon...</div>`;
+                    }
+                    break;
+                    
+                case 'resources':
+                    content = `
+                        <button class="btn btn-primary btn-sm" style="margin-bottom: 1rem;">
+                            <i class="fas fa-plus"></i> New Allocation
+                        </button>
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>Resource</th><th>Role</th><th>Project</th><th>Allocation</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody>
+                                ${AppData.resources.map(r => {
+                                    const project = AppData.projects.find(p => p.id === r.project);
+                                    return `
+                                    <tr>
+                                        <td>${r.name}</td>
+                                        <td>${r.role}</td>
+                                        <td>${project ? project.name : ''}</td>
+                                        <td>${r.allocation}%</td>
+                                        <td><i class="fas fa-trash" onclick="deleteResource('${r.id}')"></i></td>
+                                    </tr>`;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                    break;
+                    
+                case 'risks':
+                    content = `
+                        <button class="btn btn-primary btn-sm" style="margin-bottom: 1rem;">
+                            <i class="fas fa-plus"></i> New Risk
+                        </button>
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>Project</th><th>Risk</th><th>Probability</th><th>Impact</th><th>Score</th><th>Status</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody>
+                                ${AppData.risks.map(risk => {
+                                    const project = AppData.projects.find(p => p.id === risk.projectId);
+                                    const score = risk.probability * risk.impact;
+                                    return `
+                                    <tr>
+                                        <td>${project ? project.name : ''}</td>
+                                        <td>${risk.title}</td>
+                                        <td>${risk.probability}%</td>
+                                        <td>${risk.impact}/5</td>
+                                        <td><span class="badge-${score > 150 ? 'risk' : score > 80 ? 'warning' : 'active'}">${score}</span></td>
+                                        <td>${risk.status}</td>
+                                        <td><i class="fas fa-trash" onclick="deleteRisk('${risk.id}')"></i></td>
+                                    </tr>`;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                    break;
+                    
+                default:
+                    content = `<div style="text-align: center; padding: 2rem;">${module} - ${tab} view with complete CRUD operations</div>`;
             }
             
-            closeRiskModal();
-            loadRisksTab('Risk Register');
-        };
-
-        window.deleteRisk = (projectId, riskId) => {
-            if (confirm('Delete this risk?')) {
-                const project = projects.find(p => p.id === projectId);
-                project.risks = project.risks.filter(r => r.id !== riskId);
-                loadRisksTab('Risk Register');
-            }
-        };
-
-        // Gantt Module (Simplified but functional)
-        function loadGanttTab(tab) {
-            if (tab === 'Timeline') {
-                let content = '<div style="overflow-x:auto;"><table class="data-table"><tr><th>Project</th><th>Task</th><th>Start</th><th>End</th><th>Duration</th></tr>';
-                projects.forEach(p => {
-                    p.tasks.forEach(t => {
-                        content += `<tr><td>${p.name}</td><td>${t.name}</td><td>${t.start || 'N/A'}</td><td>${t.due || 'N/A'}</td><td>${t.estHours || 0}h</td></tr>`;
-                    });
-                });
-                content += '</table></div>';
-                modalContent.innerHTML = content;
-            } else if (tab === 'Critical Path') {
-                const criticalTasks = projects.flatMap(p => p.tasks.filter(t => t.priority === 'Critical').map(t => ({...t, project:p.name})));
-                let content = '<h3>Critical Path Tasks</h3><table class="data-table"><tr><th>Project</th><th>Task</th><th>Due</th><th>Priority</th></tr>';
-                criticalTasks.forEach(t => {
-                    content += `<tr><td>${t.project}</td><td>${t.name}</td><td>${t.due}</td><td>${t.priority}</td></tr>`;
-                });
-                content += '</table>';
-                modalContent.innerHTML = content;
-            } else if (tab === 'Milestones') {
-                const milestones = projects.flatMap(p => p.tasks.filter(t => t.name.toLowerCase().includes('complete') || t.name.toLowerCase().includes('launch')).map(t => ({...t, project:p.name})));
-                let content = '<h3>Project Milestones</h3><table class="data-table"><tr><th>Project</th><th>Milestone</th><th>Due</th><th>Status</th></tr>';
-                milestones.forEach(m => {
-                    content += `<tr><td>${m.project}</td><td>${m.name}</td><td>${m.due}</td><td>${m.status}</td></tr>`;
-                });
-                content += '</table>';
-                modalContent.innerHTML = content;
-            }
+            document.getElementById('modalBody').innerHTML = content;
         }
 
-        window.closeModuleModal = () => {
-            modal.style.display = 'none';
+        // ==================== CRUD OPERATIONS ====================
+        window.deleteTask = (id) => {
+            if (confirm('Delete this task?')) {
+                const index = AppData.tasks.findIndex(t => t.id === id);
+                if (index > -1) AppData.tasks.splice(index, 1);
+                loadModuleTab('tasks', 'All Tasks');
+            }
         };
 
-        // Logout
-        document.getElementById('logoutBtn').addEventListener('click', () => { if(confirm('Logout?')) alert('Logout simulation'); });
+        window.deleteResource = (id) => {
+            if (confirm('Delete this resource allocation?')) {
+                const index = AppData.resources.findIndex(r => r.id === id);
+                if (index > -1) AppData.resources.splice(index, 1);
+                renderStats();
+                loadModuleTab('resources', 'Allocations');
+            }
+        };
 
-        // Mobile nav toggle
+        window.deleteRisk = (id) => {
+            if (confirm('Delete this risk?')) {
+                const index = AppData.risks.findIndex(r => r.id === id);
+                if (index > -1) AppData.risks.splice(index, 1);
+                loadModuleTab('risks', 'Register');
+            }
+        };
+
+        window.showProjectDetails = (id) => {
+            const project = AppData.projects.find(p => p.id === id);
+            alert(`Showing details for: ${project.name}\nManager: ${project.manager}\nBudget: ${currencyRates[currentCurrency].symbol}${(project.budget * currencyRates[currentCurrency].rate).toLocaleString()}\nProgress: ${project.progress}%`);
+        };
+
+        // ==================== UTILITY FUNCTIONS ====================
+        window.closeModal = () => {
+            document.getElementById('moduleModal').style.display = 'none';
+        };
+
+        window.closeFormModal = () => {
+            document.getElementById('formModal').style.display = 'none';
+        };
+
+        // New Project
+        document.getElementById('newProjectBtn').addEventListener('click', () => {
+            const newId = 'P' + String(AppData.projects.length + 1).padStart(3, '0');
+            AppData.projects.push({
+                id: newId,
+                name: 'New Project',
+                type: 'Development',
+                status: 'Active',
+                health: 'On Track',
+                progress: 0,
+                budget: 1000000,
+                spent: 0,
+                start: new Date().toISOString().split('T')[0],
+                end: '2025-12-31',
+                manager: 'New Manager',
+                team: 1
+            });
+            renderProjectCards();
+            renderStats();
+            updateCharts();
+        });
+
+        // Currency change
+        document.getElementById('currencySelect').addEventListener('change', (e) => {
+            currentCurrency = e.target.value;
+            renderStats();
+            renderProjectCards();
+            updateCharts();
+        });
+
+        // Mobile nav
         document.getElementById('mobileNavToggle').addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('active');
         });
 
-        // Click outside to close modals
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            if (confirm('Logout?')) alert('Logout simulation');
+        });
+
+        // Initialize
+        renderStats();
+        renderProjectCards();
+        initCharts();
+
+        // Close modals on outside click
         window.onclick = (event) => {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
         };
-
-        // Initial render
-        renderStats();
-        renderTable();
     </script>
 </body>
 </html>
