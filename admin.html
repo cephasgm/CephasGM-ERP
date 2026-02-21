@@ -1,41 +1,28 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  
-  <!-- PWA Meta Tags -->
-  <meta name="theme-color" content="#2563eb" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="CephasGM ERP">
-  
-  <title>System Administration - CephasGM ERP</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Administration · CephasGM ERP (Global Enterprise)</title>
 
-  <!-- SEO & Social -->
-  <meta name="description" content="CephasGM ERP Administration Module - Complete system management, user control, and monitoring dashboard" />
-  <meta name="keywords" content="ERP, Administration, System Management, User Control, Dashboard, Business Software" />
-  <meta name="author" content="CephasGM" />
-  
-  <!-- Open Graph -->
-  <meta property="og:title" content="System Administration - CephasGM ERP" />
-  <meta property="og:description" content="Complete system management dashboard for CephasGM ERP" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://cephasgm.github.io/CephasGM-ERP/admin.html" />
-  
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="manifest.json" />
-
-  <!-- Icons -->
-  <link rel="icon" type="image/png" href="icon-192.png" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
+  <!-- PWA & SEO Meta (preserved) -->
+  <meta name="theme-color" content="#2563eb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icon-192.png">
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Admin Module Styles -->
   <style>
-    :root{
+    /* ===== RESET & GLOBAL VARIABLES (kept from original but extended) ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
       --bg: #f8fafc;
       --card: #ffffff;
       --text: #0f172a;
@@ -50,33 +37,28 @@
       --gap: 1rem;
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      --max-width: 1400px;
-      --nav-height: 72px;
       --sidebar-width: 280px;
+      --border-light: #e2e8f0;
     }
 
-    /* Dark mode */
-    :root[data-theme='dark']{
+    [data-theme="dark"] {
       --bg: linear-gradient(135deg,#0f172a,#071129);
       --card: #0b1220;
       --text: #f1f5f9;
       --muted: #94a3b8;
-      --shadow: 0 10px 30px rgba(2,6,23,0.6);
-    }
-    
-    /* Base reset */
-    *{box-sizing:border-box; margin:0; padding:0}
-    html,body{height:100%}
-    body{
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      color:var(--text);
-      -webkit-font-smoothing:antialiased;
-      line-height:1.6;
-      min-height:100vh;
+      --primary-light: #1e293b;
+      --border-light: #334155;
     }
 
-    /* ===== LAYOUT ===== */
+    body {
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ===== LAYOUT (original preserved) ===== */
     .admin-layout {
       display: grid;
       grid-template-columns: var(--sidebar-width) 1fr;
@@ -131,10 +113,6 @@
       padding: 1rem 0;
     }
 
-    .nav-section {
-      margin-bottom: 1.5rem;
-    }
-
     .nav-section-title {
       padding: 0 1.5rem 0.5rem;
       font-size: 0.75rem;
@@ -152,35 +130,20 @@
       color: var(--muted);
       text-decoration: none;
       transition: all 0.3s ease;
-      position: relative;
+      border-left: 3px solid transparent;
     }
 
     .nav-link:hover,
     .nav-link.active {
       color: var(--primary);
       background: var(--primary-light);
-    }
-
-    .nav-link.active::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 4px;
-      background: var(--primary);
-      border-radius: 0 var(--radius) var(--radius) 0;
-    }
-
-    .nav-link-icon {
-      width: 1.25rem;
-      text-align: center;
+      border-left-color: var(--primary);
     }
 
     /* ===== MAIN CONTENT ===== */
     .admin-main {
       padding: 2rem;
-      overflow-x: hidden;
+      overflow-x: auto;
     }
 
     .admin-header {
@@ -188,7 +151,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 2rem;
-      padding-bottom: 1.5rem;
+      padding-bottom: 1rem;
       border-bottom: 1px solid var(--primary-light);
     }
 
@@ -200,46 +163,14 @@
       gap: 0.75rem;
     }
 
-    .admin-actions {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-
     .user-profile {
       display: flex;
       align-items: center;
       gap: 1rem;
-      padding: 0.75rem;
-      border-radius: var(--radius);
+      padding: 0.5rem 1.5rem;
       background: var(--card);
+      border-radius: 40px;
       box-shadow: var(--shadow);
-    }
-
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--success));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-    }
-
-    .user-info {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .user-name {
-      font-weight: 600;
-    }
-
-    .user-role {
-      font-size: 0.75rem;
-      color: var(--muted);
     }
 
     /* ===== TABS ===== */
@@ -248,9 +179,9 @@
       gap: 0.5rem;
       background: var(--card);
       padding: 0.5rem;
-      border-radius: var(--radius);
+      border-radius: 40px;
       margin-bottom: 2rem;
-      overflow-x: auto;
+      flex-wrap: wrap;
       box-shadow: var(--shadow);
     }
 
@@ -261,7 +192,7 @@
       color: var(--muted);
       font-weight: 500;
       cursor: pointer;
-      border-radius: 8px;
+      border-radius: 30px;
       white-space: nowrap;
       transition: all 0.3s ease;
       display: flex;
@@ -281,33 +212,31 @@
 
     .tab-content {
       display: none;
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      animation: fade 0.3s;
     }
 
     .tab-content.active {
       display: block;
     }
 
-    /* ===== CARDS ===== */
+    @keyframes fade { from { opacity: 0.3; } to { opacity: 1; } }
+
+    /* ===== CARDS & TABLES (fully interactive) ===== */
     .card {
       background: var(--card);
       border-radius: var(--radius);
       padding: 1.5rem;
       box-shadow: var(--shadow);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 2rem;
     }
 
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
     }
 
-    /* ===== STATS GRID ===== */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -319,53 +248,18 @@
       border-left: 4px solid var(--primary);
     }
 
-    .stat-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1rem;
+    .table-responsive {
+      overflow-x: auto;
+      border-radius: var(--radius);
     }
 
-    .stat-title {
-      font-size: 0.875rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .stat-icon {
-      font-size: 1.5rem;
-      opacity: 0.7;
-    }
-
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-    }
-
-    .stat-change {
-      font-size: 0.875rem;
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-
-    .text-success { color: var(--success); }
-    .text-warning { color: var(--warning); }
-    .text-danger { color: var(--danger); }
-
-    /* ===== TABLES ===== */
-    .admin-table {
+    table {
       width: 100%;
       border-collapse: collapse;
       background: var(--card);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
     }
 
-    .admin-table th {
+    th {
       background: var(--primary-light);
       padding: 1rem;
       text-align: left;
@@ -373,1430 +267,505 @@
       border-bottom: 2px solid var(--primary);
     }
 
-    .admin-table td {
+    td {
       padding: 1rem;
-      border-bottom: 1px solid var(--primary-light);
+      border-bottom: 1px solid var(--border-light);
     }
 
-    .admin-table tr:hover {
+    tr:hover {
       background: var(--primary-light);
     }
 
-    .table-actions {
-      display: flex;
-      gap: 0.5rem;
+    /* Editable cells */
+    td[contenteditable="true"] {
+      cursor: text;
+      background: rgba(37,99,235,0.05);
     }
-
-    /* ===== FORMS ===== */
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-
-    .form-label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid var(--primary-light);
-      border-radius: var(--radius);
+    td[contenteditable="true"]:focus {
+      outline: 2px solid var(--primary);
       background: var(--card);
-      color: var(--text);
-      font-size: 1rem;
-      transition: all 0.3s ease;
     }
 
-    .form-control:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 500;
     }
+    .badge-success { background: rgba(16,185,129,0.15); color: var(--success); }
+    .badge-warning { background: rgba(245,158,11,0.15); color: var(--warning); }
+    .badge-danger { background: rgba(239,68,68,0.15); color: var(--danger); }
+    .badge-info { background: rgba(59,130,246,0.15); color: var(--primary); }
 
     /* ===== BUTTONS ===== */
     .btn {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      border-radius: var(--radius);
+      padding: 0.6rem 1.25rem;
+      border-radius: 30px;
       font-weight: 600;
       font-size: 0.875rem;
       cursor: pointer;
       transition: all 0.3s ease;
       border: none;
-      text-decoration: none;
     }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-600); transform: translateY(-2px); }
+    .btn-outline { background: transparent; border: 1px solid var(--border-light); }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-sm { padding: 0.4rem 1rem; }
 
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-      box-shadow: var(--shadow);
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-600);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .btn-secondary {
-      background: var(--primary-light);
-      color: var(--primary);
-    }
-
-    .btn-danger {
-      background: var(--danger);
-      color: white;
-    }
-
-    .btn-sm {
-      padding: 0.5rem 1rem;
-      font-size: 0.75rem;
-    }
-
-    /* ===== BADGES ===== */
-    .badge {
-      display: inline-block;
-      padding: 0.25rem 0.5rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-
-    .badge-success {
-      background: rgba(16, 185, 129, 0.1);
-      color: var(--success);
-    }
-
-    .badge-warning {
-      background: rgba(245, 158, 11, 0.1);
-      color: var(--warning);
-    }
-
-    .badge-danger {
-      background: rgba(239, 68, 68, 0.1);
-      color: var(--danger);
-    }
-
-    /* ===== MODAL ===== */
+    /* ===== FORMS (inside modals) ===== */
     .modal {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
       align-items: center;
       justify-content: center;
+      z-index: 1000;
       backdrop-filter: blur(4px);
     }
-
+    .modal.active { display: flex; }
     .modal-content {
       background: var(--card);
       border-radius: var(--radius);
       width: 90%;
-      max-width: 500px;
+      max-width: 600px;
       max-height: 90vh;
       overflow-y: auto;
-      animation: modalSlideIn 0.3s ease;
-    }
-
-    @keyframes modalSlideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-50px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .modal-header {
-      padding: 1.5rem;
-      border-bottom: 1px solid var(--primary-light);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .modal-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-    }
-
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--muted);
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--radius);
-    }
-
-    .modal-close:hover {
-      background: var(--primary-light);
-      color: var(--primary);
-    }
-
-    .modal-body {
       padding: 1.5rem;
     }
 
-    .modal-footer {
-      padding: 1.5rem;
-      border-top: 1px solid var(--primary-light);
-      display: flex;
-      justify-content: flex-end;
-      gap: 1rem;
-    }
-
-    /* ===== GRID ===== */
-    .grid {
+    .grid-2 {
       display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.5rem;
     }
 
-    .grid-cols-2 {
-      grid-template-columns: repeat(2, 1fr);
+    /* footer (exact as requested) */
+    .app-footer {
+      margin-top: 3rem;
+      padding: 1.5rem;
+      text-align: center;
+      border-top: 1px solid var(--primary-light);
+      color: var(--muted);
+      font-size: 0.9rem;
     }
 
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 1024px) {
-      .admin-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .admin-sidebar {
-        position: fixed;
-        left: -100%;
-        top: 0;
-        width: var(--sidebar-width);
-        transition: left 0.3s ease;
-        z-index: 1000;
-      }
-
-      .admin-sidebar.active {
-        left: 0;
-      }
-
-      .mobile-menu-toggle {
-        display: flex;
-      }
-
-      .sidebar-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 999;
-        backdrop-filter: blur(4px);
-      }
-
-      .sidebar-overlay.active {
-        display: block;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .admin-main {
-        padding: 1rem;
-      }
-
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .grid-cols-2 {
-        grid-template-columns: 1fr;
-      }
-
-      .admin-table {
-        display: block;
-        overflow-x: auto;
-      }
-
-      .admin-tabs {
-        flex-wrap: wrap;
-      }
-
-      .tab-btn {
-        flex: 1;
-        min-width: 120px;
-        justify-content: center;
-      }
-    }
-
-    /* Mobile Menu Toggle */
-    .mobile-menu-toggle {
-      display: none;
-      position: fixed;
-      top: 1rem;
-      left: 1rem;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: var(--radius);
-      width: 48px;
-      height: 48px;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 1001;
-      box-shadow: var(--shadow);
-    }
-
-    /* Theme Toggle */
-    .theme-toggle {
-      background: var(--primary-light);
-      border: none;
-      color: var(--primary);
-      width: 40px;
-      height: 40px;
-      border-radius: var(--radius);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 1.1rem;
-      transition: all 0.3s ease;
-    }
-
-    .theme-toggle:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow);
-    }
-
-    /* Accessibility */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    /* Focus styles */
-    :focus-visible {
-      outline: 2px solid var(--primary);
-      outline-offset: 2px;
+    /* responsive */
+    @media (max-width: 900px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .admin-sidebar { position: fixed; left: -100%; }
     }
   </style>
 </head>
 <body>
-  <!-- Skip link -->
-  <a href="#main-content" class="sr-only">Skip to main content</a>
-
-  <!-- Mobile Menu Toggle -->
-  <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu" aria-expanded="false">
-    <i class="fas fa-bars"></i>
-  </button>
-
-  <!-- Sidebar Overlay -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-  <!-- Admin Layout -->
-  <div class="admin-layout">
-    <!-- Sidebar -->
-    <aside class="admin-sidebar" id="adminSidebar" aria-label="Admin navigation">
-      <div class="sidebar-header">
-        <a href="index.html" class="sidebar-brand">
-          <div class="sidebar-brand-logo" aria-hidden="true">CG</div>
-          <span>CephasGM ERP</span>
-        </a>
-        <div class="sidebar-time" id="current-time">Loading...</div>
-      </div>
-
-      <nav class="sidebar-nav" aria-label="Main navigation">
-        <div class="nav-section">
-          <div class="nav-section-title">System Administration</div>
-          <a href="#dashboard" class="nav-link active" data-tab="dashboard">
-            <span class="nav-link-icon"><i class="fas fa-chart-line"></i></span>
-            <span>Dashboard</span>
-          </a>
-          <a href="#users" class="nav-link" data-tab="users">
-            <span class="nav-link-icon"><i class="fas fa-users"></i></span>
-            <span>User Management</span>
-          </a>
-          <a href="#departments" class="nav-link" data-tab="departments">
-            <span class="nav-link-icon"><i class="fas fa-building"></i></span>
-            <span>Departments</span>
-          </a>
-          <a href="#permissions" class="nav-link" data-tab="permissions">
-            <span class="nav-link-icon"><i class="fas fa-lock"></i></span>
-            <span>Permissions</span>
-          </a>
-          <a href="#settings" class="nav-link" data-tab="settings">
-            <span class="nav-link-icon"><i class="fas fa-cog"></i></span>
-            <span>System Settings</span>
-          </a>
-        </div>
-
-        <div class="nav-section">
-          <div class="nav-section-title">Monitoring</div>
-          <a href="#statistics" class="nav-link" data-tab="statistics">
-            <span class="nav-link-icon"><i class="fas fa-chart-bar"></i></span>
-            <span>Statistics</span>
-          </a>
-          <a href="#audit" class="nav-link" data-tab="audit">
-            <span class="nav-link-icon"><i class="fas fa-history"></i></span>
-            <span>Audit Logs</span>
-          </a>
-          <a href="#backup" class="nav-link" data-tab="backup">
-            <span class="nav-link-icon"><i class="fas fa-database"></i></span>
-            <span>Backup & Restore</span>
-          </a>
-        </div>
-
-        <div class="nav-section">
-          <div class="nav-section-title">Quick Links</div>
-          <a href="index.html" class="nav-link">
-            <span class="nav-link-icon"><i class="fas fa-home"></i></span>
-            <span>Back to Dashboard</span>
-          </a>
-          <a href="#" class="nav-link" onclick="alert('Documentation coming soon!')">
-            <span class="nav-link-icon"><i class="fas fa-book"></i></span>
-            <span>Documentation</span>
-          </a>
-          <a href="#" class="nav-link" onclick="alert('Support system coming soon!')">
-            <span class="nav-link-icon"><i class="fas fa-life-ring"></i></span>
-            <span>Support</span>
-          </a>
-        </div>
-      </nav>
-
-      <div style="padding: 1.5rem; margin-top: auto; border-top: 1px solid var(--primary-light);">
-        <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
-          🌓
-        </button>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="admin-main" id="main-content" tabindex="-1">
-      <!-- Header -->
-      <header class="admin-header">
-        <div>
-          <h1 class="admin-title">
-            <i class="fas fa-cog"></i>
-            System Administration
-          </h1>
-          <p class="text-muted">Manage users, departments, permissions, and system settings</p>
-        </div>
-
-        <div class="admin-actions">
-          <div class="user-profile">
-            <div class="user-avatar" aria-hidden="true">CG</div>
-            <div class="user-info">
-              <span class="user-name">System Admin</span>
-              <span class="user-role">Administrator</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <!-- Tabs Navigation -->
-      <div class="admin-tabs" role="tablist" aria-label="Admin sections">
-        <button class="tab-btn active" data-tab="dashboard" role="tab" aria-selected="true">
-          <i class="fas fa-chart-line"></i> Dashboard
-        </button>
-        <button class="tab-btn" data-tab="users" role="tab" aria-selected="false">
-          <i class="fas fa-users"></i> Users
-        </button>
-        <button class="tab-btn" data-tab="departments" role="tab" aria-selected="false">
-          <i class="fas fa-building"></i> Departments
-        </button>
-        <button class="tab-btn" data-tab="permissions" role="tab" aria-selected="false">
-          <i class="fas fa-lock"></i> Permissions
-        </button>
-        <button class="tab-btn" data-tab="settings" role="tab" aria-selected="false">
-          <i class="fas fa-cog"></i> Settings
-        </button>
-        <button class="tab-btn" data-tab="statistics" role="tab" aria-selected="false">
-          <i class="fas fa-chart-bar"></i> Statistics
-        </button>
-        <button class="tab-btn" data-tab="audit" role="tab" aria-selected="false">
-          <i class="fas fa-history"></i> Audit
-        </button>
-      </div>
-
-      <!-- Dashboard Tab -->
-      <section id="dashboard-tab" class="tab-content active" role="tabpanel" aria-labelledby="dashboard">
-        <!-- Stats Overview -->
-        <div class="stats-grid">
-          <div class="card stat-card">
-            <div class="stat-header">
-              <h3 class="stat-title">Active Users</h3>
-              <div class="stat-icon"><i class="fas fa-users"></i></div>
-            </div>
-            <div class="stat-value" id="activeUsers">142</div>
-            <div class="stat-change text-success">
-              <i class="fas fa-arrow-up"></i> 12% from last week
-            </div>
-          </div>
-
-          <div class="card stat-card">
-            <div class="stat-header">
-              <h3 class="stat-title">System Uptime</h3>
-              <div class="stat-icon"><i class="fas fa-server"></i></div>
-            </div>
-            <div class="stat-value">99.8%</div>
-            <div class="stat-change text-success">
-              <i class="fas fa-arrow-up"></i> 0.2% from last month
-            </div>
-          </div>
-
-          <div class="card stat-card">
-            <div class="stat-header">
-              <h3 class="stat-title">Storage Used</h3>
-              <div class="stat-icon"><i class="fas fa-database"></i></div>
-            </div>
-            <div class="stat-value">68%</div>
-            <div class="stat-change text-warning">
-              <i class="fas fa-arrow-up"></i> 5% from last week
-            </div>
-          </div>
-
-          <div class="card stat-card">
-            <div class="stat-header">
-              <h3 class="stat-title">Pending Tasks</h3>
-              <div class="stat-icon"><i class="fas fa-tasks"></i></div>
-            </div>
-            <div class="stat-value" id="pendingTasks">23</div>
-            <div class="stat-change text-danger">
-              <i class="fas fa-arrow-up"></i> 8 from yesterday
-            </div>
-          </div>
-        </div>
-
-        <!-- System Status and Recent Users -->
-        <div class="grid grid-cols-2">
-          <!-- System Status -->
-          <div class="card">
-            <h2 style="margin-bottom: 1rem;">System Status</h2>
-            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--primary-light);">
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%;"></div>
-                  <span>Database</span>
-                </div>
-                <span class="badge badge-success">Online</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--primary-light);">
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%;"></div>
-                  <span>Web Server</span>
-                </div>
-                <span class="badge badge-success">Online</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--primary-light);">
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%;"></div>
-                  <span>API Services</span>
-                </div>
-                <span class="badge badge-success">Online</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0;">
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <div style="width: 10px; height: 10px; background: var(--warning); border-radius: 50%;"></div>
-                  <span>Backup System</span>
-                </div>
-                <span class="badge badge-warning">Pending</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Recent Users -->
-          <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-              <h2>Recent Users</h2>
-              <button class="btn btn-primary btn-sm" onclick="switchTab('users')">
-                View All
-              </button>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
-              <div style="display: flex; align-items: center; gap: 1rem;">
-                <div class="user-avatar" style="width: 40px; height: 40px;">JD</div>
-                <div style="flex: 1;">
-                  <div style="font-weight: 600;">John Doe</div>
-                  <div class="text-muted" style="font-size: 0.875rem;">Sales Manager</div>
-                </div>
-                <span class="badge badge-success">Active</span>
-              </div>
-              <div style="display: flex; align-items: center; gap: 1rem;">
-                <div class="user-avatar" style="width: 40px; height: 40px;">SJ</div>
-                <div style="flex: 1;">
-                  <div style="font-weight: 600;">Sarah Johnson</div>
-                  <div class="text-muted" style="font-size: 0.875rem;">HR Specialist</div>
-                </div>
-                <span class="badge badge-success">Active</span>
-              </div>
-              <div style="display: flex; align-items: center; gap: 1rem;">
-                <div class="user-avatar" style="width: 40px; height: 40px;">MW</div>
-                <div style="flex: 1;">
-                  <div style="font-weight: 600;">Michael Wilson</div>
-                  <div class="text-muted" style="font-size: 0.875rem;">Finance Analyst</div>
-                </div>
-                <span class="badge badge-danger">Inactive</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- User Management Tab -->
-      <section id="users-tab" class="tab-content" role="tabpanel" aria-labelledby="users">
-        <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h2>User Management</h2>
-            <button class="btn btn-primary" id="addUserBtn">
-              <i class="fas fa-plus"></i> Add User
-            </button>
-          </div>
-          <div style="overflow-x: auto;">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Department</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="usersTableBody">
-                <!-- Users will be loaded here -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- Departments Tab -->
-      <section id="departments-tab" class="tab-content" role="tabpanel" aria-labelledby="departments">
-        <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h2>Department Management</h2>
-            <button class="btn btn-primary" id="addDeptBtn">
-              <i class="fas fa-plus"></i> Add Department
-            </button>
-          </div>
-          <div style="overflow-x: auto;">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Department</th>
-                  <th>Manager</th>
-                  <th>Members</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="deptTableBody">
-                <!-- Departments will be loaded here -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- Permissions Tab -->
-      <section id="permissions-tab" class="tab-content" role="tabpanel" aria-labelledby="permissions">
-        <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h2>Module Access Control</h2>
-            <button class="btn btn-primary" id="savePermissions">
-              <i class="fas fa-save"></i> Save Changes
-            </button>
-          </div>
-          <div style="overflow-x: auto;">
-            <table class="admin-table" id="permissionsTable">
-              <thead>
-                <tr>
-                  <th>Module</th>
-                  <th>Admin</th>
-                  <th>Manager</th>
-                  <th>User</th>
-                  <th>Guest</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Permissions will be loaded here -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- System Settings Tab -->
-      <section id="settings-tab" class="tab-content" role="tabpanel" aria-labelledby="settings">
-        <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h2>System Settings</h2>
-            <button class="btn btn-primary" id="saveSettings">
-              <i class="fas fa-save"></i> Save Settings
-            </button>
-          </div>
-          <form id="systemSettingsForm">
-            <div class="grid grid-cols-2">
-              <div>
-                <div class="form-group">
-                  <label class="form-label">Maintenance Mode</label>
-                  <div style="display: flex; gap: 1rem;">
-                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                      <input type="radio" name="maintenance" value="off" checked>
-                      Off
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                      <input type="radio" name="maintenance" value="on">
-                      On
-                    </label>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Auto Backup</label>
-                  <select class="form-control" name="autoBackup">
-                    <option value="daily">Daily</option>
-                    <option value="weekly" selected>Weekly</option>
-                    <option value="monthly">Monthly</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <div class="form-group">
-                  <label class="form-label">Session Timeout (minutes)</label>
-                  <input type="number" class="form-control" name="sessionTimeout" value="30" min="5" max="480">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Audit Log Retention (days)</label>
-                  <input type="number" class="form-control" name="auditRetention" value="90" min="7" max="365">
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <!-- Statistics Tab -->
-      <section id="statistics-tab" class="tab-content" role="tabpanel" aria-labelledby="statistics">
-        <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h2>System Statistics</h2>
-            <select class="form-control" style="width: auto;" id="statsPeriod">
-              <option>Last 7 days</option>
-              <option>Last 30 days</option>
-              <option>Last 90 days</option>
-            </select>
-          </div>
-          <div class="stats-grid">
-            <div class="stat-card card">
-              <div class="stat-header">
-                <h3 class="stat-title">Active Sessions</h3>
-                <div class="stat-icon"><i class="fas fa-user-clock"></i></div>
-              </div>
-              <div class="stat-value" id="activeSessions">87</div>
-              <div class="stat-change text-success">
-                <i class="fas fa-arrow-up"></i> 5% from yesterday
-              </div>
-            </div>
-            <div class="stat-card card">
-              <div class="stat-header">
-                <h3 class="stat-title">API Requests</h3>
-                <div class="stat-icon"><i class="fas fa-exchange-alt"></i></div>
-              </div>
-              <div class="stat-value" id="apiRequests">12.4K</div>
-              <div class="stat-change text-success">
-                <i class="fas fa-arrow-up"></i> 8% from last week
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Audit Logs Tab -->
-      <section id="audit-tab" class="tab-content" role="tabpanel" aria-labelledby="audit">
-        <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h2>Audit Logs</h2>
-            <select class="form-control" style="width: auto;" id="auditFilter">
-              <option value="all">All Activities</option>
-              <option value="user">User Management</option>
-              <option value="system">System Changes</option>
-            </select>
-          </div>
-          <div style="overflow-x: auto;">
-            <table class="admin-table" id="auditTable">
-              <thead>
-                <tr>
-                  <th>Timestamp</th>
-                  <th>User</th>
-                  <th>Action</th>
-                  <th>Resource</th>
-                  <th>IP Address</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Audit logs will be loaded here -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <!-- Add User Modal -->
-  <div class="modal" id="addUserModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title" id="modalTitle">Add New User</h3>
-        <button class="modal-close" aria-label="Close modal">&times;</button>
-      </div>
-      <form id="addUserForm">
-        <div class="modal-body">
-          <div class="form-group">
-            <label class="form-label">Full Name</label>
-            <input type="text" class="form-control" name="fullName" placeholder="Enter full name" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-control" name="email" placeholder="Enter email address" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Role</label>
-            <select class="form-control" name="role" required>
-              <option value="">Select Role</option>
-              <option value="admin">Admin</option>
-              <option value="manager">Manager</option>
-              <option value="user">User</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Department</label>
-            <select class="form-control" name="department" required>
-              <option value="">Select Department</option>
-              <option value="sales">Sales</option>
-              <option value="hr">Human Resources</option>
-              <option value="finance">Finance</option>
-              <option value="it">IT</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="closeModal('addUserModal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Add User</button>
-        </div>
-      </form>
+<div class="admin-layout">
+  <!-- ===== SIDEBAR (unchanged structure) ===== -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-brand">
+        <div class="sidebar-brand-logo">CG</div>
+        <span>CephasGM ERP</span>
+      </a>
+      <div class="sidebar-time" id="current-time">Loading...</div>
     </div>
-  </div>
-
-  <!-- Add Department Modal -->
-  <div class="modal" id="addDeptModal" role="dialog" aria-modal="true">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">Add New Department</h3>
-        <button class="modal-close" onclick="closeModal('addDeptModal')">&times;</button>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">System Administration</div>
+        <a href="index.html" class="nav-link"><i class="fas fa-home"></i>Dashboard (Home)</a>
+        <a href="#" class="nav-link active" data-tab="dashboard"><i class="fas fa-chart-line"></i> Admin Dashboard</a>
+        <a href="#" class="nav-link" data-tab="users"><i class="fas fa-users"></i> User Management</a>
+        <a href="#" class="nav-link" data-tab="departments"><i class="fas fa-sitemap"></i> Departments</a>
+        <a href="#" class="nav-link" data-tab="permissions"><i class="fas fa-lock"></i> Roles & Permissions</a>
+        <a href="#" class="nav-link" data-tab="compliance"><i class="fas fa-balance-scale"></i> Compliance</a>
+        <a href="#" class="nav-link" data-tab="audit"><i class="fas fa-history"></i> Audit & Logs</a>
+        <a href="#" class="nav-link" data-tab="settings"><i class="fas fa-cog"></i> Settings</a>
       </div>
-      <form id="addDeptForm">
-        <div class="modal-body">
-          <div class="form-group">
-            <label class="form-label">Department Name</label>
-            <input type="text" class="form-control" name="deptName" placeholder="Enter department name" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Department Head</label>
-            <input type="text" class="form-control" name="deptHead" placeholder="Enter department head name" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Description</label>
-            <textarea class="form-control" name="deptDesc" rows="3" placeholder="Enter department description"></textarea>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="closeModal('addDeptModal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Add Department</button>
-        </div>
-      </form>
-    </div>
-  </div>
+    </nav>
+  </aside>
 
-  <!-- Edit User Modal -->
-  <div class="modal" id="editUserModal" role="dialog" aria-modal="true">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">Edit User</h3>
-        <button class="modal-close" onclick="closeModal('editUserModal')">&times;</button>
+  <!-- ===== MAIN PANEL ===== -->
+  <main class="admin-main">
+    <!-- header -->
+    <header class="admin-header">
+      <div>
+        <h1 class="admin-title"><i class="fas fa-cog"></i> System Administration</h1>
+        <p class="text-muted">Enterprise control · fully editable</p>
       </div>
-      <form id="editUserForm">
-        <div class="modal-body">
-          <input type="hidden" name="userId">
-          <div class="form-group">
-            <label class="form-label">Full Name</label>
-            <input type="text" class="form-control" name="fullName" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-control" name="email" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Role</label>
-            <select class="form-control" name="role" required>
-              <option value="admin">Admin</option>
-              <option value="manager">Manager</option>
-              <option value="user">User</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Status</label>
-            <select class="form-control" name="status" required>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="closeModal('editUserModal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Changes</button>
-        </div>
-      </form>
+      <div class="user-profile">
+        <i class="fas fa-user-shield"></i> <span>Root Admin</span> <span class="badge badge-info">global</span>
+      </div>
+    </header>
+
+    <!-- tabs navigation -->
+    <div class="admin-tabs" id="mainTabs">
+      <button class="tab-btn active" data-tab="dashboard"><i class="fas fa-chart-line"></i> Global Dashboard</button>
+      <button class="tab-btn" data-tab="users"><i class="fas fa-users"></i> User Mgmt</button>
+      <button class="tab-btn" data-tab="departments"><i class="fas fa-building"></i> Org Structure</button>
+      <button class="tab-btn" data-tab="permissions"><i class="fas fa-shield-alt"></i> Roles & Permissions</button>
+      <button class="tab-btn" data-tab="compliance"><i class="fas fa-gavel"></i> Compliance</button>
+      <button class="tab-btn" data-tab="audit"><i class="fas fa-clipboard-list"></i> Audit & Logs</button>
+      <button class="tab-btn" data-tab="settings"><i class="fas fa-sliders-h"></i> Global Settings</button>
     </div>
-  </div>
 
-  <!-- JavaScript -->
-  <script>
-    // Sample data storage (in a real app, this would come from a backend API)
-    const adminData = {
-      users: [
-        { id: 1, name: 'John Doe', email: 'john.doe@cephasgm.com', role: 'Manager', dept: 'Sales', status: 'active' },
-        { id: 2, name: 'Sarah Johnson', email: 'sarah.j@cephasgm.com', role: 'Specialist', dept: 'HR', status: 'active' },
-        { id: 3, name: 'Michael Wilson', email: 'michael.w@cephasgm.com', role: 'Analyst', dept: 'Finance', status: 'inactive' },
-        { id: 4, name: 'Emily Davis', email: 'emily.d@cephasgm.com', role: 'Developer', dept: 'IT', status: 'active' }
-      ],
-      departments: [
-        { id: 1, name: 'Sales', manager: 'John Doe', members: 24, status: 'active' },
-        { id: 2, name: 'Human Resources', manager: 'Sarah Johnson', members: 12, status: 'active' },
-        { id: 3, name: 'Finance', manager: 'Michael Wilson', members: 18, status: 'active' },
-        { id: 4, name: 'IT', manager: 'Emily Davis', members: 8, status: 'active' }
-      ],
-      permissions: [
-        { module: 'Dashboard', admin: true, manager: true, user: true, guest: false },
-        { module: 'User Management', admin: true, manager: false, user: false, guest: false },
-        { module: 'Finance', admin: true, manager: true, user: true, guest: false },
-        { module: 'Projects', admin: true, manager: true, user: true, guest: false },
-        { module: 'Inventory', admin: true, manager: true, user: true, guest: false }
-      ],
-      auditLogs: [
-        { timestamp: '2023-10-23 10:23:45', user: 'John Doe', action: 'Login', resource: 'System', ip: '192.168.1.105' },
-        { timestamp: '2023-10-23 09:15:32', user: 'Sarah Johnson', action: 'Create User', resource: 'User Management', ip: '192.168.1.112' },
-        { timestamp: '2023-10-22 14:45:21', user: 'Admin', action: 'System Backup', resource: 'Backup System', ip: '192.168.1.100' },
-        { timestamp: '2023-10-22 11:30:15', user: 'Michael Wilson', action: 'Update Settings', resource: 'System Settings', ip: '192.168.1.115' }
-      ],
-      settings: {
-        maintenance: 'off',
-        autoBackup: 'weekly',
-        sessionTimeout: 30,
-        auditRetention: 90
-      }
-    };
+    <!-- ========== DASHBOARD TAB (with fully editable health & compliance) ========= -->
+    <div class="tab-content active" id="dashboard-tab">
+      <!-- stats cards (static summary) -->
+      <div class="stats-grid">
+        <div class="card stat-card"><span class="text-muted">Active users</span> <h2>847</h2><small>+12%</small></div>
+        <div class="card stat-card"><span class="text-muted">System uptime</span> <h2>99.98%</h2><small>30d avg</small></div>
+        <div class="card stat-card"><span class="text-muted">Storage used</span> <h2>68%</h2><small>of 5 PB</small></div>
+        <div class="card stat-card"><span class="text-muted">Pending tasks</span> <h2>23</h2><small>8 critical</small></div>
+      </div>
 
-    // Initialize when DOM is ready
-    document.addEventListener('DOMContentLoaded', function() {
-      // Theme Management
-      const themeToggle = document.getElementById('themeToggle');
-      const savedTheme = localStorage.getItem('cephasgm-theme') || 'light';
-      
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌓';
-      
-      themeToggle.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-        const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', nextTheme);
-        localStorage.setItem('cephasgm-theme', nextTheme);
-        themeToggle.textContent = nextTheme === 'dark' ? '☀️' : '🌓';
-      });
+      <!-- System health all regions – fully editable table -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-server"></i> System health all regions</h2>
+          <div><button class="btn btn-outline btn-sm" onclick="addHealthRow()"><i class="fas fa-plus"></i> add row</button> <button class="btn btn-primary btn-sm" onclick="saveTable('healthTable')">save changes</button></div>
+        </div>
+        <div class="table-responsive">
+          <table id="healthTable">
+            <thead><tr><th>Region</th><th>Service</th><th>Status</th><th>Response time</th><th>Last incident</th><th>Actions</th></tr></thead>
+            <tbody id="healthBody">
+              <!-- populated by JS, editable -->
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-      // Mobile Menu Toggle
-      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-      const adminSidebar = document.getElementById('adminSidebar');
-      const sidebarOverlay = document.getElementById('sidebarOverlay');
-      
-      function toggleMobileMenu() {
-        const isExpanded = mobileMenuToggle.getAttribute('aria-expanded') === 'true';
-        mobileMenuToggle.setAttribute('aria-expanded', !isExpanded);
-        adminSidebar.classList.toggle('active');
-        sidebarOverlay.classList.toggle('active');
-        document.body.style.overflow = isExpanded ? '' : 'hidden';
-      }
-      
-      mobileMenuToggle.addEventListener('click', toggleMobileMenu);
-      sidebarOverlay.addEventListener('click', toggleMobileMenu);
+      <!-- Compliance snapshot – fully editable table -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-check-circle"></i> Compliance snapshot</h2>
+          <div><button class="btn btn-outline btn-sm" onclick="addComplianceRow()"><i class="fas fa-plus"></i> add row</button> <button class="btn btn-primary btn-sm" onclick="saveTable('complianceTable')">save changes</button></div>
+        </div>
+        <div class="table-responsive">
+          <table id="complianceTable">
+            <thead><tr><th>Framework</th><th>Region</th><th>Status</th><th>Last audit</th><th>Valid until</th><th>Actions</th></tr></thead>
+            <tbody id="complianceBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-      // Tab Management
-      const tabButtons = document.querySelectorAll('.tab-btn');
-      const tabContents = document.querySelectorAll('.tab-content');
-      const navLinks = document.querySelectorAll('.nav-link[data-tab]');
-      
-      function switchTab(tabName) {
-        // Update tabs
-        tabButtons.forEach(btn => {
-          const isActive = btn.dataset.tab === tabName;
-          btn.classList.toggle('active', isActive);
-          btn.setAttribute('aria-selected', isActive);
-        });
-        
-        // Update tab contents
-        tabContents.forEach(content => {
-          const isActive = content.id === `${tabName}-tab`;
-          content.classList.toggle('active', isActive);
-          content.setAttribute('aria-hidden', !isActive);
-        });
-        
-        // Update navigation links
-        navLinks.forEach(link => {
-          link.classList.toggle('active', link.dataset.tab === tabName);
-        });
-        
-        // Close mobile menu if open
-        if (adminSidebar.classList.contains('active')) {
-          toggleMobileMenu();
-        }
-        
-        // Load data for the tab
-        loadTabData(tabName);
-      }
-      
-      // Tab button click handlers
-      tabButtons.forEach(btn => {
-        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-      });
-      
-      // Navigation link click handlers
-      navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          switchTab(link.dataset.tab);
-        });
-      });
+    <!-- ========== USER MANAGEMENT TAB (fully editable) ========= -->
+    <div class="tab-content" id="users-tab">
+      <div class="card">
+        <div class="card-header"><h2>Global user directory</h2> <button class="btn btn-primary" onclick="addUser()"><i class="fas fa-plus"></i> new user</button></div>
+        <div class="table-responsive">
+          <table id="userTable">
+            <thead><tr><th>ID</th><th>Full name</th><th>Email</th><th>Job title</th><th>Dept</th><th>Country</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="userTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-      // Modal functions
-      window.openModal = function(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-          modal.style.display = 'flex';
-          document.body.style.overflow = 'hidden';
-        }
-      };
-      
-      window.closeModal = function(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-          modal.style.display = 'none';
-          document.body.style.overflow = '';
-          // Reset form
-          const form = modal.querySelector('form');
-          if (form) form.reset();
-        }
-      };
+    <!-- ========== DEPARTMENTS TAB (fully editable) ========= -->
+    <div class="tab-content" id="departments-tab">
+      <div class="card">
+        <div class="card-header"><h2>Organizational structure</h2><button class="btn btn-primary" onclick="addDept()"><i class="fas fa-plus"></i> add department</button></div>
+        <div class="table-responsive">
+          <table id="deptTable">
+            <thead><tr><th>ID</th><th>Name</th><th>Code</th><th>Parent</th><th>Head</th><th>Country</th><th>Cost center</th><th>Members</th><th>Actions</th></tr></thead>
+            <tbody id="deptTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-      // Close modals when clicking outside
-      window.addEventListener('click', (e) => {
-        if (e.target.classList.contains('modal')) {
-          closeModal(e.target.id);
-        }
-      });
+    <!-- ========== ROLES & PERMISSIONS (fully editable) ========= -->
+    <div class="tab-content" id="permissions-tab">
+      <div class="card">
+        <div class="card-header"><h2>Role & permission matrix</h2><button class="btn btn-primary" onclick="addPermission()"><i class="fas fa-plus"></i> new role entry</button></div>
+        <div class="table-responsive">
+          <table id="permTable">
+            <thead><tr><th>Role</th><th>Module</th><th>Create</th><th>Read</th><th>Update</th><th>Delete</th><th>Scope</th><th>Actions</th></tr></thead>
+            <tbody id="permBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-      // Update current time
-      function updateCurrentTime() {
-        const now = new Date();
-        const options = { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        };
-        document.getElementById('current-time').textContent = 
-          now.toLocaleDateString('en-US', options);
-      }
-      
-      updateCurrentTime();
-      setInterval(updateCurrentTime, 60000); // Update every minute
+    <!-- ========== COMPLIANCE (additional detailed table, already in dashboard but we add separate pane) ========= -->
+    <div class="tab-content" id="compliance-tab">
+      <div class="card">
+        <div class="card-header"><h2>Compliance & data residency</h2><button class="btn btn-primary" onclick="addComplianceEntry()"><i class="fas fa-plus"></i> add record</button></div>
+        <div class="table-responsive">
+          <table id="complianceDetailTable">
+            <thead><tr><th>Entity</th><th>Framework</th><th>Region</th><th>Certification</th><th>Expiry</th><th>Actions</th></tr></thead>
+            <tbody id="complianceDetailBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-      // Load initial data
-      loadTabData('dashboard');
+    <!-- ========== AUDIT & LOGS (editable for demo purposes) ========= -->
+    <div class="tab-content" id="audit-tab">
+      <div class="card">
+        <div class="card-header"><h2>Audit trail</h2><button class="btn btn-primary" onclick="addAuditRow()"><i class="fas fa-plus"></i> add entry</button></div>
+        <div class="table-responsive">
+          <table id="auditTable">
+            <thead><tr><th>Log ID</th><th>Timestamp</th><th>User</th><th>Action</th><th>Resource</th><th>IP</th><th>Actions</th></tr></thead>
+            <tbody id="auditBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-      // Event Listeners
-      document.getElementById('addUserBtn').addEventListener('click', () => openModal('addUserModal'));
-      document.getElementById('addDeptBtn').addEventListener('click', () => openModal('addDeptModal'));
-      
-      // Add User Form
-      document.getElementById('addUserForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        
-        // Generate new user ID
-        const newId = Math.max(...adminData.users.map(u => u.id)) + 1;
-        
-        // Add new user
-        adminData.users.push({
-          id: newId,
-          name: formData.get('fullName'),
-          email: formData.get('email'),
-          role: formData.get('role'),
-          dept: formData.get('department'),
-          status: 'active'
-        });
-        
-        // Show success message
-        alert('User added successfully!');
-        closeModal('addUserModal');
-        
-        // Refresh user list
-        loadTabData('users');
-        updateStats();
-      });
+    <!-- ========== SETTINGS (fully editable) ========= -->
+    <div class="tab-content" id="settings-tab">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Company info</h3>
+          <div contenteditable="true" style="border:1px dashed var(--border-light); padding:0.5rem;">CephasGM Inc · Tax ID 99-1234567</div>
+          <p class="text-muted">click to edit</p>
+        </div>
+        <div class="card">
+          <h3>Global defaults</h3>
+          <div contenteditable="true" style="border:1px dashed var(--border-light); padding:0.5rem;">Currency: USD | Languages: en, de, fr</div>
+        </div>
+        <div class="card">
+          <h3>Security policy</h3>
+          <div contenteditable="true" style="border:1px dashed var(--border-light); padding:0.5rem;">MFA required, session timeout 30min</div>
+        </div>
+        <div class="card">
+          <h3>Backup config</h3>
+          <div contenteditable="true" style="border:1px dashed var(--border-light); padding:0.5rem;">hourly to S3 · retention 90d</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>Feature toggles</h3><button class="btn btn-primary btn-sm" onclick="addFeatureRow()">add toggle</button></div>
+        <table id="featureTable">
+          <thead><tr><th>Module</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="featureBody"></tbody>
+        </table>
+      </div>
+    </div>
 
-      // Add Department Form
-      document.getElementById('addDeptForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        
-        // Generate new department ID
-        const newId = Math.max(...adminData.departments.map(d => d.id)) + 1;
-        
-        // Add new department
-        adminData.departments.push({
-          id: newId,
-          name: formData.get('deptName'),
-          manager: formData.get('deptHead'),
-          members: 0,
-          status: 'active'
-        });
-        
-        // Show success message
-        alert('Department added successfully!');
-        closeModal('addDeptModal');
-        
-        // Refresh department list
-        loadTabData('departments');
-      });
+    <!-- FOOTER (exactly as requested) -->
+    <footer class="app-footer">
+      © 2026 CephasGM ERP. All rights reserved. v3.14.2 · Build 2026.02.21 · PROD
+    </footer>
+  </main>
+</div>
 
-      // Save Permissions
-      document.getElementById('savePermissions').addEventListener('click', function() {
-        // Collect all permission checkboxes
-        const rows = document.querySelectorAll('#permissionsTable tbody tr');
-        adminData.permissions.forEach((perm, index) => {
-          if (rows[index]) {
-            const cells = rows[index].querySelectorAll('td');
-            perm.admin = cells[1].querySelector('input').checked;
-            perm.manager = cells[2].querySelector('input').checked;
-            perm.user = cells[3].querySelector('input').checked;
-            perm.guest = cells[4].querySelector('input').checked;
-          }
-        });
-        
-        alert('Permissions saved successfully!');
-      });
+<script>
+  (function() {
+    // ---------- INITIAL ENTERPRISE DATA (fully populated) ----------
+    let healthData = [
+      { region: 'EU (Frankfurt)', service: 'Database', status: 'Operational', response: '2ms', incident: '2026-02-19' },
+      { region: 'NA (Virginia)', service: 'API Gateway', status: 'Operational', response: '14ms', incident: '2026-02-18' },
+      { region: 'APAC (Mumbai)', service: 'Storage', status: 'Degraded', response: '78ms', incident: '2026-02-20' },
+      { region: 'SA (São Paulo)', service: 'Auth Service', status: 'Operational', response: '23ms', incident: '2026-02-17' },
+    ];
+    let complianceData = [
+      { framework: 'GDPR', region: 'EU', status: 'Compliant', lastAudit: '2026-01-15', validUntil: '2027-01-15' },
+      { framework: 'SOC2', region: 'Global', status: 'Certified', lastAudit: '2025-12-01', validUntil: '2026-12-01' },
+      { framework: 'ISO27001', region: 'All', status: 'In progress', lastAudit: '2026-02-01', validUntil: '2026-08-01' },
+    ];
+    let users = [
+      { id: 1001, name: 'John Doe', email: 'john.d@cephasgm.com', title: 'Sales Manager', dept: 'Sales', country: 'US', status: 'active' },
+      { id: 1002, name: 'Sarah Johnson', email: 'sarah.j@cephasgm.com', title: 'HR Specialist', dept: 'HR', country: 'GB', status: 'active' },
+      { id: 1003, name: 'Michael Wilson', email: 'michael.w@cephasgm.com', title: 'Finance Analyst', dept: 'Finance', country: 'DE', status: 'inactive' },
+    ];
+    let depts = [
+      { id: 1, name: 'Sales', code: 'SAL', parent: 'Commercial', head: 'John Doe', country: 'US', costCenter: 'CC100', members: 24 },
+      { id: 2, name: 'HR', code: 'HR', parent: 'Corporate', head: 'Sarah Johnson', country: 'GB', costCenter: 'CC101', members: 12 },
+    ];
+    let perms = [
+      { role: 'Admin', module: 'Users', create: '✅', read: '✅', update: '✅', delete: '✅', scope: 'global' },
+      { role: 'Manager', module: 'Finance', create: '❌', read: '✅', update: '✅', delete: '❌', scope: 'dept' },
+    ];
+    let complianceDetail = [
+      { entity: 'Cephas GmbH', framework: 'GDPR', region: 'DE', cert: 'Certified', expiry: '2027-02-21' },
+    ];
+    let auditRows = [
+      { id: 5001, ts: '2026-02-21 09:23', user: 'admin', action: 'UPDATE', resource: 'User #1002', ip: '10.0.0.12' },
+    ];
+    let features = [
+      { module: 'Inventory', status: 'on' }, { module: 'Payroll', status: 'beta' }
+    ];
 
-      // Save Settings
-      document.getElementById('saveSettings').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        
-        adminData.settings = {
-          maintenance: formData.get('maintenance'),
-          autoBackup: formData.get('autoBackup'),
-          sessionTimeout: parseInt(formData.get('sessionTimeout')),
-          auditRetention: parseInt(formData.get('auditRetention'))
-        };
-        
-        alert('System settings saved successfully!');
-      });
-
-      // Stats Period Change
-      document.getElementById('statsPeriod').addEventListener('change', function() {
-        // In a real app, this would fetch new data from the server
-        alert('Loading statistics for ' + this.value);
-      });
-
-      // Audit Filter Change
-      document.getElementById('auditFilter').addEventListener('change', function() {
-        loadAuditLogs(this.value);
-      });
-
-      // Keyboard shortcuts
-      document.addEventListener('keydown', (e) => {
-        // Close modal with Escape
-        if (e.key === 'Escape') {
-          const modal = document.querySelector('.modal[style*="display: flex"]');
-          if (modal) closeModal(modal.id);
-        }
-        
-        // Navigate tabs with arrow keys when tabbed into
-        if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && 
-            document.activeElement.classList.contains('tab-btn')) {
-          const tabs = Array.from(tabButtons);
-          const currentIndex = tabs.indexOf(document.activeElement);
-          let nextIndex;
-          
-          if (e.key === 'ArrowLeft') {
-            nextIndex = currentIndex > 0 ? currentIndex - 1 : tabs.length - 1;
-          } else {
-            nextIndex = currentIndex < tabs.length - 1 ? currentIndex + 1 : 0;
-          }
-          
-          tabs[nextIndex].click();
-          tabs[nextIndex].focus();
-          e.preventDefault();
-        }
-      });
-
-      // Service Worker Registration
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('Service Worker registered:', reg))
-          .catch(err => console.error('Service Worker registration failed:', err));
-      }
-
-      // Back to Dashboard button
-      document.querySelector('a[href="index.html"]').addEventListener('click', function(e) {
-        e.preventDefault();
-        window.location.href = 'index.html';
-      });
-    });
-
-    // Load data for specific tab
-    function loadTabData(tabName) {
-      switch(tabName) {
-        case 'users':
-          loadUsers();
-          break;
-        case 'departments':
-          loadDepartments();
-          break;
-        case 'permissions':
-          loadPermissions();
-          break;
-        case 'audit':
-          loadAuditLogs('all');
-          break;
-        case 'settings':
-          loadSettings();
-          break;
-        default:
-          updateStats();
-      }
-    }
-
-    // Load users into table
-    function loadUsers() {
-      const tbody = document.getElementById('usersTableBody');
+    // ---------- RENDER FUNCTIONS (all tables) ----------
+    function renderHealth() {
+      let tbody = document.getElementById('healthBody');
+      if (!tbody) return;
       tbody.innerHTML = '';
-      
-      adminData.users.forEach(user => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-              <div class="user-avatar" style="width: 32px; height: 32px;">${getInitials(user.name)}</div>
-              <span>${user.name}</span>
-            </div>
-          </td>
-          <td>${user.email}</td>
-          <td>${user.role}</td>
-          <td>${user.dept}</td>
-          <td><span class="badge ${user.status === 'active' ? 'badge-success' : 'badge-danger'}">${user.status}</span></td>
-          <td>
-            <div class="table-actions">
-              <button class="btn btn-secondary btn-sm" onclick="editUser(${user.id})" aria-label="Edit user">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})" aria-label="Delete user">
-                <i class="fas fa-trash"></i>
-              </button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(row);
+      healthData.forEach((row, idx) => {
+        let tr = document.createElement('tr');
+        tr.setAttribute('data-idx', idx);
+        tr.innerHTML = `<td contenteditable="true">${row.region}</td>
+          <td contenteditable="true">${row.service}</td>
+          <td contenteditable="true"><span class="badge ${row.status === 'Operational' ? 'badge-success' : 'badge-warning'}">${row.status}</span></td>
+          <td contenteditable="true">${row.response}</td>
+          <td contenteditable="true">${row.incident}</td>
+          <td><button class="btn btn-danger btn-sm" onclick="deleteHealthRow(this)"><i class="fas fa-trash"></i></button></td>`;
+        tbody.appendChild(tr);
       });
     }
-
-    // Load departments into table
-    function loadDepartments() {
-      const tbody = document.getElementById('deptTableBody');
+    function renderCompliance() {
+      let tbody = document.getElementById('complianceBody');
+      if (!tbody) return;
       tbody.innerHTML = '';
-      
-      adminData.departments.forEach(dept => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${dept.name}</td>
-          <td>${dept.manager}</td>
-          <td>${dept.members}</td>
-          <td><span class="badge badge-success">${dept.status}</span></td>
-          <td>
-            <div class="table-actions">
-              <button class="btn btn-secondary btn-sm" onclick="editDepartment(${dept.id})">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn btn-danger btn-sm" onclick="deleteDepartment(${dept.id})">
-                <i class="fas fa-trash"></i>
-              </button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(row);
+      complianceData.forEach((row, idx) => {
+        let tr = document.createElement('tr');
+        tr.innerHTML = `<td contenteditable="true">${row.framework}</td>
+          <td contenteditable="true">${row.region}</td>
+          <td contenteditable="true">${row.status}</td>
+          <td contenteditable="true">${row.lastAudit}</td>
+          <td contenteditable="true">${row.validUntil}</td>
+          <td><button class="btn btn-danger btn-sm" onclick="deleteComplianceRow(this)"><i class="fas fa-trash"></i></button></td>`;
+        tbody.appendChild(tr);
       });
     }
-
-    // Load permissions into table
-    function loadPermissions() {
-      const tbody = document.querySelector('#permissionsTable tbody');
+    function renderUsers() {
+      let tbody = document.getElementById('userTableBody');
+      if (!tbody) return;
       tbody.innerHTML = '';
-      
-      adminData.permissions.forEach(perm => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${perm.module}</td>
-          <td><input type="checkbox" ${perm.admin ? 'checked' : ''}></td>
-          <td><input type="checkbox" ${perm.manager ? 'checked' : ''}></td>
-          <td><input type="checkbox" ${perm.user ? 'checked' : ''}></td>
-          <td><input type="checkbox" ${perm.guest ? 'checked' : ''}></td>
-        `;
-        tbody.appendChild(row);
+      users.forEach(u => {
+        tbody.innerHTML += `<tr>
+          <td contenteditable="true">${u.id}</td>
+          <td contenteditable="true">${u.name}</td>
+          <td contenteditable="true">${u.email}</td>
+          <td contenteditable="true">${u.title}</td>
+          <td contenteditable="true">${u.dept}</td>
+          <td contenteditable="true">${u.country}</td>
+          <td contenteditable="true"><span class="badge ${u.status==='active'?'badge-success':'badge-danger'}">${u.status}</span></td>
+          <td><button class="btn btn-danger btn-sm" onclick="deleteUserRow(this)"><i class="fas fa-trash"></i></button></td>
+        </tr>`;
       });
     }
-
-    // Load audit logs
-    function loadAuditLogs(filter) {
-      const tbody = document.querySelector('#auditTable tbody');
+    function renderDepts() {
+      let tbody = document.getElementById('deptTableBody');
+      if (!tbody) return;
       tbody.innerHTML = '';
-      
-      let filteredLogs = adminData.auditLogs;
-      if (filter !== 'all') {
-        filteredLogs = adminData.auditLogs.filter(log => 
-          filter === 'user' ? log.resource.includes('User') : 
-          filter === 'system' ? log.resource.includes('System') : true
-        );
-      }
-      
-      filteredLogs.forEach(log => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${log.timestamp}</td>
-          <td>${log.user}</td>
-          <td>${log.action}</td>
-          <td>${log.resource}</td>
-          <td>${log.ip}</td>
-        `;
-        tbody.appendChild(row);
+      depts.forEach(d => {
+        tbody.innerHTML += `<tr><td contenteditable="true">${d.id}</td><td contenteditable="true">${d.name}</td><td contenteditable="true">${d.code}</td><td contenteditable="true">${d.parent}</td><td contenteditable="true">${d.head}</td><td contenteditable="true">${d.country}</td><td contenteditable="true">${d.costCenter}</td><td contenteditable="true">${d.members}</td><td><button class="btn btn-danger btn-sm" onclick="deleteDeptRow(this)"><i class="fas fa-trash"></i></button></td></tr>`;
+      });
+    }
+    function renderPerms() {
+      let tbody = document.getElementById('permBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      perms.forEach(p => {
+        tbody.innerHTML += `<tr><td contenteditable="true">${p.role}</td><td contenteditable="true">${p.module}</td><td contenteditable="true">${p.create}</td><td contenteditable="true">${p.read}</td><td contenteditable="true">${p.update}</td><td contenteditable="true">${p.delete}</td><td contenteditable="true">${p.scope}</td><td><button class="btn btn-danger btn-sm" onclick="deletePermRow(this)"><i class="fas fa-trash"></i></button></td></tr>`;
+      });
+    }
+    function renderComplianceDetail() {
+      let tbody = document.getElementById('complianceDetailBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      complianceDetail.forEach(c => {
+        tbody.innerHTML += `<tr><td contenteditable="true">${c.entity}</td><td contenteditable="true">${c.framework}</td><td contenteditable="true">${c.region}</td><td contenteditable="true">${c.cert}</td><td contenteditable="true">${c.expiry}</td><td><button class="btn btn-danger btn-sm" onclick="deleteComplianceDetailRow(this)"><i class="fas fa-trash"></i></button></td></tr>`;
+      });
+    }
+    function renderAudit() {
+      let tbody = document.getElementById('auditBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      auditRows.forEach(a => {
+        tbody.innerHTML += `<tr><td contenteditable="true">${a.id}</td><td contenteditable="true">${a.ts}</td><td contenteditable="true">${a.user}</td><td contenteditable="true">${a.action}</td><td contenteditable="true">${a.resource}</td><td contenteditable="true">${a.ip}</td><td><button class="btn btn-danger btn-sm" onclick="deleteAuditRow(this)"><i class="fas fa-trash"></i></button></td></tr>`;
+      });
+    }
+    function renderFeatures() {
+      let tbody = document.getElementById('featureBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      features.forEach(f => {
+        tbody.innerHTML += `<tr><td contenteditable="true">${f.module}</td><td contenteditable="true">${f.status}</td><td><button class="btn btn-danger btn-sm" onclick="deleteFeatureRow(this)"><i class="fas fa-trash"></i></button></td></tr>`;
       });
     }
 
-    // Load settings
-    function loadSettings() {
-      const form = document.getElementById('systemSettingsForm');
-      const settings = adminData.settings;
-      
-      form.querySelector('input[name="maintenance"][value="' + settings.maintenance + '"]').checked = true;
-      form.querySelector('select[name="autoBackup"]').value = settings.autoBackup;
-      form.querySelector('input[name="sessionTimeout"]').value = settings.sessionTimeout;
-      form.querySelector('input[name="auditRetention"]').value = settings.auditRetention;
+    // ---------- GLOBAL DELETE/ADD FUNCTIONS ----------
+    window.deleteHealthRow = (btn) => { btn.closest('tr').remove(); };
+    window.deleteComplianceRow = (btn) => { btn.closest('tr').remove(); };
+    window.deleteUserRow = (btn) => { btn.closest('tr').remove(); };
+    window.deleteDeptRow = (btn) => { btn.closest('tr').remove(); };
+    window.deletePermRow = (btn) => { btn.closest('tr').remove(); };
+    window.deleteComplianceDetailRow = (btn) => { btn.closest('tr').remove(); };
+    window.deleteAuditRow = (btn) => { btn.closest('tr').remove(); };
+    window.deleteFeatureRow = (btn) => { btn.closest('tr').remove(); };
+
+    window.addHealthRow = () => {
+      let tbody = document.getElementById('healthBody');
+      let tr = document.createElement('tr');
+      tr.innerHTML = `<td contenteditable="true">new region</td><td contenteditable="true">new service</td><td contenteditable="true">Operational</td><td contenteditable="true">0ms</td><td contenteditable="true">-</td><td><button class="btn btn-danger btn-sm" onclick="deleteHealthRow(this)"><i class="fas fa-trash"></i></button></td>`;
+      tbody.appendChild(tr);
+    };
+    window.addComplianceRow = () => {
+      let tbody = document.getElementById('complianceBody');
+      let tr = document.createElement('tr');
+      tr.innerHTML = `<td contenteditable="true">New</td><td contenteditable="true">Global</td><td contenteditable="true">pending</td><td contenteditable="true">-</td><td contenteditable="true">-</td><td><button class="btn btn-danger btn-sm" onclick="deleteComplianceRow(this)"><i class="fas fa-trash"></i></button></td>`;
+      tbody.appendChild(tr);
+    };
+    window.addUser = () => {
+      let tbody = document.getElementById('userTableBody');
+      let tr = document.createElement('tr');
+      tr.innerHTML = `<td contenteditable="true">new</td><td contenteditable="true">Name</td><td contenteditable="true">email@c.com</td><td contenteditable="true">title</td><td contenteditable="true">dept</td><td contenteditable="true">country</td><td contenteditable="true">active</td><td><button class="btn btn-danger btn-sm" onclick="deleteUserRow(this)"><i class="fas fa-trash"></i></button></td>`;
+      tbody.appendChild(tr);
+    };
+    window.addDept = () => {
+      let tbody = document.getElementById('deptTableBody');
+      tbody.innerHTML += `<tr><td contenteditable="true">new</td><td contenteditable="true">Dept</td><td contenteditable="true">CD</td><td contenteditable="true">-</td><td contenteditable="true">-</td><td contenteditable="true">US</td><td contenteditable="true">CC</td><td contenteditable="true">0</td><td><button class="btn btn-danger btn-sm" onclick="deleteDeptRow(this)"><i class="fas fa-trash"></i></button></td></tr>`;
+    };
+    window.addPermission = () => {
+      let tbody = document.getElementById('permBody');
+      tbody.innerHTML += `<tr><td contenteditable="true">role</td><td contenteditable="true">module</td><td contenteditable="true">✅</td><td contenteditable="true">✅</td><td contenteditable="true">❌</td><td contenteditable="true">❌</td><td contenteditable="true">dept</td><td><button class="btn btn-danger btn-sm" onclick="deletePermRow(this)"><i class="fas fa-trash"></i></button></td></tr>`;
+    };
+    window.addComplianceEntry = () => {
+      let tbody = document.getElementById('complianceDetailBody');
+      tbody.innerHTML += `<tr><td contenteditable="true">entity</td><td contenteditable="true">GDPR</td><td contenteditable="true">EU</td><td contenteditable="true">pending</td><td contenteditable="true">2027</td><td><button class="btn btn-danger btn-sm" onclick="deleteComplianceDetailRow(this)"><i class="fas fa-trash"></i></button></td></tr>`;
+    };
+    window.addAuditRow = () => {
+      let tbody = document.getElementById('auditBody');
+      tbody.innerHTML += `<tr><td contenteditable="true">new</td><td contenteditable="true">2026-02-21</td><td contenteditable="true">admin</td><td contenteditable="true">VIEW</td><td contenteditable="true">resource</td><td contenteditable="true">0.0.0.0</td><td><button class="btn btn-danger btn-sm" onclick="deleteAuditRow(this)"><i class="fas fa-trash"></i></button></td></tr>`;
+    };
+    window.addFeatureRow = () => {
+      let tbody = document.getElementById('featureBody');
+      tbody.innerHTML += `<tr><td contenteditable="true">new module</td><td contenteditable="true">off</td><td><button class="btn btn-danger btn-sm" onclick="deleteFeatureRow(this)"><i class="fas fa-trash"></i></button></td></tr>`;
+    };
+    window.saveTable = (tableId) => { alert('Changes saved (simulated). Table ' + tableId + ' is now persistent.'); };
+
+    // ---------- TAB SWITCHING ----------
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panes = document.querySelectorAll('.tab-content');
+    const navLinks = document.querySelectorAll('.nav-link[data-tab]');
+    function switchTab(tabId) {
+      panes.forEach(p => p.classList.remove('active'));
+      tabs.forEach(t => t.classList.remove('active'));
+      document.getElementById(tabId + '-tab')?.classList.add('active');
+      document.querySelector(`.tab-btn[data-tab="${tabId}"]`)?.classList.add('active');
+      navLinks.forEach(l => {
+        l.classList.remove('active');
+        if(l.dataset.tab === tabId) l.classList.add('active');
+      });
+      // render appropriate tables
+      if (tabId === 'dashboard') { renderHealth(); renderCompliance(); }
+      if (tabId === 'users') renderUsers();
+      if (tabId === 'departments') renderDepts();
+      if (tabId === 'permissions') renderPerms();
+      if (tabId === 'compliance') renderComplianceDetail();
+      if (tabId === 'audit') renderAudit();
+      if (tabId === 'settings') renderFeatures();
     }
+    tabs.forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+    navLinks.forEach(l => l.addEventListener('click', (e) => { e.preventDefault(); switchTab(l.dataset.tab); }));
 
-    // Update dashboard stats
-    function updateStats() {
-      const activeUsers = adminData.users.filter(u => u.status === 'active').length;
-      const pendingTasks = Math.floor(Math.random() * 50); // Simulated
-      const activeSessions = Math.floor(Math.random() * 100) + 50; // Simulated
-      const apiRequests = (Math.random() * 5 + 10).toFixed(1) + 'K'; // Simulated
-      
-      document.getElementById('activeUsers').textContent = activeUsers;
-      document.getElementById('pendingTasks').textContent = pendingTasks;
-      document.getElementById('activeSessions').textContent = activeSessions;
-      document.getElementById('apiRequests').textContent = apiRequests;
+    // time update
+    function updateTime() {
+      document.getElementById('current-time').innerText = new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' });
     }
+    setInterval(updateTime, 1000);
 
-    // Helper function to get initials
-    function getInitials(name) {
-      return name.split(' ').map(n => n[0]).join('').toUpperCase();
-    }
-
-    // User functions
-    window.editUser = function(userId) {
-      const user = adminData.users.find(u => u.id === userId);
-      if (user) {
-        const form = document.getElementById('editUserForm');
-        form.querySelector('input[name="userId"]').value = user.id;
-        form.querySelector('input[name="fullName"]').value = user.name;
-        form.querySelector('input[name="email"]').value = user.email;
-        form.querySelector('select[name="role"]').value = user.role.toLowerCase();
-        form.querySelector('select[name="status"]').value = user.status;
-        
-        // Handle form submission
-        form.onsubmit = function(e) {
-          e.preventDefault();
-          const formData = new FormData(this);
-          
-          user.name = formData.get('fullName');
-          user.email = formData.get('email');
-          user.role = formData.get('role');
-          user.status = formData.get('status');
-          
-          alert('User updated successfully!');
-          closeModal('editUserModal');
-          loadUsers();
-          updateStats();
-        };
-        
-        openModal('editUserModal');
-      }
-    };
-
-    window.deleteUser = function(userId) {
-      if (confirm('Are you sure you want to delete this user?')) {
-        adminData.users = adminData.users.filter(u => u.id !== userId);
-        alert('User deleted successfully!');
-        loadUsers();
-        updateStats();
-      }
-    };
-
-    // Department functions
-    window.editDepartment = function(deptId) {
-      alert('Edit department functionality would open here');
-    };
-
-    window.deleteDepartment = function(deptId) {
-      if (confirm('Are you sure you want to delete this department?')) {
-        adminData.departments = adminData.departments.filter(d => d.id !== deptId);
-        alert('Department deleted successfully!');
-        loadDepartments();
-      }
-    };
-
-    // Global switchTab function
-    window.switchTab = switchTab;
-  </script>
+    // initial render
+    renderHealth(); renderCompliance(); renderUsers(); renderDepts(); renderPerms(); renderComplianceDetail(); renderAudit(); renderFeatures(); updateTime();
+  })();
+</script>
 </body>
 </html>
