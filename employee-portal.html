@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Portal · CephasGM ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background: #f5f5f7;
+            color: #1d1d1f;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* professional, clean navbar – only essential links */
+        .navbar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            padding: 0.75rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+
+        .nav-brand {
+            font-size: 1.3rem;
+            font-weight: 600;
+            background: linear-gradient(145deg, #0066cc, #004c99);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #2c2c2e;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+            padding: 0.4rem 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: #0066cc;
+            border-bottom-color: #0066cc;
+        }
+
+        /* dropdown for all modules – clean, compact */
+        .modules-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .modules-dropdown-btn {
+            background: transparent;
+            border: 1px solid #d0d0d5;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1d1d1f;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.2s;
+        }
+
+        .modules-dropdown-btn:hover {
+            background: #ffffff;
+            border-color: #0066cc;
+            color: #0066cc;
+        }
+
+        .modules-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 40px;
+            background: white;
+            min-width: 260px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+            border-radius: 18px;
+            padding: 0.75rem 0;
+            z-index: 200;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .modules-dropdown:hover .modules-dropdown-content {
+            display: block;
+        }
+
+        .modules-dropdown-content a {
+            color: #1d1d1f;
+            padding: 0.7rem 1.5rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            transition: background 0.15s;
+        }
+
+        .modules-dropdown-content a:hover {
+            background: #f5f5f7;
+            color: #0066cc;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #0066cc, #0077ed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,102,204,0.2);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* welcome card with refined look */
+        .welcome-section {
+            background: linear-gradient(135deg, #0066cc, #004080);
+            color: white;
+            padding: 2rem 2.2rem;
+            border-radius: 28px;
+            margin-bottom: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: 0 12px 24px -8px rgba(0,102,204,0.2);
+        }
+
+        .welcome-text h1 {
+            font-weight: 600;
+            font-size: 1.8rem;
+            letter-spacing: -0.02em;
+        }
+
+        .welcome-text p {
+            opacity: 0.85;
+            margin-top: 0.3rem;
+        }
+
+        .date-badge {
+            background: rgba(255,255,255,0.18);
+            padding: 0.5rem 1.4rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* stats cards – clean, editable via pencil */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem 1.5rem 1.2rem;
+            border-radius: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.04);
+            transition: transform 0.1s ease, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 12px 24px -12px rgba(0,102,204,0.15);
+            border-color: rgba(0,102,204,0.2);
+        }
+
+        .stat-label {
+            color: #6e6e73;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .edit-stat {
+            color: #8e8e93;
+            cursor: pointer;
+            font-size: 1rem;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+        .edit-stat:hover { opacity: 1; color: #0066cc; }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 0.4rem;
+        }
+
+        .stat-footer {
+            color: #8e8e93;
+            font-size: 0.85rem;
+        }
+
+        /* quick actions – 6 items, cleaner */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .action-tile {
+            background: white;
+            border-radius: 20px;
+            padding: 1.2rem 0.5rem;
+            text-align: center;
+            border: 1px solid rgba(0,0,0,0.04);
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .action-tile:hover {
+            transform: translateY(-3px);
+            border-color: #0066cc;
+            box-shadow: 0 16px 24px -10px rgba(0,102,204,0.2);
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-tile span {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #1d1d1f;
+        }
+
+        /* main grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 26px;
+            padding: 1.6rem 1.6rem 1.8rem;
+            border: 1px solid rgba(0,0,0,0.04);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.02);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.4rem;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: -0.01em;
+            color: #1d1d1f;
+        }
+
+        .card-action {
+            color: #0066cc;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            transition: background 0.2s;
+        }
+        .card-action:hover {
+            background: #e3f0ff;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .table th {
+            text-align: left;
+            padding: 0.6rem 0.4rem 0.8rem;
+            color: #6e6e73;
+            font-weight: 500;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .table td {
+            padding: 0.9rem 0.4rem;
+            border-bottom: 1px solid #f5f5f7;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.9rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            text-transform: capitalize;
+        }
+        .status-approved { background: #e2f7e7; color: #1e7b4c; }
+        .status-pending { background: #fff2db; color: #b45b0a; }
+        .status-rejected { background: #ffeae9; color: #c9372c; }
+
+        .action-icons {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+        }
+        .action-icons span {
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        .action-icons span:hover { opacity: 1; }
+
+        .editable-field {
+            cursor: text;
+            padding: 0.15rem 0.3rem;
+            border-radius: 6px;
+        }
+        .editable-field:hover {
+            background: #f2f2f5;
+        }
+
+        /* right column widgets */
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.9rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+        .notification-item:last-child { border-bottom: none; }
+
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            background: #0066cc;
+            border-radius: 50%;
+            margin-top: 0.5rem;
+        }
+
+        .notification-content { flex: 1; }
+        .notification-title { font-weight: 500; margin-bottom: 0.15rem; }
+        .notification-time { color: #8e8e93; font-size: 0.8rem; }
+
+        .progress-item {
+            margin: 1.2rem 0;
+        }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 0.4rem;
+        }
+        .progress-bar-bg {
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #0066cc;
+            border-radius: 20px;
+        }
+
+        .footer {
+            background: #ffffffd9;
+            backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(0,0,0,0.04);
+            padding: 1.5rem 2rem;
+            text-align: center;
+            color: #6e6e73;
+            font-size: 0.85rem;
+            margin-top: 2.5rem;
+        }
+
+        /* inline edit */
+        .inline-edit {
+            width: 100%;
+            padding: 0.2rem 0.4rem;
+            border: 1px solid #0066cc;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: white;
+        }
+
+        @media (max-width: 1000px) {
+            .stats-grid { grid-template-columns: repeat(2,1fr); }
+            .quick-actions { grid-template-columns: repeat(3,1fr); }
+            .content-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .navbar { padding: 0.75rem 1rem; }
+            .container { padding: 0 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-brand">CephasGM · employee</div>
+        <div class="nav-center">
+            <a href="https://cephasgm.github.io/CephasGM-ERP/index.html" class="nav-link" target="_blank">Home</a>
+            <a href="#" class="nav-link" id="myProfileLink">Profile</a>
+            <!-- one dropdown for all other modules, keeps UI clean -->
+            <div class="modules-dropdown">
+                <button class="modules-dropdown-btn">Modules ⌄</button>
+                <div class="modules-dropdown-content">
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/hr.html" target="_blank">📋 Human Resources</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/payroll.html" target="_blank">💰 Payroll</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/attendance.html" target="_blank">⏱️ Attendance</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/training.html" target="_blank">🎓 Training</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/meetings.html" target="_blank">📅 Meetings</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/finance.html" target="_blank">📊 Finance</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/inventory.html" target="_blank">📦 Inventory</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/procurement.html" target="_blank">🛒 Procurement</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/transport.html" target="_blank">🚚 Transport</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/projects.html" target="_blank">📌 Projects</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/sales.html" target="_blank">📈 Sales</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/marketing.html" target="_blank">📢 Marketing</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/customer-service.html" target="_blank">🤝 Customer Service</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/legal.html" target="_blank">⚖️ Legal</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/community.html" target="_blank">🌍 Community</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/safety.html" target="_blank">🛡️ OHS</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/admin.html" target="_blank">🔧 Admin</a>
+                </div>
+            </div>
+        </div>
+        <div class="user-profile">
+            <span id="userNameDisplay">John Doe</span>
+            <div class="avatar" id="avatarEdit">JD</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- welcome card -->
+        <div class="welcome-section">
+            <div class="welcome-text">
+                <h1>Welcome back, John 👋</h1>
+                <p>Your dashboard is fully interactive — all data editable</p>
+            </div>
+            <div class="date-badge" id="liveDate"></div>
+        </div>
+
+        <!-- stats cards with edit capability -->
+        <div class="stats-grid" id="statsContainer">
+            <div class="stat-card" data-stat="leave" data-value="15">
+                <div class="stat-label">Available leave <span class="edit-stat" data-stat="leave">✎</span></div>
+                <div class="stat-value" id="statLeave">15 days</div>
+                <div class="stat-footer">Annual 12 · Sick 3</div>
+            </div>
+            <div class="stat-card" data-stat="pending" data-value="3">
+                <div class="stat-label">Pending approvals <span class="edit-stat" data-stat="pending">✎</span></div>
+                <div class="stat-value" id="statPending">3</div>
+                <div class="stat-footer">Leave 2 · Expense 1</div>
+            </div>
+            <div class="stat-card" data-stat="attendance" data-value="94">
+                <div class="stat-label">Attendance <span class="edit-stat" data-stat="attendance">✎</span></div>
+                <div class="stat-value" id="statAttendance">94%</div>
+                <div class="stat-footer">Present 18 · Absent 1</div>
+            </div>
+            <div class="stat-card" data-stat="payroll" data-value="4.2">
+                <div class="stat-label">Next payroll <span class="edit-stat" data-stat="payroll">✎</span></div>
+                <div class="stat-value" id="statPayroll">₮4.2M</div>
+                <div class="stat-footer">Expected Feb 28, 2026</div>
+            </div>
+        </div>
+
+        <!-- quick action tiles (open respective modules) -->
+        <div class="quick-actions">
+            <div class="action-tile" data-href="https://cephasgm.github.io/CephasGM-ERP/hr.html"><div class="action-icon">🏖️</div><span>Apply leave</span></div>
+            <div class="action-tile" data-href="https://cephasgm.github.io/CephasGM-ERP/finance.html"><div class="action-icon">💰</div><span>Claim expense</span></div>
+            <div class="action-tile" data-href="https://cephasgm.github.io/CephasGM-ERP/payroll.html"><div class="action-icon">📊</div><span>View payslip</span></div>
+            <div class="action-tile" data-href="https://cephasgm.github.io/CephasGM-ERP/training.html"><div class="action-icon">🎓</div><span>Training</span></div>
+            <div class="action-tile" data-href="https://cephasgm.github.io/CephasGM-ERP/attendance.html"><div class="action-icon">🕒</div><span>Timesheet</span></div>
+            <div class="action-tile" data-href="https://cephasgm.github.io/CephasGM-ERP/meetings.html"><div class="action-icon">👥</div><span>Team calendar</span></div>
+        </div>
+
+        <!-- main content: two columns -->
+        <div class="content-grid">
+            <!-- left column: tables (fully editable) -->
+            <div>
+                <!-- leave requests -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🏝️ Recent leave requests</span>
+                        <button class="card-action" id="addLeave">+ Add</button>
+                    </div>
+                    <table class="table" id="leaveTable">
+                        <thead><tr><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Status</th><th></th></tr></thead>
+                        <tbody id="leaveBody"></tbody>
+                    </table>
+                </div>
+                <!-- expense claims -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🧾 Expense claims</span>
+                        <button class="card-action" id="addExpense">+ Add</button>
+                    </div>
+                    <table class="table" id="expenseTable">
+                        <thead><tr><th>Date</th><th>Description</th><th>Cat.</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+                        <tbody id="expenseBody"></tbody>
+                    </table>
+                </div>
+                <!-- timesheet -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">⏱️ Timesheet (this week)</span>
+                        <button class="card-action" id="addTimesheet">+ Add</button>
+                    </div>
+                    <table class="table" id="timesheetTable">
+                        <thead><tr><th>Day</th><th>Project</th><th>Hours</th><th>Status</th><th></th></tr></thead>
+                        <tbody id="timesheetBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- right column: widgets fully interactive -->
+            <div>
+                <!-- quick action buttons (clean) -->
+                <div class="card">
+                    <div class="card-header"><span class="card-title">⚡ Quick actions</span></div>
+                    <div style="display:flex; flex-direction:column; gap:0.7rem;">
+                        <button class="card-action" style="background:#0066cc; color:white; border:none; padding:0.8rem; border-radius:18px;" data-href="https://cephasgm.github.io/CephasGM-ERP/hr.html">➕ Request leave</button>
+                        <button class="card-action" style="background:white; border:1px solid #0066cc; color:#0066cc; padding:0.8rem; border-radius:18px;" data-href="https://cephasgm.github.io/CephasGM-ERP/finance.html">💰 Submit expense</button>
+                        <button class="card-action" style="background:white; border:1px solid #0066cc; color:#0066cc; padding:0.8rem; border-radius:18px;" data-href="https://cephasgm.github.io/CephasGM-ERP/attendance.html">🕒 Log hours</button>
+                    </div>
+                </div>
+                <!-- announcements -->
+                <div class="card">
+                    <div class="card-header"><span class="card-title">📢 Announcements</span><button class="card-action" id="addAnnounceBtn">+ Add</button></div>
+                    <div id="announcementsList"></div>
+                </div>
+                <!-- benefits summary (editable) -->
+                <div class="card">
+                    <div class="card-header"><span class="card-title">💼 Benefits summary</span><button class="card-action" id="editBenefitsBtn">✎ Edit</button></div>
+                    <div id="benefitsContainer"></div>
+                </div>
+                <!-- upcoming events -->
+                <div class="card">
+                    <div class="card-header"><span class="card-title">📅 Upcoming events</span><button class="card-action" id="addEventBtn">+ Add</button></div>
+                    <div id="eventsList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        © 2026 CephasGM Group. All rights reserved. v3.14.2 · Build 2026.02.21 · PROD
+    </footer>
+
+    <script>
+        (function() {
+            // Live date
+            const dateEl = document.getElementById('liveDate');
+            const today = new Date();
+            dateEl.innerText = `📅 ${today.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}`;
+
+            // ---------- DATA (localStorage simulated persistence) ----------
+            let leaveData = JSON.parse(localStorage.getItem('emp_leave')) || [
+                { type:'Annual Leave', from:'2026-03-10', to:'2026-03-15', days:5, status:'Approved' },
+                { type:'Sick Leave', from:'2026-02-18', to:'2026-02-19', days:2, status:'Approved' },
+                { type:'Personal Leave', from:'2026-03-01', to:'2026-03-01', days:1, status:'Pending' }
+            ];
+            let expenseData = JSON.parse(localStorage.getItem('emp_expense')) || [
+                { date:'2026-02-20', desc:'Client Meeting Lunch', cat:'Meals', amount:85000, status:'Approved' },
+                { date:'2026-02-15', desc:'Taxi to Airport', cat:'Travel', amount:45000, status:'Pending' },
+                { date:'2026-02-10', desc:'Office Supplies', cat:'Supplies', amount:32500, status:'Rejected' }
+            ];
+            let timesheetData = JSON.parse(localStorage.getItem('emp_timesheet')) || [
+                { day:'Monday', project:'Project Alpha', hours:8.0, status:'Approved' },
+                { day:'Tuesday', project:'Project Alpha', hours:7.5, status:'Approved' },
+                { day:'Wednesday', project:'Internal Meeting', hours:2.0, status:'Pending' }
+            ];
+            let announcements = JSON.parse(localStorage.getItem('emp_announce')) || [
+                { title:'Office closed National Holiday', time:'March 1, 2026' },
+                { title:'New Health Insurance', time:'Feb 20, 2026' },
+                { title:'Q1 Team Building', time:'Feb 18, 2026' }
+            ];
+            let events = JSON.parse(localStorage.getItem('emp_events')) || [
+                { icon:'🎂', title:'Team Lunch', time:'Tomorrow, 1:00 PM' },
+                { icon:'📊', title:'Performance Review', time:'Mar 5, 10:00' },
+                { icon:'🎓', title:'Leadership Training', time:'Mar 10-12' }
+            ];
+            let benefits = { annual: [15,20], sick:[3,10], training:[450,1000] }; // used/ total
+
+            // ---------- render functions ----------
+            function renderLeave() {
+                let html = '';
+                leaveData.forEach((item, idx) => {
+                    let statusClass = item.status === 'Approved' ? 'status-approved' : (item.status === 'Pending' ? 'status-pending' : 'status-rejected');
+                    html += `<tr data-idx="${idx}">
+                        <td class="editable-field" data-field="type">${item.type}</td>
+                        <td class="editable-field" data-field="from">${item.from}</td>
+                        <td class="editable-field" data-field="to">${item.to}</td>
+                        <td class="editable-field" data-field="days">${item.days}</td>
+                        <td><span class="status-badge ${statusClass}">${item.status}</span></td>
+                        <td><div class="action-icons"><span class="save-row" title="save">💾</span><span class="delete-row" title="delete">🗑️</span></div></td>
+                    </tr>`;
+                });
+                document.getElementById('leaveBody').innerHTML = html;
+                localStorage.setItem('emp_leave', JSON.stringify(leaveData));
+            }
+            function renderExpense() {
+                let html = '';
+                expenseData.forEach((item, idx) => {
+                    let sc = item.status === 'Approved' ? 'status-approved' : (item.status === 'Pending' ? 'status-pending' : 'status-rejected');
+                    html += `<tr data-idx="${idx}">
+                        <td class="editable-field" data-field="date">${item.date}</td>
+                        <td class="editable-field" data-field="desc">${item.desc}</td>
+                        <td class="editable-field" data-field="cat">${item.cat}</td>
+                        <td class="editable-field" data-field="amount">₮${item.amount}</td>
+                        <td><span class="status-badge ${sc}">${item.status}</span></td>
+                        <td><div class="action-icons"><span class="save-row">💾</span><span class="delete-row">🗑️</span></div></td>
+                    </tr>`;
+                });
+                document.getElementById('expenseBody').innerHTML = html;
+                localStorage.setItem('emp_expense', JSON.stringify(expenseData));
+            }
+            function renderTimesheet() {
+                let html = '';
+                timesheetData.forEach((item, idx) => {
+                    let sc = item.status === 'Approved' ? 'status-approved' : 'status-pending';
+                    html += `<tr data-idx="${idx}">
+                        <td class="editable-field" data-field="day">${item.day}</td>
+                        <td class="editable-field" data-field="project">${item.project}</td>
+                        <td class="editable-field" data-field="hours">${item.hours}</td>
+                        <td><span class="status-badge ${sc}">${item.status}</span></td>
+                        <td><div class="action-icons"><span class="save-row">💾</span><span class="delete-row">🗑️</span></div></td>
+                    </tr>`;
+                });
+                document.getElementById('timesheetBody').innerHTML = html;
+                localStorage.setItem('emp_timesheet', JSON.stringify(timesheetData));
+            }
+            function renderAnnouncements() {
+                let html = '';
+                announcements.forEach((a, i) => {
+                    html += `<div class="notification-item" data-idx="${i}"><div class="notification-dot"></div><div class="notification-content"><div class="notification-title">${a.title}</div><div class="notification-time">${a.time}</div></div><span class="delete-announce" style="cursor:pointer;">🗑️</span></div>`;
+                });
+                document.getElementById('announcementsList').innerHTML = html;
+                localStorage.setItem('emp_announce', JSON.stringify(announcements));
+            }
+            function renderEvents() {
+                let html = '';
+                events.forEach((e, i) => {
+                    html += `<div class="notification-item" data-idx="${i}"><div>${e.icon}</div><div class="notification-content"><div class="notification-title">${e.title}</div><div class="notification-time">${e.time}</div></div><span class="delete-event" style="cursor:pointer;">🗑️</span></div>`;
+                });
+                document.getElementById('eventsList').innerHTML = html;
+                localStorage.setItem('emp_events', JSON.stringify(events));
+            }
+            function renderBenefits() {
+                let annualPercent = (benefits.annual[0]/benefits.annual[1])*100;
+                let sickPercent = (benefits.sick[0]/benefits.sick[1])*100;
+                let trainPercent = (benefits.training[0]/benefits.training[1])*100;
+                document.getElementById('benefitsContainer').innerHTML = `
+                    <div class="progress-item"><div class="progress-label"><span>Annual Leave</span><span>${benefits.annual[0]}/${benefits.annual[1]} days</span></div><div class="progress-bar-bg"><div class="progress-fill" style="width:${annualPercent}%"></div></div></div>
+                    <div class="progress-item"><div class="progress-label"><span>Sick Leave</span><span>${benefits.sick[0]}/${benefits.sick[1]} days</span></div><div class="progress-bar-bg"><div class="progress-fill" style="width:${sickPercent}%; background:#ff9800;"></div></div></div>
+                    <div class="progress-item"><div class="progress-label"><span>Training Budget</span><span>₮${benefits.training[0]}K/₮${benefits.training[1]}K</span></div><div class="progress-bar-bg"><div class="progress-fill" style="width:${trainPercent}%; background:#00a86b;"></div></div></div>
+                `;
+            }
+            renderLeave(); renderExpense(); renderTimesheet(); renderAnnouncements(); renderEvents(); renderBenefits();
+
+            // ---- inline edit (double click on .editable-field) ----
+            document.addEventListener('dblclick', function(e) {
+                let td = e.target.closest('.editable-field');
+                if (!td) return;
+                let field = td.dataset.field;
+                let original = td.innerText.replace('₮','').trim();
+                let input = document.createElement('input');
+                input.value = original;
+                input.className = 'inline-edit';
+                td.innerText = '';
+                td.appendChild(input);
+                input.focus();
+                input.addEventListener('blur', function() {
+                    let newVal = input.value;
+                    let row = td.closest('tr');
+                    let idx = row.dataset.idx;
+                    let tableId = row.closest('table')?.id;
+                    if (tableId === 'leaveTable') {
+                        if (field==='days') leaveData[idx][field] = parseInt(newVal) || 0;
+                        else if (field==='type'||field==='from'||field==='to') leaveData[idx][field] = newVal;
+                        renderLeave();
+                    } else if (tableId === 'expenseTable') {
+                        if (field==='amount') expenseData[idx][field] = parseInt(newVal.replace(/[^0-9]/g,'')) || 0;
+                        else if (field==='date'||field==='desc'||field==='cat') expenseData[idx][field] = newVal;
+                        renderExpense();
+                    } else if (tableId === 'timesheetTable') {
+                        if (field==='hours') timesheetData[idx][field] = parseFloat(newVal) || 0;
+                        else if (field==='day'||field==='project') timesheetData[idx][field] = newVal;
+                        renderTimesheet();
+                    }
+                });
+            });
+
+            // save / delete buttons
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('save-row')) {
+                    let row = e.target.closest('tr');
+                    let idx = row.dataset.idx;
+                    let tableId = row.closest('table')?.id;
+                    if (tableId === 'leaveTable') {
+                        let cells = row.querySelectorAll('.editable-field');
+                        if (cells.length>=4) {
+                            leaveData[idx].type = cells[0].innerText;
+                            leaveData[idx].from = cells[1].innerText;
+                            leaveData[idx].to = cells[2].innerText;
+                            leaveData[idx].days = parseInt(cells[3].innerText)||0;
+                        }
+                        renderLeave();
+                    } else if (tableId === 'expenseTable') {
+                        let cells = row.querySelectorAll('.editable-field');
+                        if (cells.length>=4) {
+                            expenseData[idx].date = cells[0].innerText;
+                            expenseData[idx].desc = cells[1].innerText;
+                            expenseData[idx].cat = cells[2].innerText;
+                            expenseData[idx].amount = parseInt(cells[3].innerText.replace(/[^0-9]/g,''))||0;
+                        }
+                        renderExpense();
+                    } else if (tableId === 'timesheetTable') {
+                        let cells = row.querySelectorAll('.editable-field');
+                        if (cells.length>=3) {
+                            timesheetData[idx].day = cells[0].innerText;
+                            timesheetData[idx].project = cells[1].innerText;
+                            timesheetData[idx].hours = parseFloat(cells[2].innerText)||0;
+                        }
+                        renderTimesheet();
+                    }
+                }
+                if (e.target.classList.contains('delete-row')) {
+                    let row = e.target.closest('tr');
+                    let idx = row.dataset.idx;
+                    let tableId = row.closest('table')?.id;
+                    if (tableId === 'leaveTable') { leaveData.splice(idx,1); renderLeave(); }
+                    else if (tableId === 'expenseTable') { expenseData.splice(idx,1); renderExpense(); }
+                    else if (tableId === 'timesheetTable') { timesheetData.splice(idx,1); renderTimesheet(); }
+                }
+                // delete announcements/events
+                if (e.target.classList.contains('delete-announce')) {
+                    let idx = e.target.closest('.notification-item')?.dataset.idx;
+                    if (idx!==undefined) { announcements.splice(idx,1); renderAnnouncements(); }
+                }
+                if (e.target.classList.contains('delete-event')) {
+                    let idx = e.target.closest('.notification-item')?.dataset.idx;
+                    if (idx!==undefined) { events.splice(idx,1); renderEvents(); }
+                }
+            });
+
+            // add rows
+            document.getElementById('addLeave').addEventListener('click', ()=>{
+                leaveData.push({ type:'New Leave', from:'2026-04-01', to:'2026-04-02', days:1, status:'Pending' });
+                renderLeave();
+            });
+            document.getElementById('addExpense').addEventListener('click', ()=>{
+                expenseData.push({ date:'2026-03-01', desc:'New item', cat:'Other', amount:10000, status:'Pending' });
+                renderExpense();
+            });
+            document.getElementById('addTimesheet').addEventListener('click', ()=>{
+                timesheetData.push({ day:'Friday', project:'New task', hours:4, status:'Pending' });
+                renderTimesheet();
+            });
+            document.getElementById('addAnnounceBtn').addEventListener('click', ()=>{
+                announcements.push({ title:'New announcement', time:today.toLocaleDateString() });
+                renderAnnouncements();
+            });
+            document.getElementById('addEventBtn').addEventListener('click', ()=>{
+                events.push({ icon:'📌', title:'New event', time:'TBD' });
+                renderEvents();
+            });
+            // edit benefits
+            document.getElementById('editBenefitsBtn').addEventListener('click', ()=>{
+                let newAnnual = prompt('Annual leave used (days)', benefits.annual[0]);
+                if (newAnnual) benefits.annual[0] = parseInt(newAnnual) || 0;
+                let newSick = prompt('Sick leave used (days)', benefits.sick[0]);
+                if (newSick) benefits.sick[0] = parseInt(newSick) || 0;
+                let newTrain = prompt('Training used (K ₮)', benefits.training[0]);
+                if (newTrain) benefits.training[0] = parseInt(newTrain) || 0;
+                renderBenefits();
+            });
+
+            // stat edit
+            document.querySelectorAll('.edit-stat').forEach(btn => {
+                btn.addEventListener('click', function(e){
+                    e.stopPropagation();
+                    let stat = this.dataset.stat;
+                    let card = this.closest('.stat-card');
+                    let current = card.dataset.value;
+                    let newVal = prompt(`Edit ${stat} value:`, current);
+                    if (newVal) {
+                        card.dataset.value = newVal;
+                        if (stat === 'leave') document.getElementById('statLeave').innerText = newVal + ' days';
+                        if (stat === 'pending') document.getElementById('statPending').innerText = newVal;
+                        if (stat === 'attendance') document.getElementById('statAttendance').innerText = newVal + '%';
+                        if (stat === 'payroll') document.getElementById('statPayroll').innerText = '₮' + newVal + 'M';
+                    }
+                });
+            });
+
+            // profile edit
+            document.getElementById('avatarEdit').addEventListener('click', ()=>{
+                let name = prompt('Edit your name:', 'John Doe');
+                if (name) {
+                    document.getElementById('userNameDisplay').innerText = name;
+                    document.querySelector('.welcome-text h1').innerHTML = `Welcome back, ${name} 👋`;
+                }
+            });
+            document.getElementById('myProfileLink').addEventListener('click', (e)=>{
+                e.preventDefault();
+                document.getElementById('avatarEdit').click();
+            });
+
+            // open modules from tiles / buttons
+            document.querySelectorAll('[data-href]').forEach(el => {
+                el.addEventListener('click', function() {
+                    window.open(this.dataset.href, '_blank');
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
