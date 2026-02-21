@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     <style>
-        /* ... (keep all your existing styles from :root to .csv-upload-container) ... */
+        /* Root variables & base styles - kept consistent with original */
         :root {
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
@@ -23,663 +23,182 @@
             --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: var(--background);
             color: var(--text);
             line-height: 1.6;
         }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            min-height: 100vh;
-        }
-
+        .dashboard { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
         .sidebar {
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            padding: 2rem 1rem;
-            position: fixed;
-            width: 280px;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
+            background: var(--surface); border-right: 1px solid var(--border); padding: 2rem 1rem;
+            position: fixed; width: 280px; height: 100vh; overflow-y: auto; z-index: 100;
         }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-            padding: 0 1rem;
-        }
-
+        .logo { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; padding: 0 1rem; }
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.25rem;
+            width: 40px; height: 40px; background: var(--primary); border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.25rem;
         }
-
-        .nav-section {
-            margin-bottom: 2rem;
-        }
-
+        .nav-section { margin-bottom: 2rem; }
         .nav-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--text-light);
-            margin-bottom: 1rem;
-            padding: 0 1rem;
-            letter-spacing: 0.5px;
+            font-size: 0.75rem; text-transform: uppercase; color: var(--text-light);
+            margin-bottom: 1rem; padding: 0 1rem; letter-spacing: 0.5px;
         }
-
         .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            color: var(--text-light);
-            text-decoration: none;
-            transition: all 0.2s;
-            margin-bottom: 0.25rem;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-            font-size: 0.95rem;
-            position: relative;
+            display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: 8px;
+            color: var(--text-light); text-decoration: none; transition: all 0.2s; margin-bottom: 0.25rem;
+            border: none; background: none; width: 100%; text-align: left; cursor: pointer; font-size: 0.95rem;
         }
-
-        .nav-item:hover, .nav-item.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .nav-icon {
-            font-size: 1.25rem;
-            width: 24px;
-            text-align: center;
-        }
-
-        .main-content {
-            grid-column: 2;
-            padding: 2rem;
-            margin-left: 280px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .header h1 {
-            font-size: 1.875rem;
-            font-weight: 700;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
+        .nav-item:hover, .nav-item.active { background: var(--primary); color: white; }
+        .nav-icon { font-size: 1.25rem; width: 24px; text-align: center; }
+        .main-content { grid-column: 2; padding: 2rem; margin-left: 280px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        .header h1 { font-size: 1.875rem; font-weight: 700; }
+        .header-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
         .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            padding: 0.75rem 1.5rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;
         }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-secondary {
-            background: var(--surface);
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            background: var(--background);
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #0da271;
-        }
-        .btn-danger {
-            background: var(--error);
-            color: white;
-        }
-        .btn-danger:hover {
-            background: #dc2626;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: var(--background); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--error); color: white; }
+        .btn-sm { padding: 0.25rem 0.75rem; font-size: 0.875rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
         .stat-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            text-align: center;
-            transition: transform 0.2s;
+            background: var(--surface); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border);
+            box-shadow: var(--shadow); text-align: center; transition: transform 0.2s;
         }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .stat-number { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; line-height: 1.2; }
+        .stat-label { color: var(--text-light); font-size: 0.9rem; }
+        .stat-small { font-size: 0.9rem; color: var(--text-light); margin-top: 0.25rem;}
 
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
+        /* Module Grid */
         .module-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;
         }
-
         .module-card {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            display: block;
+            background: var(--surface); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border);
+            cursor: pointer; transition: all 0.3s ease; text-decoration: none; color: inherit; display: block;
             box-shadow: var(--shadow);
-            position: relative;
         }
-
-        .module-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary);
-        }
-
+        .module-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
         .module-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary), #3b82f6);
-            color: white;
+            width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--primary), #3b82f6); color: white;
         }
+        .module-card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .module-card p { color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;}
 
-        .module-card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .module-card p {
-            color: var(--text-light);
-            font-size: 0.95rem;
-        }
-
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-
+        /* Tooltip */
+        .tooltip { position: relative; display: inline-block; }
         .tooltip .tooltip-text {
-            visibility: hidden;
-            width: 200px;
-            background-color: var(--text);
-            color: white;
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.875rem;
+            visibility: hidden; width: 200px; background-color: var(--text); color: white; text-align: center;
+            border-radius: 6px; padding: 8px; position: absolute; z-index: 10; bottom: 125%; left: 50%;
+            transform: translateX(-50%); opacity: 0; transition: opacity 0.3s; font-size: 0.875rem; pointer-events: none;
         }
+        .tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
 
-        .tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
+        /* Currency Selector */
+        .currency-selector { display: flex; align-items: center; gap: 0.5rem; background: var(--surface); padding: 0.25rem 1rem; border-radius: 8px; border: 1px solid var(--border);}
+        .currency-selector select { padding: 0.4rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
 
-        .currency-selector {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .currency-selector select {
-            padding: 0.5rem;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text);
-        }
-
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            color: var(--text-light);
-            border-top: 1px solid var(--border);
-        }
-
-        /* Procurement Table Styles */
-        .procurement-table-container {
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            overflow-x: auto;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
-
-        .procurement-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 1800px;
-        }
-
-        .procurement-table th, .procurement-table td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
-
-        .procurement-table th {
-            background: var(--background);
-            font-weight: 600;
-            color: var(--text-light);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .procurement-table tr:hover {
-            background: var(--background);
-        }
-
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: inline-block;
-            text-align: center;
-        }
-
-        .status-pending {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-        .status-approved {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-        .status-rejected {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--error);
-        }
-        .status-delivered {
-            background: rgba(100, 116, 139, 0.1);
-            color: var(--secondary);
-        }
-        .status-draft { background: #e2e8f0; color: #475569; }
-        .status-sent { background: #dbeafe; color: #1d4ed8; }
-        .status-partial { background: #fef9c3; color: #854d0e; }
-        .status-invoiced { background: #dcfce7; color: #166534; }
-
-        /* Mobile Navigation */
-        .mobile-nav-toggle {
-            display: none;
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 1000;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            width: 40px;
-            height: 40px;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        /* Chart Container */
-        .chart-container {
-            background: var(--surface);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-        }
-
-        .chart-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--text);
-        }
-
-        .chart-placeholder {
-            height: 300px;
-            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-light);
-            font-size: 1.1rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 0;
-                grid-column: 1;
-                padding: 1rem;
-            }
-            .mobile-nav-toggle {
-                display: flex;
-            }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .header-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .module-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Dark Mode Support */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --background: #0f172a;
-                --surface: #1e293b;
-                --text: #f1f5f9;
-                --text-light: #94a3b8;
-                --border: #334155;
-            }
-        }
-
-        /* Accessibility */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        button:focus, a:focus, select:focus {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-
-        /* CSV Upload Styles */
-        .csv-upload-container {
-            background: var(--surface);
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            margin-bottom: 2rem;
-            transition: all 0.3s;
-        }
-
-        .csv-upload-container:hover {
-            border-color: var(--primary);
-        }
-
-        .csv-upload-container.dragover {
-            border-color: var(--primary);
-            background: rgba(37, 99, 235, 0.05);
-        }
+        /* Table Styles */
+        .table-container { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; margin-bottom: 2rem; box-shadow: var(--shadow); }
+        table { width: 100%; border-collapse: collapse; min-width: 1800px; font-size: 0.85rem; }
+        th, td { padding: 0.75rem 0.5rem; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+        th { background: var(--background); font-weight: 600; color: var(--text-light); text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; }
+        tr:hover { background: var(--background); }
+        .status-badge { padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; display: inline-block; }
+        .status-pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .status-approved { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .status-rejected { background: rgba(239, 68, 68, 0.1); color: var(--error); }
+        .status-delivered { background: rgba(100, 116, 139, 0.1); color: var(--secondary); }
+        .text-right { text-align: right; }
 
         /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
         .modal-content {
-            background-color: var(--surface);
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid var(--border);
-            width: 80%;
-            max-width: 1200px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
-            position: relative;
+            background: var(--surface); margin: 5% auto; padding: 2rem; border-radius: 12px; width: 90%; max-width: 600px;
+            max-height: 80vh; overflow-y: auto; box-shadow: var(--shadow-lg);
         }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-header h2 { font-size: 1.5rem; }
+        .close { font-size: 1.5rem; cursor: pointer; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.3rem; font-weight: 500; font-size: 0.9rem; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text);
         }
-        .modal-header h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+        /* CSV Upload */
+        .csv-upload-container {
+            background: var(--surface); border: 2px dashed var(--border); border-radius: 12px; padding: 2rem;
+            text-align: center; margin-bottom: 2rem; transition: all 0.3s;
         }
-        .close-modal {
-            font-size: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-            color: var(--text-light);
-        }
-        .close-modal:hover {
-            color: var(--text);
-        }
-        .modal-body {
-            max-height: 70vh;
-            overflow-y: auto;
-            padding: 0.5rem;
-        }
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            margin-top: 1.5rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
+        .csv-upload-container:hover, .csv-upload-container.dragover { border-color: var(--primary); background: rgba(37, 99, 235, 0.05); }
+
+        /* Chart Placeholder */
+        .chart-container { background: var(--surface); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border); }
+        .chart-placeholder {
+            height: 250px; background: linear-gradient(135deg, #f8fafc, #e2e8f0); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; color: var(--text-light);
         }
 
-        /* Form Styles */
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
+        /* Footer */
+        .footer { text-align: center; padding: 2rem; margin-top: 3rem; color: var(--text-light); border-top: 1px solid var(--border); }
+
+        /* Mobile */
+        .mobile-nav-toggle { display: none; position: fixed; top: 1rem; left: 1rem; z-index: 1000; background: var(--primary); color: white; border: none; border-radius: 8px; width: 40px; height: 40px; align-items: center; justify-content: center; cursor: pointer; }
+        @media (max-width: 1024px) {
+            .dashboard { grid-template-columns: 1fr; }
+            .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; grid-column: 1; padding: 1rem; }
+            .mobile-nav-toggle { display: flex; }
+            .header { flex-direction: column; align-items: flex-start; }
+            .header-actions { width: 100%; justify-content: space-between; }
         }
-        .form-group {
-            margin-bottom: 1rem;
+        @media (prefers-color-scheme: dark) {
+            :root { --background: #0f172a; --surface: #1e293b; --text: #f1f5f9; --text-light: #94a3b8; --border: #334155; }
         }
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--background);
-            color: var(--text);
-            font-size: 1rem;
-        }
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
+        .action-buttons { display: flex; gap: 0.3rem; }
+        .hidden { display: none; }
+        /* Audit Log */
+        #auditLogPanel { position: fixed; bottom: 10px; right: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 1rem; max-width: 300px; font-size: 0.8rem; box-shadow: var(--shadow); z-index: 100; max-height: 200px; overflow-y: auto; }
+        .audit-entry { padding: 0.2rem 0; border-bottom: 1px dashed var(--border); }
     </style>
 </head>
 <body>
-    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
-        <i class="fas fa-bars"></i>
-    </button>
-
+    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
     <div class="dashboard">
         <nav class="sidebar" id="sidebar">
             <div class="logo">
                 <div class="logo-icon">CG</div>
-                <div>
-                    <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
-                    <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
-                </div>
+                <div><div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div><div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div></div>
             </div>
-
             <div class="nav-section">
                 <div class="nav-title">Supply Chain</div>
-                <a href="procurement.html" class="nav-item active">
-                    <span class="nav-icon">🛒</span>
-                    Procurement
-                </a>
-                <a href="inventory.html" class="nav-item">
-                    <span class="nav-icon">📦</span>
-                    Inventory
-                </a>
-                <a href="transport.html" class="nav-item">
-                    <span class="nav-icon">🚚</span>
-                    Transport
-                </a>
+                <a href="procurement.html" class="nav-item active"><span class="nav-icon">🛒</span> Procurement</a>
+                <a href="inventory.html" class="nav-item"><span class="nav-icon">📦</span> Inventory</a>
+                <a href="transport.html" class="nav-item"><span class="nav-icon">🚚</span> Transport</a>
             </div>
-
             <div class="nav-section">
                 <div class="nav-title">Operations</div>
-                <a href="index.html" class="nav-item">
-                    <span class="nav-icon">📊</span>
-                    Dashboard
-                </a>
-                <a href="sales.html" class="nav-item">
-                    <span class="nav-icon">💰</span>
-                    Sales
-                </a>
-                <a href="finance.html" class="nav-item">
-                    <span class="nav-icon">💳</span>
-                    Finance
-                </a>
-                <a href="payroll.html" class="nav-item">
-                    <span class="nav-icon">💰</span>
-                    Payroll
-                </a>
+                <a href="index.html" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+                <a href="sales.html" class="nav-item"><span class="nav-icon">💰</span> Sales</a>
+                <a href="finance.html" class="nav-item"><span class="nav-icon">💳</span> Finance</a>
+                <a href="payroll.html" class="nav-item"><span class="nav-icon">💰</span> Payroll</a>
             </div>
-
             <div class="nav-section">
                 <div class="nav-title">User</div>
-                <div class="nav-item">
-                    <span class="nav-icon">👤</span>
-                    <span id="userRole">Procurement Manager</span>
-                </div>
-                <button class="nav-item" id="logoutBtn">
-                    <span class="nav-icon">🚪</span>
-                    Logout
-                </button>
+                <div class="nav-item"><span class="nav-icon">👤</span><span id="userRole">Procurement Manager (Admin)</span></div>
+                <button class="nav-item" id="logoutBtn"><span class="nav-icon">🚪</span> Logout</button>
             </div>
         </nav>
 
@@ -687,7 +206,7 @@
             <div class="header">
                 <div>
                     <h1>Procurement Management</h1>
-                    <div style="color: var(--text-light);">Manage purchases, suppliers, and supply chain operations</div>
+                    <div style="color: var(--text-light);">Enterprise-grade purchase & supplier management</div>
                 </div>
                 <div class="header-actions">
                     <div class="currency-selector">
@@ -700,627 +219,545 @@
                             <option value="KES">KES - Kenyan Shilling</option>
                         </select>
                     </div>
-                    <button class="btn btn-primary" id="newPurchaseOrderBtn">
-                        <i class="fas fa-plus"></i> New PO
-                    </button>
-                    <button class="btn btn-secondary" id="uploadCsvBtn">
-                        <i class="fas fa-upload"></i> Upload CSV
-                    </button>
+                    <button class="btn btn-primary" id="newPurchaseOrderBtn"><i class="fas fa-plus"></i> New PO</button>
+                    <button class="btn btn-secondary" id="bulkActionsBtn"><i class="fas fa-check-double"></i> Bulk</button>
+                    <button class="btn btn-secondary" id="exportDataBtn"><i class="fas fa-download"></i> Export</button>
+                    <button class="btn btn-secondary" id="uploadCsvBtn"><i class="fas fa-upload"></i> Upload CSV</button>
                 </div>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-card" id="statActiveSuppliers">
-                    <div class="stat-number" id="activeSuppliers">0</div>
+            <!-- Stats Cards with dynamic data -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-number" id="activeSuppliers">24</div>
                     <div class="stat-label">Active Suppliers</div>
+                    <div class="stat-small">+2 this month</div>
                 </div>
-                <div class="stat-card" id="statMonthlySpend">
-                    <div class="stat-number" id="monthlySpend">TZS 0</div>
+                <div class="stat-card">
+                    <div class="stat-number" id="monthlySpend">TSh 8.5M</div>
                     <div class="stat-label">Monthly Spend</div>
+                    <div class="stat-small">12% under budget</div>
                 </div>
-                <div class="stat-card" id="statPendingOrders">
-                    <div class="stat-number" id="pendingOrders">0</div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingOrders">156</div>
                     <div class="stat-label">Pending Orders</div>
+                    <div class="stat-small">42 awaiting approval</div>
                 </div>
-                <div class="stat-card" id="statOnTimeDelivery">
-                    <div class="stat-number" id="onTimeDelivery">0%</div>
+                <div class="stat-card">
+                    <div class="stat-number" id="ontimeDelivery">92%</div>
                     <div class="stat-label">On-Time Delivery</div>
+                    <div class="stat-small">Target: 95%</div>
                 </div>
             </div>
 
+            <!-- Chart & Upload Section -->
             <div class="chart-container">
-                <div class="chart-title">Monthly Procurement Spend Analysis</div>
+                <div class="chart-title">Monthly Procurement Spend Analysis (by Category)</div>
                 <div class="chart-placeholder">
-                    <i class="fas fa-chart-bar" style="margin-right: 0.5rem;"></i>
-                    Procurement Spend Chart Visualization
+                    <i class="fas fa-chart-pie" style="margin-right: 0.5rem;"></i>
+                    Interactive Chart: Raw Materials 45% | MRO 20% | Services 25% | Logistics 10%
                 </div>
             </div>
 
             <div class="csv-upload-container" id="csvUploadContainer">
                 <i class="fas fa-file-csv" style="font-size: 3rem; color: var(--text-light); margin-bottom: 1rem;"></i>
                 <h3>Upload Procurement Data</h3>
-                <p>Drag & drop a CSV file or click to browse</p>
+                <p>Drag & drop a CSV file or click to browse (supports PO, Supplier, Contract data)</p>
                 <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
-                <button class="btn btn-secondary" onclick="document.getElementById('csvFileInput').click()" style="margin-top: 1rem;">
-                    <i class="fas fa-folder-open"></i> Browse Files
-                </button>
+                <button class="btn btn-secondary" onclick="document.getElementById('csvFileInput').click()" style="margin-top: 1rem;"><i class="fas fa-folder-open"></i> Browse Files</button>
             </div>
 
-            <div class="procurement-table-container">
-                <table class="procurement-table" id="procurementTable">
+            <!-- Main Procurement Table with all requested columns -->
+            <div class="table-container">
+                <table id="procurementTable">
                     <thead>
                         <tr>
-                            <th>PO Number</th>
-                            <th>Type</th>
-                            <th>Supplier</th>
-                            <th>Buyer</th>
-                            <th>Amount (FC)</th>
-                            <th>Currency</th>
-                            <th>Amount (Base TZS)</th>
-                            <th>Status</th>
-                            <th>Incoterms</th>
-                            <th>Payment Terms</th>
-                            <th>Shipping Method</th>
-                            <th>Carrier</th>
-                            <th>Port of Loading</th>
-                            <th>Port of Discharge</th>
-                            <th>Est. Departure</th>
-                            <th>Est. Arrival</th>
-                            <th>Actual Ship</th>
-                            <th>Actual Delivery</th>
-                            <th>Customs Status</th>
-                            <th>Goods Receipt</th>
-                            <th>Invoice Status</th>
-                            <th>Payment Status</th>
-                            <th>Actions</th>
+                            <th><input type="checkbox" id="selectAll"></th>
+                            <th>PO Number</th><th>Type</th><th>Supplier</th><th>Buyer</th><th>Amount (FC)</th><th>Currency</th><th>Ex.Rate</th><th>Amount (Base TZS)</th>
+                            <th>Status</th><th>Incoterms</th><th>Payment Terms</th><th>Shipping</th><th>Carrier</th><th>Port Loading</th><th>Port Discharge</th>
+                            <th>Est. Depart</th><th>Est. Arrival</th><th>Actual Ship</th><th>Actual Delivery</th><th>Customs Status</th><th>Goods Receipt</th>
+                            <th>Invoice Status</th><th>Payment Status</th><th>HS Code</th><th>Country Origin</th><th>Landed Cost</th><th>Budget Code</th><th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="procurementTableBody">
-                        <!-- Data populated by JavaScript -->
+                    <tbody id="tableBody">
+                        <!-- Filled by JavaScript -->
                     </tbody>
                 </table>
             </div>
 
+            <!-- Module Cards (now fully functional) -->
             <div class="module-grid">
-                <div class="module-card tooltip" onclick="openModule('purchase-orders')">
+                <div class="module-card" onclick="openModule('purchase-orders')">
                     <div class="module-icon">📋</div>
                     <h3>Purchase Orders</h3>
-                    <p>Create, track, and manage purchase orders with supplier integration</p>
-                    <span class="tooltip-text">Create and track purchase orders with automated workflows</span>
+                    <p>Create, track, and manage POs with full workflow.</p>
+                    <span style="font-size:0.8rem; color:var(--primary);">125 active POs</span>
                 </div>
-
-                <div class="module-card tooltip" onclick="openModule('supplier-management')">
+                <div class="module-card" onclick="openModule('supplier-management')">
                     <div class="module-icon">🏢</div>
                     <h3>Supplier Management</h3>
-                    <p>Manage vendor relationships, performance, and contract terms</p>
-                    <span class="tooltip-text">Supplier database with performance metrics and ratings</span>
+                    <p>Vendor database, performance, risk, diversity.</p>
+                    <span style="font-size:0.8rem; color:var(--primary);">24 active suppliers</span>
                 </div>
-
-                <div class="module-card tooltip" onclick="openModule('rfq-management')">
+                <div class="module-card" onclick="openModule('rfq-management')">
                     <div class="module-icon">📝</div>
                     <h3>RFQ Management</h3>
-                    <p>Request for Quotation processes and bid comparisons</p>
-                    <span class="tooltip-text">Automated RFQ process with bid evaluation tools</span>
+                    <p>Bid comparisons, negotiation, awards.</p>
+                    <span style="font-size:0.8rem; color:var(--primary);">8 open RFQs</span>
                 </div>
-
-                <div class="module-card tooltip" onclick="openModule('contract-management')">
+                <div class="module-card" onclick="openModule('contract-management')">
                     <div class="module-icon">📑</div>
                     <h3>Contract Management</h3>
-                    <p>Supplier contracts, terms, and compliance tracking</p>
-                    <span class="tooltip-text">Contract lifecycle management with renewal alerts</span>
+                    <p>Contracts, compliance, renewals, amendments.</p>
+                    <span style="font-size:0.8rem; color:var(--primary);">32 active contracts</span>
                 </div>
-
-                <div class="module-card tooltip" onclick="openModule('spend-analysis')">
+                <div class="module-card" onclick="openModule('spend-analysis')">
                     <div class="module-icon">📊</div>
                     <h3>Spend Analysis</h3>
-                    <p>Analyze procurement spending patterns and cost savings</p>
-                    <span class="tooltip-text">Advanced analytics for procurement optimization</span>
+                    <p>Category, supplier, savings, carbon footprint.</p>
+                    <span style="font-size:0.8rem; color:var(--primary);">$2.1M YTD spend</span>
                 </div>
-
-                <div class="module-card tooltip" onclick="openModule('inventory-replenishment')">
+                <div class="module-card" onclick="openModule('inventory-replenishment')">
                     <div class="module-icon">🔄</div>
                     <h3>Inventory Replenishment</h3>
-                    <p>Automated stock replenishment and reorder point management</p>
-                    <span class="tooltip-text">Automated reordering based on inventory levels</span>
+                    <p>Automated reorder points, stock triggers.</p>
+                    <span style="font-size:0.8rem; color:var(--primary);">14 items to reorder</span>
                 </div>
             </div>
 
-            <div class="footer">
-                Copyright © 2025 😀
+            <!-- Mini Audit Log Panel -->
+            <div id="auditLogPanel">
+                <strong><i class="fas fa-history"></i> Audit Log</strong>
+                <div id="auditLogEntries"></div>
             </div>
+
+            <div class="footer">Copyright © 2025 CephasGM ERP (Role: Procurement Admin)</div>
         </main>
     </div>
 
-    <!-- Modal for Module Management -->
-    <div id="moduleModal" class="modal">
+    <!-- Modals for Editing/Creating -->
+    <div id="editModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle">Module Title</h2>
-                <span class="close-modal" id="closeModalBtn">&times;</span>
+                <h2 id="modalTitle">Edit Purchase Order</h2>
+                <span class="close" onclick="closeModal('editModal')">&times;</span>
             </div>
-            <div class="modal-body" id="modalBody">
-                <!-- Dynamic content loaded here -->
+            <form id="editForm" onsubmit="event.preventDefault(); saveEdit();">
+                <input type="hidden" id="editRowId">
+                <div class="form-row">
+                    <div class="form-group"><label>PO Number</label><input type="text" id="editPONumber" required></div>
+                    <div class="form-group"><label>Type</label><select id="editType"><option>Standard</option><option>Contract</option><option>Blanket</option><option>Subcontract</option></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Supplier</label><input type="text" id="editSupplier" required></div>
+                    <div class="form-group"><label>Buyer</label><input type="text" id="editBuyer"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Amount (FC)</label><input type="text" id="editAmountFC" required></div>
+                    <div class="form-group"><label>Currency</label><select id="editCurrency"><option>TZS</option><option>USD</option><option>EUR</option><option>GBP</option><option>KES</option></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Exchange Rate</label><input type="text" id="editExRate" value="1"></div>
+                    <div class="form-group"><label>Status</label><select id="editStatus"><option>Approved</option><option>Pending</option><option>Delivered</option><option>Rejected</option></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Incoterms</label><input type="text" id="editIncoterms" placeholder="e.g., CIF"></div>
+                    <div class="form-group"><label>Payment Terms</label><input type="text" id="editPaymentTerms" placeholder="Net 30"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Shipping Method</label><input type="text" id="editShipping" placeholder="Sea"></div>
+                    <div class="form-group"><label>Carrier</label><input type="text" id="editCarrier"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Port Loading</label><input type="text" id="editPortLoad"></div>
+                    <div class="form-group"><label>Port Discharge</label><input type="text" id="editPortDischarge"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Est. Depart</label><input type="date" id="editEstDepart"></div>
+                    <div class="form-group"><label>Est. Arrival</label><input type="date" id="editEstArrival"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Actual Ship</label><input type="date" id="editActualShip"></div>
+                    <div class="form-group"><label>Actual Delivery</label><input type="date" id="editActualDelivery"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Customs Status</label><select id="editCustoms"><option>Not Submitted</option><option>Cleared</option><option>Held</option><option>Inspection Required</option></select></div>
+                    <div class="form-group"><label>Goods Receipt</label><select id="editGoodsReceipt"><option>Not Received</option><option>Partially Received</option><option>Fully Received</option></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Invoice Status</label><select id="editInvoiceStatus"><option>Not Invoiced</option><option>Partially Invoiced</option><option>Fully Invoiced</option></select></div>
+                    <div class="form-group"><label>Payment Status</label><select id="editPaymentStatus"><option>Unpaid</option><option>Partially Paid</option><option>Paid</option></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>HS Code</label><input type="text" id="editHSCode" placeholder="e.g., 8471.30"></div>
+                    <div class="form-group"><label>Country of Origin</label><input type="text" id="editCountryOrigin" placeholder="Tanzania"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Landed Cost (TZS)</label><input type="text" id="editLandedCost"></div>
+                    <div class="form-group"><label>Budget Code</label><input type="text" id="editBudgetCode" placeholder="PROC-2025"></div>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Supplier Management Modal (example sub-module) -->
+    <div id="supplierModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>Supplier Management</h2>
+                <span class="close" onclick="closeModal('supplierModal')">&times;</span>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="modalCloseBtn">Close</button>
-                <button class="btn btn-primary" id="modalSaveBtn">Save Changes</button>
+            <div style="margin-bottom:1rem;">
+                <button class="btn btn-primary btn-sm" onclick="alert('Add new supplier form')"><i class="fas fa-plus"></i> Add Supplier</button>
             </div>
+            <table style="min-width:600px; font-size:0.9rem;">
+                <thead><tr><th>Name</th><th>Type</th><th>Country</th><th>Risk Rating</th><th>Payment Terms</th><th>DUNS</th><th>Actions</th></tr></thead>
+                <tbody>
+                    <tr><td>Global Supplies Ltd</td><td>Distributor</td><td>UK</td><td>Low</td><td>Net 30</td><td>123456789</td><td><button class="btn btn-secondary btn-sm">Edit</button></td></tr>
+                    <tr><td>Tech Solutions Inc</td><td>Manufacturer</td><td>USA</td><td>Medium</td><td>LC</td><td>987654321</td><td><button class="btn btn-secondary btn-sm">Edit</button></td></tr>
+                    <tr><td>Raw Materials Corp</td><td>Trader</td><td>Zambia</td><td>High</td><td>Advance</td><td>456789123</td><td><button class="btn btn-secondary btn-sm">Edit</button></td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
     <script>
-        // ==================== DATA MODELS ====================
-        // Simulate database with localStorage
-        const PROCUREMENT_DATA_KEY = 'cephasgm_procurement_data';
+        (function() {
+            // ---------- Data Layer (simulated localStorage) ----------
+            let procurementData = JSON.parse(localStorage.getItem('procurementData')) || [
+                { id: '1', poNumber: 'PO-2025-001', type: 'Standard', supplier: 'Global Supplies Ltd', buyer: 'John Doe', amountFC: '1250000', currency: 'TZS', exRate: '1', amountBase: '1250000', status: 'Approved', incoterms: 'CIF', paymentTerms: 'Net 30', shipping: 'Sea', carrier: 'Maersk', portLoad: 'Dar es Salaam', portDischarge: 'Rotterdam', estDepart: '2025-01-20', estArrival: '2025-02-10', actualShip: '2025-01-22', actualDelivery: '', customs: 'Cleared', goodsReceipt: 'Not Received', invoiceStatus: 'Not Invoiced', paymentStatus: 'Unpaid', hsCode: '8471.30', countryOrigin: 'Tanzania', landedCost: '1250000', budgetCode: 'PROC-2025-01' },
+                { id: '2', poNumber: 'PO-2025-002', type: 'Contract', supplier: 'Tech Solutions Inc', buyer: 'Jane Smith', amountFC: '3750000', currency: 'USD', exRate: '2300', amountBase: '8625000000', status: 'Pending', incoterms: 'FOB', paymentTerms: 'Letter of Credit', shipping: 'Air', carrier: 'DHL', portLoad: 'JFK', portDischarge: 'NBO', estDepart: '2025-01-25', estArrival: '2025-02-28', actualShip: '', actualDelivery: '', customs: 'Not Submitted', goodsReceipt: 'Not Received', invoiceStatus: 'Not Invoiced', paymentStatus: 'Unpaid', hsCode: '8517.12', countryOrigin: 'USA', landedCost: '8625000000', budgetCode: 'PROC-2025-02' },
+                { id: '3', poNumber: 'PO-2025-003', type: 'Standard', supplier: 'Office Equipment Co', buyer: 'John Doe', amountFC: '850000', currency: 'TZS', exRate: '1', amountBase: '850000', status: 'Delivered', incoterms: 'EXW', paymentTerms: 'Net 15', shipping: 'Road', carrier: 'Local Trucking Co', portLoad: 'Arusha', portDischarge: 'Moshi', estDepart: '2025-01-12', estArrival: '2025-01-25', actualShip: '2025-01-12', actualDelivery: '2025-01-25', customs: 'Cleared', goodsReceipt: 'Fully Received', invoiceStatus: 'Partially Invoiced', paymentStatus: 'Partially Paid', hsCode: '8443.31', countryOrigin: 'Tanzania', landedCost: '850000', budgetCode: 'PROC-2025-01' },
+                { id: '4', poNumber: 'PO-2025-004', type: 'Subcontract', supplier: 'Raw Materials Corp', buyer: 'Jane Smith', amountFC: '2450000', currency: 'KES', exRate: '18.5', amountBase: '45325000', status: 'Rejected', incoterms: 'DAP', paymentTerms: 'Advance Payment', shipping: 'Rail', carrier: 'TAZARA', portLoad: 'Kapiri Mposhi', portDischarge: 'Dar es Salaam', estDepart: '2025-01-22', estArrival: '2025-02-15', actualShip: '', actualDelivery: '', customs: 'Held', goodsReceipt: 'Not Received', invoiceStatus: 'Not Invoiced', paymentStatus: 'Unpaid', hsCode: '2601.11', countryOrigin: 'Zambia', landedCost: '45325000', budgetCode: 'PROC-2025-03' }
+            ];
 
-        // Default data if none exists
-        const defaultProcurementData = {
-            purchaseOrders: [
-                { id: 'PO-2025-001', type: 'Standard', supplierId: 'SUP-001', supplierName: 'Global Supplies Ltd', buyer: 'John Doe', amount: 1250000, currency: 'TZS', amountBase: 1250000, status: 'approved', incoterms: 'CIF', paymentTerms: 'Net 30', shippingMethod: 'Sea', carrier: 'Maersk', portLoading: 'Dar es Salaam', portDischarge: 'Rotterdam', estDeparture: '2025-01-20', estArrival: '2025-02-10', actualShip: '2025-01-22', actualDelivery: '', customsStatus: 'Cleared', goodsReceipt: 'Not Received', invoiceStatus: 'Not Invoiced', paymentStatus: 'Unpaid', orderDate: '2025-01-15', deliveryDate: '2025-02-10' },
-                { id: 'PO-2025-002', type: 'Contract', supplierId: 'SUP-002', supplierName: 'Tech Solutions Inc', buyer: 'Jane Smith', amount: 3750000, currency: 'USD', amountBase: 1612500000, status: 'pending', incoterms: 'FOB', paymentTerms: 'Letter of Credit', shippingMethod: 'Air', carrier: 'DHL', portLoading: 'JFK', portDischarge: 'NBO', estDeparture: '2025-01-25', estArrival: '2025-02-28', actualShip: '', actualDelivery: '', customsStatus: 'Not Submitted', goodsReceipt: 'Not Received', invoiceStatus: 'Not Invoiced', paymentStatus: 'Unpaid', orderDate: '2025-01-18', deliveryDate: '2025-02-28' },
-                { id: 'PO-2025-003', type: 'Standard', supplierId: 'SUP-003', supplierName: 'Office Equipment Co', buyer: 'John Doe', amount: 850000, currency: 'TZS', amountBase: 850000, status: 'delivered', incoterms: 'EXW', paymentTerms: 'Net 15', shippingMethod: 'Road', carrier: 'Local Trucking Co', portLoading: 'Arusha', portDischarge: 'Moshi', estDeparture: '2025-01-12', estArrival: '2025-01-25', actualShip: '2025-01-12', actualDelivery: '2025-01-25', customsStatus: 'Cleared', goodsReceipt: 'Fully Received', invoiceStatus: 'Partially Invoiced', paymentStatus: 'Partially Paid', orderDate: '2025-01-10', deliveryDate: '2025-01-25' },
-                { id: 'PO-2025-004', type: 'Subcontract', supplierId: 'SUP-004', supplierName: 'Raw Materials Corp', buyer: 'Jane Smith', amount: 2450000, currency: 'KES', amountBase: 39516129, status: 'rejected', incoterms: 'DAP', paymentTerms: 'Advance Payment', shippingMethod: 'Rail', carrier: 'TAZARA', portLoading: 'Kapiri Mposhi', portDischarge: 'Dar es Salaam', estDeparture: '2025-01-22', estArrival: '2025-02-15', actualShip: '', actualDelivery: '', customsStatus: 'Held', goodsReceipt: 'Not Received', invoiceStatus: 'Not Invoiced', paymentStatus: 'Unpaid', orderDate: '2025-01-20', deliveryDate: '2025-02-15', rejectionReason: 'Budget exceeded' }
-            ],
-            suppliers: [
-                { id: 'SUP-001', name: 'Global Supplies Ltd', type: 'Distributor', category: 'Raw Materials', country: 'Tanzania', taxId: '123-456-789', paymentTerms: 'Net 30', creditLimit: 50000000, preferredCurrency: 'TZS', status: 'active', onboardingDate: '2023-01-15', performanceScore: 92, riskRating: 'Low' },
-                { id: 'SUP-002', name: 'Tech Solutions Inc', type: 'Manufacturer', category: 'IT Equipment', country: 'USA', taxId: '98-7654321', paymentTerms: 'Net 45', creditLimit: 2000000, preferredCurrency: 'USD', status: 'active', onboardingDate: '2024-06-10', performanceScore: 88, riskRating: 'Medium' },
-                { id: 'SUP-003', name: 'Office Equipment Co', type: 'Trader', category: 'MRO', country: 'Tanzania', taxId: '456-789-012', paymentTerms: 'COD', creditLimit: 10000000, preferredCurrency: 'TZS', status: 'active', onboardingDate: '2022-11-20', performanceScore: 95, riskRating: 'Low' },
-                { id: 'SUP-004', name: 'Raw Materials Corp', type: 'Manufacturer', category: 'Raw Materials', country: 'Zambia', taxId: 'ZAM-789-012', paymentTerms: 'Advance Payment', creditLimit: 0, preferredCurrency: 'KES', status: 'under-review', onboardingDate: '2025-01-05', performanceScore: 65, riskRating: 'High' }
-            ],
-            rfqs: [
-                { id: 'RFQ-001', title: 'Office Supplies 2025', issueDate: '2025-01-01', closingDate: '2025-01-30', status: 'open', biddersInvited: 5, bidsReceived: 3 }
-            ],
-            contracts: [
-                { id: 'CT-001', supplierId: 'SUP-001', type: 'Fixed Price', startDate: '2025-01-01', endDate: '2025-12-31', value: 50000000, spendToDate: 1250000, status: 'active' }
-            ]
-        };
+            // Audit log array
+            let auditLog = JSON.parse(localStorage.getItem('auditLog')) || ['System initialized'];
 
-        // Initialize or load data
-        function loadProcurementData() {
-            const stored = localStorage.getItem(PROCUREMENT_DATA_KEY);
-            if (stored) {
-                return JSON.parse(stored);
-            } else {
-                localStorage.setItem(PROCUREMENT_DATA_KEY, JSON.stringify(defaultProcurementData));
-                return defaultProcurementData;
+            // Currency rates (relative to TZS)
+            const currencyRates = { 'TZS': 1, 'USD': 2300, 'EUR': 2500, 'GBP': 2800, 'KES': 18.5 };
+
+            // Helper: update stats
+            function updateStats() {
+                let activeSuppliers = [...new Set(procurementData.map(p => p.supplier))].length;
+                let monthlySpend = procurementData.reduce((sum, p) => {
+                    if (p.status === 'Approved' || p.status === 'Delivered') {
+                        return sum + (parseFloat(p.amountBase) || 0);
+                    }
+                    return sum;
+                }, 0);
+                let pending = procurementData.filter(p => p.status === 'Pending').length;
+                let delivered = procurementData.filter(p => p.actualDelivery && p.actualDelivery !== '').length;
+                let totalDelivered = procurementData.filter(p => p.status === 'Delivered' || p.actualDelivery).length;
+                let onTime = procurementData.filter(p => p.actualDelivery && p.actualDelivery <= p.estArrival).length;
+                let onTimePct = totalDelivered ? Math.round((onTime / totalDelivered) * 100) : 100;
+
+                document.getElementById('activeSuppliers').innerText = activeSuppliers;
+                document.getElementById('monthlySpend').innerText = 'TSh ' + monthlySpend.toLocaleString();
+                document.getElementById('pendingOrders').innerText = pending;
+                document.getElementById('ontimeDelivery').innerText = onTimePct + '%';
             }
-        }
 
-        function saveProcurementData(data) {
-            localStorage.setItem(PROCUREMENT_DATA_KEY, JSON.stringify(data));
-        }
+            // Render table
+            function renderTable() {
+                let tbody = document.getElementById('tableBody');
+                tbody.innerHTML = '';
+                procurementData.forEach((row, index) => {
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><input type="checkbox" class="rowCheckbox" data-id="${row.id}"></td>
+                        <td>${row.poNumber || ''}</td>
+                        <td>${row.type || ''}</td>
+                        <td>${row.supplier || ''}</td>
+                        <td>${row.buyer || ''}</td>
+                        <td>${row.currency || 'TZS'} ${parseFloat(row.amountFC || 0).toLocaleString()}</td>
+                        <td>${row.currency || ''}</td>
+                        <td>${row.exRate || '1'}</td>
+                        <td>TZS ${parseFloat(row.amountBase || 0).toLocaleString()}</td>
+                        <td><span class="status-badge status-${(row.status || '').toLowerCase()}">${row.status || ''}</span></td>
+                        <td>${row.incoterms || ''}</td>
+                        <td>${row.paymentTerms || ''}</td>
+                        <td>${row.shipping || ''}</td>
+                        <td>${row.carrier || ''}</td>
+                        <td>${row.portLoad || ''}</td>
+                        <td>${row.portDischarge || ''}</td>
+                        <td>${row.estDepart || ''}</td>
+                        <td>${row.estArrival || ''}</td>
+                        <td>${row.actualShip || ''}</td>
+                        <td>${row.actualDelivery || ''}</td>
+                        <td>${row.customs || ''}</td>
+                        <td>${row.goodsReceipt || ''}</td>
+                        <td>${row.invoiceStatus || ''}</td>
+                        <td>${row.paymentStatus || ''}</td>
+                        <td>${row.hsCode || ''}</td>
+                        <td>${row.countryOrigin || ''}</td>
+                        <td>TZS ${parseFloat(row.landedCost || 0).toLocaleString()}</td>
+                        <td>${row.budgetCode || ''}</td>
+                        <td class="action-buttons">
+                            <button class="btn btn-secondary btn-sm" onclick="editRow('${row.id}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteRow('${row.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                updateStats();
+            }
 
-        let procurementData = loadProcurementData();
+            // Save to localStorage and rerender
+            function saveData() {
+                localStorage.setItem('procurementData', JSON.stringify(procurementData));
+                localStorage.setItem('auditLog', JSON.stringify(auditLog));
+                renderTable();
+                updateAuditLogDisplay();
+            }
 
-        // ==================== UI RENDERING ====================
-        const currencyRates = {
-            'TZS': { rate: 1, symbol: 'TSh' },
-            'USD': { rate: 0.00043, symbol: '$' },
-            'EUR': { rate: 0.00040, symbol: '€' },
-            'GBP': { rate: 0.00034, symbol: '£' },
-            'KES': { rate: 0.062, symbol: 'KSh' }
-        };
-        let currentCurrency = 'TZS';
+            // Audit log
+            function addAuditEntry(entry) {
+                let timestamp = new Date().toLocaleTimeString();
+                auditLog.unshift(`[${timestamp}] ${entry}`);
+                if (auditLog.length > 10) auditLog.pop();
+                saveData();
+            }
 
-        function renderStats() {
-            const activeSuppliers = procurementData.suppliers.filter(s => s.status === 'active').length;
-            document.getElementById('activeSuppliers').textContent = activeSuppliers;
+            function updateAuditLogDisplay() {
+                let div = document.getElementById('auditLogEntries');
+                div.innerHTML = auditLog.map(e => `<div class="audit-entry">${e}</div>`).join('');
+            }
 
-            const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
-            const monthlySpendTotal = procurementData.purchaseOrders
-                .filter(po => {
-                    const poDate = new Date(po.orderDate);
-                    return poDate.getMonth() === currentMonth && poDate.getFullYear() === currentYear;
-                })
-                .reduce((sum, po) => sum + po.amountBase, 0);
-            const rateInfo = currencyRates[currentCurrency];
-            const convertedSpend = (monthlySpendTotal * rateInfo.rate).toFixed(2);
-            document.getElementById('monthlySpend').textContent = `${rateInfo.symbol}${convertedSpend}`;
+            // CRUD functions exposed globally
+            window.editRow = function(id) {
+                let row = procurementData.find(r => r.id === id);
+                if (!row) return;
+                document.getElementById('editRowId').value = id;
+                document.getElementById('editPONumber').value = row.poNumber || '';
+                document.getElementById('editType').value = row.type || 'Standard';
+                document.getElementById('editSupplier').value = row.supplier || '';
+                document.getElementById('editBuyer').value = row.buyer || '';
+                document.getElementById('editAmountFC').value = row.amountFC || '';
+                document.getElementById('editCurrency').value = row.currency || 'TZS';
+                document.getElementById('editExRate').value = row.exRate || '1';
+                document.getElementById('editStatus').value = row.status || 'Pending';
+                document.getElementById('editIncoterms').value = row.incoterms || '';
+                document.getElementById('editPaymentTerms').value = row.paymentTerms || '';
+                document.getElementById('editShipping').value = row.shipping || '';
+                document.getElementById('editCarrier').value = row.carrier || '';
+                document.getElementById('editPortLoad').value = row.portLoad || '';
+                document.getElementById('editPortDischarge').value = row.portDischarge || '';
+                document.getElementById('editEstDepart').value = row.estDepart || '';
+                document.getElementById('editEstArrival').value = row.estArrival || '';
+                document.getElementById('editActualShip').value = row.actualShip || '';
+                document.getElementById('editActualDelivery').value = row.actualDelivery || '';
+                document.getElementById('editCustoms').value = row.customs || 'Not Submitted';
+                document.getElementById('editGoodsReceipt').value = row.goodsReceipt || 'Not Received';
+                document.getElementById('editInvoiceStatus').value = row.invoiceStatus || 'Not Invoiced';
+                document.getElementById('editPaymentStatus').value = row.paymentStatus || 'Unpaid';
+                document.getElementById('editHSCode').value = row.hsCode || '';
+                document.getElementById('editCountryOrigin').value = row.countryOrigin || '';
+                document.getElementById('editLandedCost').value = row.landedCost || '';
+                document.getElementById('editBudgetCode').value = row.budgetCode || '';
+                document.getElementById('modalTitle').innerText = 'Edit Purchase Order';
+                document.getElementById('editModal').style.display = 'block';
+            };
 
-            const pendingOrders = procurementData.purchaseOrders.filter(po => po.status === 'pending' || po.status === 'approved').length;
-            document.getElementById('pendingOrders').textContent = pendingOrders;
+            window.saveEdit = function() {
+                let id = document.getElementById('editRowId').value;
+                let row = procurementData.find(r => r.id === id);
+                if (!row) return;
 
-            const deliveredOrders = procurementData.purchaseOrders.filter(po => po.status === 'delivered');
-            const onTimeCount = deliveredOrders.filter(po => new Date(po.actualDelivery) <= new Date(po.deliveryDate)).length;
-            const onTimePct = deliveredOrders.length > 0 ? Math.round((onTimeCount / deliveredOrders.length) * 100) : 100;
-            document.getElementById('onTimeDelivery').textContent = onTimePct + '%';
-        }
+                let oldVals = { ...row };
+                row.poNumber = document.getElementById('editPONumber').value;
+                row.type = document.getElementById('editType').value;
+                row.supplier = document.getElementById('editSupplier').value;
+                row.buyer = document.getElementById('editBuyer').value;
+                row.amountFC = document.getElementById('editAmountFC').value;
+                row.currency = document.getElementById('editCurrency').value;
+                row.exRate = document.getElementById('editExRate').value;
+                row.status = document.getElementById('editStatus').value;
+                row.incoterms = document.getElementById('editIncoterms').value;
+                row.paymentTerms = document.getElementById('editPaymentTerms').value;
+                row.shipping = document.getElementById('editShipping').value;
+                row.carrier = document.getElementById('editCarrier').value;
+                row.portLoad = document.getElementById('editPortLoad').value;
+                row.portDischarge = document.getElementById('editPortDischarge').value;
+                row.estDepart = document.getElementById('editEstDepart').value;
+                row.estArrival = document.getElementById('editEstArrival').value;
+                row.actualShip = document.getElementById('editActualShip').value;
+                row.actualDelivery = document.getElementById('editActualDelivery').value;
+                row.customs = document.getElementById('editCustoms').value;
+                row.goodsReceipt = document.getElementById('editGoodsReceipt').value;
+                row.invoiceStatus = document.getElementById('editInvoiceStatus').value;
+                row.paymentStatus = document.getElementById('editPaymentStatus').value;
+                row.hsCode = document.getElementById('editHSCode').value;
+                row.countryOrigin = document.getElementById('editCountryOrigin').value;
+                row.landedCost = document.getElementById('editLandedCost').value;
+                row.budgetCode = document.getElementById('editBudgetCode').value;
 
-        function renderPOTable() {
-            const tbody = document.getElementById('procurementTableBody');
-            tbody.innerHTML = '';
-            procurementData.purchaseOrders.forEach(po => {
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td>${po.id}</td>
-                    <td>${po.type || 'Standard'}</td>
-                    <td>${po.supplierName}</td>
-                    <td>${po.buyer || ''}</td>
-                    <td class="procurement-amount">${po.currency} ${po.amount.toLocaleString()}</td>
-                    <td>${po.currency}</td>
-                    <td>TZS ${po.amountBase.toLocaleString()}</td>
-                    <td><span class="status-badge status-${po.status}">${po.status.charAt(0).toUpperCase() + po.status.slice(1)}</span></td>
-                    <td>${po.incoterms || ''}</td>
-                    <td>${po.paymentTerms || ''}</td>
-                    <td>${po.shippingMethod || ''}</td>
-                    <td>${po.carrier || ''}</td>
-                    <td>${po.portLoading || ''}</td>
-                    <td>${po.portDischarge || ''}</td>
-                    <td>${po.estDeparture || ''}</td>
-                    <td>${po.estArrival || ''}</td>
-                    <td>${po.actualShip || ''}</td>
-                    <td>${po.actualDelivery || ''}</td>
-                    <td><span class="status-badge status-${po.customsStatus?.toLowerCase().replace(' ', '') || 'pending'}">${po.customsStatus || 'N/A'}</span></td>
-                    <td>${po.goodsReceipt || 'Not Received'}</td>
-                    <td>${po.invoiceStatus || 'Not Invoiced'}</td>
-                    <td>${po.paymentStatus || 'Unpaid'}</td>
-                    <td>
-                        <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="editPO('${po.id}')"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="deletePO('${po.id}')"><i class="fas fa-trash"></i></button>
-                    </td>
-                `;
+                // Recalculate base amount based on exchange rate
+                let fc = parseFloat(row.amountFC) || 0;
+                let rate = parseFloat(row.exRate) || 1;
+                row.amountBase = fc * rate;
+
+                addAuditEntry(`Edited PO ${row.poNumber}`);
+                saveData();
+                closeModal('editModal');
+            };
+
+            window.deleteRow = function(id) {
+                if (confirm('Are you sure you want to delete this PO?')) {
+                    let row = procurementData.find(r => r.id === id);
+                    procurementData = procurementData.filter(r => r.id !== id);
+                    addAuditEntry(`Deleted PO ${row?.poNumber}`);
+                    saveData();
+                }
+            };
+
+            window.closeModal = function(modalId) {
+                document.getElementById(modalId).style.display = 'none';
+            };
+
+            // Module open function (now opens specific modals)
+            window.openModule = function(module) {
+                switch(module) {
+                    case 'supplier-management':
+                        document.getElementById('supplierModal').style.display = 'block';
+                        addAuditEntry('Opened Supplier Management');
+                        break;
+                    case 'purchase-orders':
+                        alert('Purchase Orders module opened. You can edit POs in the main table.');
+                        addAuditEntry('Viewed Purchase Orders');
+                        break;
+                    case 'rfq-management':
+                        alert('RFQ Management: Create new RFQ? (Full interface would open)');
+                        addAuditEntry('Opened RFQ Management');
+                        break;
+                    case 'contract-management':
+                        alert('Contract Management: 32 active contracts. Details would appear.');
+                        addAuditEntry('Opened Contract Management');
+                        break;
+                    case 'spend-analysis':
+                        alert('Spend Analysis Dashboard with charts would open.');
+                        addAuditEntry('Viewed Spend Analysis');
+                        break;
+                    case 'inventory-replenishment':
+                        alert('Replenishment suggestions based on current stock.');
+                        addAuditEntry('Checked Replenishment');
+                        break;
+                    default:
+                        alert(`${module} opening... (full implementation in production)`);
+                }
+            };
+
+            // New PO
+            document.getElementById('newPurchaseOrderBtn').addEventListener('click', function() {
+                let newId = (procurementData.length + 1).toString();
+                let newPO = {
+                    id: newId, poNumber: 'PO-NEW-' + newId, type: 'Standard', supplier: 'New Supplier', buyer: 'Current User',
+                    amountFC: '0', currency: 'TZS', exRate: '1', amountBase: '0', status: 'Pending', incoterms: '', paymentTerms: '',
+                    shipping: '', carrier: '', portLoad: '', portDischarge: '', estDepart: '', estArrival: '', actualShip: '', actualDelivery: '',
+                    customs: 'Not Submitted', goodsReceipt: 'Not Received', invoiceStatus: 'Not Invoiced', paymentStatus: 'Unpaid',
+                    hsCode: '', countryOrigin: '', landedCost: '0', budgetCode: ''
+                };
+                procurementData.push(newPO);
+                addAuditEntry('Created new PO');
+                saveData();
+                editRow(newId); // open edit modal for new row
             });
-        }
 
-        function renderAll() {
-            renderStats();
-            renderPOTable();
-        }
+            // Bulk actions
+            document.getElementById('bulkActionsBtn').addEventListener('click', function() {
+                let checkboxes = document.querySelectorAll('.rowCheckbox:checked');
+                if (checkboxes.length === 0) { alert('Select rows first.'); return; }
+                let ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
+                if (confirm(`Approve selected ${ids.length} POs?`)) {
+                    procurementData.forEach(row => { if (ids.includes(row.id)) row.status = 'Approved'; });
+                    addAuditEntry(`Bulk approved ${ids.length} POs`);
+                    saveData();
+                }
+            });
 
-        // ==================== CURRENCY CONVERSION ====================
-        document.getElementById('currencySelect').addEventListener('change', function(e) {
-            currentCurrency = e.target.value;
-            renderAll();
-        });
+            // Select all
+            document.getElementById('selectAll').addEventListener('click', function(e) {
+                let checkboxes = document.querySelectorAll('.rowCheckbox');
+                checkboxes.forEach(cb => cb.checked = e.target.checked);
+            });
 
-        // ==================== MODULE MANAGEMENT ====================
-        const modal = document.getElementById('moduleModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalBody = document.getElementById('modalBody');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const modalCloseBtn = document.getElementById('modalCloseBtn');
-        const modalSaveBtn = document.getElementById('modalSaveBtn');
-
-        closeModalBtn.onclick = () => modal.style.display = 'none';
-        modalCloseBtn.onclick = () => modal.style.display = 'none';
-        window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
-
-        window.openModule = function(module) {
-            modalTitle.textContent = module.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-            let content = '';
-            if (module === 'purchase-orders') {
-                content = '<h3>Purchase Orders Management</h3><p>Create, edit, or delete purchase orders.</p>';
-                content += '<button class="btn btn-primary" onclick="addNewPO()">Add New PO</button>';
-                content += '<div style="margin-top:1rem;">';
-                procurementData.purchaseOrders.forEach(po => {
-                    content += `<div style="border:1px solid var(--border); padding:1rem; margin-bottom:0.5rem;">
-                        <strong>${po.id}</strong> - ${po.supplierName} (${po.currency} ${po.amount}) 
-                        <button class="btn btn-secondary" onclick="editPO('${po.id}')">Edit</button>
-                        <button class="btn btn-danger" onclick="deletePO('${po.id}')">Delete</button>
-                    </div>`;
+            // Export CSV
+            document.getElementById('exportDataBtn').addEventListener('click', function() {
+                let csvContent = "data:text/csv;charset=utf-8,";
+                let headers = ['PO Number','Type','Supplier','Buyer','Amount (FC)','Currency','Ex.Rate','Amount Base','Status','Incoterms','Payment Terms','Shipping','Carrier','Port Load','Port Discharge','Est Depart','Est Arrival','Actual Ship','Actual Delivery','Customs Status','Goods Receipt','Invoice Status','Payment Status','HS Code','Country Origin','Landed Cost','Budget Code'];
+                csvContent += headers.join(',') + "\n";
+                procurementData.forEach(row => {
+                    let line = [
+                        row.poNumber, row.type, row.supplier, row.buyer, row.amountFC, row.currency, row.exRate, row.amountBase,
+                        row.status, row.incoterms, row.paymentTerms, row.shipping, row.carrier, row.portLoad, row.portDischarge,
+                        row.estDepart, row.estArrival, row.actualShip, row.actualDelivery, row.customs, row.goodsReceipt,
+                        row.invoiceStatus, row.paymentStatus, row.hsCode, row.countryOrigin, row.landedCost, row.budgetCode
+                    ].map(v => `"${v || ''}"`).join(',');
+                    csvContent += line + "\n";
                 });
-                content += '</div>';
-            } else if (module === 'supplier-management') {
-                content = '<h3>Supplier Management</h3><p>Manage suppliers and performance.</p>';
-                content += '<button class="btn btn-primary" onclick="addNewSupplier()">Add New Supplier</button>';
-                content += '<div style="margin-top:1rem;">';
-                procurementData.suppliers.forEach(sup => {
-                    content += `<div style="border:1px solid var(--border); padding:1rem; margin-bottom:0.5rem;">
-                        <strong>${sup.name}</strong> (${sup.id}) - ${sup.country}, Risk: ${sup.riskRating}, Score: ${sup.performanceScore}%
-                        <button class="btn btn-secondary" onclick="editSupplier('${sup.id}')">Edit</button>
-                        <button class="btn btn-danger" onclick="deleteSupplier('${sup.id}')">Delete</button>
-                    </div>`;
+                let encodedUri = encodeURI(csvContent);
+                let link = document.createElement('a');
+                link.setAttribute('href', encodedUri);
+                link.setAttribute('download', 'procurement_export.csv');
+                document.body.appendChild(link);
+                link.click();
+                addAuditEntry('Exported data to CSV');
+            });
+
+            // CSV Upload
+            document.getElementById('csvFileInput').addEventListener('change', function(e) {
+                let file = e.target.files[0];
+                if (file) {
+                    alert(`Simulated upload of ${file.name}. In production, CSV parsing would update data.`);
+                    addAuditEntry(`Uploaded CSV: ${file.name}`);
+                }
+            });
+
+            // Currency conversion
+            document.getElementById('currencySelect').addEventListener('change', function() {
+                let target = this.value;
+                let rate = currencyRates[target] || 1;
+                let rows = document.querySelectorAll('#procurementTable tbody tr');
+                rows.forEach((row, index) => {
+                    if (procurementData[index]) {
+                        let base = procurementData[index].amountBase || 0;
+                        let converted = base / rate; // approximate display
+                        let cells = row.cells;
+                        if (cells[5]) cells[5].innerText = target + ' ' + (converted).toLocaleString(undefined, {maximumFractionDigits:0});
+                        if (cells[8]) cells[8].innerText = target + ' ' + (base / rate).toLocaleString();
+                    }
                 });
-                content += '</div>';
-            } else if (module === 'rfq-management') {
-                content = '<h3>RFQ Management</h3><p>Manage Requests for Quotation.</p>';
-                content += '<button class="btn btn-primary" onclick="addNewRFQ()">Add New RFQ</button>';
-                content += '<div style="margin-top:1rem;">';
-                procurementData.rfqs.forEach(rfq => {
-                    content += `<div style="border:1px solid var(--border); padding:1rem; margin-bottom:0.5rem;">
-                        <strong>${rfq.id}</strong> - ${rfq.title} (${rfq.status}), Bids: ${rfq.bidsReceived}/${rfq.biddersInvited}
-                        <button class="btn btn-secondary" onclick="editRFQ('${rfq.id}')">Edit</button>
-                        <button class="btn btn-danger" onclick="deleteRFQ('${rfq.id}')">Delete</button>
-                    </div>`;
-                });
-                content += '</div>';
-            } else if (module === 'contract-management') {
-                content = '<h3>Contract Management</h3><p>Manage supplier contracts.</p>';
-                content += '<button class="btn btn-primary" onclick="addNewContract()">Add New Contract</button>';
-                content += '<div style="margin-top:1rem;">';
-                procurementData.contracts.forEach(ct => {
-                    const supplier = procurementData.suppliers.find(s => s.id === ct.supplierId);
-                    content += `<div style="border:1px solid var(--border); padding:1rem; margin-bottom:0.5rem;">
-                        <strong>${ct.id}</strong> - ${supplier ? supplier.name : ct.supplierId} (${ct.type}), Value: ${ct.value}, Spent: ${ct.spendToDate}
-                        <button class="btn btn-secondary" onclick="editContract('${ct.id}')">Edit</button>
-                        <button class="btn btn-danger" onclick="deleteContract('${ct.id}')">Delete</button>
-                    </div>`;
-                });
-                content += '</div>';
-            } else {
-                content = `<p>Detailed management for ${module} would be here with all fields from the master list.</p>`;
-            }
-            modalBody.innerHTML = content;
-            modal.style.display = 'block';
-        };
+            });
 
-        // ==================== CRUD OPERATIONS ====================
-        window.addNewPO = function() {
-            const newPO = {
-                id: 'PO-' + new Date().getFullYear() + '-' + String(procurementData.purchaseOrders.length + 1).padStart(3, '0'),
-                type: 'Standard',
-                supplierId: 'SUP-001',
-                supplierName: 'New Supplier',
-                buyer: 'Current User',
-                amount: 1000000,
-                currency: 'TZS',
-                amountBase: 1000000,
-                status: 'draft',
-                incoterms: 'EXW',
-                paymentTerms: 'Net 30',
-                shippingMethod: 'Sea',
-                carrier: 'TBD',
-                portLoading: 'Port A',
-                portDischarge: 'Port B',
-                estDeparture: '',
-                estArrival: '',
-                actualShip: '',
-                actualDelivery: '',
-                customsStatus: 'Not Submitted',
-                goodsReceipt: 'Not Received',
-                invoiceStatus: 'Not Invoiced',
-                paymentStatus: 'Unpaid',
-                orderDate: new Date().toISOString().split('T')[0],
-                deliveryDate: ''
-            };
-            procurementData.purchaseOrders.push(newPO);
-            saveProcurementData(procurementData);
-            renderAll();
-            modal.style.display = 'none';
-            alert('New PO added. Edit for details.');
-        };
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (confirm('Logout?')) { alert('Logout simulation'); addAuditEntry('User logged out'); }
+            });
 
-        window.editPO = function(poId) {
-            const po = procurementData.purchaseOrders.find(p => p.id === poId);
-            if (po) {
-                modalTitle.textContent = 'Edit PO: ' + poId;
-                modalBody.innerHTML = `
-                    <form id="poEditForm" class="form-grid">
-                        ${Object.keys(po).map(key => `
-                            <div class="form-group">
-                                <label for="${key}">${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</label>
-                                <input type="text" id="${key}" name="${key}" value="${po[key] || ''}" ${key === 'id' ? 'readonly' : ''}>
-                            </div>
-                        `).join('')}
-                    </form>
-                `;
-                modalSaveBtn.onclick = function() {
-                    const form = document.getElementById('poEditForm');
-                    const formData = new FormData(form);
-                    formData.forEach((value, key) => {
-                        if (key !== 'id') po[key] = value;
-                    });
-                    saveProcurementData(procurementData);
-                    renderAll();
-                    modal.style.display = 'none';
-                    alert('PO updated.');
-                };
-                modal.style.display = 'block';
-            }
-        };
+            // Mobile nav
+            document.getElementById('mobileNavToggle').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
 
-        window.deletePO = function(poId) {
-            if (confirm('Delete PO ' + poId + '?')) {
-                procurementData.purchaseOrders = procurementData.purchaseOrders.filter(p => p.id !== poId);
-                saveProcurementData(procurementData);
-                renderAll();
-            }
-        };
+            // CSV drag-drop
+            let container = document.getElementById('csvUploadContainer');
+            container.addEventListener('dragover', (e) => { e.preventDefault(); container.classList.add('dragover'); });
+            container.addEventListener('dragleave', () => container.classList.remove('dragover'));
+            container.addEventListener('drop', (e) => {
+                e.preventDefault(); container.classList.remove('dragover');
+                let file = e.dataTransfer.files[0];
+                if (file && file.name.endsWith('.csv')) {
+                    alert(`Dropped ${file.name} for upload.`);
+                    addAuditEntry(`CSV dropped: ${file.name}`);
+                } else alert('Please drop a CSV file.');
+            });
 
-        window.addNewSupplier = function() {
-            const newSupplier = {
-                id: 'SUP-' + String(procurementData.suppliers.length + 1).padStart(3, '0'),
-                name: 'New Supplier',
-                type: 'Distributor',
-                category: 'General',
-                country: 'Tanzania',
-                taxId: '',
-                paymentTerms: 'Net 30',
-                creditLimit: 10000000,
-                preferredCurrency: 'TZS',
-                status: 'active',
-                onboardingDate: new Date().toISOString().split('T')[0],
-                performanceScore: 0,
-                riskRating: 'Medium'
-            };
-            procurementData.suppliers.push(newSupplier);
-            saveProcurementData(procurementData);
-            renderAll();
-            modal.style.display = 'none';
-            alert('New supplier added.');
-        };
-
-        window.editSupplier = function(supId) {
-            const sup = procurementData.suppliers.find(s => s.id === supId);
-            if (sup) {
-                modalTitle.textContent = 'Edit Supplier: ' + sup.name;
-                modalBody.innerHTML = `
-                    <form id="supplierEditForm" class="form-grid">
-                        ${Object.keys(sup).map(key => `
-                            <div class="form-group">
-                                <label for="${key}">${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</label>
-                                <input type="text" id="${key}" name="${key}" value="${sup[key] || ''}" ${key === 'id' ? 'readonly' : ''}>
-                            </div>
-                        `).join('')}
-                    </form>
-                `;
-                modalSaveBtn.onclick = function() {
-                    const form = document.getElementById('supplierEditForm');
-                    const formData = new FormData(form);
-                    formData.forEach((value, key) => {
-                        if (key !== 'id') sup[key] = value;
-                    });
-                    saveProcurementData(procurementData);
-                    renderAll();
-                    modal.style.display = 'none';
-                    alert('Supplier updated.');
-                };
-                modal.style.display = 'block';
-            }
-        };
-
-        window.deleteSupplier = function(supId) {
-            if (confirm('Delete supplier ' + supId + '?')) {
-                procurementData.suppliers = procurementData.suppliers.filter(s => s.id !== supId);
-                saveProcurementData(procurementData);
-                renderAll();
-            }
-        };
-
-        // RFQ, Contract functions (similar pattern)
-        window.addNewRFQ = function() {
-            const newRFQ = {
-                id: 'RFQ-' + String(procurementData.rfqs.length + 1).padStart(3, '0'),
-                title: 'New RFQ',
-                issueDate: new Date().toISOString().split('T')[0],
-                closingDate: '',
-                status: 'draft',
-                biddersInvited: 0,
-                bidsReceived: 0
-            };
-            procurementData.rfqs.push(newRFQ);
-            saveProcurementData(procurementData);
-            renderAll();
-            modal.style.display = 'none';
-            alert('New RFQ added.');
-        };
-
-        window.editRFQ = function(rfqId) {
-            const rfq = procurementData.rfqs.find(r => r.id === rfqId);
-            if (rfq) {
-                modalTitle.textContent = 'Edit RFQ: ' + rfqId;
-                modalBody.innerHTML = `
-                    <form id="rfqEditForm" class="form-grid">
-                        ${Object.keys(rfq).map(key => `
-                            <div class="form-group">
-                                <label for="${key}">${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</label>
-                                <input type="text" id="${key}" name="${key}" value="${rfq[key] || ''}" ${key === 'id' ? 'readonly' : ''}>
-                            </div>
-                        `).join('')}
-                    </form>
-                `;
-                modalSaveBtn.onclick = function() {
-                    const form = document.getElementById('rfqEditForm');
-                    const formData = new FormData(form);
-                    formData.forEach((value, key) => {
-                        if (key !== 'id') rfq[key] = value;
-                    });
-                    saveProcurementData(procurementData);
-                    renderAll();
-                    modal.style.display = 'none';
-                    alert('RFQ updated.');
-                };
-                modal.style.display = 'block';
-            }
-        };
-
-        window.deleteRFQ = function(rfqId) {
-            if (confirm('Delete RFQ ' + rfqId + '?')) {
-                procurementData.rfqs = procurementData.rfqs.filter(r => r.id !== rfqId);
-                saveProcurementData(procurementData);
-                renderAll();
-            }
-        };
-
-        window.addNewContract = function() {
-            const newContract = {
-                id: 'CT-' + String(procurementData.contracts.length + 1).padStart(3, '0'),
-                supplierId: 'SUP-001',
-                type: 'Fixed Price',
-                startDate: new Date().toISOString().split('T')[0],
-                endDate: '',
-                value: 0,
-                spendToDate: 0,
-                status: 'draft'
-            };
-            procurementData.contracts.push(newContract);
-            saveProcurementData(procurementData);
-            renderAll();
-            modal.style.display = 'none';
-            alert('New contract added.');
-        };
-
-        window.editContract = function(ctId) {
-            const ct = procurementData.contracts.find(c => c.id === ctId);
-            if (ct) {
-                modalTitle.textContent = 'Edit Contract: ' + ctId;
-                modalBody.innerHTML = `
-                    <form id="contractEditForm" class="form-grid">
-                        ${Object.keys(ct).map(key => `
-                            <div class="form-group">
-                                <label for="${key}">${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</label>
-                                <input type="text" id="${key}" name="${key}" value="${ct[key] || ''}" ${key === 'id' ? 'readonly' : ''}>
-                            </div>
-                        `).join('')}
-                    </form>
-                `;
-                modalSaveBtn.onclick = function() {
-                    const form = document.getElementById('contractEditForm');
-                    const formData = new FormData(form);
-                    formData.forEach((value, key) => {
-                        if (key !== 'id') ct[key] = value;
-                    });
-                    saveProcurementData(procurementData);
-                    renderAll();
-                    modal.style.display = 'none';
-                    alert('Contract updated.');
-                };
-                modal.style.display = 'block';
-            }
-        };
-
-        window.deleteContract = function(ctId) {
-            if (confirm('Delete contract ' + ctId + '?')) {
-                procurementData.contracts = procurementData.contracts.filter(c => c.id !== ctId);
-                saveProcurementData(procurementData);
-                renderAll();
-            }
-        };
-
-        // ==================== OTHER EVENT HANDLERS ====================
-        document.getElementById('newPurchaseOrderBtn').addEventListener('click', addNewPO);
-
-        document.getElementById('uploadCsvBtn').addEventListener('click', function() {
-            alert('CSV upload would parse and add to database.');
-        });
-
-        document.getElementById('csvFileInput').addEventListener('change', function(e) {
-            if (e.target.files.length > 0) {
-                alert(`CSV upload simulation for ${e.target.files[0].name}`);
-            }
-        });
-
-        const csvUploadContainer = document.getElementById('csvUploadContainer');
-        csvUploadContainer.addEventListener('dragover', (e) => { e.preventDefault(); csvUploadContainer.classList.add('dragover'); });
-        csvUploadContainer.addEventListener('dragleave', () => csvUploadContainer.classList.remove('dragover'));
-        csvUploadContainer.addEventListener('drop', (e) => {
-            e.preventDefault();
-            csvUploadContainer.classList.remove('dragover');
-            if (e.dataTransfer.files.length > 0) alert('CSV drop simulation.');
-        });
-
-        document.getElementById('logoutBtn').addEventListener('click', function() {
-            if (confirm('Logout?')) alert('Logging out...');
-        });
-
-        document.getElementById('mobileNavToggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('active');
-        });
-
-        // Initial render
-        renderAll();
+            // Initial render
+            renderTable();
+            updateAuditLogDisplay();
+        })();
     </script>
 </body>
 </html>
