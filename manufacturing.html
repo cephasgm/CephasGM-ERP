@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manufacturing | CephasGM ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7fb;
+            color: #1e2b3c;
+        }
+
+        /* clean, minimal navbar - only home + brand */
+        .navbar {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.8rem 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 6px rgba(0,20,30,0.02);
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #103a5e;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .nav-brand small {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: #4a6a85;
+            background: #eaf0f6;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+            margin-left: 0.7rem;
+        }
+
+        .nav-home-link {
+            background: #f1f5f9;
+            color: #103a5e;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 0.4rem 1.3rem;
+            border-radius: 40px;
+            border: 1px solid #cfdfee;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-home-link:hover {
+            background: #e1eaf1;
+            border-color: #8fb4d4;
+        }
+
+        /* main container */
+        .container {
+            max-width: 1550px;
+            margin: 2rem auto;
+            padding: 0 2.5rem;
+        }
+
+        /* page header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0f2a40;
+            letter-spacing: -0.02em;
+        }
+        .btn-primary {
+            background: #103a5e;
+            border: none;
+            color: white;
+            font-weight: 500;
+            padding: 0.65rem 1.8rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: 1px solid #103a5e;
+            transition: background 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .btn-primary:hover {
+            background: #1f4a72;
+        }
+
+        .btn-sm {
+            background: white;
+            border: 1px solid #cbd5e1;
+            color: #1e2b3c;
+            padding: 0.3rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .btn-sm:hover {
+            background: #f1f5f9;
+            border-color: #9bb0c7;
+        }
+
+        /* strategy tabs – interactive (non‑demo) */
+        .strategy-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            background: #ffffff;
+            padding: 0.5rem;
+            border-radius: 60px;
+            border: 1px solid #e0e8f0;
+            width: fit-content;
+        }
+        .strategy-tab {
+            padding: 0.55rem 1.8rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: transparent;
+            color: #375a77;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .strategy-tab.active {
+            background: #103a5e;
+            color: white;
+        }
+        .strategy-tab:not(.active):hover {
+            background: #e9f0f7;
+        }
+
+        /* 4 method cards */
+        .production-methods {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .method-card {
+            background: white;
+            padding: 1.4rem 1.2rem;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            transition: 0.1s;
+            cursor: pointer;
+        }
+        .method-card:hover {
+            border-color: #b6cde0;
+            box-shadow: 0 6px 12px rgba(16,58,94,0.04);
+        }
+        .method-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #103a5e;
+            margin-bottom: 4px;
+        }
+        .method-card p {
+            color: #445f73;
+            font-size: 0.85rem;
+        }
+
+        /* KPI stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.3rem;
+            margin-bottom: 2.2rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 1.3rem 1.2rem;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            transition: 0.1s;
+            cursor: pointer;
+        }
+        .stat-card:hover {
+            border-color: #b6cde0;
+        }
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: #5e7a93;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #103a5e;
+            line-height: 1.3;
+        }
+        .stat-detail {
+            font-size: 0.8rem;
+            color: #546e86;
+            margin-top: 4px;
+        }
+
+        /* two‑column */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* cards */
+        .card {
+            background: white;
+            border-radius: 22px;
+            border: 1px solid #e2e8f0;
+            padding: 1.3rem 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.2rem;
+        }
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #103a5e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .table th {
+            text-align: left;
+            padding: 0.6rem 0.3rem 0.6rem 0;
+            font-weight: 600;
+            color: #4f6b85;
+            border-bottom: 1px solid #dde5ed;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+        .table td {
+            padding: 0.65rem 0.3rem 0.65rem 0;
+            border-bottom: 1px solid #edf2f7;
+            color: #1e2b3c;
+        }
+
+        .oee-meter {
+            width: 65px;
+            height: 5px;
+            background: #dee7f0;
+            border-radius: 3px;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        .oee-fill {
+            height: 5px;
+            background: #103a5e;
+            border-radius: 3px;
+        }
+
+        .status-badge {
+            background: #e3f1e8;
+            color: #16653b;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid #b8dbc8;
+        }
+        .status-harvested {
+            background: #fff1e4;
+            color: #a35100;
+            border-color: #fdcea8;
+        }
+
+        .batch-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .delete-icon {
+            cursor: pointer;
+            opacity: 0.4;
+            font-size: 1rem;
+            margin-left: 6px;
+        }
+        .delete-icon:hover { opacity: 1; color: #b02b2b; }
+
+        .inline-edit {
+            border-bottom: 1px dashed #8fb0cc;
+            cursor: text;
+        }
+
+        .right-list {
+            list-style: none;
+        }
+        .right-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #edf2f7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* modal minimal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.2);
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .modal-card {
+            background: white;
+            border-radius: 32px;
+            padding: 2rem;
+            width: 340px;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.1);
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .footer {
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            padding: 1.5rem 2.5rem;
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #59748f;
+        }
+        .footer a {
+            color: #103a5e;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- clean navbar: only home + brand (no pile of links) -->
+    <div class="navbar">
+        <div class="nav-brand">
+            🏭 CephasGM Manufacturing <small>v.3.14</small>
+        </div>
+        <a href="https://cephasgm.github.io/CephasGM-ERP/index.html" class="nav-home-link">
+            <span>🏠</span> Home / Landing
+        </a>
+    </div>
+
+    <div class="container">
+        <!-- header -->
+        <div class="page-header">
+            <h1>Production & manufacturing</h1>
+            <button class="btn-primary" id="newOrderBtn">+ New production order</button>
+        </div>
+
+        <!-- strategy tabs – fully interactive (no alerts, real filter) -->
+        <div class="strategy-tabs" id="strategyTabs">
+            <button class="strategy-tab active" data-filter="all">📊 All Strategies</button>
+            <button class="strategy-tab" data-filter="MTS">📦 Make-to-stock (MTS)</button>
+            <button class="strategy-tab" data-filter="MTO">🔧 Make-to-order (MTO)</button>
+            <button class="strategy-tab" data-filter="MTA">⚙️ Make-to-assemble (MTA)</button>
+            <button class="strategy-tab" data-filter="ETO">🎯 Engineer-to-order (ETO)</button>
+        </div>
+
+        <!-- methods cards (click for info) -->
+        <div class="production-methods">
+            <div class="method-card" onclick="alert('Continuous: 12 lines active. Click for planning.')">
+                <h3>⚡ Continuous</h3>
+                <p>High volume · 12 lines</p>
+            </div>
+            <div class="method-card" onclick="alert('Batch: 24 reactors · 8 active batches.')">
+                <h3>📦 Batch</h3>
+                <p>Medium volume · reactors</p>
+            </div>
+            <div class="method-card" onclick="alert('Job shop: 18 work centers · custom orders.')">
+                <h3>🔧 Job shop</h3>
+                <p>Custom / low volume</p>
+            </div>
+            <div class="method-card" onclick="alert('Repetitive: 8 assembly lines.')">
+                <h3>🏭 Repetitive</h3>
+                <p>Assembly · 8 lines</p>
+            </div>
+        </div>
+
+        <!-- KPI stats (editable via click) -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card" onclick="editStat('oeeVal','Global OEE')">
+                <div class="stat-label">Global OEE</div>
+                <div class="stat-value" id="oeeVal">78.5%</div>
+                <div class="stat-detail">A 85% · P 92% · Q 98%</div>
+            </div>
+            <div class="stat-card" onclick="editStat('outputVal','Daily output')">
+                <div class="stat-label">Daily output</div>
+                <div class="stat-value" id="outputVal">1.2M</div>
+                <div class="stat-detail">$8.4M value</div>
+            </div>
+            <div class="stat-card" onclick="editStat('woVal','Active work orders')">
+                <div class="stat-label">Active work orders</div>
+                <div class="stat-value" id="woVal">847</div>
+                <div class="stat-detail">On‑time 92%</div>
+            </div>
+            <div class="stat-card" onclick="editStat('wipVal','WIP inventory')">
+                <div class="stat-label">WIP inventory</div>
+                <div class="stat-value" id="wipVal">$24.5M</div>
+                <div class="stat-detail">▼ 8% vs target</div>
+            </div>
+        </div>
+
+        <!-- two‑column layout -->
+        <div class="content-grid">
+            <!-- left column: tables -->
+            <div>
+                <!-- production lines table (fully editable) -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title"><span>⚙️</span> Production lines (live)</span>
+                        <button class="btn-sm" id="addLineBtn">➕ Add line</button>
+                    </div>
+                    <table class="table" id="linesTable">
+                        <thead><tr><th>Line</th><th>Product</th><th>Strategy</th><th>Rate</th><th>Output</th><th>OEE</th><th>Status</th><th>Next CO</th><th></th></tr></thead>
+                        <tbody id="linesBody"></tbody>
+                    </table>
+                </div>
+                <!-- batches table -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title"><span>📦</span> Active batches</span>
+                        <button class="btn-sm" id="addBatchBtn">➕ New batch</button>
+                    </div>
+                    <table class="table" id="batchTable">
+                        <thead><tr><th>Batch ID</th><th>Product</th><th>Reactor</th><th>Start</th><th>Completion</th><th>Stage</th><th>Quality</th><th></th></tr></thead>
+                        <tbody id="batchBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- right column: QA, maintenance, material (all fully editable / no alerts) -->
+            <div>
+                <!-- quality card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">✅ Quality assurance</span>
+                        <button class="btn-sm" onclick="editQuality()">✎ Edit</button>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div>First pass yield: <strong class="inline-edit" id="fpv">97.2%</strong></div>
+                        <div>Defect rate: <strong class="inline-edit" id="defect">1.8%</strong></div>
+                        <div>Customer complaints: <strong class="inline-edit" id="complaint">0.12%</strong></div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                        <span style="font-weight:500;">Recent defects</span>
+                        <button class="btn-sm" onclick="addDefect()">+ Add</button>
+                    </div>
+                    <ul id="defectList" class="right-list">
+                        <li>• Dimensional – Line A: 12 units <span class="delete-icon" onclick="this.closest('li').remove()">🗑️</span></li>
+                        <li>• Surface finish – Line B: 5 units <span class="delete-icon" onclick="this.closest('li').remove()">🗑️</span></li>
+                    </ul>
+                </div>
+
+                <!-- maintenance card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🔧 Maintenance</span>
+                        <button class="btn-sm" onclick="addMaint()">+ Add</button>
+                    </div>
+                    <ul id="maintList" class="right-list">
+                        <li>Line A – PM in 2 days <span class="delete-icon" onclick="this.closest('li').remove()">🗑️</span></li>
+                        <li style="color:#a35100;">Reactor 101 – Overdue by 1d <span class="delete-icon" onclick="this.closest('li').remove()">🗑️</span></li>
+                    </ul>
+                </div>
+
+                <!-- material status card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">📦 Material status</span>
+                        <button class="btn-sm" onclick="editMaterial()">✎ Edit</button>
+                    </div>
+                    <div style="color:#16653b;">✅ Raw materials: <span id="rawDays">12</span> days</div>
+                    <div style="color:#a35100;">⚠️ Critical component: <span id="critDays">3</span> days</div>
+                    <div style="color:#103a5e;">📦 <span id="trucks">8</span> trucks today</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- footer -->
+    <footer class="footer">
+        © 2026 CephasGM Group. All rights reserved. v3.14.2 · Build 2026.02.21 · PROD
+        <div style="margin-top:6px">
+            <a href="https://cephasgm.github.io/CephasGM-ERP/index.html">Home</a> · <a href="https://cephasgm.github.io/CephasGM-ERP/inventory.html">Inventory</a> · <a href="https://cephasgm.github.io/CephasGM-ERP/procurement.html">Procurement</a> · <a href="https://cephasgm.github.io/CephasGM-ERP/transport.html">Transport</a> · <a href="https://cephasgm.github.io/CephasGM-ERP/projects.html">Projects</a> · <a href="https://cephasgm.github.io/CephasGM-ERP/sales.html">Sales</a> · <a href="https://cephasgm.github.io/CephasGM-ERP/finance.html">Finance</a>
+        </div>
+    </footer>
+
+    <!-- modal for stat editing -->
+    <div class="modal" id="statModal">
+        <div class="modal-card">
+            <h3 style="margin-bottom:1rem" id="modalLabel">Edit value</h3>
+            <input type="text" id="modalInput" style="width:100%; padding:10px; border:1px solid #bdcbd8; border-radius:18px;">
+            <div class="modal-actions">
+                <button class="btn-sm" id="modalCancel">Cancel</button>
+                <button class="btn-sm" style="background:#103a5e; color:white; border:none;" id="modalSave">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- MODAL for stats ----------
+            const modal = document.getElementById('statModal');
+            const modalInput = document.getElementById('modalInput');
+            const modalLabel = document.getElementById('modalLabel');
+            let currentStatId = null;
+
+            window.editStat = function(elementId, label) {
+                const el = document.getElementById(elementId);
+                if (!el) return;
+                modalLabel.innerText = 'Edit ' + label;
+                modalInput.value = el.innerText;
+                currentStatId = elementId;
+                modal.style.display = 'flex';
+            };
+            document.getElementById('modalCancel').addEventListener('click', ()=> modal.style.display = 'none');
+            document.getElementById('modalSave').addEventListener('click', ()=>{
+                if (currentStatId) {
+                    document.getElementById(currentStatId).innerText = modalInput.value;
+                }
+                modal.style.display = 'none';
+            });
+            window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+            // ---------- STRATEGY TABS – fully working filter (no alerts) ----------
+            const tabs = document.querySelectorAll('.strategy-tab');
+            const linesBody = document.getElementById('linesBody');
+
+            function filterLines(strategy) {
+                const rows = linesBody.querySelectorAll('tr');
+                rows.forEach(row => {
+                    const strategyCell = row.cells[2]?.querySelector('.inline-edit')?.innerText || row.cells[2]?.innerText;
+                    if (strategy === 'all' || strategyCell === strategy) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.dataset.filter; // 'all', 'MTS', ...
+                    filterLines(filter);
+                });
+            });
+
+            // ---------- POPULATE TABLES (editable, deletable) ----------
+            function loadLines() {
+                linesBody.innerHTML = `
+                    <tr>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">Line A – Shanghai</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">Smartphone X</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">MTS</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">850/hr</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">8,520</span></td>
+                        <td><div class="oee-meter"><div class="oee-fill" style="width:92%"></div></div> <span class="inline-edit" ondblclick="editCell(this)">92%</span></td>
+                        <td><span class="status-badge inline-edit" ondblclick="editCell(this)">Running</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">2hr</span></td>
+                        <td><span class="delete-icon" onclick="this.closest('tr').remove()">🗑️</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">Line B – Germany</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">Automotive part</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">MTO</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">120/hr</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">1,080</span></td>
+                        <td><div class="oee-meter"><div class="oee-fill" style="width:88%"></div></div> <span class="inline-edit" ondblclick="editCell(this)">88%</span></td>
+                        <td><span class="status-badge status-harvested inline-edit" ondblclick="editCell(this)">Setup</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">Now</span></td>
+                        <td><span class="delete-icon" onclick="this.closest('tr').remove()">🗑️</span></td>
+                    </tr>
+                `;
+            }
+            loadLines();
+
+            const batchBody = document.getElementById('batchBody');
+            function loadBatches() {
+                batchBody.innerHTML = `
+                    <tr>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">B-2402-01</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">Polymer X</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">R-101</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">06:00</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">14:00</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">Reaction 65%</span></td>
+                        <td><span class="batch-dot" style="background:#2e7d32;"></span><span class="inline-edit" ondblclick="editCell(this)">On spec</span></td>
+                        <td><span class="delete-icon" onclick="this.closest('tr').remove()">🗑️</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">B-2402-02</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">Solvent Y</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">R-102</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">08:30</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">16:30</span></td>
+                        <td><span class="inline-edit" ondblclick="editCell(this)">Distillation</span></td>
+                        <td><span class="batch-dot" style="background:#ff9800;"></span><span class="inline-edit" ondblclick="editCell(this)">Testing</span></td>
+                        <td><span class="delete-icon" onclick="this.closest('tr').remove()">🗑️</span></td>
+                    </tr>
+                `;
+            }
+            loadBatches();
+
+            window.editCell = function(span) {
+                const input = document.createElement('input');
+                input.value = span.innerText;
+                input.className = 'editable-input';
+                input.style.width = '90px';
+                span.parentNode.replaceChild(input, span);
+                input.focus();
+                input.addEventListener('blur', function() {
+                    const newSpan = document.createElement('span');
+                    newSpan.className = 'inline-edit';
+                    newSpan.innerText = input.value;
+                    newSpan.ondblclick = function() { editCell(newSpan); };
+                    input.parentNode.replaceChild(newSpan, input);
+                });
+            };
+
+            // add row buttons
+            document.getElementById('addLineBtn').addEventListener('click', function() {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="inline-edit" ondblclick="editCell(this)">New line</span></td>
+                    <td><span class="inline-edit" ondblclick="editCell(this)">Product</span></td>
+                    <td><span class="inline-edit" ondblclick="editCell(this)">MTS</span></td>
+                    <td><span class="inline-edit" ondblclick="editCell(this)">0/hr</span></td>
+                    <td><span class="inline-edit" ondblclick="editCell(this)">0</span></td>
+                    <td><div class="oee-meter"><div class="oee-fill" style="width:0%"></div></div> <span class="inline-edit" ondblclick="editCell(this)">0%</span></td>
+                    <td><span class="status-badge inline-edit" ondblclick="editCell(this)">Idle</span></td>
+                    <td><span class="inline-edit" ondblclick="editCell(this)">-</span></td>
+                    <td><span class="delete-icon" onclick="this.closest('tr').remove()">🗑️</span></td>
+                `;
+                linesBody.appendChild(row);
+            });
+
+            document.getElementById('addBatchBtn').addEventListener('click', function() {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="inline-edit" ondblclick="editCell(this)">B-NEW</span></td>
+                    <td><span class="inline-edit" ondblclick="editCell(this)">New</span></td>
+                    <td><span class="inline-edit" ondblclick="editCell(this)">R-000</span></td>
+                    <td><span class="inline-edit" ondblclick="editCell(this)">--</span></td>
+                    <td><span class="inline-edit" ondblclick="editCell(this)">--</span></td>
+                    <td><span class="inline-edit" ondblclick="editCell(this)">Started</span></td>
+                    <td><span class="batch-dot" style="background:#aaa;"></span><span class="inline-edit" ondblclick="editCell(this)">Pending</span></td>
+                    <td><span class="delete-icon" onclick="this.closest('tr').remove()">🗑️</span></td>
+                `;
+                batchBody.appendChild(row);
+            });
+
+            // right panel functions (direct editing, no prompts -> double-click or edit buttons)
+            window.editQuality = function() {
+                let fp = prompt('First pass yield', document.getElementById('fpv').innerText);
+                if(fp) document.getElementById('fpv').innerText = fp;
+                let df = prompt('Defect rate', document.getElementById('defect').innerText);
+                if(df) document.getElementById('defect').innerText = df;
+                let cp = prompt('Complaints', document.getElementById('complaint').innerText);
+                if(cp) document.getElementById('complaint').innerText = cp;
+            };
+            window.addDefect = function() {
+                let txt = prompt('New defect description (e.g. "Scratch – Line D: 2 units")');
+                if (!txt) return;
+                let li = document.createElement('li');
+                li.innerHTML = `• ${txt} <span class="delete-icon" onclick="this.closest('li').remove()">🗑️</span>`;
+                document.getElementById('defectList').appendChild(li);
+            };
+            window.addMaint = function() {
+                let txt = prompt('Maintenance item (e.g. "Press 3 – PM in 3d")');
+                if (!txt) return;
+                let li = document.createElement('li');
+                li.innerHTML = `${txt} <span class="delete-icon" onclick="this.closest('li').remove()">🗑️</span>`;
+                document.getElementById('maintList').appendChild(li);
+            };
+            window.editMaterial = function() {
+                let raw = prompt('Raw material days', document.getElementById('rawDays').innerText);
+                if(raw) document.getElementById('rawDays').innerText = raw;
+                let crit = prompt('Critical component days', document.getElementById('critDays').innerText);
+                if(crit) document.getElementById('critDays').innerText = crit;
+                let trucks = prompt('Trucks today', document.getElementById('trucks').innerText);
+                if(trucks) document.getElementById('trucks').innerText = trucks;
+            };
+
+            document.getElementById('newOrderBtn').addEventListener('click', function() {
+                let name = prompt('Production order name:');
+                if(name) alert(`Order "${name}" created (demo).`);
+            });
+        })();
+    </script>
+    <!-- enable double‑click on dynamically added .inline-edit -->
+    <script>
+        document.addEventListener('dblclick', function(e) {
+            if (e.target.classList.contains('inline-edit')) {
+                window.editCell(e.target);
+            }
+        });
+    </script>
+</body>
+</html>
