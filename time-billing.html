@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time & Billing - CephasGM ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background: #f5f7fa;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.75rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-brand {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2563eb;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-brand:hover {
+            color: #1d4ed8;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .nav-link.home {
+            background: #2563eb;
+            color: white;
+        }
+
+        .nav-link.home:hover {
+            background: #1d4ed8;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1440px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            flex: 1;
+        }
+
+        /* Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.875rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1e293b;
+            padding: 0.625rem 1.25rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-icon:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: #2563eb;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-trend {
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .trend-up {
+            color: #10b981;
+        }
+
+        .trend-down {
+            color: #ef4444;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0.75rem;
+        }
+
+        .tab {
+            padding: 0.625rem 1.25rem;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .tab.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-input, .filter-select {
+            width: 100%;
+            padding: 0.625rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: #1e293b;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            color: #64748b;
+            font-weight: 500;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #1e293b;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-paid, .status-approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background: #fed7aa;
+            color: #92400e;
+        }
+
+        .status-overdue {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-draft {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .status-active {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.3s;
+        }
+
+        /* Action Icons */
+        .action-icons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-icon {
+            padding: 0.375rem;
+            border-radius: 6px;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .action-icon:hover {
+            background: #e2e8f0;
+            color: #2563eb;
+        }
+
+        /* Rate Card */
+        .rate-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rate-card:hover {
+            transform: translateX(4px);
+            border-color: #2563eb;
+            background: white;
+        }
+
+        .rate-title {
+            font-weight: 600;
+            color: #0f172a;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .rate-clients {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Linked Data */
+        .linked-data {
+            padding: 0.75rem;
+            border-left: 3px solid #2563eb;
+            background: #f8fafc;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #1e293b;
+        }
+
+        .linked-data:hover {
+            background: #e2e8f0;
+            transform: translateX(4px);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .modal-close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #ef4444;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #475569;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 1100;
+            animation: slideIn 0.3s;
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #94a3b8;
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            padding: 1.5rem 2rem;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-link {
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .footer-link:hover {
+            color: #2563eb;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation - Clean and minimal -->
+    <div class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="#" class="nav-brand" onclick="navigateToHome(event)">
+                    <span>⏱️</span>
+                    Time & Billing
+                </a>
+            </div>
+            <div class="nav-right">
+                <a href="#" class="nav-link home" onclick="navigateToHome(event)">
+                    <span>🏠</span>
+                    Home
+                </a>
+                <button class="btn-icon" onclick="showQuickNav()" title="Quick Navigation">
+                    <span>⌨️</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1>Time Tracking & Billing</h1>
+            <div class="header-actions">
+                <button class="btn-secondary" onclick="openModal('invoice')">
+                    <span>📄</span>
+                    New Invoice
+                </button>
+                <button class="btn-primary" onclick="openModal('timesheet')">
+                    <span>⏱️</span>
+                    Log Time
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('timesheets', this)">Timesheets</div>
+            <div class="tab" onclick="switchTab('invoices', this)">Invoices</div>
+            <div class="tab" onclick="switchTab('projects', this)">Projects</div>
+            <div class="tab" onclick="switchTab('clients', this)">Clients</div>
+            <div class="tab" onclick="switchTab('rates', this)">Rate Cards</div>
+            <div class="tab" onclick="switchTab('reports', this)">Reports</div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <input type="text" class="filter-input" id="searchInput" placeholder="Search..." oninput="debounceSearch()">
+            </div>
+            <div class="filter-group">
+                <select class="filter-select" id="projectFilter" onchange="applyFilters()">
+                    <option value="">All Projects</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <select class="filter-select" id="statusFilter" onchange="applyFilters()">
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="paid">Paid</option>
+                </select>
+            </div>
+            <button class="btn-secondary" onclick="resetFilters()">Reset</button>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Main Content Area -->
+            <div id="mainContent"></div>
+
+            <!-- Sidebar -->
+            <div>
+                <!-- Recent Invoices -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">📋 Recent Invoices</span>
+                        <span class="action-icon" onclick="switchTab('invoices', document.querySelectorAll('.tab')[1])">→</span>
+                    </div>
+                    <div class="card-body" id="recentInvoicesList"></div>
+                </div>
+
+                <!-- Utilization Summary -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">📊 Utilization</span>
+                    </div>
+                    <div class="card-body" id="utilizationSummary"></div>
+                </div>
+
+                <!-- Rate Cards -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">💰 Rate Cards</span>
+                        <span class="action-icon" onclick="openModal('rate')">+</span>
+                    </div>
+                    <div class="card-body" id="rateCardsList"></div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🔗 Quick Links</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="linked-data" onclick="navigateTo('hr')">• Human Resources</div>
+                        <div class="linked-data" onclick="navigateTo('payroll')">• Payroll Management</div>
+                        <div class="linked-data" onclick="navigateTo('finance')">• Financial Management</div>
+                        <div class="linked-data" onclick="navigateTo('projects')">• Project Management</div>
+                        <div class="linked-data" onclick="navigateTo('sales')">• Sales Operations</div>
+                    </div>
+                </div>
+
+                <!-- Alerts -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">⚠️ Alerts</span>
+                    </div>
+                    <div class="card-body" id="alertsList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">Modal Title</span>
+                <span class="modal-close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast" style="display: none;"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>© 2026 CephasGM Group. All rights reserved. v3.14.2 · Build 2026.02.21 · PROD</div>
+            <div class="footer-links">
+                <span class="footer-link" onclick="showSystemStatus()">Status</span>
+                <span class="footer-link" onclick="showSupport()">Support</span>
+                <span class="footer-link" onclick="showPrivacy()">Privacy</span>
+                <span class="footer-link" onclick="showTerms()">Terms</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ==================== DATA STRUCTURES ====================
+        let timesheets = JSON.parse(localStorage.getItem('timesheets')) || [
+            { id: 1, employee: 'John Smith', project: 'Project Alpha', client: 'TechCorp', date: '2026-02-21', hours: 8, billable: true, amount: 1200, status: 'approved', description: 'Frontend development' },
+            { id: 2, employee: 'Sarah Johnson', project: 'Client Beta', client: 'Global Solutions', date: '2026-02-21', hours: 7.5, billable: true, amount: 1312.50, status: 'approved', description: 'Consulting' },
+            { id: 3, employee: 'Mike Wilson', project: 'Project Gamma', client: 'Innovate', date: '2026-02-21', hours: 6, billable: true, amount: 960, status: 'pending', description: 'Development' },
+            { id: 4, employee: 'Emily Brown', project: 'Internal', client: 'Internal', date: '2026-02-21', hours: 4, billable: false, amount: 0, status: 'draft', description: 'Training' }
+        ];
+
+        let invoices = JSON.parse(localStorage.getItem('invoices')) || [
+            { id: 1, number: 'INV-2026-001', client: 'TechCorp', project: 'Project Alpha', amount: 12500, dueDate: '2026-03-15', status: 'pending', created: '2026-02-01' },
+            { id: 2, number: 'INV-2026-002', client: 'Global Solutions', project: 'Client Beta', amount: 8750, dueDate: '2026-03-10', status: 'paid', created: '2026-02-05' },
+            { id: 3, number: 'INV-2026-003', client: 'Innovate', project: 'Project Gamma', amount: 6200, dueDate: '2026-02-28', status: 'overdue', created: '2026-01-28' }
+        ];
+
+        let projects = JSON.parse(localStorage.getItem('projects')) || [
+            { id: 1, name: 'Project Alpha', client: 'TechCorp', budget: 150000, spent: 87500, status: 'active', rate: 150 },
+            { id: 2, name: 'Client Beta', client: 'Global Solutions', budget: 200000, spent: 112500, status: 'active', rate: 175 },
+            { id: 3, name: 'Project Gamma', client: 'Innovate', budget: 100000, spent: 45200, status: 'active', rate: 160 }
+        ];
+
+        let clients = JSON.parse(localStorage.getItem('clients')) || [
+            { id: 1, name: 'TechCorp', industry: 'Technology', contact: 'John Doe', email: 'john@techcorp.com', projects: ['Project Alpha'] },
+            { id: 2, name: 'Global Solutions', industry: 'Consulting', contact: 'Jane Smith', email: 'jane@globalsol.com', projects: ['Client Beta'] },
+            { id: 3, name: 'Innovate', industry: 'Manufacturing', contact: 'Bob Wilson', email: 'bob@innovate.com', projects: ['Project Gamma'] }
+        ];
+
+        let rates = JSON.parse(localStorage.getItem('rates')) || [
+            { id: 1, title: 'Senior Consultant', rate: 200, clients: ['TechCorp', 'Global Solutions'] },
+            { id: 2, title: 'Consultant', rate: 150, clients: ['All clients'] },
+            { id: 3, title: 'Junior Consultant', rate: 100, clients: ['Innovate'] }
+        ];
+
+        let currentTab = 'timesheets';
+        let searchTimeout;
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function saveAllData() {
+            localStorage.setItem('timesheets', JSON.stringify(timesheets));
+            localStorage.setItem('invoices', JSON.stringify(invoices));
+            localStorage.setItem('projects', JSON.stringify(projects));
+            localStorage.setItem('clients', JSON.stringify(clients));
+            localStorage.setItem('rates', JSON.stringify(rates));
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        function navigateTo(module) {
+            const urls = {
+                home: 'https://cephasgm.github.io/CephasGM-ERP/index.html',
+                hr: 'https://cephasgm.github.io/CephasGM-ERP/hr.html',
+                payroll: 'https://cephasgm.github.io/CephasGM-ERP/payroll.html',
+                finance: 'https://cephasgm.github.io/CephasGM-ERP/finance.html',
+                projects: 'https://cephasgm.github.io/CephasGM-ERP/projects.html',
+                sales: 'https://cephasgm.github.io/CephasGM-ERP/sales.html'
+            };
+            window.open(urls[module], '_blank');
+            showToast(`Navigating to ${module} module...`);
+        }
+
+        function navigateToHome(e) {
+            e.preventDefault();
+            navigateTo('home');
+        }
+
+        function showQuickNav() {
+            const modules = ['HR', 'Payroll', 'Finance', 'Projects', 'Sales', 'Inventory', 'Procurement'];
+            const list = modules.map(m => `• ${m}`).join('\n');
+            showToast(`Quick Nav:\n${list}`, 'success');
+        }
+
+        // ==================== MODAL FUNCTIONS ====================
+        function openModal(type, data = null) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            let html = '';
+            switch(type) {
+                case 'timesheet':
+                    modalTitle.textContent = data ? 'Edit Timesheet' : 'Log Time';
+                    html = `
+                        <form onsubmit="saveTimesheet(event, ${data ? data.id : 'null'})">
+                            <div class="form-group">
+                                <label>Employee</label>
+                                <input type="text" id="employee" value="${data ? data.employee : ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Project</label>
+                                <select id="project" required onchange="updateClient()">
+                                    <option value="">Select</option>
+                                    ${projects.map(p => `<option value="${p.name}" ${data && data.project === p.name ? 'selected' : ''}>${p.name}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="date" id="date" value="${data ? data.date : new Date().toISOString().split('T')[0]}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Hours</label>
+                                <input type="number" id="hours" step="0.5" value="${data ? data.hours : ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea id="description" rows="3">${data ? data.description || '' : ''}</textarea>
+                            </div>
+                            <div class="modal-actions">
+                                <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                                <button type="submit" class="btn-primary">${data ? 'Update' : 'Save'}</button>
+                            </div>
+                        </form>
+                    `;
+                    break;
+                case 'invoice':
+                    modalTitle.textContent = data ? 'Edit Invoice' : 'New Invoice';
+                    html = `
+                        <form onsubmit="saveInvoice(event, ${data ? data.id : 'null'})">
+                            <div class="form-group">
+                                <label>Client</label>
+                                <select id="client" required>
+                                    <option value="">Select</option>
+                                    ${clients.map(c => `<option value="${c.name}" ${data && data.client === c.name ? 'selected' : ''}>${c.name}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Amount</label>
+                                <input type="number" id="amount" step="0.01" value="${data ? data.amount : ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Due Date</label>
+                                <input type="date" id="dueDate" value="${data ? data.dueDate : ''}" required>
+                            </div>
+                            <div class="modal-actions">
+                                <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                                <button type="submit" class="btn-primary">${data ? 'Update' : 'Create'}</button>
+                            </div>
+                        </form>
+                    `;
+                    break;
+                case 'rate':
+                    modalTitle.textContent = data ? 'Edit Rate' : 'Add Rate';
+                    html = `
+                        <form onsubmit="saveRate(event, ${data ? data.id : 'null'})">
+                            <div class="form-group">
+                                <label>Title</label>
+                                <input type="text" id="title" value="${data ? data.title : ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Hourly Rate ($)</label>
+                                <input type="number" id="rate" value="${data ? data.rate : ''}" required>
+                            </div>
+                            <div class="modal-actions">
+                                <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                                <button type="submit" class="btn-primary">${data ? 'Update' : 'Add'}</button>
+                            </div>
+                        </form>
+                    `;
+                    break;
+            }
+            modalBody.innerHTML = html;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // ==================== CRUD OPERATIONS ====================
+        function saveTimesheet(event, id) {
+            event.preventDefault();
+            const form = event.target;
+            
+            const newEntry = {
+                id: id || Date.now(),
+                employee: form.querySelector('#employee').value,
+                project: form.querySelector('#project').value,
+                date: form.querySelector('#date').value,
+                hours: parseFloat(form.querySelector('#hours').value),
+                description: form.querySelector('#description').value,
+                status: 'pending',
+                billable: true,
+                amount: parseFloat(form.querySelector('#hours').value) * 150
+            };
+
+            if (id) {
+                const index = timesheets.findIndex(t => t.id === id);
+                timesheets[index] = { ...timesheets[index], ...newEntry };
+                showToast('Timesheet updated');
+            } else {
+                timesheets.push(newEntry);
+                showToast('Timesheet saved');
+            }
+
+            saveAllData();
+            closeModal();
+            refreshDisplay();
+        }
+
+        function saveInvoice(event, id) {
+            event.preventDefault();
+            const form = event.target;
+            
+            const newInvoice = {
+                id: id || Date.now(),
+                number: id ? invoices.find(i => i.id === id).number : `INV-2026-${String(invoices.length + 1).padStart(3, '0')}`,
+                client: form.querySelector('#client').value,
+                amount: parseFloat(form.querySelector('#amount').value),
+                dueDate: form.querySelector('#dueDate').value,
+                status: 'pending',
+                created: new Date().toISOString().split('T')[0]
+            };
+
+            if (id) {
+                const index = invoices.findIndex(i => i.id === id);
+                invoices[index] = { ...invoices[index], ...newInvoice };
+                showToast('Invoice updated');
+            } else {
+                invoices.push(newInvoice);
+                showToast('Invoice created');
+            }
+
+            saveAllData();
+            closeModal();
+            refreshDisplay();
+        }
+
+        function saveRate(event, id) {
+            event.preventDefault();
+            const form = event.target;
+            
+            const newRate = {
+                id: id || Date.now(),
+                title: form.querySelector('#title').value,
+                rate: parseFloat(form.querySelector('#rate').value),
+                clients: ['All clients']
+            };
+
+            if (id) {
+                const index = rates.findIndex(r => r.id === id);
+                rates[index] = { ...rates[index], ...newRate };
+                showToast('Rate updated');
+            } else {
+                rates.push(newRate);
+                showToast('Rate added');
+            }
+
+            saveAllData();
+            closeModal();
+            refreshDisplay();
+        }
+
+        function deleteItem(type, id, event) {
+            event.stopPropagation();
+            if (confirm('Are you sure?')) {
+                if (type === 'timesheet') timesheets = timesheets.filter(i => i.id !== id);
+                if (type === 'invoice') invoices = invoices.filter(i => i.id !== id);
+                if (type === 'rate') rates = rates.filter(r => r.id !== id);
+                saveAllData();
+                showToast('Deleted successfully');
+                refreshDisplay();
+            }
+        }
+
+        function approveTimesheet(id, event) {
+            event.stopPropagation();
+            const index = timesheets.findIndex(t => t.id === id);
+            if (index !== -1) {
+                timesheets[index].status = 'approved';
+                saveAllData();
+                showToast('Timesheet approved');
+                refreshDisplay();
+            }
+        }
+
+        function markInvoicePaid(id, event) {
+            event.stopPropagation();
+            const index = invoices.findIndex(i => i.id === id);
+            if (index !== -1) {
+                invoices[index].status = 'paid';
+                saveAllData();
+                showToast('Invoice marked as paid');
+                refreshDisplay();
+            }
+        }
+
+        // ==================== FILTER FUNCTIONS ====================
+        function applyFilters() {
+            refreshDisplay();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('projectFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            refreshDisplay();
+        }
+
+        function debounceSearch() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(applyFilters, 300);
+        }
+
+        // ==================== TAB SWITCHING ====================
+        function switchTab(tab, element) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+            refreshDisplay();
+        }
+
+        // ==================== UPDATE UI ====================
+        function refreshDisplay() {
+            updateStats();
+            updateProjectFilters();
+            updateRecentInvoices();
+            updateUtilization();
+            updateRateCards();
+            updateAlerts();
+            
+            const mainContent = document.getElementById('mainContent');
+            
+            switch(currentTab) {
+                case 'timesheets':
+                    mainContent.innerHTML = getTimesheetsHTML();
+                    break;
+                case 'invoices':
+                    mainContent.innerHTML = getInvoicesHTML();
+                    break;
+                case 'projects':
+                    mainContent.innerHTML = getProjectsHTML();
+                    break;
+                case 'clients':
+                    mainContent.innerHTML = getClientsHTML();
+                    break;
+                case 'rates':
+                    mainContent.innerHTML = getRatesHTML();
+                    break;
+                case 'reports':
+                    mainContent.innerHTML = getReportsHTML();
+                    break;
+            }
+        }
+
+        function updateStats() {
+            const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+            const monthlyHours = timesheets
+                .filter(t => new Date(t.date) >= monthStart && t.status === 'approved')
+                .reduce((sum, t) => sum + t.hours, 0);
+            
+            const billableHours = timesheets
+                .filter(t => new Date(t.date) >= monthStart && t.billable && t.status === 'approved')
+                .reduce((sum, t) => sum + t.hours, 0);
+            
+            const utilization = monthlyHours ? Math.round((billableHours / monthlyHours) * 100) : 0;
+            
+            const unbilled = timesheets
+                .filter(t => t.status === 'approved' && !t.invoiced)
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const outstanding = invoices
+                .filter(i => i.status !== 'paid')
+                .reduce((sum, i) => sum + i.amount, 0);
+
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card" onclick="filterByType('billable')">
+                    <div class="stat-label">Billable Hours</div>
+                    <div class="stat-value">${billableHours}</div>
+                    <div class="stat-trend trend-up">↑ 12% vs last month</div>
+                </div>
+                <div class="stat-card" onclick="filterByType('utilization')">
+                    <div class="stat-label">Utilization</div>
+                    <div class="stat-value">${utilization}%</div>
+                    <div class="stat-trend">Target: 75%</div>
+                </div>
+                <div class="stat-card" onclick="filterByType('unbilled')">
+                    <div class="stat-label">Unbilled</div>
+                    <div class="stat-value">$${unbilled.toLocaleString()}</div>
+                    <div class="stat-trend">${timesheets.filter(t => t.status === 'approved' && !t.invoiced).length} entries</div>
+                </div>
+                <div class="stat-card" onclick="filterByType('outstanding')">
+                    <div class="stat-label">Outstanding</div>
+                    <div class="stat-value">$${outstanding.toLocaleString()}</div>
+                    <div class="stat-trend trend-down">${invoices.filter(i => i.status === 'overdue').length} overdue</div>
+                </div>
+            `;
+        }
+
+        function updateProjectFilters() {
+            const filter = document.getElementById('projectFilter');
+            if (filter) {
+                const projects_list = [...new Set(timesheets.map(t => t.project))];
+                filter.innerHTML = '<option value="">All Projects</option>' + 
+                    projects_list.map(p => `<option value="${p}">${p}</option>`).join('');
+            }
+        }
+
+        function updateRecentInvoices() {
+            const container = document.getElementById('recentInvoicesList');
+            const recent = invoices.slice(0, 3);
+            
+            container.innerHTML = recent.length ? `
+                <table class="table">
+                    ${recent.map(i => `
+                        <tr onclick="openModal('invoice', ${JSON.stringify(i).replace(/"/g, '&quot;')})">
+                            <td>${i.number}</td>
+                            <td>$${i.amount.toLocaleString()}</td>
+                            <td><span class="status-badge status-${i.status}">${i.status}</span></td>
+                        </tr>
+                    `).join('')}
+                </table>
+            ` : '<div class="empty-state">No recent invoices</div>';
+        }
+
+        function updateUtilization() {
+            const container = document.getElementById('utilizationSummary');
+            const totalHours = timesheets.filter(t => t.status === 'approved').reduce((sum, t) => sum + t.hours, 0);
+            const billableHours = timesheets.filter(t => t.billable && t.status === 'approved').reduce((sum, t) => sum + t.hours, 0);
+            
+            container.innerHTML = `
+                <div class="progress-container" style="width:100%; margin-bottom:1rem;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                        <span>Overall</span>
+                        <span>${totalHours ? Math.round((billableHours / totalHours) * 100) : 0}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width:${totalHours ? (billableHours / totalHours) * 100 : 0}%; background:#2563eb;"></div>
+                    </div>
+                </div>
+                ${projects.slice(0, 2).map(p => {
+                    const projectHours = timesheets
+                        .filter(t => t.project === p.name && t.status === 'approved')
+                        .reduce((sum, t) => sum + t.hours, 0);
+                    return `
+                        <div class="progress-container" style="width:100%; margin-bottom:0.75rem;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
+                                <span style="font-size:0.875rem;">${p.name}</span>
+                                <span style="font-size:0.875rem;">${Math.round((p.spent / p.budget) * 100)}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width:${(p.spent / p.budget) * 100}%; background:${(p.spent / p.budget) > 0.9 ? '#ef4444' : '#10b981'};"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            `;
+        }
+
+        function updateRateCards() {
+            const container = document.getElementById('rateCardsList');
+            container.innerHTML = rates.slice(0, 3).map(r => `
+                <div class="rate-card" onclick="openModal('rate', ${JSON.stringify(r).replace(/"/g, '&quot;')})">
+                    <div class="rate-title">
+                        <span>${r.title}</span>
+                        <span>$${r.rate}/hr</span>
+                    </div>
+                    <div class="rate-clients">${r.clients.join(', ')}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateAlerts() {
+            const container = document.getElementById('alertsList');
+            const pending = timesheets.filter(t => t.status === 'pending').length;
+            const overdue = invoices.filter(i => i.status === 'overdue').length;
+            const nearBudget = projects.filter(p => (p.spent / p.budget) > 0.9).length;
+            
+            container.innerHTML = `
+                <div class="linked-data" onclick="filterByType('pending')">• ${pending} pending approvals</div>
+                <div class="linked-data" onclick="filterByType('overdue')">• ${overdue} overdue invoices</div>
+                <div class="linked-data" onclick="filterByType('near-budget')">• ${nearBudget} projects near budget</div>
+            `;
+        }
+
+        // ==================== TAB CONTENT ====================
+        function getTimesheetsHTML() {
+            const search = document.getElementById('searchInput')?.value.toLowerCase() || '';
+            const project = document.getElementById('projectFilter')?.value || '';
+            const status = document.getElementById('statusFilter')?.value || '';
+            
+            const filtered = timesheets.filter(t => 
+                (t.employee.toLowerCase().includes(search) || t.project.toLowerCase().includes(search)) &&
+                (!project || t.project === project) &&
+                (!status || t.status === status)
+            );
+
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">⏱️ Timesheet Entries</span>
+                        <span>${filtered.length} entries</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Project</th>
+                                    <th>Date</th>
+                                    <th>Hours</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${filtered.map(t => `
+                                    <tr onclick="openModal('timesheet', ${JSON.stringify(t).replace(/"/g, '&quot;')})">
+                                        <td>${t.employee}</td>
+                                        <td>${t.project}</td>
+                                        <td>${t.date}</td>
+                                        <td>${t.hours}</td>
+                                        <td>$${t.amount.toFixed(2)}</td>
+                                        <td><span class="status-badge status-${t.status}">${t.status}</span></td>
+                                        <td>
+                                            <div class="action-icons" onclick="event.stopPropagation()">
+                                                ${t.status === 'pending' ? 
+                                                    `<span class="action-icon" onclick="approveTimesheet(${t.id}, event)">✓</span>` : ''}
+                                                <span class="action-icon" onclick="deleteItem('timesheet', ${t.id}, event)">🗑️</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                                ${filtered.length === 0 ? '<tr><td colspan="7" class="empty-state">No timesheets found</td></tr>' : ''}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getInvoicesHTML() {
+            const filtered = invoices;
+
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">📄 Invoices</span>
+                        <span>${filtered.length} invoices</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Number</th>
+                                    <th>Client</th>
+                                    <th>Amount</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${filtered.map(i => `
+                                    <tr onclick="openModal('invoice', ${JSON.stringify(i).replace(/"/g, '&quot;')})">
+                                        <td>${i.number}</td>
+                                        <td>${i.client}</td>
+                                        <td>$${i.amount.toLocaleString()}</td>
+                                        <td>${i.dueDate}</td>
+                                        <td><span class="status-badge status-${i.status}">${i.status}</span></td>
+                                        <td>
+                                            <div class="action-icons" onclick="event.stopPropagation()">
+                                                ${i.status !== 'paid' ? 
+                                                    `<span class="action-icon" onclick="markInvoicePaid(${i.id}, event)">💰</span>` : ''}
+                                                <span class="action-icon" onclick="deleteItem('invoice', ${i.id}, event)">🗑️</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getProjectsHTML() {
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">📊 Projects</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Project</th>
+                                    <th>Client</th>
+                                    <th>Budget</th>
+                                    <th>Spent</th>
+                                    <th>Progress</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${projects.map(p => `
+                                    <tr>
+                                        <td>${p.name}</td>
+                                        <td>${p.client}</td>
+                                        <td>$${p.budget.toLocaleString()}</td>
+                                        <td>$${p.spent.toLocaleString()}</td>
+                                        <td>
+                                            <div class="progress-container">
+                                                <div class="progress-bar">
+                                                    <div class="progress-fill" style="width:${(p.spent / p.budget) * 100}%; background:${(p.spent / p.budget) > 0.9 ? '#ef4444' : '#10b981'};"></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getClientsHTML() {
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">👥 Clients</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Industry</th>
+                                    <th>Contact</th>
+                                    <th>Projects</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${clients.map(c => `
+                                    <tr>
+                                        <td>${c.name}</td>
+                                        <td>${c.industry}</td>
+                                        <td>${c.contact}</td>
+                                        <td>${c.projects.length}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getRatesHTML() {
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">💰 Rate Cards</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Rate</th>
+                                    <th>Clients</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rates.map(r => `
+                                    <tr onclick="openModal('rate', ${JSON.stringify(r).replace(/"/g, '&quot;')})">
+                                        <td>${r.title}</td>
+                                        <td>$${r.rate}/hr</td>
+                                        <td>${r.clients.length > 2 ? r.clients.slice(0, 2).join(', ') + '...' : r.clients.join(', ')}</td>
+                                        <td>
+                                            <div class="action-icons" onclick="event.stopPropagation()">
+                                                <span class="action-icon" onclick="deleteItem('rate', ${r.id}, event)">🗑️</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getReportsHTML() {
+            const totalRevenue = invoices.filter(i => i.status === 'paid').reduce((sum, i) => sum + i.amount, 0);
+            const pendingRevenue = invoices.filter(i => i.status === 'pending').reduce((sum, i) => sum + i.amount, 0);
+            const totalHours = timesheets.filter(t => t.status === 'approved').reduce((sum, t) => sum + t.hours, 0);
+
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">📈 Financial Summary</span>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                            <div class="stat-card" style="padding: 1rem;">
+                                <div class="stat-label">Revenue (YTD)</div>
+                                <div class="stat-value">$${(totalRevenue / 1000).toFixed(1)}K</div>
+                            </div>
+                            <div class="stat-card" style="padding: 1rem;">
+                                <div class="stat-label">Pending</div>
+                                <div class="stat-value">$${(pendingRevenue / 1000).toFixed(1)}K</div>
+                            </div>
+                        </div>
+                        <button class="btn-primary" style="width:100%;" onclick="showToast('Report generated')">Generate Report</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function filterByType(type) {
+            showToast(`Filtering by ${type}`);
+        }
+
+        function showSystemStatus() { showToast('All systems operational · v3.14.2'); }
+        function showSupport() { showToast('Support: support@cephasgm.com'); }
+        function showPrivacy() { showToast('Privacy Policy: Your data is secure'); }
+        function showTerms() { showToast('Terms of Service v2026.02'); }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', refreshDisplay);
+    </script>
+</body>
+</html>
