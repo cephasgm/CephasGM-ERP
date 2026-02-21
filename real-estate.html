@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CephasEstate™ | Real Estate ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .navbar {
+            background: #0a2744;
+            color: white;
+            padding: 0.75rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fbbf24;
+            letter-spacing: -0.5px;
+        }
+
+        .home-link {
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1.25rem;
+            border-radius: 40px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .home-link:hover {
+            background: #fbbf24;
+            color: #0a2744;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #0a2744 0%, #1a3b5c 100%);
+            color: white;
+            padding: 3rem 5%;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 2rem;
+            background: rgba(255,255,255,0.1);
+            padding: 1rem 2rem;
+            border-radius: 60px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fbbf24;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .section {
+            padding: 3rem 5%;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title:after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, #cbd5e1, transparent);
+        }
+
+        /* Property Gallery */
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .property-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .property-image-gallery {
+            height: 220px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-container {
+            display: flex;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-slide {
+            min-width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .gallery-nav {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+            z-index: 10;
+        }
+
+        .gallery-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+        }
+
+        .gallery-dot.active {
+            background: #fbbf24;
+        }
+
+        .property-status {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.35rem 1rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            z-index: 10;
+        }
+
+        .status-available { background: #10b981; color: white; }
+        .status-rented { background: #f59e0b; color: white; }
+        .status-sold { background: #ef4444; color: white; }
+        .status-pending { background: #8b5cf6; color: white; }
+
+        .property-details {
+            padding: 1.5rem;
+        }
+
+        .property-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .property-title h3 {
+            font-size: 1.3rem;
+        }
+
+        .property-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0a2744;
+        }
+
+        .property-features {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            color: #475569;
+        }
+
+        .doc-badge {
+            background: #f1f5f9;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .doc-badge:hover {
+            background: #e2e8f0;
+        }
+
+        /* Category Pills */
+        .category-pills {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .category-pill {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 0.6rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-pill.active {
+            background: #0a2744;
+            color: white;
+            border-color: #0a2744;
+        }
+
+        .category-pill:hover {
+            background: #f8fafc;
+            transform: translateY(-2px);
+        }
+
+        /* Feature Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 1.8rem;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 30px -10px rgba(10,39,68,0.2);
+            border-color: #fbbf24;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .modal-content input, .modal-content select, .modal-content textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-save {
+            background: #0a2744;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .btn-cancel {
+            background: #e2e8f0;
+            color: #1e293b;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .edit-btn {
+            background: #fbbf24;
+            color: #0a2744;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .document-list {
+            margin: 1rem 0;
+        }
+
+        .document-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer {
+            background: #0a2744;
+            color: white;
+            padding: 2rem 5%;
+            text-align: center;
+        }
+
+        .footer small {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">CephasEstate™</div>
+        <a href="https://cephasgm.github.io/CephasGM-ERP/index.html" class="home-link">
+            <span>🏠</span> ERP Home
+        </a>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div>
+                <h1>Real Estate ERP<br>Live Portfolio Management</h1>
+                <p style="margin-top: 1rem; opacity: 0.9;">1,247 properties · $124M AUM · 98% occupancy</p>
+            </div>
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-value">247</div>
+                    <div class="stat-label">Active</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">156</div>
+                    <div class="stat-label">Rented</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">89</div>
+                    <div class="stat-label">For Sale</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Property Categories -->
+    <section class="section">
+        <div class="container">
+            <div class="category-pills" id="categoryFilters">
+                <span class="category-pill active" data-category="all">🏠 All Properties</span>
+                <span class="category-pill" data-category="residential">🏠 Residential (342)</span>
+                <span class="category-pill" data-category="commercial">🏢 Commercial (156)</span>
+                <span class="category-pill" data-category="land">🌳 Land & Plots (89)</span>
+                <span class="category-pill" data-category="rentals">🏘️ Rentals (234)</span>
+                <span class="category-pill" data-category="sales">💰 Sales (167)</span>
+                <span class="category-pill" data-category="shared">🏢 Shared Spaces (78)</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Active Properties with Gallery -->
+    <section class="section">
+        <div class="container">
+            <div class="section-title">
+                <span>📋 Active Properties Gallery</span>
+                <button class="edit-btn" style="padding: 0.5rem 1.5rem;" onclick="showAddPropertyModal()">+ Add Property</button>
+            </div>
+            <div class="property-grid" id="propertyGrid"></div>
+        </div>
+    </section>
+
+    <!-- Feature Modules -->
+    <section class="section" style="background: white;">
+        <div class="container">
+            <div class="section-title">
+                <span>⚙️ Core Modules</span>
+            </div>
+            <div class="features-grid" id="featuresGrid">
+                <div class="feature-card" data-module="registry">
+                    <div class="feature-icon">🏢</div>
+                    <div class="feature-title">Property & Unit Registry</div>
+                    <p>Complete property database with documents, images, and history.</p>
+                    <div class="feature-stats">
+                        <span>📄 1,247 properties</span>
+                        <span>🔍 3,892 documents</span>
+                    </div>
+                </div>
+                <div class="feature-card" data-module="tenant">
+                    <div class="feature-icon">👥</div>
+                    <div class="feature-title">Tenant & Lease Management</div>
+                    <p>Lease agreements, renewals, tenant communications.</p>
+                    <div class="feature-stats">
+                        <span>👤 892 tenants</span>
+                        <span>📝 456 active leases</span>
+                    </div>
+                </div>
+                <div class="feature-card" data-module="rent">
+                    <div class="feature-icon">💰</div>
+                    <div class="feature-title">Rent Invoicing & Collections</div>
+                    <p>Automated invoices, mobile money integration, arrears tracking.</p>
+                    <div class="feature-stats">
+                        <span>📊 $1.2M monthly</span>
+                        <span>⚠️ $124K arrears</span>
+                    </div>
+                </div>
+                <div class="feature-card" data-module="sales">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">Sales & Commission</div>
+                    <p>Track sales, agents commissions, closing schedules.</p>
+                    <div class="feature-stats">
+                        <span>💰 $45M YTD sales</span>
+                        <span>👔 23 agents</span>
+                    </div>
+                </div>
+                <div class="feature-card" data-module="maintenance">
+                    <div class="feature-icon">🔧</div>
+                    <div class="feature-title">Maintenance Requests</div>
+                    <p>Tenant requests, work orders, contractor tracking.</p>
+                    <div class="feature-stats">
+                        <span>🔨 67 open requests</span>
+                        <span>👷 12 contractors</span>
+                    </div>
+                </div>
+                <div class="feature-card" data-module="legal">
+                    <div class="feature-icon">⚖️</div>
+                    <div class="feature-title">Legal & Compliance</div>
+                    <p>Title deeds, permits, regulatory compliance.</p>
+                    <div class="feature-stats">
+                        <span>📋 892 title deeds</span>
+                        <span>✅ 98% compliant</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div class="modal" id="genericModal">
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+
+    <footer class="footer">
+        <small>© 2026 CephasGM Group. All rights reserved. v3.14.2 · Build 2026.02.21 · PROD</small>
+    </footer>
+
+    <script>
+        // Enhanced property data with images and documents
+        let properties = [
+            { 
+                id: 1, 
+                name: 'Harbor View Towers', 
+                location: 'Dar es Salaam, Tanzania', 
+                type: 'residential',
+                category: 'residential',
+                beds: 3, baths: 2, sqm: 180, 
+                price: 1800, priceType: 'mo', 
+                status: 'available',
+                images: [
+                    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=500',
+                    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500',
+                    'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=500'
+                ],
+                documents: ['Title_Deed.pdf', 'Inspection_Report.pdf', 'Floor_Plan.pdf'],
+                tenants: [],
+                leaseHistory: []
+            },
+            { 
+                id: 2, 
+                name: 'Kilimanjaro Business Park', 
+                location: 'Arusha, Tanzania', 
+                type: 'commercial',
+                category: 'commercial',
+                units: '12 offices', sqm: 850, 
+                price: 5500, priceType: 'mo', 
+                status: 'rented',
+                images: [
+                    'https://images.unsplash.com/photo-1497366216548-37526070297c?w=500',
+                    'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=500',
+                    'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=500'
+                ],
+                documents: ['Lease_Agreement.pdf', 'Business_License.pdf', 'Fire_Safety_Cert.pdf'],
+                tenants: ['Kilimanjaro Coffee', 'Tech Hub Ltd', 'Legal Associates'],
+                leaseHistory: []
+            },
+            { 
+                id: 3, 
+                name: 'Serengeti Conservation Land', 
+                location: 'Karatu, Tanzania', 
+                type: 'land',
+                category: 'land',
+                acres: 25, zoning: 'Mixed Use', 
+                price: 450000, priceType: 'total', 
+                status: 'for sale',
+                images: [
+                    'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500',
+                    'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500',
+                    'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500'
+                ],
+                documents: ['Land_Title.pdf', 'Survey_Report.pdf', 'Environmental_Assessment.pdf'],
+                tenants: [],
+                leaseHistory: []
+            },
+            { 
+                id: 4, 
+                name: 'Zanzibar Beach Resort', 
+                location: 'Zanzibar, Tanzania', 
+                type: 'rentals',
+                category: 'rentals',
+                units: '8 villas', sqm: 1200, 
+                price: 350, priceType: 'night', 
+                status: 'rented',
+                images: [
+                    'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500',
+                    'https://images.unsplash.com/photo-1582719508250-b5c9e2d6b7e0?w=500',
+                    'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=500'
+                ],
+                documents: ['Tourism_License.pdf', 'Hotel_Permit.pdf', 'Insurance.pdf'],
+                tenants: ['Booking.com Guests', 'Airbnb Guests'],
+                leaseHistory: []
+            },
+            { 
+                id: 5, 
+                name: 'Dar es Salaam Luxury Condos', 
+                location: 'Dar es Salaam, Tanzania', 
+                type: 'sales',
+                category: 'sales',
+                beds: 4, baths: 3, sqm: 250, 
+                price: 350000, priceType: 'total', 
+                status: 'for sale',
+                images: [
+                    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=500',
+                    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=500',
+                    'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=500'
+                ],
+                documents: ['Sales_Agreement.pdf', 'Property_Valuation.pdf', 'Marketing_Brochure.pdf'],
+                tenants: [],
+                leaseHistory: []
+            },
+            { 
+                id: 6, 
+                name: 'Shared Workspace - Kijitonyama', 
+                location: 'Dar es Salaam, Tanzania', 
+                type: 'shared',
+                category: 'shared',
+                units: '25 desks', sqm: 400, 
+                price: 150, priceType: 'mo', 
+                status: 'available',
+                images: [
+                    'https://images.unsplash.com/photo-1497366216548-37526070297c?w=500',
+                    'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=500',
+                    'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=500'
+                ],
+                documents: ['Membership_Agreement.pdf', 'Rules_Regulations.pdf', 'Insurance.pdf'],
+                tenants: ['Startup A', 'Freelancer B', 'Company C'],
+                leaseHistory: []
+            }
+        ];
+
+        // Module data
+        let moduleData = {
+            registry: { properties: 1247, documents: 3892, lastUpdated: '2026-02-21' },
+            tenant: { tenants: 892, activeLeases: 456, renewals: 23 },
+            rent: { monthly: 1200000, arrears: 124500, collected: 1075500 },
+            sales: { ytd: 45000000, agents: 23, commissions: 2250000 },
+            maintenance: { open: 67, contractors: 12, completed: 892 },
+            legal: { deeds: 892, compliance: 98, permits: 456 }
+        };
+
+        let currentCategory = 'all';
+
+        // Render properties with gallery
+        function renderProperties() {
+            const grid = document.getElementById('propertyGrid');
+            grid.innerHTML = '';
+
+            const filtered = currentCategory === 'all' 
+                ? properties 
+                : properties.filter(p => p.category === currentCategory);
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'property-card';
+                
+                // Build gallery HTML
+                let galleryHtml = '';
+                if (p.images && p.images.length) {
+                    galleryHtml = `
+                        <div class="property-image-gallery" id="gallery-${p.id}">
+                            <div class="gallery-container" id="galleryContainer-${p.id}" style="transform: translateX(0px);">
+                                ${p.images.map((img, idx) => `
+                                    <div class="gallery-slide" style="background-image: url('${img}');">
+                                        <div style="position: absolute; bottom: 10px; left: 10px; color: white; background: rgba(0,0,0,0.5); padding: 2px 8px; border-radius: 12px; font-size: 0.7rem;">${idx+1}/${p.images.length}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="gallery-nav">
+                                ${p.images.map((_, idx) => `
+                                    <span class="gallery-dot ${idx === 0 ? 'active' : ''}" onclick="event.stopPropagation(); slideGallery(${p.id}, ${idx})"></span>
+                                `).join('')}
+                            </div>
+                            <span class="property-status status-${p.status === 'available' ? 'available' : (p.status === 'rented' ? 'rented' : 'sold')}">${p.status}</span>
+                            <div style="position: absolute; bottom: 10px; right: 10px; display: flex; gap: 5px;">
+                                <button class="edit-btn" onclick="event.stopPropagation(); editProperty(${p.id})">Edit</button>
+                                <button class="delete-btn" onclick="event.stopPropagation(); deleteProperty(${p.id})">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Build features
+                let features = '';
+                if (p.beds) features += `<span>🛏️ ${p.beds}</span><span>🚿 ${p.baths}</span><span>📐 ${p.sqm}m²</span>`;
+                else if (p.sqm) features += `<span>📐 ${p.sqm}m²</span>`;
+                else if (p.acres) features += `<span>🌳 ${p.acres} acres</span>`;
+                if (p.units) features += `<span>🏢 ${p.units}</span>`;
+
+                // Build documents
+                const docs = p.documents.map(d => `
+                    <span class="doc-badge" onclick="event.stopPropagation(); viewDocument('${d}', ${p.id})">
+                        📄 ${d}
+                    </span>
+                `).join('');
+
+                card.innerHTML = `
+                    ${galleryHtml}
+                    <div class="property-details">
+                        <div class="property-title">
+                            <h3>${p.name}</h3>
+                            <span class="property-price">${p.priceType === 'mo' ? '$' + p.price + '/mo' : '$' + p.price.toLocaleString()}</span>
+                        </div>
+                        <p style="color: #64748b;">📍 ${p.location}</p>
+                        <div class="property-features">
+                            ${features}
+                        </div>
+                        <div style="margin: 1rem 0;">
+                            <strong>Documents:</strong>
+                            <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px;">
+                                ${docs}
+                            </div>
+                        </div>
+                        ${p.tenants && p.tenants.length ? `
+                            <div style="background: #f8fafc; padding: 0.5rem; border-radius: 8px;">
+                                <small>👥 ${p.tenants.join(' · ')}</small>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Gallery navigation
+        window.slideGallery = function(propertyId, slideIndex) {
+            const container = document.getElementById(`galleryContainer-${propertyId}`);
+            if (container) {
+                container.style.transform = `translateX(-${slideIndex * 100}%)`;
+                // Update dots
+                const dots = container.parentElement.querySelectorAll('.gallery-dot');
+                dots.forEach((dot, idx) => {
+                    if (idx === slideIndex) dot.classList.add('active');
+                    else dot.classList.remove('active');
+                });
+            }
+        };
+
+        // Category filtering
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.addEventListener('click', function() {
+                document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+                currentCategory = this.dataset.category;
+                renderProperties();
+            });
+        });
+
+        // Module clicks
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const module = this.dataset.module;
+                showModuleDetails(module);
+            });
+        });
+
+        function showModuleDetails(module) {
+            const data = moduleData[module];
+            const titles = {
+                registry: 'Property & Unit Registry',
+                tenant: 'Tenant & Lease Management',
+                rent: 'Rent Invoicing & Collections',
+                sales: 'Sales & Commission',
+                maintenance: 'Maintenance Requests',
+                legal: 'Legal & Compliance'
+            };
+
+            const modal = document.getElementById('genericModal');
+            const content = document.getElementById('modalContent');
+            
+            let details = '';
+            if (module === 'registry') {
+                details = `
+                    <div class="document-list">
+                        <div class="document-item"><span>Total Properties</span> <strong>${data.properties}</strong></div>
+                        <div class="document-item"><span>Total Documents</span> <strong>${data.documents}</strong></div>
+                        <div class="document-item"><span>Last Updated</span> <strong>${data.lastUpdated}</strong></div>
+                    </div>
+                    <button class="btn-save" onclick="addDocument()">Upload New Document</button>
+                `;
+            } else if (module === 'tenant') {
+                details = `
+                    <div class="document-list">
+                        <div class="document-item"><span>Active Tenants</span> <strong>${data.tenants}</strong></div>
+                        <div class="document-item"><span>Active Leases</span> <strong>${data.activeLeases}</strong></div>
+                        <div class="document-item"><span>Renewals Due</span> <strong>${data.renewals}</strong></div>
+                    </div>
+                    <button class="btn-save" onclick="addTenant()">Add Tenant</button>
+                `;
+            }
+
+            content.innerHTML = `
+                <h3>${titles[module]}</h3>
+                ${details}
+                <div class="modal-actions">
+                    <button class="btn-cancel" onclick="closeModal()">Close</button>
+                </div>
+            `;
+            modal.classList.add('active');
+        }
+
+        // Property CRUD
+        window.editProperty = function(id) {
+            const prop = properties.find(p => p.id === id);
+            if (!prop) return;
+            
+            const modal = document.getElementById('genericModal');
+            const content = document.getElementById('modalContent');
+            content.innerHTML = `
+                <h3>Edit Property</h3>
+                <input type="text" id="editName" value="${prop.name}" placeholder="Property Name">
+                <input type="text" id="editLocation" value="${prop.location}" placeholder="Location">
+                <input type="number" id="editPrice" value="${prop.price}" placeholder="Price">
+                <select id="editStatus">
+                    <option value="available" ${prop.status === 'available' ? 'selected' : ''}>Available</option>
+                    <option value="rented" ${prop.status === 'rented' ? 'selected' : ''}>Rented</option>
+                    <option value="for sale" ${prop.status === 'for sale' ? 'selected' : ''}>For Sale</option>
+                </select>
+                <textarea id="editDocs" placeholder="Documents (comma separated)">${prop.documents.join(', ')}</textarea>
+                <div class="modal-actions">
+                    <button class="btn-save" onclick="updateProperty(${id})">Update</button>
+                    <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                </div>
+            `;
+            modal.classList.add('active');
+        };
+
+        window.updateProperty = function(id) {
+            const prop = properties.find(p => p.id === id);
+            if (prop) {
+                prop.name = document.getElementById('editName').value;
+                prop.location = document.getElementById('editLocation').value;
+                prop.price = Number(document.getElementById('editPrice').value);
+                prop.status = document.getElementById('editStatus').value;
+                prop.documents = document.getElementById('editDocs').value.split(',').map(s => s.trim());
+            }
+            renderProperties();
+            closeModal();
+        };
+
+        window.deleteProperty = function(id) {
+            if (confirm('Delete this property?')) {
+                properties = properties.filter(p => p.id !== id);
+                renderProperties();
+            }
+        };
+
+        window.viewDocument = function(docName, propertyId) {
+            alert(`Opening document: ${docName}\nProperty ID: ${propertyId}\n\nIn production, this would open the actual document.`);
+        };
+
+        window.addDocument = function() {
+            alert('Upload document interface - would open file picker in production');
+            closeModal();
+        };
+
+        window.addTenant = function() {
+            alert('Add tenant form - would open tenant creation in production');
+            closeModal();
+        };
+
+        window.showAddPropertyModal = function() {
+            const modal = document.getElementById('genericModal');
+            const content = document.getElementById('modalContent');
+            content.innerHTML = `
+                <h3>Add New Property</h3>
+                <input type="text" id="newName" placeholder="Property Name">
+                <input type="text" id="newLocation" placeholder="Location">
+                <select id="newCategory">
+                    <option value="residential">Residential</option>
+                    <option value="commercial">Commercial</option>
+                    <option value="land">Land</option>
+                    <option value="rentals">Rentals</option>
+                    <option value="sales">Sales</option>
+                    <option value="shared">Shared Spaces</option>
+                </select>
+                <input type="number" id="newPrice" placeholder="Price">
+                <select id="newStatus">
+                    <option value="available">Available</option>
+                    <option value="rented">Rented</option>
+                    <option value="for sale">For Sale</option>
+                </select>
+                <div class="modal-actions">
+                    <button class="btn-save" onclick="saveNewProperty()">Save</button>
+                    <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                </div>
+            `;
+            modal.classList.add('active');
+        };
+
+        window.saveNewProperty = function() {
+            const newId = Math.max(...properties.map(p => p.id)) + 1;
+            properties.push({
+                id: newId,
+                name: document.getElementById('newName').value,
+                location: document.getElementById('newLocation').value,
+                category: document.getElementById('newCategory').value,
+                type: document.getElementById('newCategory').value,
+                price: Number(document.getElementById('newPrice').value),
+                priceType: 'mo',
+                status: document.getElementById('newStatus').value,
+                images: ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=500'],
+                documents: ['New_Deed.pdf', 'New_Inspection.pdf'],
+                tenants: []
+            });
+            renderProperties();
+            closeModal();
+        };
+
+        window.closeModal = function() {
+            document.getElementById('genericModal').classList.remove('active');
+        };
+
+        // Initialize
+        renderProperties();
+    </script>
+</body>
+</html>
