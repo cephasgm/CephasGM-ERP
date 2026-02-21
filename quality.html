@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Integrated Quality & Performance Suite · CephasGM ERP</title>
+  <!-- PWA manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0a2c3d">
+  <!-- Professional dependencies: Power BI SDK, flatpickr calendar -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/powerbi-client/2.22.0/powerbi.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background: #f5f7fa; color: #1e2b3a; display: flex; flex-direction: column; min-height: 100vh; }
+    
+    /* Professional top bar – clean, no distractions */
+    .top-bar { background: #0c2e41; color: white; padding: 0 2rem; height: 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d4a13e; }
+    .logo-area { display: flex; align-items: center; gap: 1.2rem; }
+    .logo { background: #d4a13e; color: #0c2e41; font-weight: 700; padding: 0.3rem 0.9rem; border-radius: 4px; font-size: 1.2rem; letter-spacing: 0.5px; }
+    .suite-name { font-weight: 400; font-size: 0.95rem; opacity: 0.9; }
+    .top-bar-right { display: flex; align-items: center; gap: 2rem; }
+    .timestamp { font-size: 0.85rem; color: #b0c4d9; }
+    
+    /* Navigation */
+    .main-nav { background: white; padding: 0 2rem; height: 48px; display: flex; align-items: center; gap: 2rem; border-bottom: 1px solid #e2e8f0; }
+    .main-nav a { color: #2c3e50; text-decoration: none; font-size: 0.9rem; font-weight: 500; padding: 0 0.25rem; height: 48px; display: flex; align-items: center; border-bottom: 2px solid transparent; }
+    .main-nav a:hover { border-bottom-color: #d4a13e; }
+    .main-nav a.home-link { margin-right: auto; font-weight: 400; color: #4a5f73; }
+    
+    /* Container */
+    .container { max-width: 1600px; margin: 0 auto; padding: 2rem; width: 100%; flex: 1; }
+    
+    /* Universal date filter – clean, professional */
+    .global-filter { background: white; border-radius: 8px; padding: 1rem 1.5rem; margin-bottom: 2rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #e9edf3; }
+    .filter-controls { display: flex; gap: 1rem; align-items: center; }
+    .date-range-input { display: flex; gap: 0.5rem; align-items: center; background: #f8fafd; padding: 0.3rem 1rem; border-radius: 6px; border: 1px solid #dde3ea; }
+    .flatpickr-input { background: transparent; border: none; padding: 0.4rem; width: 120px; font-size: 0.9rem; cursor: pointer; }
+    .btn-outline { background: transparent; border: 1px solid #cbd5e1; padding: 0.4rem 1.2rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; }
+    .btn-outline:hover { background: #f1f5f9; }
+    .btn-primary { background: #0c2e41; color: white; border: none; padding: 0.4rem 1.5rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; }
+    .btn-primary:hover { background: #154b66; }
+    
+    /* KPI row */
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin-bottom: 2rem; }
+    .kpi-card { background: white; border-radius: 10px; padding: 1.2rem; border: 1px solid #eef2f6; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+    .kpi-label { font-size: 0.75rem; text-transform: uppercase; color: #617388; letter-spacing: 0.3px; margin-bottom: 0.3rem; }
+    .kpi-value { font-size: 1.8rem; font-weight: 600; color: #0c2e41; line-height: 1.2; }
+    .kpi-trend { font-size: 0.75rem; color: #2e7d32; background: #e8f3e8; padding: 0.2rem 0.5rem; border-radius: 4px; margin-left: 0.5rem; display: inline-block; }
+    
+    /* Module grid */
+    .module-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; }
+    .card { background: white; border-radius: 12px; padding: 1.5rem; border: 1px solid #eef2f6; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+    .card-header h3 { font-size: 1rem; font-weight: 600; color: #1f3a4c; text-transform: uppercase; letter-spacing: 0.3px; }
+    .action-group { display: flex; gap: 0.4rem; }
+    .icon-btn { background: #f0f4fa; border: none; padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.75rem; cursor: pointer; color: #1f3a4c; display: inline-flex; align-items: center; gap: 0.2rem; }
+    .icon-btn:hover { background: #e3eaf2; }
+    
+    /* Tables */
+    .table-container { max-height: 240px; overflow-y: auto; border: 1px solid #eef2f6; border-radius: 6px; margin: 1rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    th { background: #f8fafc; padding: 0.6rem 0.5rem; text-align: left; font-weight: 500; color: #3e566b; position: sticky; top: 0; border-bottom: 1px solid #dde3ea; }
+    td { padding: 0.6rem 0.5rem; border-bottom: 1px solid #f0f3f8; }
+    .badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 500; }
+    .badge-critical { background: #fee9e9; color: #b71c1c; }
+    .badge-major { background: #fff2d6; color: #b45b0a; }
+    .badge-minor { background: #e8f3e8; color: #1e5e1e; }
+    
+    /* Power BI container */
+    .pbi-container { background: #f8fafd; border-radius: 6px; padding: 0.8rem; margin: 1rem 0 0.5rem; border: 1px solid #e2e8f0; font-size: 0.8rem; color: #2c3e50; display: flex; align-items: center; justify-content: space-between; }
+    
+    /* Executive dashboard full width */
+    .full-width { grid-column: 1 / -1; }
+    .exec-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
+    .footer { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid #dde3ea; display: flex; justify-content: space-between; font-size: 0.8rem; color: #617388; }
+    .footer a { color: #1f3a4c; text-decoration: none; margin-right: 1.5rem; }
+    .footer a:hover { color: #d4a13e; }
+    
+    /* Modal - professional */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); align-items: center; justify-content: center; z-index: 1000; }
+    .modal-content { background: white; border-radius: 8px; padding: 2rem; min-width: 450px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+    .modal-actions { margin-top: 1.5rem; display: flex; gap: 0.8rem; justify-content: flex-end; }
+    input, select, textarea { width: 100%; padding: 0.6rem; margin: 0.4rem 0; border: 1px solid #d0dbe8; border-radius: 4px; font-size: 0.9rem; }
+    
+    @media (max-width: 1200px) { .module-grid { grid-template-columns: 1fr; } .kpi-grid { grid-template-columns: repeat(2,1fr); } }
+  </style>
+</head>
+<body>
+  <!-- Professional header – no personal names, only institutional -->
+  <div class="top-bar">
+    <div class="logo-area">
+      <span class="logo">CG</span>
+      <span class="suite-name">Integrated Quality & Performance Suite</span>
+    </div>
+    <div class="top-bar-right">
+      <span class="timestamp">2026-02-21 · 06:30 UTC</span>
+    </div>
+  </div>
+
+  <!-- Navigation with home link -->
+  <div class="main-nav">
+    <a href="https://cephasgm.github.io/CephasGM-ERP/index.html" class="home-link">← Global Command Center</a>
+    <a href="#">Quality</a>
+    <a href="#">R&D</a>
+    <a href="#">DMS</a>
+    <a href="#">BC/DR</a>
+    <a href="#">Executive</a>
+  </div>
+
+  <div class="container">
+    <!-- Universal date filter (applies to all modules) -->
+    <div class="global-filter">
+      <div class="filter-controls">
+        <span style="font-weight:500; color:#1f3a4c;">Date range</span>
+        <div class="date-range-input">
+          <input type="text" id="startDate" class="flatpickr-input" placeholder="Start" value="2026-02-01">
+          <span>—</span>
+          <input type="text" id="endDate" class="flatpickr-input" placeholder="End" value="2026-02-21">
+        </div>
+        <button class="btn-outline" id="applyDateBtn">Apply to all views</button>
+      </div>
+      <div>
+        <span style="color:#617388; font-size:0.85rem;">Last updated: live</span>
+      </div>
+    </div>
+
+    <!-- KPI row (reflecting selected period) -->
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">Non-conformance rate</div><div class="kpi-value">2.1% <span class="kpi-trend">-0.3%</span></div><div style="font-size:0.75rem;">vs previous period</div></div>
+      <div class="kpi-card"><div class="kpi-label">R&D stage gate success</div><div class="kpi-value">67% <span class="kpi-trend">+5%</span></div></div>
+      <div class="kpi-card"><div class="kpi-label">Documents expiring</div><div class="kpi-value">12 <span class="kpi-trend">-2</span></div></div>
+      <div class="kpi-card"><div class="kpi-label">BC/DR readiness</div><div class="kpi-value">94% <span class="kpi-trend">+1%</span></div></div>
+    </div>
+
+    <!-- Module grid: Quality, R&D, DMS, BC/DR with full CRUD + Power BI -->
+    <div class="module-grid">
+      <!-- QUALITY ASSURANCE MODULE -->
+      <div class="card">
+        <div class="card-header">
+          <h3>🔍 Quality Assurance</h3>
+          <div class="action-group">
+            <button class="icon-btn" onclick="showModal('ncrModal')">+ New</button>
+            <button class="icon-btn" onclick="exportTable('ncrTable')">Export</button>
+            <button class="icon-btn" onclick="importData('ncr')">Import</button>
+            <button class="icon-btn" onclick="saveModule('qa')">Save</button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table id="ncrTable">
+            <thead><tr><th>ID</th><th>Source</th><th>Severity</th><th>Disposition</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>NCR-2411</td><td>Inspection</td><td><span class="badge badge-critical">Critical</span></td><td>Rework</td><td>Open</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
+              <tr><td>NCR-2412</td><td>Customer</td><td><span class="badge badge-major">Major</span></td><td>Use-As-Is</td><td>In progress</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
+              <tr><td>NCR-2413</td><td>Inspection</td><td><span class="badge badge-minor">Minor</span></td><td>Scrap</td><td>Closed</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pbi-container">
+          <span>📊 Power BI: Defect Pareto · Audit scores</span>
+          <button class="icon-btn" onclick="refreshPowerBI('qa')">⟳</button>
+        </div>
+        <div style="display:flex; gap:1rem; font-size:0.75rem; margin-top:0.5rem;">
+          <span>Audits scheduled: 4</span>
+          <span>Findings open: 7</span>
+        </div>
+      </div>
+
+      <!-- R&D MODULE -->
+      <div class="card">
+        <div class="card-header">
+          <h3>🔬 Research & Development</h3>
+          <div class="action-group">
+            <button class="icon-btn" onclick="showModal('rdModal')">+ New</button>
+            <button class="icon-btn" onclick="exportTable('rdTable')">Export</button>
+            <button class="icon-btn" onclick="importData('rd')">Import</button>
+            <button class="icon-btn" onclick="saveModule('rd')">Save</button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table id="rdTable">
+            <thead><tr><th>Project</th><th>Phase</th><th>Patent</th><th>Grant value</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>Project Nova</td><td>Phase 3</td><td>US11234567</td><td>$1.2M</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
+              <tr><td>Quantum Coatings</td><td>Prototype</td><td>Pending</td><td>$0.8M</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pbi-container">
+          <span>📊 Power BI: R&D funnel · Grants $4.2M</span>
+          <button class="icon-btn" onclick="refreshPowerBI('rd')">⟳</button>
+        </div>
+      </div>
+
+      <!-- DOCUMENT MANAGEMENT SYSTEM -->
+      <div class="card">
+        <div class="card-header">
+          <h3>📁 Document Management</h3>
+          <div class="action-group">
+            <button class="icon-btn" onclick="showModal('dmsModal')">+ Upload</button>
+            <button class="icon-btn" onclick="exportTable('dmsTable')">Export</button>
+            <button class="icon-btn" onclick="importData('dms')">Import</button>
+            <button class="icon-btn" onclick="saveModule('dms')">Save</button>
+          </div>
+        </div>
+        <div style="margin-bottom:0.8rem;"><input type="text" placeholder="Full-text search..." id="dmsSearch" onkeyup="searchDMS()" style="width:100%;"></div>
+        <div class="table-container">
+          <table id="dmsTable">
+            <thead><tr><th>Document</th><th>Version</th><th>Expiry</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>SOP-QA-2212</td><td>v3</td><td>2026-04-15</td><td>Active</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
+              <tr><td>ISO9001_cert</td><td>v2</td><td style="color:#b71c1c;">2026-03-15</td><td>Expiring</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pbi-container">
+          <span>📊 Power BI: Document expiry forecast</span>
+        </div>
+      </div>
+
+      <!-- BUSINESS CONTINUITY & DISASTER RECOVERY -->
+      <div class="card">
+        <div class="card-header">
+          <h3>⚡ Business Continuity</h3>
+          <div class="action-group">
+            <button class="icon-btn" onclick="showModal('bcdrModal')">+ Add</button>
+            <button class="icon-btn" onclick="exportTable('bcdrTable')">Export</button>
+            <button class="icon-btn" onclick="importData('bcdr')">Import</button>
+            <button class="icon-btn" onclick="saveModule('bcdr')">Save</button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table id="bcdrTable">
+            <thead><tr><th>Risk</th><th>RTO</th><th>RPO</th><th>Last drill</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>Cyber</td><td>2h</td><td>15min</td><td>2026-02-20</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
+              <tr><td>Supply chain</td><td>6h</td><td>1h</td><td>2026-02-10</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display:flex; gap:1rem; font-size:0.75rem; margin:0.5rem 0;">
+          <span>Emergency contacts: 34</span><span>Backup success: 99.8%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXECUTIVE DASHBOARD (full width) with Power BI -->
+    <div class="card full-width" style="margin-top:0.5rem;">
+      <div class="card-header">
+        <h3>📈 Executive Dashboard · Consolidated view</h3>
+        <div class="action-group">
+          <button class="icon-btn" onclick="refreshPowerBI('exec')">⟳ Refresh Power BI</button>
+          <button class="icon-btn" onclick="exportDashboard()">📄 Export</button>
+        </div>
+      </div>
+      <!-- Power BI embedded simulation -->
+      <div style="background:#f8fafc; border-radius:6px; padding:1.5rem; border:1px solid #e2e8f0; margin:0.5rem 0;">
+        <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:1rem;">
+          <div><span style="font-weight:500;">Revenue vs target</span><br><span style="font-size:1.4rem;">$247.8M</span> / $240M (+3.2%)</div>
+          <div><span style="font-weight:500;">Regional perf.</span><br>Africa 112% · EU 98%</div>
+          <div><span style="font-weight:500;">Risk heat map</span><br><span class="badge badge-critical">● Operational</span> <span class="badge badge-major">● Compliance</span></div>
+        </div>
+        <div style="margin-top:1rem; color:#617388; font-size:0.8rem;">⚡ Power BI Executive Dashboard (interactive) — click to drill through</div>
+      </div>
+      <div class="exec-metrics">
+        <div>Strategic initiatives: 8/12 on track</div>
+        <div>DSO: 43.2d ▼2.1d</div>
+        <div>ESG score: 86 ▲4</div>
+      </div>
+    </div>
+
+    <!-- Footer with global links -->
+    <div class="footer">
+      <div>
+        <a href="#">Quality</a><a href="#">R&D</a><a href="#">DMS</a><a href="#">BC/DR</a><a href="#">Executive</a>
+      </div>
+      <div>
+        <a href="https://cephasgm.github.io/CephasGM-ERP/index.html">← Back to Global Command Center</a> | PWA enabled · v2.8
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for New NCR (example - others would be similar) -->
+  <div id="ncrModal" class="modal">
+    <div class="modal-content">
+      <h3 style="margin-bottom:1rem;">New Non-Conformance Report</h3>
+      <input id="ncrNewId" placeholder="NCR ID" value="NCR-">
+      <select id="ncrNewSource"><option>Inspection</option><option>Customer</option><option>Supplier</option></select>
+      <select id="ncrNewSeverity"><option>Critical</option><option>Major</option><option>Minor</option></select>
+      <input id="ncrNewDisp" placeholder="Disposition">
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="addNCR()">Create</button>
+        <button class="btn-outline" onclick="hideModal('ncrModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Flatpickr initialization
+    flatpickr("#startDate", { defaultDate: "2026-02-01", dateFormat: "Y-m-d" });
+    flatpickr("#endDate", { defaultDate: "2026-02-21", dateFormat: "Y-m-d" });
+    
+    document.getElementById('applyDateBtn').addEventListener('click', function() {
+      const start = document.getElementById('startDate').value;
+      const end = document.getElementById('endDate').value;
+      // In production: refresh all Power BI reports and table data based on new range
+      alert(`Date range applied: ${start} to ${end}. All modules updated.`);
+    });
+
+    // Modal controls
+    function showModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function hideModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    // CRUD operations
+    function deleteRow(btn) { if(confirm('Confirm deletion?')) btn.closest('tr').remove(); }
+    function editRow(btn) { 
+      let row = btn.closest('tr');
+      let cells = row.querySelectorAll('td');
+      for(let i=0; i<cells.length-1; i++) {
+        let val = cells[i].innerText;
+        let input = document.createElement('input');
+        input.value = val;
+        input.style.width = '80px';
+        cells[i].innerHTML = '';
+        cells[i].appendChild(input);
+      }
+      btn.innerText = '✓';
+      btn.onclick = function() { saveEditRow(row); };
+    }
+
+    function saveEditRow(row) {
+      // collect values and replace with text
+    }
+
+    function addNCR() {
+      let id = document.getElementById('ncrNewId').value;
+      let src = document.getElementById('ncrNewSource').value;
+      let sev = document.getElementById('ncrNewSeverity').value;
+      let disp = document.getElementById('ncrNewDisp').value;
+      let tbody = document.querySelector('#ncrTable tbody');
+      let row = tbody.insertRow();
+      let sevClass = sev=='Critical'?'badge-critical':(sev=='Major'?'badge-major':'badge-minor');
+      row.innerHTML = `<td>${id}</td><td>${src}</td><td><span class="badge ${sevClass}">${sev}</span></td><td>${disp}</td><td>Open</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td>`;
+      hideModal('ncrModal');
+    }
+
+    // Export CSV
+    function exportTable(tableId) {
+      let csv = [];
+      let rows = document.querySelectorAll(`#${tableId} tr`);
+      for (let row of rows) {
+        let cols = row.querySelectorAll('td, th');
+        let rowArr = [];
+        for (let col of cols) rowArr.push(col.innerText);
+        csv.push(rowArr.join(','));
+      }
+      let blob = new Blob([csv.join('\n')], {type: 'text/csv'});
+      let a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = tableId+'.csv'; a.click();
+    }
+
+    function importData(module) { alert(`Import ${module} data: file upload dialog`); }
+    function saveModule(module) { alert(`Changes saved to ${module} (API call)`); }
+    function refreshPowerBI(module) { alert(`Refreshing Power BI ${module} report`); }
+    function exportDashboard() { alert('Exporting executive dashboard as PDF'); }
+    function searchDMS() {
+      let input = document.getElementById('dmsSearch').value.toLowerCase();
+      let rows = document.querySelectorAll('#dmsTable tbody tr');
+      rows.forEach(r => { r.style.display = r.innerText.toLowerCase().includes(input) ? '' : 'none'; });
+    }
+  </script>
+</body>
+</html>
