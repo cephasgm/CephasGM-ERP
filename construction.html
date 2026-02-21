@@ -1,0 +1,2118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CephasBuild™ | Construction & Civil Engineering ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .navbar {
+            background: #ffffff;
+            color: #0f172a;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2563eb;
+            cursor: pointer;
+            transition: color 0.3s;
+            letter-spacing: -0.5px;
+        }
+
+        .logo:hover {
+            color: #1d4ed8;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            color: #475569;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .nav-link.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .nav-link.btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .nav-link.btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 5rem 5%;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        .section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .challenge-item {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 12px;
+            color: #0f172a;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 500;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .challenge-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+            border-color: #2563eb;
+        }
+
+        .challenge-item.resolved {
+            background: #dcfce7;
+            border-color: #86efac;
+            color: #166534;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .module-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.05);
+            border-color: #2563eb;
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .module-icon {
+            font-size: 2rem;
+            background: #eff6ff;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            color: #2563eb;
+        }
+
+        .module-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .module-items {
+            list-style: none;
+        }
+
+        .module-items li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .module-items li:last-child {
+            border-bottom: none;
+        }
+
+        .module-items li::before {
+            content: "•";
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        .project-showcase {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .project-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .project-badge {
+            background: #2563eb;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .project-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            background: #f8fafc;
+            padding: 1.25rem;
+            border-radius: 12px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .progress-container {
+            margin: 1.5rem 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            color: #475569;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-download {
+            background: #10b981;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+            border-radius: 6px;
+        }
+
+        .btn-download:hover {
+            background: #059669;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            color: #0f172a;
+        }
+
+        .modal-close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #0f172a;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .template-item {
+            background: #f8fafc;
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .template-item:hover {
+            border-color: #2563eb;
+            background: white;
+        }
+
+        .template-item h4 {
+            margin-bottom: 0.5rem;
+            color: #0f172a;
+        }
+
+        .template-item p {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .template-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .footer {
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            padding: 2rem 5%;
+            text-align: center;
+        }
+
+        .footer-copyright {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #0f172a;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .project-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-card {
+            background: #f8fafc;
+            padding: 1.25rem;
+            border-radius: 12px;
+        }
+
+        .info-card h4 {
+            color: #64748b;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .resource-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .resource-table th {
+            background: #f8fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .resource-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .issue-item {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .issue-item.critical {
+            background: #fee2e2;
+            border-left: 4px solid #dc2626;
+        }
+
+        .issue-item.warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .project-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo" onclick="navigateTo('home')">CephasBuild™</div>
+        <div class="nav-links">
+            <a class="nav-link active" onclick="navigateTo('home')">Dashboard</a>
+            <a class="nav-link" onclick="navigateTo('projects')">Projects</a>
+            <a class="nav-link" onclick="navigateTo('procurement')">Procurement</a>
+            <a class="nav-link" onclick="navigateTo('equipment')">Equipment</a>
+            <a class="nav-link" onclick="navigateTo('payroll')">Payroll</a>
+            <a class="nav-link" onclick="navigateTo('safety')">Safety</a>
+            <a class="nav-link" onclick="navigateTo('billing')">Billing</a>
+            <a class="nav-link btn-primary" onclick="openModal('contact')">Contact Sales</a>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div id="main-content">
+        <!-- Home/Dashboard View -->
+        <div id="home-view">
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>Build Smarter.<br>Control Costs.<br>Deliver on Time.</h1>
+                    <p>Complete construction project management from tender to handover. Integrated ERP solution for modern construction companies.</p>
+                    <button class="btn btn-primary" onclick="openModal('demo')">Schedule Demo</button>
+                </div>
+            </section>
+
+            <!-- Industry Challenges -->
+            <section class="section">
+                <div class="container">
+                    <h2 class="section-title">Industry Challenges We Solve</h2>
+                    <div class="challenge-grid" id="challenges-list"></div>
+                </div>
+            </section>
+
+            <!-- Construction Modules -->
+            <section class="section">
+                <div class="container">
+                    <h2 class="section-title">Construction-Specific Modules</h2>
+                    <div class="modules-grid" id="modules-grid"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Other views will be injected here -->
+        <div id="dynamic-view" style="display: none;"></div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content" id="modal-content">
+            <!-- Dynamic modal content -->
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" style="display: none;"></div>
+
+    <footer class="footer">
+        <div class="footer-copyright">
+            © 2026 CephasGM Group. All rights reserved. v3.14.2 · Build 2026.02.21 · PROD
+        </div>
+    </footer>
+
+    <script>
+        // State Management
+        let currentView = 'home';
+        let projects = [];
+        let issues = [];
+
+        // Initialize with sample data
+        function initializeData() {
+            projects = [
+                {
+                    id: 1,
+                    name: 'High-Rise Tower - Phase 2',
+                    status: 'In Progress',
+                    budget: 12500000,
+                    spent: 8200000,
+                    completion: 62,
+                    startDate: '2025-01-15',
+                    endDate: '2026-06-30',
+                    location: 'Downtown Business District',
+                    projectManager: 'John Smith',
+                    client: 'Metropolitan Developments',
+                    contractor: 'CephasBuild Construction',
+                    phases: [
+                        { name: 'Foundation', budget: 1100000, actual: 1200000, progress: 100 },
+                        { name: 'Structure', budget: 3800000, actual: 3500000, progress: 85 },
+                        { name: 'Facade', budget: 2500000, actual: 1800000, progress: 45 },
+                        { name: 'Interior', budget: 3200000, actual: 1200000, progress: 30 },
+                        { name: 'MEP', budget: 1900000, actual: 500000, progress: 25 }
+                    ],
+                    resources: {
+                        labor: 45,
+                        equipment: 12,
+                        subcontractors: 8
+                    }
+                },
+                {
+                    id: 2,
+                    name: 'Industrial Warehouse',
+                    status: 'In Progress',
+                    budget: 8200000,
+                    spent: 2870000,
+                    completion: 35,
+                    startDate: '2025-03-01',
+                    endDate: '2026-02-28',
+                    location: 'Industrial Park',
+                    projectManager: 'Sarah Johnson',
+                    client: 'Logistics Plus Inc',
+                    contractor: 'CephasBuild Construction',
+                    phases: [
+                        { name: 'Site Prep', budget: 800000, actual: 750000, progress: 95 },
+                        { name: 'Foundation', budget: 1500000, actual: 1200000, progress: 70 },
+                        { name: 'Steel Structure', budget: 2800000, actual: 650000, progress: 25 },
+                        { name: 'Roofing', budget: 1600000, actual: 200000, progress: 12 },
+                        { name: 'Flooring', budget: 1500000, actual: 70000, progress: 5 }
+                    ],
+                    resources: {
+                        labor: 28,
+                        equipment: 8,
+                        subcontractors: 5
+                    }
+                }
+            ];
+
+            issues = [
+                { id: 1, text: 'Concrete delivery delayed - 2 days', type: 'critical', projectId: 1 },
+                { id: 2, text: 'Safety inspection pending', type: 'warning', projectId: 1 },
+                { id: 3, text: 'Steel delivery scheduled for Friday', type: 'warning', projectId: 2 }
+            ];
+        }
+
+        // Challenges data
+        const challenges = [
+            { id: 1, text: 'Cost Overruns', resolved: false },
+            { id: 2, text: 'Material Theft', resolved: false },
+            { id: 3, text: 'Delays & Disputes', resolved: false },
+            { id: 4, text: 'Safety Compliance', resolved: false },
+            { id: 5, text: 'Subcontractor Management', resolved: false },
+            { id: 6, text: 'Document Control', resolved: false }
+        ];
+
+        // Modules data
+        const modules = [
+            { id: 1, icon: '📊', title: 'Project Costing & BOQs', items: ['Bill of Quantities management', 'Budget vs actual tracking', 'Variation orders'] },
+            { id: 2, icon: '📦', title: 'Procurement & Suppliers', items: ['Supplier tendering', 'Material tracking', 'Delivery schedules'] },
+            { id: 3, icon: '🚜', title: 'Equipment & Asset Tracking', items: ['Plant hire management', 'Maintenance scheduling', 'Utilization tracking'] },
+            { id: 4, icon: '👷', title: 'Payroll & Contractors', items: ['Labour attendance', 'Subcontractor payments', 'Statutory deductions'] },
+            { id: 5, icon: '🛡️', title: 'Site Safety & OHS', items: ['Incident reporting', 'Safety inspections', 'Training records'] },
+            { id: 6, icon: '💰', title: 'Progress Billing', items: ['Client certificates', 'Retention tracking', 'Payment applications'] }
+        ];
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            renderHomeContent();
+            setupEventListeners();
+        });
+
+        // Navigation
+        function navigateTo(view) {
+            currentView = view;
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Hide home view and show appropriate view
+            const homeView = document.getElementById('home-view');
+            const dynamicView = document.getElementById('dynamic-view');
+
+            if (view === 'home') {
+                homeView.style.display = 'block';
+                dynamicView.style.display = 'none';
+                renderHomeContent();
+            } else {
+                homeView.style.display = 'none';
+                dynamicView.style.display = 'block';
+                renderDynamicView(view);
+            }
+        }
+
+        // Render home content
+        function renderHomeContent() {
+            renderChallenges();
+            renderModules();
+        }
+
+        function renderChallenges() {
+            const container = document.getElementById('challenges-list');
+            container.innerHTML = challenges.map(challenge => `
+                <div class="challenge-item ${challenge.resolved ? 'resolved' : ''}" onclick="editChallenge(${challenge.id})">
+                    ${challenge.text} ${challenge.resolved ? '✓' : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderModules() {
+            const container = document.getElementById('modules-grid');
+            container.innerHTML = modules.map(module => `
+                <div class="module-card" onclick="openModuleModal(${module.id})">
+                    <div class="module-header">
+                        <div class="module-icon">${module.icon}</div>
+                        <div class="module-title">${module.title}</div>
+                    </div>
+                    <ul class="module-items">
+                        ${module.items.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+            `).join('');
+        }
+
+        function renderDynamicView(view) {
+            const container = document.getElementById('dynamic-view');
+            let content = '';
+
+            switch(view) {
+                case 'projects':
+                    content = renderProjectsView();
+                    break;
+                case 'procurement':
+                    content = renderProcurementView();
+                    break;
+                case 'equipment':
+                    content = renderEquipmentView();
+                    break;
+                case 'payroll':
+                    content = renderPayrollView();
+                    break;
+                case 'safety':
+                    content = renderSafetyView();
+                    break;
+                case 'billing':
+                    content = renderBillingView();
+                    break;
+            }
+
+            container.innerHTML = content;
+        }
+
+        function renderProjectsView() {
+            return `
+                <section class="section">
+                    <div class="container">
+                        <h2 class="section-title">Project Management</h2>
+                        <div class="modules-grid">
+                            <div class="module-card" onclick="openModal('addProject')">
+                                <div class="module-header">
+                                    <div class="module-icon">➕</div>
+                                    <div class="module-title">New Project</div>
+                                </div>
+                                <p style="color: #64748b;">Create a new construction project</p>
+                                <button class="btn btn-primary" style="margin-top: 1rem;" onclick="event.stopPropagation(); openModal('addProject')">Create Project</button>
+                            </div>
+                            ${projects.map(project => `
+                                <div class="module-card" onclick="openProjectDetails(${project.id})">
+                                    <div class="module-header">
+                                        <div class="module-icon">${project.id === 1 ? '🏗️' : '🏭'}</div>
+                                        <div class="module-title">${project.name}</div>
+                                    </div>
+                                    <p style="color: #64748b; margin-bottom: 1rem;">Manager: ${project.projectManager}</p>
+                                    <div class="progress-container">
+                                        <div class="progress-header">
+                                            <span>Progress</span>
+                                            <span>${project.completion}%</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: ${project.completion}%;"></div>
+                                        </div>
+                                    </div>
+                                    <p style="color: #0f172a; font-weight: 500; margin-top: 1rem;">$${(project.budget/1000000).toFixed(1)}M</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderProcurementView() {
+            return `
+                <section class="section">
+                    <div class="container">
+                        <h2 class="section-title">Procurement Management</h2>
+                        <div class="modules-grid">
+                            <div class="module-card" onclick="openModuleTemplates('procurement', 'order')">
+                                <div class="module-header">
+                                    <div class="module-icon">📦</div>
+                                    <div class="module-title">New Purchase Order</div>
+                                </div>
+                                <p style="color: #64748b; margin-bottom: 1rem;">Create procurement request with templates</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('purchase-order', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('purchase-order', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="module-card" onclick="openModuleTemplates('procurement', 'suppliers')">
+                                <div class="module-header">
+                                    <div class="module-icon">🏢</div>
+                                    <div class="module-title">Supplier Directory</div>
+                                </div>
+                                <p style="color: #64748b; margin-bottom: 1rem;">25 active suppliers</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('supplier-directory', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('supplier-directory', 'word')">Word</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderEquipmentView() {
+            return `
+                <section class="section">
+                    <div class="container">
+                        <h2 class="section-title">Equipment Tracking</h2>
+                        <div class="modules-grid">
+                            <div class="module-card" onclick="openModuleTemplates('equipment', 'add')">
+                                <div class="module-header">
+                                    <div class="module-icon">🚜</div>
+                                    <div class="module-title">Add Equipment</div>
+                                </div>
+                                <p style="color: #64748b; margin-bottom: 1rem;">Register new equipment with templates</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('equipment-registration', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('equipment-registration', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="module-card" onclick="openModuleTemplates('equipment', 'maintenance')">
+                                <div class="module-header">
+                                    <div class="module-icon">🔧</div>
+                                    <div class="module-title">Maintenance Schedule</div>
+                                </div>
+                                <p style="color: #64748b; margin-bottom: 1rem;">3 units due this week</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('maintenance-schedule', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('maintenance-schedule', 'word')">Word</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderPayrollView() {
+            return `
+                <section class="section">
+                    <div class="container">
+                        <h2 class="section-title">Payroll & Contractors</h2>
+                        <div class="modules-grid">
+                            <div class="module-card" onclick="openModuleTemplates('payroll', 'worker')">
+                                <div class="module-header">
+                                    <div class="module-icon">👷</div>
+                                    <div class="module-title">Add Worker</div>
+                                </div>
+                                <p style="color: #64748b; margin-bottom: 1rem;">Register new employee with templates</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('worker-registration', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('worker-registration', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="module-card" onclick="openModuleTemplates('payroll', 'process')">
+                                <div class="module-header">
+                                    <div class="module-icon">💰</div>
+                                    <div class="module-title">Process Payroll</div>
+                                </div>
+                                <p style="color: #64748b; margin-bottom: 1rem;">45 active workers</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('payroll-process', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('payroll-process', 'word')">Word</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderSafetyView() {
+            return `
+                <section class="section">
+                    <div class="container">
+                        <h2 class="section-title">Safety & Compliance</h2>
+                        <div class="modules-grid">
+                            <div class="module-card" onclick="openModuleTemplates('safety', 'incident')">
+                                <div class="module-header">
+                                    <div class="module-icon">⚠️</div>
+                                    <div class="module-title">Report Incident</div>
+                                </div>
+                                <p style="color: #64748b; margin-bottom: 1rem;">Log safety incident with templates</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('incident-report', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('incident-report', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="module-card" onclick="openModuleTemplates('safety', 'audit')">
+                                <div class="module-header">
+                                    <div class="module-icon">📋</div>
+                                    <div class="module-title">Site Audits</div>
+                                </div>
+                                <p style="color: #64748b; margin-bottom: 1rem;">12 completed this month</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('site-audit', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('site-audit', 'word')">Word</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderBillingView() {
+            return `
+                <section class="section">
+                    <div class="container">
+                        <h2 class="section-title">Progress Billing</h2>
+                        <div class="modules-grid">
+                            <div class="module-card" onclick="openModuleTemplates('billing', 'invoice')">
+                                <div class="module-header">
+                                    <div class="module-icon">📄</div>
+                                    <div class="module-title">Create Invoice</div>
+                                </div>
+                                <p style="color: #64748b; margin-bottom: 1rem;">Generate client certificate with templates</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('client-invoice', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('client-invoice', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="module-card" onclick="openModuleTemplates('billing', 'retention')">
+                                <div class="module-header">
+                                    <div class="module-icon">💰</div>
+                                    <div class="module-title">Retention Tracking</div>
+                                </div>
+                                <p style="color: #64748b; margin-bottom: 1rem;">$749,000 held</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('retention-tracking', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="event.stopPropagation(); downloadTemplate('retention-tracking', 'word')">Word</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        // Template download function
+        function downloadTemplate(type, format) {
+            let content = '';
+            let filename = '';
+            let mimeType = format === 'excel' ? 'application/vnd.ms-excel' : 'application/msword';
+
+            // Generate template content based on type
+            switch(type) {
+                case 'boq':
+                    content = generateBOQTemplate();
+                    filename = 'Bill_of_Quantities_Template';
+                    break;
+                case 'budget-tracking':
+                    content = generateBudgetTrackingTemplate();
+                    filename = 'Budget_vs_Actual_Tracking';
+                    break;
+                case 'variation-order':
+                    content = generateVariationOrderTemplate();
+                    filename = 'Variation_Order_Template';
+                    break;
+                case 'supplier-tendering':
+                    content = generateSupplierTenderingTemplate();
+                    filename = 'Supplier_Tendering_Template';
+                    break;
+                case 'material-tracking':
+                    content = generateMaterialTrackingTemplate();
+                    filename = 'Material_Tracking_Template';
+                    break;
+                case 'delivery-schedule':
+                    content = generateDeliveryScheduleTemplate();
+                    filename = 'Delivery_Schedule_Template';
+                    break;
+                case 'plant-hire':
+                    content = generatePlantHireTemplate();
+                    filename = 'Plant_Hire_Management';
+                    break;
+                case 'maintenance-schedule':
+                    content = generateMaintenanceScheduleTemplate();
+                    filename = 'Maintenance_Schedule';
+                    break;
+                case 'utilization-tracking':
+                    content = generateUtilizationTemplate();
+                    filename = 'Equipment_Utilization';
+                    break;
+                case 'labour-attendance':
+                    content = generateLabourAttendanceTemplate();
+                    filename = 'Labour_Attendance_Sheet';
+                    break;
+                case 'subcontractor-payments':
+                    content = generateSubcontractorPaymentsTemplate();
+                    filename = 'Subcontractor_Payments';
+                    break;
+                case 'statutory-deductions':
+                    content = generateStatutoryDeductionsTemplate();
+                    filename = 'Statutory_Deductions_Calculator';
+                    break;
+                case 'incident-report':
+                    content = generateIncidentReportTemplate();
+                    filename = 'Incident_Report_Form';
+                    break;
+                case 'safety-inspection':
+                    content = generateSafetyInspectionTemplate();
+                    filename = 'Safety_Inspection_Checklist';
+                    break;
+                case 'training-records':
+                    content = generateTrainingRecordsTemplate();
+                    filename = 'Training_Records_Template';
+                    break;
+                case 'client-certificate':
+                    content = generateClientCertificateTemplate();
+                    filename = 'Client_Certificate_Template';
+                    break;
+                case 'retention-tracking':
+                    content = generateRetentionTrackingTemplate();
+                    filename = 'Retention_Tracking';
+                    break;
+                case 'payment-application':
+                    content = generatePaymentApplicationTemplate();
+                    filename = 'Payment_Application_Form';
+                    break;
+                case 'purchase-order':
+                    content = generatePurchaseOrderTemplate();
+                    filename = 'Purchase_Order_Template';
+                    break;
+                case 'supplier-directory':
+                    content = generateSupplierDirectoryTemplate();
+                    filename = 'Supplier_Directory';
+                    break;
+                case 'equipment-registration':
+                    content = generateEquipmentRegistrationTemplate();
+                    filename = 'Equipment_Registration_Form';
+                    break;
+                case 'worker-registration':
+                    content = generateWorkerRegistrationTemplate();
+                    filename = 'Worker_Registration_Form';
+                    break;
+                case 'payroll-process':
+                    content = generatePayrollProcessTemplate();
+                    filename = 'Payroll_Processing_Sheet';
+                    break;
+                case 'site-audit':
+                    content = generateSiteAuditTemplate();
+                    filename = 'Site_Audit_Checklist';
+                    break;
+                case 'client-invoice':
+                    content = generateClientInvoiceTemplate();
+                    filename = 'Client_Invoice_Template';
+                    break;
+            }
+
+            // Add file extension
+            filename += format === 'excel' ? '.xls' : '.doc';
+
+            // Create and trigger download
+            const blob = new Blob([content], { type: mimeType });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            showToast(`${filename} template downloaded successfully`);
+        }
+
+        // Template generators (simplified versions - you can use the full versions from previous code)
+        function generateBOQTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse;width:100%}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>BILL OF QUANTITIES</h2>
+                    <p>Project: [Project Name]</p>
+                    <table>
+                        <tr><th>Item</th><th>Description</th><th>Qty</th><th>Unit</th><th>Rate</th><th>Total</th></tr>
+                        <tr><td>1</td><td>Excavation</td><td>500</td><td>m³</td><td>25.00</td><td>=D2*E2</td></tr>
+                        <tr><td>2</td><td>Concrete</td><td>300</td><td>m³</td><td>180.00</td><td>=D3*E3</td></tr>
+                        <tr><td colspan="5">TOTAL</td><td>=SUM(F2:F3)</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateBudgetTrackingTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse;width:100%}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>BUDGET VS ACTUAL TRACKING</h2>
+                    <table>
+                        <tr><th>Category</th><th>Budget</th><th>Actual</th><th>Variance</th></tr>
+                        <tr><td>Labor</td><td>500000</td><td>475000</td><td>=B2-C2</td></tr>
+                        <tr><td>Materials</td><td>800000</td><td>825000</td><td>=B3-C3</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateVariationOrderTemplate() {
+            return `
+                <html>
+                <head><style>body{font-family:Arial}</style></head>
+                <body>
+                    <h2>VARIATION ORDER</h2>
+                    <p>VO No: VO-${new Date().getFullYear()}-001</p>
+                    <table width="100%">
+                        <tr><td>Description</td><td>Amount</td></tr>
+                        <tr><td>Additional work</td><td>$15,000</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateSupplierTenderingTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>SUPPLIER TENDERING MATRIX</h2>
+                    <table>
+                        <tr><th>Supplier</th><th>Price</th><th>Delivery</th><th>Score</th></tr>
+                        <tr><td>Supplier A</td><td>150000</td><td>14</td><td>=100-B2/1000+C2*2</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateMaterialTrackingTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>MATERIAL TRACKING</h2>
+                    <table>
+                        <tr><th>Material</th><th>Opening</th><th>Received</th><th>Issued</th><th>Balance</th></tr>
+                        <tr><td>Cement</td><td>500</td><td>1000</td><td>850</td><td>=B2+C2-D2</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateDeliveryScheduleTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>DELIVERY SCHEDULE</h2>
+                    <table>
+                        <tr><th>PO</th><th>Supplier</th><th>Expected</th><th>Actual</th><th>Status</th></tr>
+                        <tr><td>PO-001</td><td>Supplier A</td><td>2026-02-15</td><td>2026-02-14</td><td>=IF(D2<=C2,"On Time","Delayed")</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generatePlantHireTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>PLANT HIRE MANAGEMENT</h2>
+                    <table>
+                        <tr><th>Equipment</th><th>Rate/Day</th><th>Days</th><th>Total</th></tr>
+                        <tr><td>Excavator</td><td>450</td><td>22</td><td>=B2*C2</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateMaintenanceScheduleTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>MAINTENANCE SCHEDULE</h2>
+                    <table>
+                        <tr><th>Equipment</th><th>Last Service</th><th>Next Due</th><th>Status</th></tr>
+                        <tr><td>Excavator</td><td>2026-01-15</td><td>=DATE(YEAR(B2),MONTH(B2)+3,DAY(B2))</td><td>=IF(C2<TODAY(),"Due","OK")</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateUtilizationTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>EQUIPMENT UTILIZATION</h2>
+                    <table>
+                        <tr><th>Equipment</th><th>Available</th><th>Operating</th><th>Utilization</th></tr>
+                        <tr><td>Excavator</td><td>176</td><td>142</td><td>=C2/B2*100&"%"</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateLabourAttendanceTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>LABOUR ATTENDANCE</h2>
+                    <table>
+                        <tr><th>Worker</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Total</th></tr>
+                        <tr><td>John Smith</td><td>8</td><td>8</td><td>8</td><td>8</td><td>8</td><td>=SUM(B2:F2)</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateSubcontractorPaymentsTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>SUBCONTRACTOR PAYMENTS</h2>
+                    <table>
+                        <tr><th>Subcontractor</th><th>Contract</th><th>Completed</th><th>Earned</th></tr>
+                        <tr><td>ABC Electrical</td><td>150000</td><td>45%</td><td>=B2*C2</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateStatutoryDeductionsTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>STATUTORY DEDUCTIONS</h2>
+                    <table>
+                        <tr><th>Employee</th><th>Gross</th><th>Tax(30%)</th><th>SS(5%)</th><th>Net</th></tr>
+                        <tr><td>John Smith</td><td>5600</td><td>=B2*0.3</td><td>=B2*0.05</td><td>=B2-C2-D2</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateIncidentReportTemplate() {
+            return `
+                <html>
+                <head><style>body{font-family:Arial}</style></head>
+                <body>
+                    <h2>INCIDENT REPORT</h2>
+                    <p>Date: ${new Date().toLocaleDateString()}</p>
+                    <p>Location: _________________</p>
+                    <p>Description: _________________</p>
+                    <p>Actions Taken: _________________</p>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateSafetyInspectionTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>SAFETY INSPECTION</h2>
+                    <table>
+                        <tr><th>Item</th><th>Compliant</th><th>Comments</th></tr>
+                        <tr><td>PPE Usage</td><td><input type="checkbox"></td><td><input type="text"></td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateTrainingRecordsTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>TRAINING RECORDS</h2>
+                    <table>
+                        <tr><th>Employee</th><th>Training</th><th>Date</th><th>Expiry</th></tr>
+                        <tr><td>John Smith</td><td>First Aid</td><td>2025-11-20</td><td>=DATE(YEAR(C2)+2,MONTH(C2),DAY(C2))</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateClientCertificateTemplate() {
+            return `
+                <html>
+                <head><style>body{font-family:Arial}</style></head>
+                <body>
+                    <h2>INTERIM PAYMENT CERTIFICATE</h2>
+                    <p>Certificate No: IPC-${new Date().getFullYear()}-001</p>
+                    <p>Project: [Project Name]</p>
+                    <p>Amount Due: $12,500</p>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateRetentionTrackingTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>RETENTION TRACKING</h2>
+                    <table>
+                        <tr><th>Certificate</th><th>Gross</th><th>Retention</th><th>Release Date</th></tr>
+                        <tr><td>IPC-001</td><td>850000</td><td>=B2*0.1</td><td>=DATE(YEAR(TODAY())+1,MONTH(TODAY()),DAY(TODAY()))</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generatePaymentApplicationTemplate() {
+            return `
+                <html>
+                <head><style>body{font-family:Arial}</style></head>
+                <body>
+                    <h2>PAYMENT APPLICATION</h2>
+                    <p>Application No: PA-${new Date().getFullYear()}-001</p>
+                    <p>Project: [Project Name]</p>
+                    <p>Amount Applied: $12,500</p>
+                </body>
+                </html>
+            `;
+        }
+
+        function generatePurchaseOrderTemplate() {
+            return `
+                <html>
+                <head><style>body{font-family:Arial}</style></head>
+                <body>
+                    <h2>PURCHASE ORDER</h2>
+                    <p>PO Number: PO-${new Date().getFullYear()}-001</p>
+                    <p>Supplier: _________________</p>
+                    <p>Total Amount: $________</p>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateSupplierDirectoryTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>SUPPLIER DIRECTORY</h2>
+                    <table>
+                        <tr><th>Company</th><th>Contact</th><th>Phone</th><th>Email</th></tr>
+                        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="email"></td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateEquipmentRegistrationTemplate() {
+            return `
+                <html>
+                <head><style>body{font-family:Arial}</style></head>
+                <body>
+                    <h2>EQUIPMENT REGISTRATION</h2>
+                    <p>Equipment ID: EQ-001</p>
+                    <p>Type: _________________</p>
+                    <p>Make/Model: _________________</p>
+                    <p>Year: <input type="number"></p>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateWorkerRegistrationTemplate() {
+            return `
+                <html>
+                <head><style>body{font-family:Arial}</style></head>
+                <body>
+                    <h2>WORKER REGISTRATION</h2>
+                    <p>Employee ID: EMP-001</p>
+                    <p>Full Name: _________________</p>
+                    <p>Position: _________________</p>
+                    <p>Start Date: <input type="date"></p>
+                </body>
+                </html>
+            `;
+        }
+
+        function generatePayrollProcessTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>PAYROLL PROCESSING</h2>
+                    <table>
+                        <tr><th>Employee</th><th>Hours</th><th>Rate</th><th>Gross</th></tr>
+                        <tr><td><input type="text"></td><td><input type="number"></td><td><input type="number"></td><td>=B2*C2</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateSiteAuditTemplate() {
+            return `
+                <html>
+                <head><style>table{border-collapse:collapse}th,td{border:1px solid #000;padding:8px}</style></head>
+                <body>
+                    <h2>SITE AUDIT CHECKLIST</h2>
+                    <table>
+                        <tr><th>Area</th><th>Compliant</th><th>Actions</th></tr>
+                        <tr><td>PPE</td><td><input type="checkbox"></td><td><input type="text"></td></tr>
+                        <tr><td>Housekeeping</td><td><input type="checkbox"></td><td><input type="text"></td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+        }
+
+        function generateClientInvoiceTemplate() {
+            return `
+                <html>
+                <head><style>body{font-family:Arial}</style></head>
+                <body>
+                    <h2>CLIENT INVOICE</h2>
+                    <p>Invoice No: INV-${new Date().getFullYear()}-001</p>
+                    <p>Date: ${new Date().toLocaleDateString()}</p>
+                    <p>Bill To: [Client Name]</p>
+                    <p>Amount Due: $12,500</p>
+                    <p>Due Date: ${new Date(Date.now()+30*24*60*60*1000).toLocaleDateString()}</p>
+                </body>
+                </html>
+            `;
+        }
+
+        // Module modal functions
+        function openModuleModal(moduleId) {
+            const module = modules.find(m => m.id === moduleId);
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modal-content');
+
+            let templates = '';
+            switch(moduleId) {
+                case 1: // Project Costing
+                    templates = `
+                        <div class="templates-grid">
+                            <div class="template-item">
+                                <h4>Bill of Quantities</h4>
+                                <p>Excel template with formulas for BOQ preparation</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('boq', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('boq', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="template-item">
+                                <h4>Budget vs Actual</h4>
+                                <p>Track project costs with variance analysis</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('budget-tracking', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('budget-tracking', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="template-item">
+                                <h4>Variation Orders</h4>
+                                <p>Manage project variations with impact analysis</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('variation-order', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('variation-order', 'word')">Word</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 2: // Procurement
+                    templates = `
+                        <div class="templates-grid">
+                            <div class="template-item">
+                                <h4>Supplier Tendering</h4>
+                                <p>Evaluation matrix for supplier selection</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('supplier-tendering', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('supplier-tendering', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="template-item">
+                                <h4>Material Tracking</h4>
+                                <p>Inventory management with reorder alerts</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('material-tracking', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('material-tracking', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="template-item">
+                                <h4>Delivery Schedules</h4>
+                                <p>Track deliveries with delay analysis</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('delivery-schedule', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('delivery-schedule', 'word')">Word</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 3: // Equipment
+                    templates = `
+                        <div class="templates-grid">
+                            <div class="template-item">
+                                <h4>Plant Hire Management</h4>
+                                <p>Track equipment hire costs and utilization</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('plant-hire', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('plant-hire', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="template-item">
+                                <h4>Maintenance Scheduling</h4>
+                                <p>Preventive maintenance tracker</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('maintenance-schedule', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('maintenance-schedule', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="template-item">
+                                <h4>Utilization Tracking</h4>
+                                <p>Monitor equipment efficiency and downtime</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('utilization-tracking', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('utilization-tracking', 'word')">Word</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 4: // Payroll
+                    templates = `
+                        <div class="templates-grid">
+                            <div class="template-item">
+                                <h4>Labour Attendance</h4>
+                                <p>Weekly attendance sheet with overtime calculation</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('labour-attendance', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('labour-attendance', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="template-item">
+                                <h4>Subcontractor Payments</h4>
+                                <p>Track payments and retentions</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('subcontractor-payments', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('subcontractor-payments', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="template-item">
+                                <h4>Statutory Deductions</h4>
+                                <p>Calculate taxes and deductions</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('statutory-deductions', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('statutory-deductions', 'word')">Word</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 5: // Safety
+                    templates = `
+                        <div class="templates-grid">
+                            <div class="template-item">
+                                <h4>Incident Reporting</h4>
+                                <p>Comprehensive incident report form</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('incident-report', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('incident-report', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="template-item">
+                                <h4>Safety Inspections</h4>
+                                <p>Site safety checklist with scoring</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('safety-inspection', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('safety-inspection', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="template-item">
+                                <h4>Training Records</h4>
+                                <p>Employee training matrix and compliance</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('training-records', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('training-records', 'word')">Word</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 6: // Billing
+                    templates = `
+                        <div class="templates-grid">
+                            <div class="template-item">
+                                <h4>Client Certificates</h4>
+                                <p>Interim payment certificates</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('client-certificate', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('client-certificate', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="template-item">
+                                <h4>Retention Tracking</h4>
+                                <p>Monitor client and subcontractor retentions</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('retention-tracking', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('retention-tracking', 'word')">Word</button>
+                                </div>
+                            </div>
+                            <div class="template-item">
+                                <h4>Payment Applications</h4>
+                                <p>Formal payment application forms</p>
+                                <div class="template-buttons">
+                                    <button class="btn btn-download" onclick="downloadTemplate('payment-application', 'excel')">Excel</button>
+                                    <button class="btn btn-download" onclick="downloadTemplate('payment-application', 'word')">Word</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+
+            modalContent.innerHTML = `
+                <div class="modal-header">
+                    <h2>${module.title}</h2>
+                    <span class="modal-close" onclick="closeModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p style="color: #64748b; margin-bottom: 1.5rem;">Download professional templates with built-in formulas and formatting.</p>
+                    ${templates}
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                </div>
+            `;
+            modal.classList.add('active');
+        }
+
+        function openModuleTemplates(module, type) {
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modal-content');
+
+            let title = '';
+            let template = '';
+
+            switch(module) {
+                case 'procurement':
+                    title = type === 'order' ? 'Purchase Order' : 'Supplier Directory';
+                    template = type === 'order' ? 'purchase-order' : 'supplier-directory';
+                    break;
+                case 'equipment':
+                    title = type === 'add' ? 'Equipment Registration' : 'Maintenance Schedule';
+                    template = type === 'add' ? 'equipment-registration' : 'maintenance-schedule';
+                    break;
+                case 'payroll':
+                    title = type === 'worker' ? 'Worker Registration' : 'Payroll Process';
+                    template = type === 'worker' ? 'worker-registration' : 'payroll-process';
+                    break;
+                case 'safety':
+                    title = type === 'incident' ? 'Incident Report' : 'Site Audit';
+                    template = type === 'incident' ? 'incident-report' : 'site-audit';
+                    break;
+                case 'billing':
+                    title = type === 'invoice' ? 'Client Invoice' : 'Retention Tracking';
+                    template = type === 'invoice' ? 'client-invoice' : 'retention-tracking';
+                    break;
+            }
+
+            modalContent.innerHTML = `
+                <div class="modal-header">
+                    <h2>${title}</h2>
+                    <span class="modal-close" onclick="closeModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="template-item" style="margin-bottom: 1rem;">
+                        <h4>${title} Template</h4>
+                        <p style="color: #64748b; margin: 0.5rem 0;">Download formatted template with formulas</p>
+                        <div class="template-buttons">
+                            <button class="btn btn-download" onclick="downloadTemplate('${template}', 'excel')">Excel</button>
+                            <button class="btn btn-download" onclick="downloadTemplate('${template}', 'word')">Word</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                </div>
+            `;
+            modal.classList.add('active');
+        }
+
+        function openProjectDetails(projectId) {
+            const project = projects.find(p => p.id === projectId);
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modal-content');
+
+            modalContent.innerHTML = `
+                <div class="modal-header">
+                    <h2>${project.name}</h2>
+                    <span class="modal-close" onclick="closeModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="project-detail-grid">
+                        <div class="info-card">
+                            <h4>Project Information</h4>
+                            <p><strong>Status:</strong> ${project.status}</p>
+                            <p><strong>Manager:</strong> ${project.projectManager}</p>
+                            <p><strong>Client:</strong> ${project.client}</p>
+                            <p><strong>Location:</strong> ${project.location}</p>
+                            <p><strong>Start Date:</strong> ${project.startDate}</p>
+                            <p><strong>End Date:</strong> ${project.endDate}</p>
+                        </div>
+                        <div class="info-card">
+                            <h4>Financial Summary</h4>
+                            <p><strong>Budget:</strong> $${(project.budget/1000000).toFixed(2)}M</p>
+                            <p><strong>Spent:</strong> $${(project.spent/1000000).toFixed(2)}M</p>
+                            <p><strong>Remaining:</strong> $${((project.budget - project.spent)/1000000).toFixed(2)}M</p>
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 1.5rem 0 1rem;">Project Phases</h3>
+                    <table class="resource-table">
+                        <thead>
+                            <tr>
+                                <th>Phase</th>
+                                <th>Budget</th>
+                                <th>Actual</th>
+                                <th>Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${project.phases.map(phase => `
+                                <tr>
+                                    <td>${phase.name}</td>
+                                    <td>$${(phase.budget/1000000).toFixed(2)}M</td>
+                                    <td>$${(phase.actual/1000000).toFixed(2)}M</td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <div class="progress-bar" style="width: 100px;">
+                                                <div class="progress-fill" style="width: ${phase.progress}%;"></div>
+                                            </div>
+                                            ${phase.progress}%
+                                        </div>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+
+                    <div class="button-group" style="margin-top: 2rem;">
+                        <button class="btn btn-primary" onclick="editProject(${project.id})">Edit Project</button>
+                        <button class="btn btn-danger" onclick="deleteProject(${project.id})" style="background: #dc2626; color: white;">Delete Project</button>
+                    </div>
+                </div>
+            `;
+            modal.classList.add('active');
+        }
+
+        function openModal(type, projectId = null) {
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modal-content');
+            let content = '';
+
+            switch(type) {
+                case 'addProject':
+                    content = `
+                        <div class="modal-header">
+                            <h2>Create New Project</h2>
+                            <span class="modal-close" onclick="closeModal()">&times;</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Project Name</label>
+                            <input type="text" id="project-name" placeholder="Enter project name">
+                        </div>
+                        <div class="form-group">
+                            <label>Client</label>
+                            <input type="text" id="project-client" placeholder="Enter client name">
+                        </div>
+                        <div class="form-group">
+                            <label>Project Manager</label>
+                            <input type="text" id="project-manager" placeholder="Enter PM name">
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" id="project-location" placeholder="Enter location">
+                        </div>
+                        <div class="form-group">
+                            <label>Budget ($)</label>
+                            <input type="number" id="project-budget" placeholder="Enter total budget">
+                        </div>
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" id="project-start">
+                        </div>
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <input type="date" id="project-end">
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="createProject()">Create Project</button>
+                            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                        </div>
+                    `;
+                    break;
+
+                case 'demo':
+                    content = `
+                        <div class="modal-header">
+                            <h2>Schedule Demo</h2>
+                            <span class="modal-close" onclick="closeModal()">&times;</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Company Name</label>
+                            <input type="text" id="company-name" placeholder="Enter company name">
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Person</label>
+                            <input type="text" id="contact-person" placeholder="Enter your name">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="email" placeholder="Enter email">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="tel" id="phone" placeholder="Enter phone number">
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Date</label>
+                            <input type="date" id="demo-date">
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="saveDemo()">Schedule Demo</button>
+                            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                        </div>
+                    `;
+                    break;
+
+                case 'contact':
+                    content = `
+                        <div class="modal-header">
+                            <h2>Contact Sales</h2>
+                            <span class="modal-close" onclick="closeModal()">&times;</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" id="contact-name" placeholder="Enter your name">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="contact-email" placeholder="Enter email">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="tel" id="contact-phone" placeholder="Enter phone number">
+                        </div>
+                        <div class="form-group">
+                            <label>Message</label>
+                            <textarea id="contact-message" placeholder="How can we help?"></textarea>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="saveContact()">Send Message</button>
+                            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                        </div>
+                    `;
+                    break;
+            }
+
+            modalContent.innerHTML = content;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // CRUD Operations
+        function createProject() {
+            const name = document.getElementById('project-name').value;
+            const client = document.getElementById('project-client').value;
+            const manager = document.getElementById('project-manager').value;
+            const location = document.getElementById('project-location').value;
+            const budget = parseFloat(document.getElementById('project-budget').value);
+            const startDate = document.getElementById('project-start').value;
+            const endDate = document.getElementById('project-end').value;
+
+            if (name && client && budget) {
+                const newProject = {
+                    id: projects.length + 1,
+                    name: name,
+                    status: 'New',
+                    budget: budget,
+                    spent: 0,
+                    completion: 0,
+                    startDate: startDate,
+                    endDate: endDate,
+                    location: location,
+                    projectManager: manager,
+                    client: client,
+                    contractor: 'CephasBuild Construction',
+                    phases: [],
+                    resources: { labor: 0, equipment: 0, subcontractors: 0 }
+                };
+                projects.push(newProject);
+                showToast('Project created successfully');
+                closeModal();
+                navigateTo('projects');
+            } else {
+                showToast('Please fill in all required fields', 'error');
+            }
+        }
+
+        function editProject(id) {
+            showToast('Edit functionality - Project ID: ' + id);
+            closeModal();
+        }
+
+        function deleteProject(id) {
+            if (confirm('Are you sure you want to delete this project?')) {
+                projects = projects.filter(p => p.id !== id);
+                showToast('Project deleted successfully');
+                navigateTo('projects');
+            }
+        }
+
+        function saveDemo() {
+            const company = document.getElementById('company-name')?.value;
+            const person = document.getElementById('contact-person')?.value;
+            const email = document.getElementById('email')?.value;
+            
+            if (company && person && email) {
+                showToast('Demo scheduled successfully! We\'ll contact you soon.');
+                closeModal();
+            } else {
+                showToast('Please fill in all required fields', 'error');
+            }
+        }
+
+        function saveContact() {
+            const name = document.getElementById('contact-name')?.value;
+            const email = document.getElementById('contact-email')?.value;
+            
+            if (name && email) {
+                showToast('Message sent successfully! Our team will respond within 24 hours.');
+                closeModal();
+            } else {
+                showToast('Please fill in all required fields', 'error');
+            }
+        }
+
+        function editChallenge(id) {
+            const challenge = challenges.find(c => c.id === id);
+            if (challenge) {
+                challenge.resolved = !challenge.resolved;
+                renderChallenges();
+                showToast(`Challenge ${challenge.resolved ? 'marked as resolved' : 'reopened'}`);
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            toast.className = `toast ${type}`;
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        function setupEventListeners() {
+            window.onclick = function(event) {
+                const modal = document.getElementById('modal');
+                if (event.target === modal) {
+                    closeModal();
+                }
+            };
+        }
+
+        // Make functions globally available
+        window.navigateTo = navigateTo;
+        window.openModal = openModal;
+        window.openModuleModal = openModuleModal;
+        window.openModuleTemplates = openModuleTemplates;
+        window.openProjectDetails = openProjectDetails;
+        window.closeModal = closeModal;
+        window.createProject = createProject;
+        window.editProject = editProject;
+        window.deleteProject = deleteProject;
+        window.downloadTemplate = downloadTemplate;
+        window.saveDemo = saveDemo;
+        window.saveContact = saveContact;
+        window.editChallenge = editChallenge;
+        window.showToast = showToast;
+    </script>
+</body>
+</html>
