@@ -9,6 +9,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icon-192.png">
     <style>
+        /* Root & Global styles from original, plus enhancements */
         :root {
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
@@ -24,12 +25,7 @@
             --shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
             background: var(--background);
@@ -74,10 +70,7 @@
             font-size: 1.25rem;
         }
 
-        .nav-section {
-            margin-bottom: 2rem;
-        }
-
+        .nav-section { margin-bottom: 2rem; }
         .nav-title {
             font-size: 0.75rem;
             text-transform: uppercase;
@@ -104,17 +97,8 @@
             cursor: pointer;
             font-size: 0.95rem;
         }
-
-        .nav-item:hover, .nav-item.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .nav-icon {
-            font-size: 1.25rem;
-            width: 24px;
-            text-align: center;
-        }
+        .nav-item:hover, .nav-item.active { background: var(--primary); color: white; }
+        .nav-icon { font-size: 1.25rem; width: 24px; text-align: center; }
 
         .main-content {
             grid-column: 2;
@@ -127,12 +111,10 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
-
-        .header h1 {
-            font-size: 1.875rem;
-            font-weight: 700;
-        }
+        .header h1 { font-size: 1.875rem; font-weight: 700; }
 
         /* Enhanced Toolbar */
         .toolbar {
@@ -147,37 +129,25 @@
             box-shadow: var(--shadow);
         }
 
-        .btn-primary {
-            background: var(--primary);
-            color: white;
+        .btn-primary, .btn-success, .btn-secondary, .btn-danger {
             border: none;
             padding: 0.75rem 1.5rem;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-success:hover {
-            background: #059669;
-            transform: translateY(-1px);
-        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #059669; transform: translateY(-1px); }
+        .btn-secondary { background: var(--secondary); color: white; }
+        .btn-secondary:hover { background: #475569; transform: translateY(-1px); }
+        .btn-danger { background: var(--error); color: white; }
+        .btn-danger:hover { background: #dc2626; transform: translateY(-1px); }
 
         /* Stats Grid */
         .stats-grid {
@@ -186,7 +156,6 @@
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
-
         .stat-card {
             background: var(--surface);
             padding: 1.5rem;
@@ -199,12 +168,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
         .stat-card::before {
             content: '';
             position: absolute;
@@ -214,32 +178,11 @@
             height: 4px;
             background: var(--primary);
         }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-        .stat-trend {
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            font-weight: 600;
-        }
-
-        .trend-up {
-            color: var(--success);
-        }
-
-        .trend-down {
-            color: var(--error);
-        }
+        .stat-number { font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
+        .stat-label { color: var(--text-light); font-size: 0.9rem; }
+        .stat-trend { font-size: 0.875rem; margin-top: 0.5rem; font-weight: 600; }
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--error); }
 
         /* HR Overview */
         .hr-overview {
@@ -248,7 +191,6 @@
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
-
         .overview-card {
             background: var(--surface);
             padding: 1.5rem;
@@ -256,58 +198,49 @@
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
         }
-
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
+        .card-title { font-size: 1.25rem; font-weight: 600; }
         .chart-container {
-            height: 300px;
+            min-height: 250px;
             background: var(--background);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--text-light);
+            padding: 1rem;
         }
 
         /* Quick Actions */
         .quick-actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 1rem;
         }
-
         .action-btn {
             background: var(--background);
             border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 1.5rem 1rem;
+            padding: 1.5rem 0.5rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
         }
-
         .action-btn:hover {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
         }
+        .action-icon { font-size: 2rem; margin-bottom: 0.5rem; }
 
-        .action-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Employee List */
+        /* Employee Section & Table */
         .employee-section {
             background: var(--surface);
             border-radius: 12px;
@@ -316,32 +249,26 @@
             margin-bottom: 2rem;
             box-shadow: var(--shadow);
         }
-
         .table-container {
             overflow-x: auto;
             margin-top: 1rem;
         }
-
         .employee-table {
             width: 100%;
             border-collapse: collapse;
         }
-
         .employee-table th,
         .employee-table td {
             padding: 1rem;
             text-align: left;
             border-bottom: 1px solid var(--border);
         }
-
         .employee-table th {
             font-weight: 600;
-            color: var(--text-light);
-            font-size: 0.875rem;
-            background: var(--primary);
             color: white;
+            background: var(--primary);
+            font-size: 0.875rem;
         }
-
         .employee-avatar {
             width: 40px;
             height: 40px;
@@ -354,28 +281,16 @@
             font-weight: 600;
             font-size: 0.875rem;
         }
-
         .status-badge {
             padding: 0.25rem 0.75rem;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
         }
-
-        .status-active {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-onboarding {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-leave {
-            background: #fecaca;
-            color: #991b1b;
-        }
+        .status-active { background: #dcfce7; color: #166534; }
+        .status-onboarding { background: #fef3c7; color: #92400e; }
+        .status-leave { background: #fecaca; color: #991b1b; }
+        .status-terminated { background: #e2e8f0; color: #334155; }
 
         /* Module Grid */
         .module-grid {
@@ -384,7 +299,6 @@
             gap: 1.5rem;
             margin-bottom: 3rem;
         }
-
         .module-card {
             background: var(--surface);
             padding: 2rem;
@@ -397,13 +311,11 @@
             display: block;
             box-shadow: var(--shadow);
         }
-
         .module-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             border-color: var(--primary);
         }
-
         .module-icon {
             width: 60px;
             height: 60px;
@@ -416,16 +328,67 @@
             background: linear-gradient(135deg, var(--primary), #3b82f6);
             color: white;
         }
+        .module-card h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .module-card p { color: var(--text-light); font-size: 0.95rem; }
 
-        .module-card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
-
-        .module-card p {
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
             color: var(--text-light);
-            font-size: 0.95rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--background);
+            color: var(--text);
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
         }
 
         .footer {
@@ -436,41 +399,19 @@
             border-top: 1px solid var(--border);
         }
 
-        /* Responsive Design */
+        /* Responsive */
         @media (max-width: 1024px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .main-content {
-                margin-left: 0;
-                grid-column: 1;
-            }
-            .hr-overview {
-                grid-template-columns: 1fr;
-            }
+            .dashboard { grid-template-columns: 1fr; }
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; grid-column: 1; }
+            .hr-overview { grid-template-columns: 1fr; }
         }
-
         @media (max-width: 768px) {
-            .main-content {
-                padding: 1rem;
-            }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            .toolbar {
-                flex-direction: column;
-            }
-            .module-grid {
-                grid-template-columns: 1fr;
-            }
+            .main-content { padding: 1rem; }
+            .header { flex-direction: column; align-items: flex-start; }
+            .toolbar { flex-direction: column; }
+            .module-grid { grid-template-columns: 1fr; }
         }
-
-        /* Dark mode support */
         @media (prefers-color-scheme: dark) {
             :root {
                 --background: #0f172a;
@@ -495,50 +436,21 @@
 
             <div class="nav-section">
                 <div class="nav-title">Main</div>
-                <a href="index.html" class="nav-item">
-                    <span class="nav-icon">📊</span>
-                    Dashboard
-                </a>
-                <a href="hr.html" class="nav-item active">
-                    <span class="nav-icon">👥</span>
-                    HR Management
-                </a>
-                <a href="finance.html" class="nav-item">
-                    <span class="nav-icon">💰</span>
-                    Finance
-                </a>
+                <a href="index.html" class="nav-item"><span class="nav-icon">📊</span>Dashboard</a>
+                <a href="hr.html" class="nav-item active"><span class="nav-icon">👥</span>HR Management</a>
+                <a href="finance.html" class="nav-item"><span class="nav-icon">💰</span>Finance</a>
             </div>
-
             <div class="nav-section">
                 <div class="nav-title">Operations</div>
-                <a href="attendance.html" class="nav-item">
-                    <span class="nav-icon">⏱️</span>
-                    Attendance
-                </a>
-                <a href="payroll.html" class="nav-item">
-                    <span class="nav-icon">💳</span>
-                    Payroll
-                </a>
-                <a href="inventory.html" class="nav-item">
-                    <span class="nav-icon">📦</span>
-                    Inventory
-                </a>
+                <a href="attendance.html" class="nav-item"><span class="nav-icon">⏱️</span>Attendance</a>
+                <a href="payroll.html" class="nav-item"><span class="nav-icon">💳</span>Payroll</a>
+                <a href="inventory.html" class="nav-item"><span class="nav-icon">📦</span>Inventory</a>
             </div>
-
             <div class="nav-section">
                 <div class="nav-title">HR Modules</div>
-                <a href="recruitment.html" class="nav-item">
-                    <span class="nav-icon">💼</span>
-                    Recruitment
-                </a>
-                <a href="performance.html" class="nav-item">
-                    <span class="nav-icon">📈</span>
-                    Performance
-                </a>
-                <a href="training.html" class="nav-item">
-                    <span class="nav-icon">🎓</span>
-                    Training
-                </a>
+                <a href="recruitment.html" class="nav-item"><span class="nav-icon">💼</span>Recruitment</a>
+                <a href="performance.html" class="nav-item"><span class="nav-icon">📈</span>Performance</a>
+                <a href="training.html" class="nav-item"><span class="nav-icon">🎓</span>Training</a>
             </div>
         </nav>
 
@@ -550,61 +462,50 @@
 
             <!-- Enhanced Toolbar -->
             <div class="toolbar">
-                <button class="btn-primary" onclick="addNewEmployee()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">👤</span>
-                    Add Employee
-                </button>
-                <button class="btn-primary" onclick="runPayroll()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">💳</span>
-                    Run Payroll
-                </button>
-                <button class="btn-success" onclick="generateReports()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">📊</span>
-                    Generate Reports
-                </button>
-                <button class="btn-primary" onclick="syncAttendance()">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">⏱️</span>
-                    Sync Attendance
-                </button>
+                <button class="btn-primary" onclick="hrManager.showEmployeeModal()"><span>👤</span>Add Employee</button>
+                <button class="btn-primary" onclick="hrManager.runPayroll()"><span>💳</span>Run Payroll</button>
+                <button class="btn-success" onclick="hrManager.generateReports()"><span>📊</span>Generate Reports</button>
+                <button class="btn-primary" onclick="hrManager.syncAttendance()"><span>⏱️</span>Sync Attendance</button>
+                <button class="btn-secondary" onclick="hrManager.exportHRData()"><span>📤</span>Export Data</button>
             </div>
 
-            <!-- Quick Stats -->
+            <!-- Quick Stats (updated dynamically) -->
             <div class="stats-grid">
-                <div class="stat-card" onclick="viewEmployees()">
-                    <div class="stat-number" id="totalEmployees">142</div>
+                <div class="stat-card" onclick="hrManager.viewEmployees()">
+                    <div class="stat-number" id="totalEmployees">0</div>
                     <div class="stat-label">Total Employees</div>
-                    <div class="stat-trend trend-up">↑ 5 this month</div>
+                    <div class="stat-trend trend-up" id="totalTrend">↑ 0 this month</div>
                 </div>
-                <div class="stat-card" onclick="viewRecruitment()">
-                    <div class="stat-number" id="openPositions">8</div>
+                <div class="stat-card" onclick="hrManager.viewRecruitment()">
+                    <div class="stat-number" id="openPositions">0</div>
                     <div class="stat-label">Open Positions</div>
-                    <div class="stat-trend trend-down">↓ 2 from last week</div>
+                    <div class="stat-trend trend-down" id="positionsTrend">↓ 0 from last week</div>
                 </div>
-                <div class="stat-card" onclick="viewPerformance()">
-                    <div class="stat-number" id="satisfactionRate">94%</div>
+                <div class="stat-card" onclick="hrManager.viewPerformance()">
+                    <div class="stat-number" id="satisfactionRate">0%</div>
                     <div class="stat-label">Satisfaction Rate</div>
-                    <div class="stat-trend trend-up">↑ 3% this quarter</div>
+                    <div class="stat-trend trend-up" id="satisfactionTrend">↑ 0% this quarter</div>
                 </div>
-                <div class="stat-card" onclick="viewPendingRequests()">
-                    <div class="stat-number" id="pendingRequests">12</div>
+                <div class="stat-card" onclick="hrManager.viewPendingRequests()">
+                    <div class="stat-number" id="pendingRequests">0</div>
                     <div class="stat-label">Pending Requests</div>
-                    <div class="stat-trend trend-up">↑ 4 today</div>
+                    <div class="stat-trend trend-up" id="requestsTrend">↑ 0 today</div>
                 </div>
             </div>
 
-            <!-- HR Overview -->
+            <!-- HR Overview with enhanced chart & actions -->
             <div class="hr-overview">
                 <div class="overview-card">
                     <div class="card-header">
                         <div class="card-title">Workforce Analytics</div>
-                        <select id="analyticsRange" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--background);">
-                            <option>Last 30 Days</option>
-                            <option>Last Quarter</option>
-                            <option>Last Year</option>
+                        <select id="analyticsRange" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px;">
+                            <option value="30">Last 30 Days</option>
+                            <option value="90">Last Quarter</option>
+                            <option value="365">Last Year</option>
                         </select>
                     </div>
                     <div class="chart-container" id="workforceChart">
-                        Workforce Distribution & Trends
+                        <!-- Dynamic chart will be rendered here -->
                     </div>
                 </div>
 
@@ -613,370 +514,350 @@
                         <div class="card-title">Quick Actions</div>
                     </div>
                     <div class="quick-actions">
-                        <div class="action-btn" onclick="processLeaveRequests()">
-                            <div class="action-icon">🏖️</div>
-                            <div>Leave Requests</div>
-                        </div>
-                        <div class="action-btn" onclick="viewOnboarding()">
-                            <div class="action-icon">🚀</div>
-                            <div>Onboarding</div>
-                        </div>
-                        <div class="action-btn" onclick="manageBenefits()">
-                            <div class="action-icon">🏥</div>
-                            <div>Benefits</div>
-                        </div>
-                        <div class="action-btn" onclick="exportHRData()">
-                            <div class="action-icon">📤</div>
-                            <div>Export Data</div>
-                        </div>
+                        <div class="action-btn" onclick="hrManager.processLeaveRequests()"><div class="action-icon">🏖️</div><div>Leave Requests</div></div>
+                        <div class="action-btn" onclick="hrManager.viewOnboarding()"><div class="action-icon">🚀</div><div>Onboarding</div></div>
+                        <div class="action-btn" onclick="hrManager.manageBenefits()"><div class="action-icon">🏥</div><div>Benefits</div></div>
+                        <div class="action-btn" onclick="hrManager.exportHRData()"><div class="action-icon">📤</div><div>Export Data</div></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Employee List -->
+            <!-- Employee List (recent activity) -->
             <div class="employee-section">
                 <div class="card-header">
-                    <div class="card-title">Recent Employee Activity</div>
-                    <button class="btn-primary" onclick="viewAllEmployees()">
-                        View All Employees
-                    </button>
+                    <div class="card-title">Employee Directory</div>
+                    <div style="display: flex; gap: 1rem;">
+                        <input type="text" id="employeeSearch" placeholder="Search employees..." style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px;">
+                        <button class="btn-primary" onclick="hrManager.viewAllEmployees()">View All</button>
+                    </div>
                 </div>
                 <div class="table-container">
                     <table class="employee-table">
                         <thead>
                             <tr>
-                                <th>Employee</th>
-                                <th>Department</th>
-                                <th>Position</th>
-                                <th>Join Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <th>Employee</th><th>Department</th><th>Position</th><th>Join Date</th><th>Status</th><th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="employeeList">
-                            <!-- Dynamic content will be loaded here -->
+                            <!-- Dynamic content from JS -->
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- HR Modules Grid -->
+            <!-- HR Modules Grid (all cards functional) -->
             <div class="module-grid">
-                <a href="attendance.html" class="module-card">
-                    <div class="module-icon">⏱️</div>
-                    <h3>Attendance & Time</h3>
-                    <p>Track employee hours, leaves, and attendance records with real-time monitoring and payroll integration</p>
-                </a>
-                <a href="payroll.html" class="module-card">
-                    <div class="module-icon">💳</div>
-                    <h3>Payroll Management</h3>
-                    <p>Process salaries, deductions, bonuses, and generate payslips automatically with multi-currency support</p>
-                </a>
-                <a href="recruitment.html" class="module-card">
-                    <div class="module-icon">💼</div>
-                    <h3>Recruitment</h3>
-                    <p>Manage job postings, applications, interviews, and onboarding processes with candidate tracking</p>
-                </a>
-                <a href="training.html" class="module-card">
-                    <div class="module-icon">🎓</div>
-                    <h3>Training & Development</h3>
-                    <p>Employee skills tracking, training programs, and professional growth plans with certification management</p>
-                </a>
-                <a href="performance.html" class="module-card">
-                    <div class="module-icon">📈</div>
-                    <h3>Performance Reviews</h3>
-                    <p>Employee evaluations, KPI tracking, and performance improvement plans with 360-degree feedback</p>
-                </a>
-                <a href="benefits.html" class="module-card">
-                    <div class="module-icon">🏥</div>
-                    <h3>Benefits Administration</h3>
-                    <p>Health insurance, retirement plans, and employee benefits management with enrollment tracking</p>
-                </a>
-                <a href="legal.html" class="module-card">
-                    <div class="module-icon">⚖️</div>
-                    <h3>Legal & Compliance</h3>
-                    <p>Contract management, regulatory compliance, and legal document tracking with audit trails</p>
-                </a>
-                <a href="safety.html" class="module-card">
-                    <div class="module-icon">🛡️</div>
-                    <h3>Health & Safety</h3>
-                    <p>OSHA compliance, incident reports, safety protocols, and workplace safety monitoring</p>
-                </a>
+                <a href="attendance.html" class="module-card"><div class="module-icon">⏱️</div><h3>Attendance & Time</h3><p>Track employee hours, leaves, and attendance records.</p></a>
+                <a href="payroll.html" class="module-card"><div class="module-icon">💳</div><h3>Payroll Management</h3><p>Process salaries, deductions, bonuses, and generate payslips.</p></a>
+                <a href="recruitment.html" class="module-card"><div class="module-icon">💼</div><h3>Recruitment</h3><p>Manage job postings, applications, interviews, and onboarding.</p></a>
+                <a href="training.html" class="module-card"><div class="module-icon">🎓</div><h3>Training & Development</h3><p>Employee skills tracking, training programs, and certifications.</p></a>
+                <a href="performance.html" class="module-card"><div class="module-icon">📈</div><h3>Performance Reviews</h3><p>Employee evaluations, KPI tracking, and 360-degree feedback.</p></a>
+                <a href="benefits.html" class="module-card"><div class="module-icon">🏥</div><h3>Benefits Administration</h3><p>Health insurance, retirement plans, and benefits management.</p></a>
+                <a href="legal.html" class="module-card"><div class="module-icon">⚖️</div><h3>Legal & Compliance</h3><p>Contract management, regulatory compliance, and audit trails.</p></a>
+                <a href="safety.html" class="module-card"><div class="module-icon">🛡️</div><h3>Health & Safety</h3><p>OSHA compliance, incident reports, and safety protocols.</p></a>
             </div>
 
-            <div class="footer">
-                Copyright © 2025 😀
-            </div>
+            <div class="footer">Copyright © 2025 😀</div>
         </main>
     </div>
 
+    <!-- Employee Modal (Add/Edit) -->
+    <div id="employeeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Employee</h2>
+                <button class="modal-close" onclick="hrManager.closeModal()">&times;</button>
+            </div>
+            <form id="employeeForm">
+                <input type="hidden" id="employeeId" value="">
+                <!-- Core Fields (condensed but expanded from list) -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group"><label>Legal First Name *</label><input type="text" id="firstName" required></div>
+                    <div class="form-group"><label>Legal Last Name *</label><input type="text" id="lastName" required></div>
+                    <div class="form-group"><label>Preferred Name</label><input type="text" id="preferredName"></div>
+                    <div class="form-group"><label>Date of Birth</label><input type="date" id="dob"></div>
+                    <div class="form-group"><label>Gender</label><select id="gender"><option>Male</option><option>Female</option><option>Other</option></select></div>
+                    <div class="form-group"><label>Nationality</label><input type="text" id="nationality" value="Kenyan"></div>
+                    <div class="form-group"><label>Country of Residence</label><input type="text" id="countryResidence" value="Kenya"></div>
+                    <div class="form-group"><label>Work Country</label><input type="text" id="workCountry" value="Kenya"></div>
+                    <div class="form-group"><label>Personal Email</label><input type="email" id="personalEmail"></div>
+                    <div class="form-group"><label>Work Email</label><input type="email" id="workEmail"></div>
+                    <div class="form-group"><label>Personal Phone</label><input type="tel" id="personalPhone"></div>
+                    <div class="form-group"><label>Work Phone</label><input type="tel" id="workPhone"></div>
+                    <div class="form-group"><label>Emergency Contact Name</label><input type="text" id="emergencyName"></div>
+                    <div class="form-group"><label>Emergency Contact Phone</label><input type="tel" id="emergencyPhone"></div>
+                    <div class="form-group"><label>Marital Status</label><select id="maritalStatus"><option>Single</option><option>Married</option><option>Divorced</option></select></div>
+                    <div class="form-group"><label>Dependents</label><input type="number" id="dependents" value="0"></div>
+                    <div class="form-group"><label>Government ID</label><input type="text" id="govId"></div>
+                    <div class="form-group"><label>Passport Number</label><input type="text" id="passport"></div>
+                    <div class="form-group"><label>Passport Expiry</label><input type="date" id="passportExpiry"></div>
+                    <div class="form-group"><label>Work Permit Type</label><input type="text" id="workPermit"></div>
+                    <div class="form-group"><label>Permit Expiry</label><input type="date" id="permitExpiry"></div>
+                </div>
+                <hr style="margin: 1rem 0;">
+                <h3>Employment Details</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group"><label>Employee ID</label><input type="text" id="empId" readonly placeholder="Auto-generated"></div>
+                    <div class="form-group"><label>Legal Entity</label><input type="text" id="legalEntity" value="CephasGM Kenya"></div>
+                    <div class="form-group"><label>Department</label><select id="department"><option>Engineering</option><option>Marketing</option><option>Sales</option><option>Finance</option><option>HR</option></select></div>
+                    <div class="form-group"><label>Job Title</label><input type="text" id="jobTitle" value="Developer"></div>
+                    <div class="form-group"><label>Job Grade</label><select id="jobGrade"><option>Associate</option><option>Specialist</option><option>Manager</option><option>Director</option></select></div>
+                    <div class="form-group"><label>Reports To (Manager ID)</label><input type="text" id="reportsTo" placeholder="EMP001"></div>
+                    <div class="form-group"><label>Contract Type</label><select id="contractType"><option>Permanent</option><option>Fixed-Term</option><option>Intern</option><option>Contractor</option></select></div>
+                    <div class="form-group"><label>Employment Status</label><select id="empStatus"><option value="active">Active</option><option value="onboarding">Onboarding</option><option value="leave">Leave</option><option value="terminated">Terminated</option></select></div>
+                    <div class="form-group"><label>Join Date</label><input type="date" id="joinDate" required></div>
+                    <div class="form-group"><label>Contract End Date</label><input type="date" id="contractEnd"></div>
+                    <div class="form-group"><label>Probation End Date</label><input type="date" id="probationEnd"></div>
+                    <div class="form-group"><label>Notice Period (days)</label><input type="number" id="noticePeriod" value="30"></div>
+                    <div class="form-group"><label>Termination Date</label><input type="date" id="terminationDate"></div>
+                    <div class="form-group"><label>Termination Reason</label><input type="text" id="terminationReason"></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="hrManager.closeModal()">Cancel</button>
+                    <button type="submit" class="btn-success">Save Employee</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // Enhanced HR Management System
+        // Enhanced HR Manager with full CRUD, expanded fields, and all requested upgrades
         class HRManager {
             constructor() {
-                this.employeeData = JSON.parse(localStorage.getItem('employeeData')) || this.getSampleData();
-                this.initialize();
+                this.employees = JSON.parse(localStorage.getItem('hrEmployees')) || this.getSampleEmployees();
+                this.openPositions = 8; // for demo
+                this.pendingRequests = 12;
+                this.init();
             }
 
-            initialize() {
-                this.setupNavigation();
-                this.loadHRData();
+            init() {
                 this.setupEventListeners();
-                this.startRealTimeUpdates();
+                this.updateUI();
+                this.renderEmployeeList();
+                this.renderChart();
+                // Service worker
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW failed:', e));
+                }
             }
 
-            setupNavigation() {
-                document.querySelectorAll('.nav-item').forEach(item => {
-                    if (item.href === window.location.href) {
-                        item.classList.add('active');
-                    }
-                });
-            }
-
-            getSampleData() {
+            getSampleEmployees() {
                 return [
-                    {
-                        id: 1,
-                        name: 'John Mwangi',
-                        department: 'Engineering',
-                        position: 'Senior Developer',
-                        joinDate: '2023-01-15',
-                        status: 'active',
-                        avatar: 'JM'
-                    },
-                    {
-                        id: 2,
-                        name: 'Sarah Johnson',
-                        department: 'Marketing',
-                        position: 'Marketing Manager',
-                        joinDate: '2023-03-20',
-                        status: 'active',
-                        avatar: 'SJ'
-                    },
-                    {
-                        id: 3,
-                        name: 'David Kimani',
-                        department: 'Sales',
-                        position: 'Sales Executive',
-                        joinDate: '2024-01-10',
-                        status: 'onboarding',
-                        avatar: 'DK'
-                    },
-                    {
-                        id: 4,
-                        name: 'Grace Omondi',
-                        department: 'Finance',
-                        position: 'Accountant',
-                        joinDate: '2022-11-05',
-                        status: 'active',
-                        avatar: 'GO'
-                    },
-                    {
-                        id: 5,
-                        name: 'Michael Adebayo',
-                        department: 'HR',
-                        position: 'HR Specialist',
-                        joinDate: '2024-02-01',
-                        status: 'leave',
-                        avatar: 'MA'
-                    }
+                    { id: 'EMP001', firstName: 'John', lastName: 'Mwangi', preferredName: 'John', dob: '1985-06-15', gender: 'Male', nationality: 'Kenyan', countryResidence: 'Kenya', workCountry: 'Kenya', personalEmail: 'john.m@example.com', workEmail: 'john.mwangi@cephasgm.com', personalPhone: '+254700111222', workPhone: '1234', emergencyName: 'Mary Mwangi', emergencyPhone: '+254700111223', maritalStatus: 'Married', dependents: 2, govId: '12345678', passport: 'AB123456', passportExpiry: '2028-06-15', workPermit: 'Citizen', permitExpiry: '', legalEntity: 'CephasGM Kenya', department: 'Engineering', jobTitle: 'Senior Developer', jobGrade: 'Specialist', reportsTo: 'EMP002', contractType: 'Permanent', status: 'active', joinDate: '2023-01-15', contractEnd: '', probationEnd: '2023-04-15', noticePeriod: 30, terminationDate: '', terminationReason: '' },
+                    { id: 'EMP002', firstName: 'Sarah', lastName: 'Johnson', preferredName: 'Sarah', dob: '1990-03-12', gender: 'Female', nationality: 'British', countryResidence: 'UK', workCountry: 'UK', personalEmail: 'sarah.j@example.com', workEmail: 'sarah.johnson@cephasgm.com', personalPhone: '+447911123456', workPhone: '2234', emergencyName: 'Tom Johnson', emergencyPhone: '+447911123457', maritalStatus: 'Single', dependents: 0, govId: 'GB987654', passport: 'UK789012', passportExpiry: '2027-03-12', workPermit: 'Citizen', legalEntity: 'CephasGM UK', department: 'Marketing', jobTitle: 'Marketing Manager', jobGrade: 'Manager', reportsTo: 'EMP005', contractType: 'Permanent', status: 'active', joinDate: '2023-03-20', contractEnd: '', probationEnd: '2023-06-20', noticePeriod: 45 },
+                    { id: 'EMP003', firstName: 'David', lastName: 'Kimani', preferredName: 'David', dob: '1995-08-22', gender: 'Male', nationality: 'Kenyan', countryResidence: 'Kenya', workCountry: 'Kenya', personalEmail: 'david.k@example.com', workEmail: 'david.kimani@cephasgm.com', personalPhone: '+254722333444', workPhone: '3234', emergencyName: 'Ann Kimani', emergencyPhone: '+254722333445', maritalStatus: 'Single', dependents: 0, govId: '87654321', passport: 'KE345678', passportExpiry: '2029-08-22', workPermit: 'Citizen', legalEntity: 'CephasGM Kenya', department: 'Sales', jobTitle: 'Sales Executive', jobGrade: 'Associate', reportsTo: 'EMP004', contractType: 'Permanent', status: 'onboarding', joinDate: '2024-01-10', contractEnd: '', probationEnd: '2024-04-10', noticePeriod: 30 },
+                    { id: 'EMP004', firstName: 'Grace', lastName: 'Omondi', preferredName: 'Grace', dob: '1988-11-02', gender: 'Female', nationality: 'Kenyan', countryResidence: 'Kenya', workCountry: 'Kenya', personalEmail: 'grace.o@example.com', workEmail: 'grace.omondi@cephasgm.com', personalPhone: '+254733555666', workPhone: '4234', emergencyName: 'Peter Omondi', emergencyPhone: '+254733555667', maritalStatus: 'Married', dependents: 3, govId: '33445566', passport: 'KE456789', passportExpiry: '2026-11-02', workPermit: 'Citizen', legalEntity: 'CephasGM Kenya', department: 'Finance', jobTitle: 'Accountant', jobGrade: 'Specialist', reportsTo: 'EMP001', contractType: 'Permanent', status: 'active', joinDate: '2022-11-05', contractEnd: '', probationEnd: '2023-02-05', noticePeriod: 30 },
+                    { id: 'EMP005', firstName: 'Michael', lastName: 'Adebayo', preferredName: 'Michael', dob: '1992-04-18', gender: 'Male', nationality: 'Nigerian', countryResidence: 'Nigeria', workCountry: 'Nigeria', personalEmail: 'michael.a@example.com', workEmail: 'michael.adebayo@cephasgm.com', personalPhone: '+234802555777', workPhone: '5234', emergencyName: 'Funke Adebayo', emergencyPhone: '+234802555778', maritalStatus: 'Married', dependents: 1, govId: 'NG112233', passport: 'NG567890', passportExpiry: '2028-04-18', workPermit: 'Citizen', legalEntity: 'CephasGM Nigeria', department: 'HR', jobTitle: 'HR Specialist', jobGrade: 'Specialist', reportsTo: 'EMP002', contractType: 'Permanent', status: 'leave', joinDate: '2024-02-01', contractEnd: '', probationEnd: '2024-05-01', noticePeriod: 30 }
                 ];
             }
 
-            loadHRData() {
-                this.updateStats();
+            setupEventListeners() {
+                document.getElementById('analyticsRange').addEventListener('change', () => this.renderChart());
+                document.getElementById('employeeSearch').addEventListener('input', () => this.renderEmployeeList());
+                document.getElementById('employeeForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.saveEmployee();
+                });
+            }
+
+            // Modal functions
+            showEmployeeModal(empId = null) {
+                const modal = document.getElementById('employeeModal');
+                const form = document.getElementById('employeeForm');
+                if (empId) {
+                    const emp = this.employees.find(e => e.id === empId);
+                    if (emp) {
+                        document.getElementById('modalTitle').innerText = 'Edit Employee';
+                        // Populate form fields
+                        for (let key in emp) {
+                            const field = document.getElementById(key);
+                            if (field) field.value = emp[key] || '';
+                        }
+                        document.getElementById('firstName').value = emp.firstName || '';
+                        document.getElementById('lastName').value = emp.lastName || '';
+                        document.getElementById('empId').value = emp.id;
+                    }
+                } else {
+                    document.getElementById('modalTitle').innerText = 'Add Employee';
+                    form.reset();
+                    document.getElementById('empId').value = '';
+                    document.getElementById('employeeId').value = '';
+                }
+                modal.classList.add('active');
+            }
+
+            closeModal() {
+                document.getElementById('employeeModal').classList.remove('active');
+            }
+
+            saveEmployee() {
+                const formData = {};
+                const form = document.getElementById('employeeForm');
+                const inputs = form.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => { if (input.id) formData[input.id] = input.value; });
+                
+                // Generate new ID if adding
+                if (!formData.empId) {
+                    const lastId = this.employees.length > 0 ? parseInt(this.employees[this.employees.length-1].id.replace('EMP','')) : 0;
+                    formData.id = 'EMP' + (lastId+1).toString().padStart(3,'0');
+                } else {
+                    formData.id = formData.empId;
+                }
+                
+                // Map fields to employee structure
+                const employee = {
+                    id: formData.id,
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    preferredName: formData.preferredName,
+                    dob: formData.dob,
+                    gender: formData.gender,
+                    nationality: formData.nationality,
+                    countryResidence: formData.countryResidence,
+                    workCountry: formData.workCountry,
+                    personalEmail: formData.personalEmail,
+                    workEmail: formData.workEmail,
+                    personalPhone: formData.personalPhone,
+                    workPhone: formData.workPhone,
+                    emergencyName: formData.emergencyName,
+                    emergencyPhone: formData.emergencyPhone,
+                    maritalStatus: formData.maritalStatus,
+                    dependents: formData.dependents,
+                    govId: formData.govId,
+                    passport: formData.passport,
+                    passportExpiry: formData.passportExpiry,
+                    workPermit: formData.workPermit,
+                    permitExpiry: formData.permitExpiry,
+                    legalEntity: formData.legalEntity,
+                    department: formData.department,
+                    jobTitle: formData.jobTitle,
+                    jobGrade: formData.jobGrade,
+                    reportsTo: formData.reportsTo,
+                    contractType: formData.contractType,
+                    status: formData.empStatus,
+                    joinDate: formData.joinDate,
+                    contractEnd: formData.contractEnd,
+                    probationEnd: formData.probationEnd,
+                    noticePeriod: formData.noticePeriod,
+                    terminationDate: formData.terminationDate,
+                    terminationReason: formData.terminationReason
+                };
+
+                const index = this.employees.findIndex(e => e.id === employee.id);
+                if (index >= 0) {
+                    this.employees[index] = employee;
+                } else {
+                    this.employees.push(employee);
+                }
+
+                localStorage.setItem('hrEmployees', JSON.stringify(this.employees));
+                this.updateUI();
                 this.renderEmployeeList();
-                this.updateCharts();
+                this.renderChart();
+                this.closeModal();
+                alert('Employee saved successfully!');
             }
 
-            updateStats() {
-                const totalEmployees = this.employeeData.length;
-                const activeEmployees = this.employeeData.filter(emp => emp.status === 'active').length;
-                const onboardingEmployees = this.employeeData.filter(emp => emp.status === 'onboarding').length;
-                const onLeaveEmployees = this.employeeData.filter(emp => emp.status === 'leave').length;
-
-                document.getElementById('totalEmployees').textContent = totalEmployees;
-                document.getElementById('openPositions').textContent = Math.max(0, 8 - onboardingEmployees);
-                document.getElementById('satisfactionRate').textContent = '94%';
-                document.getElementById('pendingRequests').textContent = 12;
+            deleteEmployee(empId) {
+                if (confirm('Are you sure you want to delete this employee?')) {
+                    this.employees = this.employees.filter(e => e.id !== empId);
+                    localStorage.setItem('hrEmployees', JSON.stringify(this.employees));
+                    this.updateUI();
+                    this.renderEmployeeList();
+                    this.renderChart();
+                }
             }
 
+            // Render employee list with search
             renderEmployeeList() {
+                const search = document.getElementById('employeeSearch').value.toLowerCase();
+                const filtered = this.employees.filter(e => 
+                    e.firstName.toLowerCase().includes(search) || 
+                    e.lastName.toLowerCase().includes(search) ||
+                    e.department.toLowerCase().includes(search)
+                );
                 const tbody = document.getElementById('employeeList');
-                tbody.innerHTML = this.employeeData.map(employee => `
-                    <tr>
+                tbody.innerHTML = filtered.map(emp => {
+                    const initials = (emp.firstName[0] + emp.lastName[0]).toUpperCase();
+                    return `<tr>
+                        <td><div style="display: flex; align-items: center; gap: 0.75rem;"><div class="employee-avatar">${initials}</div><div><div style="font-weight:600;">${emp.preferredName || emp.firstName} ${emp.lastName}</div><div style="font-size:0.875rem; color:var(--text-light);">ID: ${emp.id}</div></div></div></td>
+                        <td>${emp.department}</td>
+                        <td>${emp.jobTitle}</td>
+                        <td>${new Date(emp.joinDate).toLocaleDateString()}</td>
+                        <td><span class="status-badge status-${emp.status}">${emp.status.charAt(0).toUpperCase()+emp.status.slice(1)}</span></td>
                         <td>
-                            <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                <div class="employee-avatar">${employee.avatar}</div>
-                                <div>
-                                    <div style="font-weight: 600;">${employee.name}</div>
-                                    <div style="font-size: 0.875rem; color: var(--text-light);">ID: EMP${employee.id.toString().padStart(3, '0')}</div>
-                                </div>
-                            </div>
+                            <button class="btn-secondary" style="padding:0.25rem 0.75rem; font-size:0.75rem;" onclick="hrManager.showEmployeeModal('${emp.id}')">Edit</button>
+                            <button class="btn-danger" style="padding:0.25rem 0.75rem; font-size:0.75rem;" onclick="hrManager.deleteEmployee('${emp.id}')">Del</button>
                         </td>
-                        <td>${employee.department}</td>
-                        <td>${employee.position}</td>
-                        <td>${new Date(employee.joinDate).toLocaleDateString()}</td>
-                        <td>
-                            <span class="status-badge status-${employee.status}">
-                                ${employee.status.charAt(0).toUpperCase() + employee.status.slice(1)}
-                            </span>
-                        </td>
-                        <td>
-                            <button style="background: var(--primary); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem;" onclick="viewEmployee(${employee.id})">
-                                View
-                            </button>
-                            <button style="background: var(--secondary); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; margin-left: 0.25rem;" onclick="editEmployee(${employee.id})">
-                                Edit
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
+                    </tr>`;
+                }).join('');
             }
 
-            updateCharts() {
+            updateUI() {
+                // Update stats with dynamic counts
+                const total = this.employees.length;
+                const active = this.employees.filter(e => e.status === 'active').length;
+                document.getElementById('totalEmployees').innerText = total;
+                document.getElementById('totalTrend').innerHTML = `↑ ${active} active`;
+                document.getElementById('openPositions').innerText = this.openPositions;
+                document.getElementById('positionsTrend').innerHTML = `↓ 2 from last week`;
+                document.getElementById('satisfactionRate').innerText = '94%';
+                document.getElementById('satisfactionTrend').innerHTML = '↑ 3% this quarter';
+                document.getElementById('pendingRequests').innerText = this.pendingRequests;
+                document.getElementById('requestsTrend').innerHTML = '↑ 4 today';
+            }
+
+            renderChart() {
                 const chart = document.getElementById('workforceChart');
-                // Simple chart visualization
+                const active = this.employees.filter(e => e.status === 'active').length;
+                const onboarding = this.employees.filter(e => e.status === 'onboarding').length;
+                const leave = this.employees.filter(e => e.status === 'leave').length;
+                const total = this.employees.length;
+                const activePct = total ? Math.round((active/total)*100) : 0;
+                const onboardingPct = total ? Math.round((onboarding/total)*100) : 0;
+                const leavePct = total ? Math.round((leave/total)*100) : 0;
                 chart.innerHTML = `
-                    <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; padding: 20px;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 12px; height: 12px; background: var(--success); border-radius: 2px;"></div>
-                            <span>Active: 85%</span>
+                    <div style="width:100%; text-align:center;">
+                        <div style="display:flex; justify-content:center; gap:30px; margin-bottom:20px;">
+                            <div><span style="display:inline-block; width:12px; height:12px; background:var(--success); border-radius:2px;"></span> Active: ${activePct}% (${active})</div>
+                            <div><span style="display:inline-block; width:12px; height:12px; background:var(--warning); border-radius:2px;"></span> Onboarding: ${onboardingPct}% (${onboarding})</div>
+                            <div><span style="display:inline-block; width:12px; height:12px; background:var(--error); border-radius:2px;"></span> On Leave: ${leavePct}% (${leave})</div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 12px; height: 12px; background: var(--warning); border-radius: 2px;"></div>
-                            <span>Onboarding: 10%</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 12px; height: 12px; background: var(--error); border-radius: 2px;"></div>
-                            <span>On Leave: 5%</span>
+                        <div style="background:var(--border); height:20px; width:100%; border-radius:10px; overflow:hidden;">
+                            <div style="height:100%; width:${activePct}%; background:var(--success); float:left;"></div>
+                            <div style="height:100%; width:${onboardingPct}%; background:var(--warning); float:left;"></div>
+                            <div style="height:100%; width:${leavePct}%; background:var(--error); float:left;"></div>
                         </div>
                     </div>
                 `;
             }
 
-            setupEventListeners() {
-                document.getElementById('analyticsRange').addEventListener('change', (e) => {
-                    this.filterAnalyticsByRange(e.target.value);
-                });
+            // Action functions (linked to buttons)
+            addNewEmployee() { this.showEmployeeModal(); }
+            runPayroll() { alert('Initiating Payroll Process...'); window.location.href = 'payroll.html'; }
+            generateReports() { alert('Generating HR Reports...'); }
+            syncAttendance() { alert('Syncing with Attendance System...'); window.location.href = 'attendance.html'; }
+            viewEmployees() { alert('Opening Employee Directory...'); }
+            viewRecruitment() { alert('Opening Recruitment Dashboard...'); }
+            viewPerformance() { alert('Opening Performance Management...'); }
+            viewPendingRequests() { alert('Opening Pending Requests...'); }
+            processLeaveRequests() { alert('Processing Leave Requests...'); }
+            viewOnboarding() { alert('Viewing Onboarding Process...'); }
+            manageBenefits() { alert('Managing Employee Benefits...'); }
+            exportHRData() { 
+                const dataStr = JSON.stringify(this.employees, null, 2);
+                const blob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'hr_export.json';
+                a.click();
             }
-
-            filterAnalyticsByRange(range) {
-                console.log('Filtering analytics by:', range);
-                this.updateCharts();
-            }
-
-            startRealTimeUpdates() {
-                // Simulate real-time HR data updates
-                setInterval(() => {
-                    this.simulateHRUpdates();
-                }, 45000);
-            }
-
-            simulateHRUpdates() {
-                // Simulate random HR data changes for demo
-                const stats = ['totalEmployees', 'openPositions', 'pendingRequests'];
-                const randomStat = stats[Math.floor(Math.random() * stats.length)];
-                const currentElement = document.getElementById(randomStat);
-                
-                if (currentElement) {
-                    const currentValue = parseInt(currentElement.textContent);
-                    const change = Math.random() > 0.5 ? 1 : -1;
-                    const newValue = Math.max(0, currentValue + change);
-                    currentElement.textContent = newValue;
-                    
-                    // Update trend indicator
-                    const trendElement = currentElement.parentElement.querySelector('.stat-trend');
-                    if (trendElement) {
-                        trendElement.textContent = change > 0 ? `↑ ${change} just now` : `↓ ${Math.abs(change)} just now`;
-                        trendElement.className = `stat-trend ${change > 0 ? 'trend-up' : 'trend-down'}`;
-                    }
-                }
-            }
+            viewAllEmployees() { this.renderEmployeeList(); document.getElementById('employeeSearch').value = ''; }
         }
 
-        // Global functions for HR operations
-        function addNewEmployee() {
-            alert('Opening New Employee Form...');
-            // Implementation for adding new employee
-        }
-
-        function runPayroll() {
-            alert('Initiating Payroll Process...');
-            // Integration with payroll system
-            window.location.href = 'payroll.html';
-        }
-
-        function generateReports() {
-            alert('Generating HR Reports...');
-            // Implementation for report generation
-        }
-
-        function syncAttendance() {
-            alert('Syncing with Attendance System...');
-            // Integration with attendance system
-            window.location.href = 'attendance.html';
-        }
-
-        function viewEmployees() {
-            alert('Opening Employee Directory...');
-        }
-
-        function viewRecruitment() {
-            alert('Opening Recruitment Dashboard...');
-        }
-
-        function viewPerformance() {
-            alert('Opening Performance Management...');
-        }
-
-        function viewPendingRequests() {
-            alert('Opening Pending Requests...');
-        }
-
-        function processLeaveRequests() {
-            alert('Processing Leave Requests...');
-        }
-
-        function viewOnboarding() {
-            alert('Viewing Onboarding Process...');
-        }
-
-        function manageBenefits() {
-            alert('Managing Employee Benefits...');
-        }
-
-        function exportHRData() {
-            alert('Exporting HR Data...');
-        }
-
-        function viewAllEmployees() {
-            alert('Opening Complete Employee List...');
-        }
-
-        function viewEmployee(id) {
-            alert(`Viewing Employee Details: ${id}`);
-        }
-
-        function editEmployee(id) {
-            alert(`Editing Employee: ${id}`);
-        }
-
-        // Initialize the HR manager when the page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            new HRManager();
-        });
-
-        // PWA Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js')
-                .then((registration) => {
-                    console.log('SW registered: ', registration);
-                })
-                .catch((registrationError) => {
-                    console.log('SW registration failed: ', registrationError);
-                });
-        }
+        // Initialize the HR manager globally
+        const hrManager = new HRManager();
     </script>
 </body>
 </html>
