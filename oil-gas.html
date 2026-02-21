@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oil & Gas · CephasGM ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background: #0b1120;
+            color: #e9edf5;
+            line-height: 1.5;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap');
+
+        /* ===== PROFESSIONAL NAVBAR (CLEAN) ===== */
+        .navbar {
+            background: #0f1a2f;
+            border-bottom: 2px solid #f97316;
+            padding: 0.5rem 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(145deg, #f97316, #ffb347);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-links a {
+            color: #b4c6e0;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 450;
+            transition: 0.2s;
+            padding: 0.3rem 0;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-links a:hover {
+            color: #f97316;
+            border-bottom-color: #f97316;
+        }
+
+        /* ===== DROPDOWN (ALL MODULES) ===== */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropbtn {
+            background: #1e2b42;
+            color: #f9b572;
+            padding: 0.4rem 1.5rem;
+            border: 1px solid #f9731650;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 450;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .dropbtn:hover {
+            background: #2a3b58;
+            border-color: #f97316;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: #14263b;
+            min-width: 280px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.8);
+            border-radius: 24px;
+            padding: 1rem 0;
+            border: 1px solid #f9731630;
+            z-index: 1000;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .dropdown-content a {
+            color: #cad5f0;
+            padding: 0.7rem 1.8rem;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            border-left: 3px solid transparent;
+        }
+        .dropdown-content a:hover {
+            background: #1f3450;
+            color: #f97316;
+            border-left-color: #f97316;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .user-badge {
+            background: #1e2b42;
+            border-radius: 40px;
+            padding: 0.3rem 1.2rem;
+            color: #f9b572;
+            border: 1px solid #f9731650;
+            font-size: 0.9rem;
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .container {
+            max-width: 1600px;
+            margin: 2rem auto;
+            padding: 0 2.5rem;
+        }
+
+        /* ===== HEADER ===== */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 500;
+            background: linear-gradient(135deg, #ffffff, #f6d1b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+        .btn-primary {
+            background: #f97316;
+            border: 1px solid #f97316;
+            padding: 0.7rem 2.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0b1120;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            box-shadow: 0 6px 14px rgba(249,115,22,0.25);
+        }
+        .btn-primary:hover {
+            background: transparent;
+            color: #f97316;
+        }
+
+        /* ===== TABS - FULLY FUNCTIONAL ===== */
+        .sector-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #2a3a55;
+            padding-bottom: 0.8rem;
+        }
+        .sector-tab {
+            padding: 0.6rem 1.5rem;
+            border-radius: 40px;
+            background: transparent;
+            cursor: pointer;
+            color: #b0c2da;
+            border: 1px solid #3e506e;
+            font-weight: 480;
+            transition: all 0.15s;
+            font-size: 0.9rem;
+        }
+        .sector-tab.active {
+            background: #f97316;
+            color: #0b1120;
+            border-color: #f97316;
+            font-weight: 550;
+        }
+        .sector-tab:hover:not(.active) {
+            background: #1f2c40;
+            color: #f9b572;
+            border-color: #f97316;
+        }
+
+        /* ===== TAB CONTENT SECTIONS ===== */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active-content {
+            display: block;
+        }
+
+        /* ===== STAT CARDS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.8rem;
+            margin-bottom: 2.8rem;
+        }
+        .stat-card {
+            background: #142437;
+            padding: 1.5rem 1.8rem;
+            border-radius: 28px;
+            border-left: 5px solid #f97316;
+            box-shadow: 0 18px 30px -10px #03060e;
+            transition: transform 0.15s;
+        }
+        .stat-card:hover { transform: translateY(-3px); }
+        .stat-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #9fb0d0;
+            margin-bottom: 0.5rem;
+        }
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: white;
+            line-height: 1.2;
+        }
+        .stat-detail {
+            color: #b8c7e3;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+        .stat-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* ===== VALUE CHAIN ===== */
+        .value-chain {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        .chain-segment {
+            background: #14273f;
+            padding: 1.8rem 1.2rem;
+            border-radius: 32px;
+            text-align: center;
+            border-top: 5px solid;
+            box-shadow: 0 15px 25px -10px #02060c;
+            transition: all 0.2s;
+        }
+        .chain-segment:hover { transform: scale(1.02); background: #193049; }
+        .upstream { border-color: #2ecc71; }
+        .midstream { border-color: #f39c12; }
+        .downstream { border-color: #e74c3c; }
+        .chain-segment h3 { font-size: 1.5rem; margin-bottom: 0.4rem; }
+        .chain-edit { margin-top: 1rem; }
+
+        /* ===== CARD ===== */
+        .card {
+            background: #14263b;
+            border-radius: 32px;
+            padding: 1.8rem;
+            border: 1px solid #2e4160;
+            box-shadow: 0 18px 30px -10px #020812;
+            margin-bottom: 2rem;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.8rem;
+            flex-wrap: wrap;
+        }
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: #f0f4ff;
+        }
+
+        /* ===== TABLE ===== */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th {
+            text-align: left;
+            padding: 0.8rem 0.5rem;
+            border-bottom: 2px solid #f97316;
+            color: #f7b773;
+            font-weight: 550;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+        .table td {
+            padding: 0.9rem 0.5rem;
+            border-bottom: 1px solid #2f4465;
+            color: #e2eaff;
+        }
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: #f9a95a;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.2rem 0.4rem;
+            transition: 0.1s;
+        }
+        .btn-icon:hover { color: #f97316; transform: scale(1.2); }
+        .btn-sm {
+            background: #1f314b;
+            border: 1px solid #f9731660;
+            color: #f9b97a;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .btn-sm:hover { background: #f97316; color: #0b1120; border-color: #f97316; }
+
+        .status-producing { color: #2ecc71; font-weight: 550; }
+        .status-drilling { color: #f39c12; font-weight: 550; }
+        .status-exploring { color: #3498db; font-weight: 550; }
+        .status-trading { color: #9b59b6; font-weight: 550; }
+        .status-compliance { color: #e67e22; font-weight: 550; }
+        .status-decom { color: #95a5a6; font-weight: 550; }
+
+        .facility-badge {
+            background: #1f3653;
+            padding: 0.25rem 1.2rem;
+            border-radius: 40px;
+            color: #f9b572;
+            display: inline-block;
+            margin-right: 0.7rem;
+            margin-bottom: 0.4rem;
+            border: 1px solid #f9731660;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 0.85fr;
+            gap: 2.2rem;
+            align-items: start;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: #0c1628;
+            border-top: 1px solid #f9731630;
+            padding: 2rem 2.5rem;
+            margin-top: 3.5rem;
+            text-align: center;
+            color: #93a9cc;
+            font-size: 0.9rem;
+        }
+        .footer span { color: #f9a95a; }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-card {
+            background: #1f314b;
+            padding: 2.2rem;
+            border-radius: 48px;
+            border: 2px solid #f97316;
+            min-width: 380px;
+            box-shadow: 0 30px 50px black;
+        }
+        .modal-card h3 { margin-bottom: 1.8rem; color: white; }
+        .modal-card input {
+            width:100%; background:#0f1d30; border:1px solid #f9731660;
+            padding:0.9rem; border-radius:30px; margin:0.7rem 0; color:white;
+        }
+        .modal-buttons { display:flex; gap:1rem; justify-content:flex-end; margin-top:2rem; }
+    </style>
+</head>
+<body>
+    <!-- Clean navbar: only Home link + dropdown for all modules -->
+    <div class="navbar">
+        <div class="nav-brand">CEPHASGM · OIL & GAS</div>
+        <div class="nav-links">
+            <a href="https://cephasgm.github.io/CephasGM-ERP/index.html">🏠 Home</a>
+            <!-- Dropdown for all other modules (clean) -->
+            <div class="dropdown">
+                <button class="dropbtn">📋 Modules ▼</button>
+                <div class="dropdown-content">
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/inventory.html">📦 Inventory Management</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/procurement.html">📑 Procurement</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/transport.html">🚛 Transport & Logistics</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/projects.html">📋 Project Management</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/sales.html">💰 Sales Operations</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/marketing.html">📊 Marketing & BI</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/customer-service.html">🎧 Customer Service</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/legal.html">⚖️ Legal & Compliance</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/hr.html">👥 Human Resources</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/payroll.html">💰 Payroll</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/attendance.html">⏱️ Attendance</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/training.html">📚 Training</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/meetings.html">🤝 Meetings</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/community.html">🌍 Community & CSR</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/safety.html">🛡️ HSE</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/admin.html">⚙️ System Admin</a>
+                    <a href="https://cephasgm.github.io/CephasGM-ERP/finance.html">💹 Financial Management</a>
+                </div>
+            </div>
+        </div>
+        <div class="user-badge">🔆 D. Washington · onshore dir.</div>
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Integrated energy management · live operations</h1>
+            <button class="btn-primary" id="globalAddBtn">+ new project</button>
+        </div>
+
+        <!-- Fully functional tabs with click handlers -->
+        <div class="sector-tabs" id="sectorTabs">
+            <div class="sector-tab active" data-tab="overview">🌍 Overview</div>
+            <div class="sector-tab" data-tab="upstream">🛢️ Upstream</div>
+            <div class="sector-tab" data-tab="midstream">📦 Midstream</div>
+            <div class="sector-tab" data-tab="downstream">⛽ Downstream</div>
+            <div class="sector-tab" data-tab="exploration">🔬 Exploration</div>
+            <div class="sector-tab" data-tab="trading">📊 Trading</div>
+            <div class="sector-tab" data-tab="compliance">⚖️ Compliance</div>
+            <div class="sector-tab" data-tab="decommission">🌱 Decom</div>
+        </div>
+
+        <!-- Tab Content Sections - Each with its own data -->
+        <div id="overview" class="tab-content active-content">
+            <!-- Overview Content - Full dashboard -->
+            <!-- stats fully editable -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card" id="statProd">
+                    <div class="stat-label">daily production</div>
+                    <div class="stat-value" id="prodVal">1.28M BOE</div>
+                    <div class="stat-detail" id="prodDetail">Oil: 872K bbl · Gas: 2.18B cf</div>
+                    <div class="stat-actions"><button class="btn-sm edit-stat-btn" data-target="prod">✎ edit</button></div>
+                </div>
+                <div class="stat-card" id="statWells">
+                    <div class="stat-label">active wells</div>
+                    <div class="stat-value" id="wellsVal">1,289</div>
+                    <div class="stat-detail" id="wellsDetail">Offshore: 362 · Onshore: 927</div>
+                    <div class="stat-actions"><button class="btn-sm edit-stat-btn" data-target="wells">✎ edit</button></div>
+                </div>
+                <div class="stat-card" id="statReserves">
+                    <div class="stat-label">reserves (p+p)</div>
+                    <div class="stat-value" id="reservesVal">4.37B BOE</div>
+                    <div class="stat-detail" id="reservesDetail">proven + probable</div>
+                    <div class="stat-actions"><button class="btn-sm edit-stat-btn" data-target="reserves">✎ edit</button></div>
+                </div>
+                <div class="stat-card" id="statRef">
+                    <div class="stat-label">refining capacity</div>
+                    <div class="stat-value" id="refVal">872K bbl/d</div>
+                    <div class="stat-detail" id="refDetail">5 refineries · 94% utilization</div>
+                    <div class="stat-actions"><button class="btn-sm edit-stat-btn" data-target="refining">✎ edit</button></div>
+                </div>
+            </div>
+
+            <!-- value chain interactive -->
+            <div class="value-chain">
+                <div class="chain-segment upstream" data-chain="upstream">
+                    <h3>🛢️ Upstream</h3>
+                    <p id="upDesc">Exploration & production</p>
+                    <small id="upSmall">131 active platforms</small>
+                    <div class="chain-edit"><button class="btn-sm edit-chain" data-field="upstream">✎ edit segment</button></div>
+                </div>
+                <div class="chain-segment midstream" data-chain="midstream">
+                    <h3>📦 Midstream</h3>
+                    <p id="midDesc">Transport & storage</p>
+                    <small id="midSmall">8,920km pipeline</small>
+                    <div class="chain-edit"><button class="btn-sm edit-chain" data-field="midstream">✎ edit segment</button></div>
+                </div>
+                <div class="chain-segment downstream" data-chain="downstream">
+                    <h3>⛽ Downstream</h3>
+                    <p id="downDesc">Refining & marketing</p>
+                    <small id="downSmall">5 refineries · 2,550 stations</small>
+                    <div class="chain-edit"><button class="btn-sm edit-chain" data-field="downstream">✎ edit segment</button></div>
+                </div>
+            </div>
+
+            <!-- two column content -->
+            <div class="content-grid">
+                <!-- left: tables -->
+                <div>
+                    <!-- fields table -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">🛢️ major producing fields</span>
+                            <button class="btn-sm" id="addFieldBtn">+ add field</button>
+                        </div>
+                        <table class="table" id="fieldTable">
+                            <thead><tr><th>Field</th><th>Region</th><th>Type</th><th>Daily prod</th><th>Wells</th><th>Water cut</th><th>Status</th><th></th></tr></thead>
+                            <tbody id="fieldBody">
+                                <tr><td>Ghawar</td><td>Saudi Arabia</td><td>Onshore</td><td>3.8M bbl</td><td>1,200+</td><td>32%</td><td class="status-producing">Producing</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                                <tr><td>Permian Basin</td><td>USA</td><td>Shale</td><td>1.2M bbl</td><td>850</td><td>18%</td><td class="status-producing">Producing</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                                <tr><td>Johan Sverdrup</td><td>Norway</td><td>Offshore</td><td>720K bbl</td><td>48</td><td>5%</td><td class="status-producing">Producing</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- drilling operations -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">🔴 active drilling ops</span>
+                            <button class="btn-sm" id="addDrillBtn">+ add rig</button>
+                        </div>
+                        <table class="table" id="drillTable">
+                            <thead><tr><th>Rig</th><th>Location</th><th>Type</th><th>Depth</th><th>Target</th><th>Progress</th><th>Status</th><th></th></tr></thead>
+                            <tbody id="drillBody">
+                                <tr><td>Deepwater Titan</td><td>Gulf of Mexico</td><td>Deepwater</td><td>9,450m</td><td>Lower Tertiary</td><td>72%</td><td class="status-drilling">Drilling</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                                <tr><td>Noble Discoverer</td><td>North Sea</td><td>Semi-sub</td><td>3,200m</td><td>Jurassic</td><td>45%</td><td class="status-drilling">Drilling</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- right: pipeline / storage / hse -->
+                <div>
+                    <!-- pipeline list -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">📦 pipeline network</span>
+                            <button class="btn-sm" id="addPipelineBtn">+ add pipeline</button>
+                        </div>
+                        <div id="pipelineContainer">
+                            <div class="pipeline-item" style="display:flex; gap:0.5rem; align-items:center; margin-bottom:1rem;"><span>• Trans-Alaska: 1,287 km · 98% capacity</span> <button class="btn-icon editPipeline">✏️</button><button class="btn-icon deletePipeline">🗑️</button></div>
+                            <div class="pipeline-item" style="display:flex; gap:0.5rem; align-items:center; margin-bottom:1rem;"><span>• Keystone XL: 2,700 km · 85% capacity</span> <button class="btn-icon editPipeline">✏️</button><button class="btn-icon deletePipeline">🗑️</button></div>
+                            <div class="pipeline-item" style="display:flex; gap:0.5rem; align-items:center; margin-bottom:1rem;"><span>• Nord Stream: 1,224 km · operational</span> <button class="btn-icon editPipeline">✏️</button><button class="btn-icon deletePipeline">🗑️</button></div>
+                        </div>
+                    </div>
+                    <!-- storage facilities -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">🏭 storage facilities</span>
+                            <button class="btn-sm" id="addStorageBtn">+ add storage</button>
+                        </div>
+                        <table class="table" id="storageTable">
+                            <tbody id="storageBody">
+                                <tr><td>Cushing, OK</td><td>45M bbl</td><td>62% full</td><td><button class="btn-icon editStorage">✏️</button><button class="btn-icon deleteStorage">🗑️</button></td></tr>
+                                <tr><td>Rotterdam</td><td>32M bbl</td><td>78% full</td><td><button class="btn-icon editStorage">✏️</button><button class="btn-icon deleteStorage">🗑️</button></td></tr>
+                                <tr><td>Fujairah</td><td>28M bbl</td><td>55% full</td><td><button class="btn-icon editStorage">✏️</button><button class="btn-icon deleteStorage">🗑️</button></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- HSE dashboard -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">⚠️ HSE dashboard</span>
+                            <button class="btn-sm" id="editHseBtn">✎ edit HSE</button>
+                        </div>
+                        <div id="hseContent">
+                            <div style="color:#2ecc71;" id="hseLTI">✓ 0.10 LTI frequency</div>
+                            <div style="color:#f39c12;" id="hseSpills">⚠️ 1 minor spill (Q1)</div>
+                            <div style="color:#3498db;" id="hseFlaring">📊 98% flaring reduction</div>
+                        </div>
+                        <div style="margin-top:1.5rem;">
+                            <span class="facility-badge">ISO 14001</span>
+                            <span class="facility-badge">OGMP 2.0</span>
+                            <span class="facility-badge">API RP 754</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upstream Tab Content -->
+        <div id="upstream" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🛢️ Upstream Operations</span>
+                    <button class="btn-sm" id="addUpstreamFieldBtn">+ add upstream field</button>
+                </div>
+                <table class="table" id="upstreamTable">
+                    <thead><tr><th>Field</th><th>Basin</th><th>Type</th><th>Daily Production</th><th>Wells</th><th>API Gravity</th><th>Status</th><th></th></tr></thead>
+                    <tbody id="upstreamBody">
+                        <tr><td>Ghawar</td><td>Arabian Basin</td><td>Conventional</td><td>3.8M bbl</td><td>1,200</td><td>34°</td><td class="status-producing">Producing</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                        <tr><td>Kashagan</td><td>Caspian Sea</td><td>Offshore</td><td>380K bbl</td><td>42</td><td>42°</td><td class="status-producing">Producing</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                        <tr><td>Permian</td><td>West Texas</td><td>Shale</td><td>1.2M bbl</td><td>850</td><td>40°</td><td class="status-producing">Producing</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Midstream Tab Content -->
+        <div id="midstream" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">📦 Pipeline & Storage Assets</span>
+                    <button class="btn-sm" id="addMidstreamBtn">+ add asset</button>
+                </div>
+                <table class="table" id="midstreamTable">
+                    <thead><tr><th>Asset</th><th>Type</th><th>Capacity</th><th>Length/Volume</th><th>Utilization</th><th>Status</th><th></th></tr></thead>
+                    <tbody id="midstreamBody">
+                        <tr><td>Trans-Alaska</td><td>Pipeline</td><td>2.1M bbl/d</td><td>1,287 km</td><td>98%</td><td class="status-producing">Active</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                        <tr><td>Cushing Terminal</td><td>Storage</td><td>45M bbl</td><td>45M bbl</td><td>62%</td><td class="status-producing">Active</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                        <tr><td>Keystone XL</td><td>Pipeline</td><td>830K bbl/d</td><td>2,700 km</td><td>85%</td><td class="status-producing">Active</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Downstream Tab Content -->
+        <div id="downstream" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">⛽ Refineries & Marketing</span>
+                    <button class="btn-sm" id="addDownstreamBtn">+ add refinery</button>
+                </div>
+                <table class="table" id="downstreamTable">
+                    <thead><tr><th>Refinery</th><th>Location</th><th>Capacity</th><th>Utilization</th><th>Nelson Index</th><th>Status</th><th></th></tr></thead>
+                    <tbody id="downstreamBody">
+                        <tr><td>Port Arthur</td><td>Texas, USA</td><td>600K bbl/d</td><td>94%</td><td>9.8</td><td class="status-producing">Operating</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                        <tr><td>Jamnagar</td><td>India</td><td>1.24M bbl/d</td><td>98%</td><td>11.2</td><td class="status-producing">Operating</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                        <tr><td>Rotterdam</td><td>Netherlands</td><td>400K bbl/d</td><td>89%</td><td>8.5</td><td class="status-producing">Operating</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Exploration Tab Content -->
+        <div id="exploration" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🔬 Exploration Activities</span>
+                    <button class="btn-sm" id="addExplorationBtn">+ add prospect</button>
+                </div>
+                <table class="table" id="explorationTable">
+                    <thead><tr><th>Prospect</th><th>Basin</th><th>Water Depth</th><th>Target Formation</th><th>Probability</th><th>Status</th><th></th></tr></thead>
+                    <tbody id="explorationBody">
+                        <tr><td>Whale Deep</td><td>Gulf of Mexico</td><td>2,400m</td><td>Miocene</td><td>32%</td><td class="status-exploring">Seismic</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                        <tr><td>Orion North</td><td>North Sea</td><td>180m</td><td>Jurassic</td><td>45%</td><td class="status-exploring">Drilling</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                        <tr><td>Zamba</td><td>Namibia Basin</td><td>2,800m</td><td>Cretaceous</td><td>28%</td><td class="status-exploring">Evaluation</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Trading Tab Content -->
+        <div id="trading" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">📊 Trading Positions</span>
+                    <button class="btn-sm" id="addTradingBtn">+ add position</button>
+                </div>
+                <table class="table" id="tradingTable">
+                    <thead><tr><th>Commodity</th><th>Contract</th><th>Volume</th><th>Avg Price</th><th>MTM P&L</th><th>Status</th><th></th></tr></thead>
+                    <tbody id="tradingBody">
+                        <tr><td>WTI Crude</td><td>Jun 2026</td><td>2.4M bbl</td><td>$78.50</td><td class="status-producing">+$2.1M</td><td class="status-trading">Hedged</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                        <tr><td>Brent Crude</td><td>Jul 2026</td><td>1.8M bbl</td><td>$82.30</td><td class="status-producing">+$1.4M</td><td class="status-trading">Open</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                        <tr><td>Natural Gas</td><td>Q3 2026</td><td>5.2B cf</td><td>$3.45</td><td class="status-drilling">-$0.8M</td><td class="status-trading">Open</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Compliance Tab Content -->
+        <div id="compliance" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">⚖️ Regulatory Compliance</span>
+                    <button class="btn-sm" id="addComplianceBtn">+ add requirement</button>
+                </div>
+                <table class="table" id="complianceTable">
+                    <thead><tr><th>Regulation</th><th>Jurisdiction</th><th>Due Date</th><th>Status</th><th>Auditor</th><th></th></tr></thead>
+                    <tbody id="complianceBody">
+                        <tr><td>Methane Rule</td><td>EPA</td><td>2026-06-30</td><td class="status-producing">Compliant</td><td>Deloitte</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                        <tr><td>Flaring Permit</td><td>Texas RRC</td><td>2026-04-15</td><td class="status-compliance">Pending</td><td>Internal</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                        <tr><td>EU ETS</td><td>EU</td><td>2026-03-31</td><td class="status-producing">Compliant</td><td>PwC</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Decommission Tab Content -->
+        <div id="decommission" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🌱 Decommissioning Projects</span>
+                    <button class="btn-sm" id="addDecomBtn">+ add project</button>
+                </div>
+                <table class="table" id="decomTable">
+                    <thead><tr><th>Asset</th><th>Location</th><th>Type</th><th>Cost Estimate</th><th>Completion</th><th>Status</th><th></th></tr></thead>
+                    <tbody id="decomBody">
+                        <tr><td>Brent Alpha</td><td>North Sea</td><td>Platform</td><td>$280M</td><td>2027 Q2</td><td class="status-decom">Planning</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                        <tr><td>GulfStar 5</td><td>GOM</td><td>Subsea</td><td>$95M</td><td>2026 Q4</td><td class="status-decom">Active</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                        <tr><td>Ekofisk 2/4</td><td>Norway</td><td>Platform</td><td>$420M</td><td>2028 Q1</td><td class="status-decom">Feasibility</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-card">
+            <h3 id="modalTitle">edit value</h3>
+            <input type="text" id="modalInput" placeholder="new value">
+            <div class="modal-buttons">
+                <button class="btn-sm" id="modalSave">save</button>
+                <button class="btn-sm" id="modalCancel">cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        © 2026 CephasGM Group. All rights reserved. v3.14.2 · Build 2026.02.21 · PROD<br>
+        <span>full edit / save / delete enabled — professional operations</span>
+    </footer>
+
+    <script>
+        (function() {
+            // Tab switching functionality
+            const tabs = document.querySelectorAll('.sector-tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Hide all content sections
+                    contents.forEach(content => content.classList.remove('active-content'));
+                    
+                    // Show selected content
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active-content');
+                });
+            });
+
+            // Modal functionality
+            const modal = document.getElementById('editModal');
+            const modalInput = document.getElementById('modalInput');
+            const modalTitle = document.getElementById('modalTitle');
+            let activeCallback = null;
+
+            function showModal(title, initial, callback) {
+                modalTitle.innerText = title;
+                modalInput.value = initial;
+                modal.style.display = 'flex';
+                activeCallback = callback;
+            }
+            
+            document.getElementById('modalSave').onclick = () => {
+                if (activeCallback) activeCallback(modalInput.value);
+                modal.style.display = 'none';
+            };
+            
+            document.getElementById('modalCancel').onclick = () => modal.style.display = 'none';
+
+            // Stats edit
+            document.querySelectorAll('.edit-stat-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const target = btn.dataset.target;
+                    if (target === 'prod') showModal('daily production', document.getElementById('prodVal').innerText, (v) => document.getElementById('prodVal').innerText = v);
+                    if (target === 'wells') showModal('active wells', document.getElementById('wellsVal').innerText, (v) => document.getElementById('wellsVal').innerText = v);
+                    if (target === 'reserves') showModal('reserves', document.getElementById('reservesVal').innerText, (v) => document.getElementById('reservesVal').innerText = v);
+                    if (target === 'refining') showModal('refining capacity', document.getElementById('refVal').innerText, (v) => document.getElementById('refVal').innerText = v);
+                });
+            });
+
+            // Chain edit
+            document.querySelectorAll('.edit-chain').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const field = btn.dataset.field;
+                    if (field === 'upstream') showModal('upstream small', document.getElementById('upSmall').innerText, (v)=>document.getElementById('upSmall').innerText=v);
+                    if (field === 'midstream') showModal('midstream small', document.getElementById('midSmall').innerText, (v)=>document.getElementById('midSmall').innerText=v);
+                    if (field === 'downstream') showModal('downstream small', document.getElementById('downSmall').innerText, (v)=>document.getElementById('downSmall').innerText=v);
+                });
+            });
+
+            // Generic table edit/delete functionality
+            function bindTableEvents(tbody) {
+                if (!tbody) return;
+                
+                tbody.querySelectorAll('.editRow').forEach(btn => {
+                    btn.onclick = () => {
+                        const row = btn.closest('tr');
+                        const cells = row.querySelectorAll('td:not(:last-child)');
+                        let idx = 0;
+                        cells.forEach(cell => {
+                            if (idx < cells.length-1) {
+                                const old = cell.innerText;
+                                showModal(`edit field`, old, (newVal) => { cell.innerText = newVal; });
+                            }
+                            idx++;
+                        });
+                    };
+                });
+                
+                tbody.querySelectorAll('.deleteRow').forEach(btn => {
+                    btn.onclick = () => { 
+                        if (confirm('Delete this record?')) {
+                            btn.closest('tr').remove(); 
+                        }
+                    };
+                });
+            }
+
+            // Bind all table bodies
+            const tableBodies = [
+                'fieldBody', 'drillBody', 'upstreamBody', 'midstreamBody', 
+                'downstreamBody', 'explorationBody', 'tradingBody', 
+                'complianceBody', 'decomBody', 'storageBody'
+            ];
+            
+            tableBodies.forEach(id => {
+                const tbody = document.getElementById(id);
+                if (tbody) bindTableEvents(tbody);
+            });
+
+            // Add buttons for each tab
+            document.getElementById('addFieldBtn')?.addEventListener('click', () => {
+                const b = document.getElementById('fieldBody');
+                const nr = document.createElement('tr');
+                nr.innerHTML = `<td>new field</td><td>region</td><td>onshore</td><td>0 bbl</td><td>0</td><td>0%</td><td class="status-producing">planned</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
+                b.appendChild(nr); bindTableEvents(b);
+            });
+
+            document.getElementById('addDrillBtn')?.addEventListener('click', () => {
+                const b = document.getElementById('drillBody');
+                const nr = document.createElement('tr');
+                nr.innerHTML = `<td>new rig</td><td>loc</td><td>semi</td><td>0m</td><td>target</td><td>0%</td><td class="status-drilling">prep</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
+                b.appendChild(nr); bindTableEvents(b);
+            });
+
+            document.getElementById('addUpstreamFieldBtn')?.addEventListener('click', () => {
+                const b = document.getElementById('upstreamBody');
+                const nr = document.createElement('tr');
+                nr.innerHTML = `<td>new field</td><td>basin</td><td>conventional</td><td>0 bbl</td><td>0</td><td>0°</td><td class="status-exploring">exploring</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
+                b.appendChild(nr); bindTableEvents(b);
+            });
+
+            document.getElementById('addMidstreamBtn')?.addEventListener('click', () => {
+                const b = document.getElementById('midstreamBody');
+                const nr = document.createElement('tr');
+                nr.innerHTML = `<td>new asset</td><td>pipeline</td><td>0 bbl/d</td><td>0 km</td><td>0%</td><td class="status-producing">planned</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
+                b.appendChild(nr); bindTableEvents(b);
+            });
+
+            document.getElementById('addDownstreamBtn')?.addEventListener('click', () => {
+                const b = document.getElementById('downstreamBody');
+                const nr = document.createElement('tr');
+                nr.innerHTML = `<td>new refinery</td><td>location</td><td>0 bbl/d</td><td>0%</td><td>0</td><td class="status-producing">planned</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
+                b.appendChild(nr); bindTableEvents(b);
+            });
+
+            document.getElementById('addExplorationBtn')?.addEventListener('click', () => {
+                const b = document.getElementById('explorationBody');
+                const nr = document.createElement('tr');
+                nr.innerHTML = `<td>new prospect</td><td>basin</td><td>0m</td><td>formation</td><td>0%</td><td class="status-exploring">planned</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
+                b.appendChild(nr); bindTableEvents(b);
+            });
+
+            document.getElementById('addTradingBtn')?.addEventListener('click', () => {
+                const b = document.getElementById('tradingBody');
+                const nr = document.createElement('tr');
+                nr.innerHTML = `<td>new commodity</td><td>contract</td><td>0</td><td>$0</td><td class="status-producing">$0</td><td class="status-trading">new</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
+                b.appendChild(nr); bindTableEvents(b);
+            });
+
+            document.getElementById('addComplianceBtn')?.addEventListener('click', () => {
+                const b = document.getElementById('complianceBody');
+                const nr = document.createElement('tr');
+                nr.innerHTML = `<td>new reg</td><td>jurisdiction</td><td>2026-12-31</td><td class="status-compliance">pending</td><td>internal</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
+                b.appendChild(nr); bindTableEvents(b);
+            });
+
+            document.getElementById('addDecomBtn')?.addEventListener('click', () => {
+                const b = document.getElementById('decomBody');
+                const nr = document.createElement('tr');
+                nr.innerHTML = `<td>new asset</td><td>location</td><td>platform</td><td>$0M</td><td>2027 Q1</td><td class="status-decom">planning</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
+                b.appendChild(nr); bindTableEvents(b);
+            });
+
+            // Pipeline management
+            const pipeCont = document.getElementById('pipelineContainer');
+            function refreshPipeline() {
+                document.querySelectorAll('.editPipeline').forEach(b => {
+                    b.onclick = () => {
+                        const span = b.closest('.pipeline-item')?.querySelector('span');
+                        if (span) showModal('pipeline', span.innerText, (v)=>span.innerText = v);
+                    };
+                });
+                document.querySelectorAll('.deletePipeline').forEach(b => {
+                    b.onclick = () => { 
+                        if (confirm('Delete pipeline?')) {
+                            b.closest('.pipeline-item').remove(); 
+                        }
+                    };
+                });
+            }
+            refreshPipeline();
+
+            document.getElementById('addPipelineBtn')?.addEventListener('click', () => {
+                const d = document.createElement('div');
+                d.className = 'pipeline-item'; 
+                d.style.display = 'flex'; 
+                d.style.gap = '0.5rem'; 
+                d.style.alignItems = 'center'; 
+                d.style.marginBottom = '1rem';
+                d.innerHTML = `<span>• new pipeline: 0 km · new stats</span> <button class="btn-icon editPipeline">✏️</button><button class="btn-icon deletePipeline">🗑️</button>`;
+                pipeCont.appendChild(d); refreshPipeline();
+            });
+
+            // Storage management
+            const storageBody = document.getElementById('storageBody');
+            function bindStorage() {
+                document.querySelectorAll('.editStorage').forEach(b => {
+                    b.onclick = () => {
+                        const row = b.closest('tr');
+                        const cells = row.querySelectorAll('td');
+                        showModal('edit location', cells[0].innerText, (v)=>cells[0].innerText=v);
+                    };
+                });
+                document.querySelectorAll('.deleteStorage').forEach(b => {
+                    b.onclick = () => { 
+                        if (confirm('Delete storage facility?')) {
+                            b.closest('tr').remove(); 
+                        }
+                    };
+                });
+            }
+            bindStorage();
+
+            document.getElementById('addStorageBtn')?.addEventListener('click', () => {
+                const nr = document.createElement('tr');
+                nr.innerHTML = `<td>new site</td><td>0 bbl</td><td>0% full</td><td><button class="btn-icon editStorage">✏️</button><button class="btn-icon deleteStorage">🗑️</button></td>`;
+                storageBody.appendChild(nr); bindStorage();
+            });
+
+            // HSE edit
+            document.getElementById('editHseBtn')?.addEventListener('click', () => {
+                showModal('LTI', document.getElementById('hseLTI').innerText.replace('✓ ',''), (v)=>document.getElementById('hseLTI').innerHTML = `✓ ${v}`);
+            });
+
+            // Global add button
+            document.getElementById('globalAddBtn')?.addEventListener('click', () => {
+                const activeTab = document.querySelector('.sector-tab.active').getAttribute('data-tab');
+                switch(activeTab) {
+                    case 'overview': document.getElementById('addFieldBtn')?.click(); break;
+                    case 'upstream': document.getElementById('addUpstreamFieldBtn')?.click(); break;
+                    case 'midstream': document.getElementById('addMidstreamBtn')?.click(); break;
+                    case 'downstream': document.getElementById('addDownstreamBtn')?.click(); break;
+                    case 'exploration': document.getElementById('addExplorationBtn')?.click(); break;
+                    case 'trading': document.getElementById('addTradingBtn')?.click(); break;
+                    case 'compliance': document.getElementById('addComplianceBtn')?.click(); break;
+                    case 'decommission': document.getElementById('addDecomBtn')?.click(); break;
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
