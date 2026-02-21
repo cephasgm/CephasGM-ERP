@@ -1,114 +1,218 @@
-# CephasGM-ERP
+CephasGM-ERP
 
-CephasGM Enterprise Resource Planning (ERP) — a lightweight, modular, PWA-enabled front‑end designed to host multiple enterprise modules such as Finance, HR, Inventory, Sales, Projects, and more. The system is intentionally designed as a static GitHub Pages deployment, suitable for prototyping, UI/UX validation, and phased functional expansion.
+CephasGM-ERP is a lightweight, modular Enterprise Resource Planning (ERP) front-end built as a Progressive Web App (PWA).
+It is designed to showcase, prototype, and validate ERP modules across multiple industries while remaining simple, fast, and deployment-friendly.
 
----
+The system is intentionally implemented as a static GitHub Pages application, making it ideal for UI/UX validation, demos, concept testing, and gradual evolution into a fully dynamic ERP platform.
 
-## 📌 Features
+🔗 Live Demo:
+https://cephasgm.github.io/CephasGM-ERP/
 
-* **PWA-ready**: Includes `manifest.json`, service worker (`sw.js`), and icons for installation on desktop/mobile.
-* **Offline Support**: Designed to cache core assets for offline fallback.
-* **Modular Architecture**: Each module is isolated as its own HTML file for clarity and simplicity.
-* **Lightweight & Fast**: Pure HTML/CSS/JS — no framework overhead unless added later.
-* **Scalable Structure**: Easy migration to SPA or templating engine (Eleventy, Hugo, etc.).
+🎯 Project Goals
 
----
+Provide a unified ERP interface covering core business domains
 
-## 📁 Project Structure
+Demonstrate modular ERP architecture using pure HTML, CSS, and JavaScript
 
-```
+Support offline access and installability via PWA standards
+
+Serve as a foundation for future backend integration (Firebase, APIs, or microservices)
+
+Remain framework-agnostic, allowing easy migration to SPA or SSR solutions
+
+✨ Key Features
+
+Progressive Web App (PWA)
+
+Installable on desktop and mobile
+
+Offline fallback support
+
+App manifest and service worker included
+
+Modular Design
+
+Each ERP domain is an isolated HTML module
+
+Easy to maintain, extend, or refactor
+
+Clear separation of concerns
+
+Fast & Lightweight
+
+No frontend framework dependency
+
+Optimized for performance and simplicity
+
+Multi-Industry Coverage
+
+Supports general enterprise workflows
+
+Includes industry-specific modules (construction, mining, oil & gas, agriculture, etc.)
+
+🧩 ERP Modules Included
+Core Enterprise Modules
+
+Administration
+
+Finance & Accounting
+
+Human Resources (HR)
+
+Payroll
+
+Inventory Management
+
+Procurement
+
+Sales
+
+Customer Service
+
+Projects & Operations
+
+Meetings & Scheduling
+
+Training & Development
+
+Legal & Compliance
+
+Safety / HSE
+
+Attendance & Time Tracking
+
+Industry-Specific Modules
+
+Construction
+
+Manufacturing
+
+Mining
+
+Oil & Gas
+
+Agriculture
+
+Transport & Logistics
+
+Real Estate
+
+Payments & Banking
+
+📁 Project Structure
 CephasGM-ERP/
-├── index.html                    # Main dashboard / landing page
-├── manifest.json                 # PWA configuration
-├── sw.js                         # Service Worker (offline caching)
-├── pwa-intl.js                   # Internationalization handler
-├── icon-192.png                  # PWA icon (small)
-├── icon-512.png                  # PWA icon (large)
-├── README.md                     # (You are here)
-├── LICENSE                       # Project license (MIT)
-├── Module Pages:
-│   ├── admin.html                # Administration
-│   ├── attendance.html           # Attendance tracking
-│   ├── community.html            # Community & engagement
-│   ├── customer-service.html     # Customer support
-│   ├── finance.html              # Finance & accounting
-│   ├── hr.html                   # Human Resources
-│   ├── inventory.html            # Inventory management
-│   ├── legal.html                # Legal documentation
-│   ├── marketing.html            # Marketing & outreach
-│   ├── meeting.html              # Meetings (converted from .shtml if needed)
-│   ├── payroll.html              # Payroll processing
-│   ├── procurement.html          # Procurement workflows
-│   ├── projects.html             # Project management
-│   ├── safety.html               # Safety, HSE & compliance
-│   ├── sales.html                # Sales operations
-│   ├── training.html             # Training & development
-│   └── transport.html            # Transport & logistics
-```
-
----
-
-## 🚀 Getting Started
-
-### **1. Clone the Repository**
-
-```bash
+├── index.html                 # Main dashboard / entry point
+├── admin.html                 # Administration module
+├── attendance.html            # Attendance tracking
+├── community.html             # Community & engagement
+├── company-connect.html       # Internal communication
+├── construction.html          # Construction ERP
+├── customer-service.html      # Customer support
+├── employee-portal.html       # Employee self-service
+├── finance.html               # Finance & accounting
+├── hr.html                    # Human Resources
+├── inventory.html             # Inventory management
+├── legal.html                 # Legal & compliance
+├── manufacturing.html         # Manufacturing ERP
+├── marketing.html             # Marketing operations
+├── meetings.html              # Meetings & scheduling
+├── memberships.html           # Membership management
+├── mining.html                # Mining ERP
+├── oil-gas.html               # Oil & Gas ERP
+├── operations.html            # Operations management
+├── payments-banking.html      # Payments & banking
+├── payroll.html               # Payroll processing
+├── procurement.html           # Procurement workflows
+├── projects.html              # Project management
+├── quality.html               # Quality management
+├── real-estate.html           # Real estate operations
+├── safety.html                # HSE & safety compliance
+├── sales.html                 # Sales operations
+├── time-billing.html          # Time & billing
+├── training.html              # Training & development
+├── transport.html             # Transport & logistics
+├── offline.html               # Offline fallback page
+├── manifest.json              # PWA configuration
+├── sw.js                      # Service worker
+├── pwa-init.js                # PWA initialization
+├── icon-192.png               # PWA icon (192x192)
+├── icon-512.png               # PWA icon (512x512)
+└── README.md                  # Project documentation
+🚀 Getting Started
+1️⃣ Clone the Repository
 git clone https://github.com/cephasgm/CephasGM-ERP.git
 cd CephasGM-ERP
-```
-
-### **2. Run Locally**
+2️⃣ Run Locally
 
 Use any static server:
 
-```bash
 npx http-server . -p 8080
-```
 
 Then open:
 
-```
 http://localhost:8080/
-```
 
-GitHub Pages automatically serves the site from the `main` branch.
+GitHub Pages serves the project automatically from the main branch.
 
----
+📱 Progressive Web App (PWA)
 
-## 🧩 PWA Notes
+Supports offline browsing for cached pages
 
-* Ensure `icon-192.png` and `icon-512.png` are referenced correctly in `manifest.json`.
-* Update `sw.js` cache version when modifying core assets.
-* Add an `offline.html` page for better offline experience.
+Installable on Chrome, Edge, and mobile browsers
 
----
+Uses manifest.json and sw.js for caching strategy
 
-## 🔒 Security Recommendations
+Notes:
 
-* Add a Content Security Policy (CSP) via `<meta http-equiv="Content-Security-Policy" ...>`.
-* Use HTTPS-only external assets.
-* Avoid caching sensitive pages in the service worker.
+Increment cache versions when updating assets
 
----
+Avoid caching sensitive or authenticated content
 
-## 🤝 Contributing
+Customize offline.html for better UX
 
-1. Fork the repository
-2. Create a new feature branch (`feature/module-updates`)
-3. Commit improvements
-4. Submit a pull request
+🔐 Security Considerations
 
-Please ensure your PR passes linting and preserves modular structure.
+This project is a frontend prototype. For production use:
 
----
+Add a strict Content Security Policy (CSP)
 
-## 📄 License
+Serve only via HTTPS
 
-This project is licensed under the **MIT License** — see the `LICENSE` file for details.
+Avoid storing sensitive data in local storage
 
----
+Integrate authentication & authorization at backend level
 
-# LICENSE (MIT License)
+🛣️ Roadmap (Planned)
+
+Backend integration (Firebase / REST APIs)
+
+Role-based access control (RBAC)
+
+Authentication & user management
+
+Data persistence & reporting
+
+Module-level permissions
+
+Conversion to SPA (React / Vue / Svelte) or SSR framework
+
+🤝 Contributing
+
+Contributions are welcome.
+
+Fork the repository
+
+Create a feature branch (feature/new-module)
+
+Commit your changes
+
+Open a pull request
+
+Please keep modules independent and well-structured.
+
+📄 License
+
+This project is licensed under the MIT License.
 
 MIT License
 
@@ -116,18 +220,226 @@ Copyright (c) 2025 Cephas Gideon Mkama
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+in the Software without restriction...CephasGM-ERP
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+CephasGM-ERP is a lightweight, modular Enterprise Resource Planning (ERP) front-end built as a Progressive Web App (PWA).
+It is designed to showcase, prototype, and validate ERP modules across multiple industries while remaining simple, fast, and deployment-friendly.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+The system is intentionally implemented as a static GitHub Pages application, making it ideal for UI/UX validation, demos, concept testing, and gradual evolution into a fully dynamic ERP platform.
+
+🔗 Live Demo:
+https://cephasgm.github.io/CephasGM-ERP/
+
+🎯 Project Goals
+
+Provide a unified ERP interface covering core business domains
+
+Demonstrate modular ERP architecture using pure HTML, CSS, and JavaScript
+
+Support offline access and installability via PWA standards
+
+Serve as a foundation for future backend integration (Firebase, APIs, or microservices)
+
+Remain framework-agnostic, allowing easy migration to SPA or SSR solutions
+
+✨ Key Features
+
+Progressive Web App (PWA)
+
+Installable on desktop and mobile
+
+Offline fallback support
+
+App manifest and service worker included
+
+Modular Design
+
+Each ERP domain is an isolated HTML module
+
+Easy to maintain, extend, or refactor
+
+Clear separation of concerns
+
+Fast & Lightweight
+
+No frontend framework dependency
+
+Optimized for performance and simplicity
+
+Multi-Industry Coverage
+
+Supports general enterprise workflows
+
+Includes industry-specific modules (construction, mining, oil & gas, agriculture, etc.)
+
+🧩 ERP Modules Included
+Core Enterprise Modules
+
+Administration
+
+Finance & Accounting
+
+Human Resources (HR)
+
+Payroll
+
+Inventory Management
+
+Procurement
+
+Sales
+
+Customer Service
+
+Projects & Operations
+
+Meetings & Scheduling
+
+Training & Development
+
+Legal & Compliance
+
+Safety / HSE
+
+Attendance & Time Tracking
+
+Industry-Specific Modules
+
+Construction
+
+Manufacturing
+
+Mining
+
+Oil & Gas
+
+Agriculture
+
+Transport & Logistics
+
+Real Estate
+
+Payments & Banking
+
+📁 Project Structure
+CephasGM-ERP/
+├── index.html                 # Main dashboard / entry point
+├── admin.html                 # Administration module
+├── attendance.html            # Attendance tracking
+├── community.html             # Community & engagement
+├── company-connect.html       # Internal communication
+├── construction.html          # Construction ERP
+├── customer-service.html      # Customer support
+├── employee-portal.html       # Employee self-service
+├── finance.html               # Finance & accounting
+├── hr.html                    # Human Resources
+├── inventory.html             # Inventory management
+├── legal.html                 # Legal & compliance
+├── manufacturing.html         # Manufacturing ERP
+├── marketing.html             # Marketing operations
+├── meetings.html              # Meetings & scheduling
+├── memberships.html           # Membership management
+├── mining.html                # Mining ERP
+├── oil-gas.html               # Oil & Gas ERP
+├── operations.html            # Operations management
+├── payments-banking.html      # Payments & banking
+├── payroll.html               # Payroll processing
+├── procurement.html           # Procurement workflows
+├── projects.html              # Project management
+├── quality.html               # Quality management
+├── real-estate.html           # Real estate operations
+├── safety.html                # HSE & safety compliance
+├── sales.html                 # Sales operations
+├── time-billing.html          # Time & billing
+├── training.html              # Training & development
+├── transport.html             # Transport & logistics
+├── offline.html               # Offline fallback page
+├── manifest.json              # PWA configuration
+├── sw.js                      # Service worker
+├── pwa-init.js                # PWA initialization
+├── icon-192.png               # PWA icon (192x192)
+├── icon-512.png               # PWA icon (512x512)
+└── README.md                  # Project documentation
+🚀 Getting Started
+1️⃣ Clone the Repository
+git clone https://github.com/cephasgm/CephasGM-ERP.git
+cd CephasGM-ERP
+2️⃣ Run Locally
+
+Use any static server:
+
+npx http-server . -p 8080
+
+Then open:
+
+http://localhost:8080/
+
+GitHub Pages serves the project automatically from the main branch.
+
+📱 Progressive Web App (PWA)
+
+Supports offline browsing for cached pages
+
+Installable on Chrome, Edge, and mobile browsers
+
+Uses manifest.json and sw.js for caching strategy
+
+Notes:
+
+Increment cache versions when updating assets
+
+Avoid caching sensitive or authenticated content
+
+Customize offline.html for better UX
+
+🔐 Security Considerations
+
+This project is a frontend prototype. For production use:
+
+Add a strict Content Security Policy (CSP)
+
+Serve only via HTTPS
+
+Avoid storing sensitive data in local storage
+
+Integrate authentication & authorization at backend level
+
+🛣️ Roadmap (Planned)
+
+Backend integration (Firebase / REST APIs)
+
+Role-based access control (RBAC)
+
+Authentication & user management
+
+Data persistence & reporting
+
+Module-level permissions
+
+Conversion to SPA (React / Vue / Svelte) or SSR framework
+
+🤝 Contributing
+
+Contributions are welcome.
+
+Fork the repository
+
+Create a feature branch (feature/new-module)
+
+Commit your changes
+
+Open a pull request
+
+Please keep modules independent and well-structured.
+
+📄 License
+
+This project is licensed under the MIT License.
+
+MIT License
+
+Copyright (c) 2025 Cephas Gideon Mkama
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction...
