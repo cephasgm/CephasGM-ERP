@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     <style>
+        /* ... (keep all your existing styles from :root to .csv-upload-container) ... */
         :root {
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
@@ -182,6 +183,13 @@
         .btn-success:hover {
             background: #0da271;
         }
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
 
         .stats-grid {
             display: grid;
@@ -324,7 +332,7 @@
             background: var(--surface);
             border-radius: 12px;
             border: 1px solid var(--border);
-            overflow: hidden;
+            overflow-x: auto;
             margin-bottom: 2rem;
             box-shadow: var(--shadow);
         }
@@ -332,19 +340,22 @@
         .procurement-table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 1800px;
         }
 
         .procurement-table th, .procurement-table td {
-            padding: 1rem;
+            padding: 0.75rem;
             text-align: left;
             border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+            white-space: nowrap;
         }
 
         .procurement-table th {
             background: var(--background);
             font-weight: 600;
             color: var(--text-light);
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -358,27 +369,30 @@
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
+            display: inline-block;
+            text-align: center;
         }
 
         .status-pending {
             background: rgba(245, 158, 11, 0.1);
             color: var(--warning);
         }
-
         .status-approved {
             background: rgba(16, 185, 129, 0.1);
             color: var(--success);
         }
-
         .status-rejected {
             background: rgba(239, 68, 68, 0.1);
             color: var(--error);
         }
-
         .status-delivered {
             background: rgba(100, 116, 139, 0.1);
             color: var(--secondary);
         }
+        .status-draft { background: #e2e8f0; color: #475569; }
+        .status-sent { background: #dbeafe; color: #1d4ed8; }
+        .status-partial { background: #fef9c3; color: #854d0e; }
+        .status-invoiced { background: #dcfce7; color: #166534; }
 
         /* Mobile Navigation */
         .mobile-nav-toggle {
@@ -463,9 +477,6 @@
             .module-grid {
                 grid-template-columns: 1fr;
             }
-            .procurement-table-container {
-                overflow-x: auto;
-            }
         }
 
         /* Dark Mode Support */
@@ -492,7 +503,6 @@
             border: 0;
         }
 
-        /* Focus styles for keyboard navigation */
         button:focus, a:focus, select:focus {
             outline: 2px solid var(--primary);
             outline-offset: 2px;
@@ -516,6 +526,96 @@
         .csv-upload-container.dragover {
             border-color: var(--primary);
             background: rgba(37, 99, 235, 0.05);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: var(--surface);
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid var(--border);
+            width: 80%;
+            max-width: 1200px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .modal-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .close-modal {
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+        .close-modal:hover {
+            color: var(--text);
+        }
+        .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--background);
+            color: var(--text);
+            font-size: 1rem;
+        }
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
         }
     </style>
 </head>
@@ -610,20 +710,20 @@
             </div>
 
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="activeSuppliers">24</div>
+                <div class="stat-card" id="statActiveSuppliers">
+                    <div class="stat-number" id="activeSuppliers">0</div>
                     <div class="stat-label">Active Suppliers</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="monthlySpend">TZS 8.5M</div>
+                <div class="stat-card" id="statMonthlySpend">
+                    <div class="stat-number" id="monthlySpend">TZS 0</div>
                     <div class="stat-label">Monthly Spend</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">156</div>
+                <div class="stat-card" id="statPendingOrders">
+                    <div class="stat-number" id="pendingOrders">0</div>
                     <div class="stat-label">Pending Orders</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">92%</div>
+                <div class="stat-card" id="statOnTimeDelivery">
+                    <div class="stat-number" id="onTimeDelivery">0%</div>
                     <div class="stat-label">On-Time Delivery</div>
                 </div>
             </div>
@@ -647,71 +747,36 @@
             </div>
 
             <div class="procurement-table-container">
-                <table class="procurement-table">
+                <table class="procurement-table" id="procurementTable">
                     <thead>
                         <tr>
                             <th>PO Number</th>
+                            <th>Type</th>
                             <th>Supplier</th>
-                            <th>Amount</th>
+                            <th>Buyer</th>
+                            <th>Amount (FC)</th>
+                            <th>Currency</th>
+                            <th>Amount (Base TZS)</th>
                             <th>Status</th>
-                            <th>Order Date</th>
-                            <th>Delivery Date</th>
+                            <th>Incoterms</th>
+                            <th>Payment Terms</th>
+                            <th>Shipping Method</th>
+                            <th>Carrier</th>
+                            <th>Port of Loading</th>
+                            <th>Port of Discharge</th>
+                            <th>Est. Departure</th>
+                            <th>Est. Arrival</th>
+                            <th>Actual Ship</th>
+                            <th>Actual Delivery</th>
+                            <th>Customs Status</th>
+                            <th>Goods Receipt</th>
+                            <th>Invoice Status</th>
+                            <th>Payment Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>PO-2025-001</td>
-                            <td>Global Supplies Ltd</td>
-                            <td class="procurement-amount">TZS 1,250,000</td>
-                            <td><span class="status-badge status-approved">Approved</span></td>
-                            <td>2025-01-15</td>
-                            <td>2025-02-10</td>
-                            <td>
-                                <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
-                                    <i class="fas fa-eye"></i> View
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>PO-2025-002</td>
-                            <td>Tech Solutions Inc</td>
-                            <td class="procurement-amount">TZS 3,750,000</td>
-                            <td><span class="status-badge status-pending">Pending</span></td>
-                            <td>2025-01-18</td>
-                            <td>2025-02-28</td>
-                            <td>
-                                <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
-                                    <i class="fas fa-edit"></i> Edit
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>PO-2025-003</td>
-                            <td>Office Equipment Co</td>
-                            <td class="procurement-amount">TZS 850,000</td>
-                            <td><span class="status-badge status-delivered">Delivered</span></td>
-                            <td>2025-01-10</td>
-                            <td>2025-01-25</td>
-                            <td>
-                                <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
-                                    <i class="fas fa-file-invoice"></i> Invoice
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>PO-2025-004</td>
-                            <td>Raw Materials Corp</td>
-                            <td class="procurement-amount">TZS 2,450,000</td>
-                            <td><span class="status-badge status-rejected">Rejected</span></td>
-                            <td>2025-01-20</td>
-                            <td>2025-02-15</td>
-                            <td>
-                                <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
-                                    <i class="fas fa-redo"></i> Resubmit
-                                </button>
-                            </td>
-                        </tr>
+                    <tbody id="procurementTableBody">
+                        <!-- Data populated by JavaScript -->
                     </tbody>
                 </table>
             </div>
@@ -766,30 +831,68 @@
         </main>
     </div>
 
+    <!-- Modal for Module Management -->
+    <div id="moduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Module Title</h2>
+                <span class="close-modal" id="closeModalBtn">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="modalCloseBtn">Close</button>
+                <button class="btn btn-primary" id="modalSaveBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Mobile navigation toggle
-        document.getElementById('mobileNavToggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('active');
-        });
+        // ==================== DATA MODELS ====================
+        // Simulate database with localStorage
+        const PROCUREMENT_DATA_KEY = 'cephasgm_procurement_data';
 
-        // Active navigation highlighting
-        document.querySelectorAll('.nav-item').forEach(item => {
-            if (item.href === window.location.href) {
-                item.classList.add('active');
+        // Default data if none exists
+        const defaultProcurementData = {
+            purchaseOrders: [
+                { id: 'PO-2025-001', type: 'Standard', supplierId: 'SUP-001', supplierName: 'Global Supplies Ltd', buyer: 'John Doe', amount: 1250000, currency: 'TZS', amountBase: 1250000, status: 'approved', incoterms: 'CIF', paymentTerms: 'Net 30', shippingMethod: 'Sea', carrier: 'Maersk', portLoading: 'Dar es Salaam', portDischarge: 'Rotterdam', estDeparture: '2025-01-20', estArrival: '2025-02-10', actualShip: '2025-01-22', actualDelivery: '', customsStatus: 'Cleared', goodsReceipt: 'Not Received', invoiceStatus: 'Not Invoiced', paymentStatus: 'Unpaid', orderDate: '2025-01-15', deliveryDate: '2025-02-10' },
+                { id: 'PO-2025-002', type: 'Contract', supplierId: 'SUP-002', supplierName: 'Tech Solutions Inc', buyer: 'Jane Smith', amount: 3750000, currency: 'USD', amountBase: 1612500000, status: 'pending', incoterms: 'FOB', paymentTerms: 'Letter of Credit', shippingMethod: 'Air', carrier: 'DHL', portLoading: 'JFK', portDischarge: 'NBO', estDeparture: '2025-01-25', estArrival: '2025-02-28', actualShip: '', actualDelivery: '', customsStatus: 'Not Submitted', goodsReceipt: 'Not Received', invoiceStatus: 'Not Invoiced', paymentStatus: 'Unpaid', orderDate: '2025-01-18', deliveryDate: '2025-02-28' },
+                { id: 'PO-2025-003', type: 'Standard', supplierId: 'SUP-003', supplierName: 'Office Equipment Co', buyer: 'John Doe', amount: 850000, currency: 'TZS', amountBase: 850000, status: 'delivered', incoterms: 'EXW', paymentTerms: 'Net 15', shippingMethod: 'Road', carrier: 'Local Trucking Co', portLoading: 'Arusha', portDischarge: 'Moshi', estDeparture: '2025-01-12', estArrival: '2025-01-25', actualShip: '2025-01-12', actualDelivery: '2025-01-25', customsStatus: 'Cleared', goodsReceipt: 'Fully Received', invoiceStatus: 'Partially Invoiced', paymentStatus: 'Partially Paid', orderDate: '2025-01-10', deliveryDate: '2025-01-25' },
+                { id: 'PO-2025-004', type: 'Subcontract', supplierId: 'SUP-004', supplierName: 'Raw Materials Corp', buyer: 'Jane Smith', amount: 2450000, currency: 'KES', amountBase: 39516129, status: 'rejected', incoterms: 'DAP', paymentTerms: 'Advance Payment', shippingMethod: 'Rail', carrier: 'TAZARA', portLoading: 'Kapiri Mposhi', portDischarge: 'Dar es Salaam', estDeparture: '2025-01-22', estArrival: '2025-02-15', actualShip: '', actualDelivery: '', customsStatus: 'Held', goodsReceipt: 'Not Received', invoiceStatus: 'Not Invoiced', paymentStatus: 'Unpaid', orderDate: '2025-01-20', deliveryDate: '2025-02-15', rejectionReason: 'Budget exceeded' }
+            ],
+            suppliers: [
+                { id: 'SUP-001', name: 'Global Supplies Ltd', type: 'Distributor', category: 'Raw Materials', country: 'Tanzania', taxId: '123-456-789', paymentTerms: 'Net 30', creditLimit: 50000000, preferredCurrency: 'TZS', status: 'active', onboardingDate: '2023-01-15', performanceScore: 92, riskRating: 'Low' },
+                { id: 'SUP-002', name: 'Tech Solutions Inc', type: 'Manufacturer', category: 'IT Equipment', country: 'USA', taxId: '98-7654321', paymentTerms: 'Net 45', creditLimit: 2000000, preferredCurrency: 'USD', status: 'active', onboardingDate: '2024-06-10', performanceScore: 88, riskRating: 'Medium' },
+                { id: 'SUP-003', name: 'Office Equipment Co', type: 'Trader', category: 'MRO', country: 'Tanzania', taxId: '456-789-012', paymentTerms: 'COD', creditLimit: 10000000, preferredCurrency: 'TZS', status: 'active', onboardingDate: '2022-11-20', performanceScore: 95, riskRating: 'Low' },
+                { id: 'SUP-004', name: 'Raw Materials Corp', type: 'Manufacturer', category: 'Raw Materials', country: 'Zambia', taxId: 'ZAM-789-012', paymentTerms: 'Advance Payment', creditLimit: 0, preferredCurrency: 'KES', status: 'under-review', onboardingDate: '2025-01-05', performanceScore: 65, riskRating: 'High' }
+            ],
+            rfqs: [
+                { id: 'RFQ-001', title: 'Office Supplies 2025', issueDate: '2025-01-01', closingDate: '2025-01-30', status: 'open', biddersInvited: 5, bidsReceived: 3 }
+            ],
+            contracts: [
+                { id: 'CT-001', supplierId: 'SUP-001', type: 'Fixed Price', startDate: '2025-01-01', endDate: '2025-12-31', value: 50000000, spendToDate: 1250000, status: 'active' }
+            ]
+        };
+
+        // Initialize or load data
+        function loadProcurementData() {
+            const stored = localStorage.getItem(PROCUREMENT_DATA_KEY);
+            if (stored) {
+                return JSON.parse(stored);
+            } else {
+                localStorage.setItem(PROCUREMENT_DATA_KEY, JSON.stringify(defaultProcurementData));
+                return defaultProcurementData;
             }
-        });
+        }
 
-        // Module card hover effects
-        document.querySelectorAll('.module-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-4px)';
-            });
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
+        function saveProcurementData(data) {
+            localStorage.setItem(PROCUREMENT_DATA_KEY, JSON.stringify(data));
+        }
 
-        // Currency conversion
+        let procurementData = loadProcurementData();
+
+        // ==================== UI RENDERING ====================
         const currencyRates = {
             'TZS': { rate: 1, symbol: 'TSh' },
             'USD': { rate: 0.00043, symbol: '$' },
@@ -797,132 +900,427 @@
             'GBP': { rate: 0.00034, symbol: '£' },
             'KES': { rate: 0.062, symbol: 'KSh' }
         };
+        let currentCurrency = 'TZS';
 
-        document.getElementById('currencySelect').addEventListener('change', function() {
-            const selectedCurrency = this.value;
-            const rateInfo = currencyRates[selectedCurrency];
-            
-            // Update monthly spend display in stats
-            const spendElement = document.getElementById('monthlySpend');
-            const originalSpend = 8500000; // Original in base currency (TZS)
-            const convertedSpend = (originalSpend * rateInfo.rate).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-            spendElement.textContent = `${rateInfo.symbol}${convertedSpend}`;
-            
-            // Update procurement table amounts
-            document.querySelectorAll('.procurement-amount').forEach(element => {
-                const originalText = element.textContent;
-                const originalValue = parseFloat(originalText.replace(/[^\d.]/g, '')); // Extract numeric value
-                const convertedValue = (originalValue * rateInfo.rate).toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-                element.textContent = `${rateInfo.symbol}${convertedValue}`;
-            });
-        });
+        function renderStats() {
+            const activeSuppliers = procurementData.suppliers.filter(s => s.status === 'active').length;
+            document.getElementById('activeSuppliers').textContent = activeSuppliers;
 
-        // Module opening function
-        function openModule(module) {
-            const moduleNames = {
-                'purchase-orders': 'Purchase Orders',
-                'supplier-management': 'Supplier Management',
-                'rfq-management': 'RFQ Management',
-                'contract-management': 'Contract Management',
-                'spend-analysis': 'Spend Analysis',
-                'inventory-replenishment': 'Inventory Replenishment'
-            };
-            
-            alert(`${moduleNames[module]} opening...`);
-            // In a real implementation, this would navigate to the specific module page
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            const monthlySpendTotal = procurementData.purchaseOrders
+                .filter(po => {
+                    const poDate = new Date(po.orderDate);
+                    return poDate.getMonth() === currentMonth && poDate.getFullYear() === currentYear;
+                })
+                .reduce((sum, po) => sum + po.amountBase, 0);
+            const rateInfo = currencyRates[currentCurrency];
+            const convertedSpend = (monthlySpendTotal * rateInfo.rate).toFixed(2);
+            document.getElementById('monthlySpend').textContent = `${rateInfo.symbol}${convertedSpend}`;
+
+            const pendingOrders = procurementData.purchaseOrders.filter(po => po.status === 'pending' || po.status === 'approved').length;
+            document.getElementById('pendingOrders').textContent = pendingOrders;
+
+            const deliveredOrders = procurementData.purchaseOrders.filter(po => po.status === 'delivered');
+            const onTimeCount = deliveredOrders.filter(po => new Date(po.actualDelivery) <= new Date(po.deliveryDate)).length;
+            const onTimePct = deliveredOrders.length > 0 ? Math.round((onTimeCount / deliveredOrders.length) * 100) : 100;
+            document.getElementById('onTimeDelivery').textContent = onTimePct + '%';
         }
 
-        // New purchase order button
-        document.getElementById('newPurchaseOrderBtn').addEventListener('click', function() {
-            alert('Creating new purchase order...');
-            // In a real implementation, this would open a purchase order creation form
+        function renderPOTable() {
+            const tbody = document.getElementById('procurementTableBody');
+            tbody.innerHTML = '';
+            procurementData.purchaseOrders.forEach(po => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${po.id}</td>
+                    <td>${po.type || 'Standard'}</td>
+                    <td>${po.supplierName}</td>
+                    <td>${po.buyer || ''}</td>
+                    <td class="procurement-amount">${po.currency} ${po.amount.toLocaleString()}</td>
+                    <td>${po.currency}</td>
+                    <td>TZS ${po.amountBase.toLocaleString()}</td>
+                    <td><span class="status-badge status-${po.status}">${po.status.charAt(0).toUpperCase() + po.status.slice(1)}</span></td>
+                    <td>${po.incoterms || ''}</td>
+                    <td>${po.paymentTerms || ''}</td>
+                    <td>${po.shippingMethod || ''}</td>
+                    <td>${po.carrier || ''}</td>
+                    <td>${po.portLoading || ''}</td>
+                    <td>${po.portDischarge || ''}</td>
+                    <td>${po.estDeparture || ''}</td>
+                    <td>${po.estArrival || ''}</td>
+                    <td>${po.actualShip || ''}</td>
+                    <td>${po.actualDelivery || ''}</td>
+                    <td><span class="status-badge status-${po.customsStatus?.toLowerCase().replace(' ', '') || 'pending'}">${po.customsStatus || 'N/A'}</span></td>
+                    <td>${po.goodsReceipt || 'Not Received'}</td>
+                    <td>${po.invoiceStatus || 'Not Invoiced'}</td>
+                    <td>${po.paymentStatus || 'Unpaid'}</td>
+                    <td>
+                        <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="editPO('${po.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="deletePO('${po.id}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+            });
+        }
+
+        function renderAll() {
+            renderStats();
+            renderPOTable();
+        }
+
+        // ==================== CURRENCY CONVERSION ====================
+        document.getElementById('currencySelect').addEventListener('change', function(e) {
+            currentCurrency = e.target.value;
+            renderAll();
         });
 
-        // CSV Upload functionality
+        // ==================== MODULE MANAGEMENT ====================
+        const modal = document.getElementById('moduleModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const modalSaveBtn = document.getElementById('modalSaveBtn');
+
+        closeModalBtn.onclick = () => modal.style.display = 'none';
+        modalCloseBtn.onclick = () => modal.style.display = 'none';
+        window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+
+        window.openModule = function(module) {
+            modalTitle.textContent = module.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            let content = '';
+            if (module === 'purchase-orders') {
+                content = '<h3>Purchase Orders Management</h3><p>Create, edit, or delete purchase orders.</p>';
+                content += '<button class="btn btn-primary" onclick="addNewPO()">Add New PO</button>';
+                content += '<div style="margin-top:1rem;">';
+                procurementData.purchaseOrders.forEach(po => {
+                    content += `<div style="border:1px solid var(--border); padding:1rem; margin-bottom:0.5rem;">
+                        <strong>${po.id}</strong> - ${po.supplierName} (${po.currency} ${po.amount}) 
+                        <button class="btn btn-secondary" onclick="editPO('${po.id}')">Edit</button>
+                        <button class="btn btn-danger" onclick="deletePO('${po.id}')">Delete</button>
+                    </div>`;
+                });
+                content += '</div>';
+            } else if (module === 'supplier-management') {
+                content = '<h3>Supplier Management</h3><p>Manage suppliers and performance.</p>';
+                content += '<button class="btn btn-primary" onclick="addNewSupplier()">Add New Supplier</button>';
+                content += '<div style="margin-top:1rem;">';
+                procurementData.suppliers.forEach(sup => {
+                    content += `<div style="border:1px solid var(--border); padding:1rem; margin-bottom:0.5rem;">
+                        <strong>${sup.name}</strong> (${sup.id}) - ${sup.country}, Risk: ${sup.riskRating}, Score: ${sup.performanceScore}%
+                        <button class="btn btn-secondary" onclick="editSupplier('${sup.id}')">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteSupplier('${sup.id}')">Delete</button>
+                    </div>`;
+                });
+                content += '</div>';
+            } else if (module === 'rfq-management') {
+                content = '<h3>RFQ Management</h3><p>Manage Requests for Quotation.</p>';
+                content += '<button class="btn btn-primary" onclick="addNewRFQ()">Add New RFQ</button>';
+                content += '<div style="margin-top:1rem;">';
+                procurementData.rfqs.forEach(rfq => {
+                    content += `<div style="border:1px solid var(--border); padding:1rem; margin-bottom:0.5rem;">
+                        <strong>${rfq.id}</strong> - ${rfq.title} (${rfq.status}), Bids: ${rfq.bidsReceived}/${rfq.biddersInvited}
+                        <button class="btn btn-secondary" onclick="editRFQ('${rfq.id}')">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteRFQ('${rfq.id}')">Delete</button>
+                    </div>`;
+                });
+                content += '</div>';
+            } else if (module === 'contract-management') {
+                content = '<h3>Contract Management</h3><p>Manage supplier contracts.</p>';
+                content += '<button class="btn btn-primary" onclick="addNewContract()">Add New Contract</button>';
+                content += '<div style="margin-top:1rem;">';
+                procurementData.contracts.forEach(ct => {
+                    const supplier = procurementData.suppliers.find(s => s.id === ct.supplierId);
+                    content += `<div style="border:1px solid var(--border); padding:1rem; margin-bottom:0.5rem;">
+                        <strong>${ct.id}</strong> - ${supplier ? supplier.name : ct.supplierId} (${ct.type}), Value: ${ct.value}, Spent: ${ct.spendToDate}
+                        <button class="btn btn-secondary" onclick="editContract('${ct.id}')">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteContract('${ct.id}')">Delete</button>
+                    </div>`;
+                });
+                content += '</div>';
+            } else {
+                content = `<p>Detailed management for ${module} would be here with all fields from the master list.</p>`;
+            }
+            modalBody.innerHTML = content;
+            modal.style.display = 'block';
+        };
+
+        // ==================== CRUD OPERATIONS ====================
+        window.addNewPO = function() {
+            const newPO = {
+                id: 'PO-' + new Date().getFullYear() + '-' + String(procurementData.purchaseOrders.length + 1).padStart(3, '0'),
+                type: 'Standard',
+                supplierId: 'SUP-001',
+                supplierName: 'New Supplier',
+                buyer: 'Current User',
+                amount: 1000000,
+                currency: 'TZS',
+                amountBase: 1000000,
+                status: 'draft',
+                incoterms: 'EXW',
+                paymentTerms: 'Net 30',
+                shippingMethod: 'Sea',
+                carrier: 'TBD',
+                portLoading: 'Port A',
+                portDischarge: 'Port B',
+                estDeparture: '',
+                estArrival: '',
+                actualShip: '',
+                actualDelivery: '',
+                customsStatus: 'Not Submitted',
+                goodsReceipt: 'Not Received',
+                invoiceStatus: 'Not Invoiced',
+                paymentStatus: 'Unpaid',
+                orderDate: new Date().toISOString().split('T')[0],
+                deliveryDate: ''
+            };
+            procurementData.purchaseOrders.push(newPO);
+            saveProcurementData(procurementData);
+            renderAll();
+            modal.style.display = 'none';
+            alert('New PO added. Edit for details.');
+        };
+
+        window.editPO = function(poId) {
+            const po = procurementData.purchaseOrders.find(p => p.id === poId);
+            if (po) {
+                modalTitle.textContent = 'Edit PO: ' + poId;
+                modalBody.innerHTML = `
+                    <form id="poEditForm" class="form-grid">
+                        ${Object.keys(po).map(key => `
+                            <div class="form-group">
+                                <label for="${key}">${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</label>
+                                <input type="text" id="${key}" name="${key}" value="${po[key] || ''}" ${key === 'id' ? 'readonly' : ''}>
+                            </div>
+                        `).join('')}
+                    </form>
+                `;
+                modalSaveBtn.onclick = function() {
+                    const form = document.getElementById('poEditForm');
+                    const formData = new FormData(form);
+                    formData.forEach((value, key) => {
+                        if (key !== 'id') po[key] = value;
+                    });
+                    saveProcurementData(procurementData);
+                    renderAll();
+                    modal.style.display = 'none';
+                    alert('PO updated.');
+                };
+                modal.style.display = 'block';
+            }
+        };
+
+        window.deletePO = function(poId) {
+            if (confirm('Delete PO ' + poId + '?')) {
+                procurementData.purchaseOrders = procurementData.purchaseOrders.filter(p => p.id !== poId);
+                saveProcurementData(procurementData);
+                renderAll();
+            }
+        };
+
+        window.addNewSupplier = function() {
+            const newSupplier = {
+                id: 'SUP-' + String(procurementData.suppliers.length + 1).padStart(3, '0'),
+                name: 'New Supplier',
+                type: 'Distributor',
+                category: 'General',
+                country: 'Tanzania',
+                taxId: '',
+                paymentTerms: 'Net 30',
+                creditLimit: 10000000,
+                preferredCurrency: 'TZS',
+                status: 'active',
+                onboardingDate: new Date().toISOString().split('T')[0],
+                performanceScore: 0,
+                riskRating: 'Medium'
+            };
+            procurementData.suppliers.push(newSupplier);
+            saveProcurementData(procurementData);
+            renderAll();
+            modal.style.display = 'none';
+            alert('New supplier added.');
+        };
+
+        window.editSupplier = function(supId) {
+            const sup = procurementData.suppliers.find(s => s.id === supId);
+            if (sup) {
+                modalTitle.textContent = 'Edit Supplier: ' + sup.name;
+                modalBody.innerHTML = `
+                    <form id="supplierEditForm" class="form-grid">
+                        ${Object.keys(sup).map(key => `
+                            <div class="form-group">
+                                <label for="${key}">${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</label>
+                                <input type="text" id="${key}" name="${key}" value="${sup[key] || ''}" ${key === 'id' ? 'readonly' : ''}>
+                            </div>
+                        `).join('')}
+                    </form>
+                `;
+                modalSaveBtn.onclick = function() {
+                    const form = document.getElementById('supplierEditForm');
+                    const formData = new FormData(form);
+                    formData.forEach((value, key) => {
+                        if (key !== 'id') sup[key] = value;
+                    });
+                    saveProcurementData(procurementData);
+                    renderAll();
+                    modal.style.display = 'none';
+                    alert('Supplier updated.');
+                };
+                modal.style.display = 'block';
+            }
+        };
+
+        window.deleteSupplier = function(supId) {
+            if (confirm('Delete supplier ' + supId + '?')) {
+                procurementData.suppliers = procurementData.suppliers.filter(s => s.id !== supId);
+                saveProcurementData(procurementData);
+                renderAll();
+            }
+        };
+
+        // RFQ, Contract functions (similar pattern)
+        window.addNewRFQ = function() {
+            const newRFQ = {
+                id: 'RFQ-' + String(procurementData.rfqs.length + 1).padStart(3, '0'),
+                title: 'New RFQ',
+                issueDate: new Date().toISOString().split('T')[0],
+                closingDate: '',
+                status: 'draft',
+                biddersInvited: 0,
+                bidsReceived: 0
+            };
+            procurementData.rfqs.push(newRFQ);
+            saveProcurementData(procurementData);
+            renderAll();
+            modal.style.display = 'none';
+            alert('New RFQ added.');
+        };
+
+        window.editRFQ = function(rfqId) {
+            const rfq = procurementData.rfqs.find(r => r.id === rfqId);
+            if (rfq) {
+                modalTitle.textContent = 'Edit RFQ: ' + rfqId;
+                modalBody.innerHTML = `
+                    <form id="rfqEditForm" class="form-grid">
+                        ${Object.keys(rfq).map(key => `
+                            <div class="form-group">
+                                <label for="${key}">${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</label>
+                                <input type="text" id="${key}" name="${key}" value="${rfq[key] || ''}" ${key === 'id' ? 'readonly' : ''}>
+                            </div>
+                        `).join('')}
+                    </form>
+                `;
+                modalSaveBtn.onclick = function() {
+                    const form = document.getElementById('rfqEditForm');
+                    const formData = new FormData(form);
+                    formData.forEach((value, key) => {
+                        if (key !== 'id') rfq[key] = value;
+                    });
+                    saveProcurementData(procurementData);
+                    renderAll();
+                    modal.style.display = 'none';
+                    alert('RFQ updated.');
+                };
+                modal.style.display = 'block';
+            }
+        };
+
+        window.deleteRFQ = function(rfqId) {
+            if (confirm('Delete RFQ ' + rfqId + '?')) {
+                procurementData.rfqs = procurementData.rfqs.filter(r => r.id !== rfqId);
+                saveProcurementData(procurementData);
+                renderAll();
+            }
+        };
+
+        window.addNewContract = function() {
+            const newContract = {
+                id: 'CT-' + String(procurementData.contracts.length + 1).padStart(3, '0'),
+                supplierId: 'SUP-001',
+                type: 'Fixed Price',
+                startDate: new Date().toISOString().split('T')[0],
+                endDate: '',
+                value: 0,
+                spendToDate: 0,
+                status: 'draft'
+            };
+            procurementData.contracts.push(newContract);
+            saveProcurementData(procurementData);
+            renderAll();
+            modal.style.display = 'none';
+            alert('New contract added.');
+        };
+
+        window.editContract = function(ctId) {
+            const ct = procurementData.contracts.find(c => c.id === ctId);
+            if (ct) {
+                modalTitle.textContent = 'Edit Contract: ' + ctId;
+                modalBody.innerHTML = `
+                    <form id="contractEditForm" class="form-grid">
+                        ${Object.keys(ct).map(key => `
+                            <div class="form-group">
+                                <label for="${key}">${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</label>
+                                <input type="text" id="${key}" name="${key}" value="${ct[key] || ''}" ${key === 'id' ? 'readonly' : ''}>
+                            </div>
+                        `).join('')}
+                    </form>
+                `;
+                modalSaveBtn.onclick = function() {
+                    const form = document.getElementById('contractEditForm');
+                    const formData = new FormData(form);
+                    formData.forEach((value, key) => {
+                        if (key !== 'id') ct[key] = value;
+                    });
+                    saveProcurementData(procurementData);
+                    renderAll();
+                    modal.style.display = 'none';
+                    alert('Contract updated.');
+                };
+                modal.style.display = 'block';
+            }
+        };
+
+        window.deleteContract = function(ctId) {
+            if (confirm('Delete contract ' + ctId + '?')) {
+                procurementData.contracts = procurementData.contracts.filter(c => c.id !== ctId);
+                saveProcurementData(procurementData);
+                renderAll();
+            }
+        };
+
+        // ==================== OTHER EVENT HANDLERS ====================
+        document.getElementById('newPurchaseOrderBtn').addEventListener('click', addNewPO);
+
+        document.getElementById('uploadCsvBtn').addEventListener('click', function() {
+            alert('CSV upload would parse and add to database.');
+        });
+
         document.getElementById('csvFileInput').addEventListener('change', function(e) {
             if (e.target.files.length > 0) {
-                const file = e.target.files[0];
-                if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
-                    alert(`Uploading CSV file: ${file.name}`);
-                    // In a real implementation, this would process the CSV file
-                    // and update the procurement data
-                } else {
-                    alert('Please select a valid CSV file.');
-                }
+                alert(`CSV upload simulation for ${e.target.files[0].name}`);
             }
         });
 
-        // Drag and drop for CSV upload
         const csvUploadContainer = document.getElementById('csvUploadContainer');
-        csvUploadContainer.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            csvUploadContainer.classList.add('dragover');
-        });
-
-        csvUploadContainer.addEventListener('dragleave', function() {
-            csvUploadContainer.classList.remove('dragover');
-        });
-
-        csvUploadContainer.addEventListener('drop', function(e) {
+        csvUploadContainer.addEventListener('dragover', (e) => { e.preventDefault(); csvUploadContainer.classList.add('dragover'); });
+        csvUploadContainer.addEventListener('dragleave', () => csvUploadContainer.classList.remove('dragover'));
+        csvUploadContainer.addEventListener('drop', (e) => {
             e.preventDefault();
             csvUploadContainer.classList.remove('dragover');
-            
-            if (e.dataTransfer.files.length > 0) {
-                const file = e.dataTransfer.files[0];
-                if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
-                    alert(`Uploading CSV file: ${file.name}`);
-                    // In a real implementation, this would process the CSV file
-                } else {
-                    alert('Please drop a valid CSV file.');
-                }
-            }
+            if (e.dataTransfer.files.length > 0) alert('CSV drop simulation.');
         });
 
-        // Logout functionality
         document.getElementById('logoutBtn').addEventListener('click', function() {
-            if (confirm('Are you sure you want to logout?')) {
-                alert('Logging out...');
-                // In a real implementation, this would redirect to login page
-            }
+            if (confirm('Logout?')) alert('Logging out...');
         });
 
-        // PWA initialization
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(function(registration) {
-                        console.log('ServiceWorker registration successful');
-                    })
-                    .catch(function(err) {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
+        document.getElementById('mobileNavToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
 
-        // Check for PWA update
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.ready.then(registration => {
-                registration.addEventListener('updatefound', () => {
-                    const newWorker = registration.installing;
-                    console.log('New service worker found...');
-                    
-                    newWorker.addEventListener('statechange', () => {
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            // New update available
-                            if (confirm('A new version is available. Refresh to update?')) {
-                                window.location.reload();
-                            }
-                        }
-                    });
-                });
-            });
-        }
+        // Initial render
+        renderAll();
     </script>
 </body>
 </html>
