@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CephasGM Social · full workspace</title>
+    <title>CephasGM Social · fully interactive</title>
     <style>
         * {
             margin: 0;
@@ -96,10 +96,11 @@
         .auth-footer { text-align: center; margin-top: 1.5rem; color: #65676b; }
         .auth-footer span { color: #0066cc; cursor: pointer; font-weight: 500; }
 
-        /* ===== MAIN APP ===== */
+        /* ===== MAIN APP (Visible after login) ===== */
         .app-container { display: none; }
         .app-container.logged-in { display: block; }
 
+        /* Top Navigation */
         .top-nav {
             background: white;
             padding: 0.5rem 2rem;
@@ -139,12 +140,12 @@
         }
         .search-results {
             position: absolute;
-            top: 50px;
+            top: 45px;
             left: 0;
             background: white;
             border-radius: 10px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            width: 100%;
+            width: 300px;
             max-height: 400px;
             overflow-y: auto;
             display: none;
@@ -194,7 +195,8 @@
             position: relative;
         }
         .avatar {
-            width: 32px; height: 32px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: linear-gradient(135deg, #0066cc, #00aaff);
             display: flex;
@@ -202,7 +204,6 @@
             justify-content: center;
             color: white;
             font-weight: 600;
-            flex-shrink: 0;
         }
         .avatar.large { width: 80px; height: 80px; font-size: 2rem; }
         .avatar.xlarge { width: 120px; height: 120px; font-size: 3rem; }
@@ -230,7 +231,7 @@
         .dropdown-item:hover { background: #f0f2f5; }
         .dropdown-item.logout { color: #e41e3f; border-top: 1px solid #f0f2f5; }
 
-        /* main layout */
+        /* Main Layout */
         .main-container {
             max-width: 1400px;
             margin: 1rem auto;
@@ -239,7 +240,7 @@
             gap: 1rem;
             padding: 0 1rem;
         }
-        .left-sidebar, .right-sidebar { position: sticky; top: 70px; height: fit-content; }
+        .left-sidebar { position: sticky; top: 70px; height: fit-content; }
         .sidebar-card {
             background: white;
             border-radius: 16px;
@@ -258,7 +259,8 @@
         }
         .sidebar-item:hover { background: #f0f2f5; }
         .sidebar-icon {
-            width: 36px; height: 36px;
+            width: 36px;
+            height: 36px;
             background: #e4e6eb;
             border-radius: 50%;
             display: flex;
@@ -266,15 +268,14 @@
             justify-content: center;
             font-size: 1.2rem;
         }
-
-        .feed-container {
-            background: white;
-            border-radius: 16px;
-            padding: 1rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        .badge-count {
+            margin-left: auto;
+            background: #e41e3f;
+            color: white;
+            padding: 0.1rem 0.5rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
         }
-
-        /* posts, comments, friend requests etc */
         .friend-request-item {
             display: flex;
             align-items: center;
@@ -283,26 +284,48 @@
             border-bottom: 1px solid #f0f2f5;
         }
         .friend-request-actions { display: flex; gap: 0.5rem; margin-left: auto; }
-        .btn-accept { background: #0066cc; color: white; padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.8rem; cursor: pointer; }
-        .btn-decline { background: #f0f2f5; color: #65676b; padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.8rem; cursor: pointer; }
-
-        .stories-container { margin-bottom: 1rem; border-bottom: 1px solid #f0f2f5; padding-bottom: 1rem; }
-        .stories-grid { display: flex; gap: 0.8rem; overflow-x: auto; }
-        .story-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 70px; }
-        .story-ring {
-            width: 66px; height: 66px; border-radius: 50%; padding: 3px;
-            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+        .btn-accept {
+            background: #0066cc;
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: none;
         }
+        .btn-decline {
+            background: #f0f2f5;
+            color: #65676b;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Feed */
+        .feed-container {
+            background: white;
+            border-radius: 16px;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .stories-container { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #f0f2f5; }
+        .stories-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .stories-grid { display: flex; gap: 0.8rem; overflow-x: auto; }
+        .story-item {
+            display: flex; flex-direction: column; align-items: center; gap: 0.3rem; cursor: pointer; min-width: 70px;
+        }
+        .story-ring { width: 66px; height: 66px; border-radius: 50%; padding: 3px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         .story-ring.viewed { background: #c0c0c0; }
         .story-avatar {
-            width: 60px; height: 60px; border-radius: 50%; border: 2px solid white;
-            background: #f0f2f5; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem;
+            width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; background: #f0f2f5;
+            display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
         }
         .create-post { display: flex; gap: 1rem; margin-bottom: 1rem; }
         .post-input {
-            flex: 1; background: #f0f2f5; border-radius: 30px; padding: 0.8rem 1rem;
-            border: none; outline: none; cursor: pointer;
+            flex: 1; background: #f0f2f5; border-radius: 30px; padding: 0.8rem 1rem; border: none;
+            outline: none; cursor: pointer;
         }
         .post-actions { display: flex; gap: 1rem; margin-bottom: 1rem; }
         .post-action {
@@ -310,6 +333,7 @@
             padding: 0.5rem; border-radius: 10px; cursor: pointer; transition: background 0.3s;
         }
         .post-action:hover { background: #f0f2f5; }
+
         .post-card { padding: 1rem 0; border-bottom: 1px solid #f0f2f5; }
         .post-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
         .post-author-info { display: flex; gap: 1rem; cursor: pointer; }
@@ -317,8 +341,8 @@
         .post-time { color: #65676b; font-size: 0.8rem; }
         .post-content { margin: 0.5rem 0; line-height: 1.5; white-space: pre-wrap; }
         .post-engagement {
-            display: flex; gap: 1rem; padding: 0.5rem 0;
-            border-top: 1px solid #f0f2f5; border-bottom: 1px solid #f0f2f5; margin: 0.5rem 0;
+            display: flex; gap: 1rem; padding: 0.5rem 0; border-top: 1px solid #f0f2f5;
+            border-bottom: 1px solid #f0f2f5; margin: 0.5rem 0;
         }
         .engage-btn {
             flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
@@ -326,45 +350,49 @@
         }
         .engage-btn:hover { background: #f0f2f5; }
         .engage-btn.active { color: #0066cc; }
+
         .comments-section { margin-top: 1rem; }
         .comment { display: flex; gap: 0.5rem; margin: 0.5rem 0; }
         .comment-content {
             background: #f0f2f5; padding: 0.5rem 1rem; border-radius: 18px; flex: 1;
         }
         .comment-author { font-weight: 600; cursor: pointer; }
+        .delete-comment {
+            color: #999; cursor: pointer; font-size: 0.8rem; margin-left: 0.5rem;
+        }
+        .delete-comment:hover { color: #e41e3f; }
 
+        /* Profile */
         .profile-page { background: white; border-radius: 16px; overflow: hidden; }
         .profile-cover { height: 200px; background: linear-gradient(135deg, #0066cc, #00aaff); position: relative; }
-        .profile-avatar-container {
-            position: relative; width: fit-content; margin-top: -60px; margin-left: 2rem;
-        }
+        .edit-cover { position: absolute; bottom: 1rem; right: 1rem; background: white; padding: 0.5rem; border-radius: 30px; cursor: pointer; }
+        .profile-avatar-container { position: relative; width: fit-content; margin-top: -60px; margin-left: 2rem; }
         .profile-avatar {
-            width: 120px; height: 120px; border-radius: 50%; border: 4px solid white;
-            background: #f0f2f5; display: flex; align-items: center; justify-content: center;
-            font-size: 3rem; cursor: pointer;
+            width: 120px; height: 120px; border-radius: 50%; border: 4px solid white; background: #f0f2f5;
+            display: flex; align-items: center; justify-content: center; font-size: 3rem; cursor: pointer;
         }
         .edit-avatar {
             position: absolute; bottom: 10px; right: 10px; background: #0066cc; color: white;
-            width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; cursor: pointer;
+            width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
         .profile-info { padding: 1rem 2rem 2rem; }
         .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .profile-name { font-size: 2rem; font-weight: 600; }
         .profile-title { color: #65676b; margin-bottom: 0.5rem; }
-        .profile-bio { margin: 1rem 0; padding: 1rem; background: #f0f2f5; border-radius: 10px; white-space: pre-wrap; }
+        .profile-bio { margin: 1rem 0; padding: 1rem; background: #f0f2f5; border-radius: 10px; }
         .profile-stats { display: flex; gap: 2rem; margin: 1rem 0; }
         .stat { text-align: center; cursor: pointer; }
         .stat-number { font-weight: 600; font-size: 1.2rem; }
         .stat-label { color: #65676b; font-size: 0.9rem; }
-        .profile-tabs { display: flex; gap: 1rem; border-bottom: 1px solid #f0f2f5; margin: 1rem 0; }
+        .profile-tabs {
+            display: flex; gap: 1rem; border-bottom: 1px solid #f0f2f5; margin: 1rem 0;
+        }
         .profile-tab {
             padding: 0.5rem 1rem; cursor: pointer; position: relative;
         }
         .profile-tab.active { color: #0066cc; font-weight: 500; }
         .profile-tab.active::after {
-            content: ''; position: absolute; bottom: -1px; left: 0; width: 100%;
-            height: 2px; background: #0066cc;
+            content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px; background: #0066cc;
         }
         .profile-section { display: none; padding: 1rem 0; }
         .profile-section.active { display: block; }
@@ -376,25 +404,48 @@
 
         .friends-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
         .friend-card {
-            padding: 1rem; border: 1px solid #f0f2f5; border-radius: 10px; text-align: center;
-            cursor: pointer;
+            padding: 1rem; border: 1px solid #f0f2f5; border-radius: 10px; text-align: center; cursor: pointer;
         }
         .friend-card:hover { background: #f0f2f5; }
         .friend-avatar {
-            width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 1rem;
-            background: #f0f2f5; display: flex; align-items: center; justify-content: center;
-            font-size: 2rem;
+            width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 1rem; background: #f0f2f5;
+            display: flex; align-items: center; justify-content: center; font-size: 2rem;
+        }
+        .friend-name { font-weight: 500; margin-bottom: 0.2rem; }
+        .friend-title { color: #65676b; font-size: 0.8rem; margin-bottom: 0.5rem; }
+        .btn-follow, .btn-unfollow, .btn-add-friend, .btn-pending, .btn-friends {
+            padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.8rem; cursor: pointer; border: none;
+        }
+        .btn-follow { background: #0066cc; color: white; }
+        .btn-unfollow { background: #f0f2f5; color: #65676b; }
+        .btn-add-friend { background: #0066cc; color: white; }
+        .btn-pending { background: #f0f2f5; color: #65676b; }
+        .btn-friends { background: #00a86b; color: white; }
+
+        .right-sidebar { position: sticky; top: 70px; height: fit-content; }
+        .suggestion-item {
+            display: flex; align-items: center; gap: 1rem; padding: 0.7rem 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .online-item {
+            display: flex; align-items: center; gap: 1rem; padding: 0.5rem 0; cursor: pointer;
+        }
+        .online-indicator {
+            width: 10px; height: 10px; background: #31a24c; border-radius: 50%; position: relative;
+        }
+        .online-indicator::after {
+            content: ''; position: absolute; width: 14px; height: 14px; border-radius: 50%;
+            border: 2px solid white; top: -4px; left: -4px;
         }
 
         .notifications-panel, .messages-panel {
-            position: absolute; top: 60px; right: 100px; background: white;
-            border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            width: 350px; max-height: 500px; overflow-y: auto; display: none; z-index: 1001;
+            position: absolute; top: 60px; right: 120px; background: white; border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2); width: 350px; max-height: 500px; overflow-y: auto;
+            display: none; z-index: 1001;
         }
         .notifications-panel.active, .messages-panel.active { display: block; }
         .notification-item, .message-item {
-            padding: 1rem; display: flex; gap: 1rem; border-bottom: 1px solid #f0f2f5;
-            cursor: pointer;
+            padding: 1rem; display: flex; gap: 1rem; border-bottom: 1px solid #f0f2f5; cursor: pointer;
         }
         .notification-item:hover, .message-item:hover { background: #f0f2f5; }
         .notification-item.unread { background: #e3f2fd; }
@@ -406,7 +457,7 @@
     </style>
 </head>
 <body>
-    <!-- Login/Signup Modal -->
+    <!-- Auth Modal -->
     <div class="modal active" id="authModal">
         <div class="auth-container">
             <div class="auth-header"><h2>CephasGM Social</h2><p>Connect with colleagues</p></div>
@@ -414,499 +465,431 @@
                 <div class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
                 <div class="auth-tab" onclick="switchAuthTab('signup')">Create Account</div>
             </div>
-            <!-- Login Form -->
             <div class="auth-form active" id="loginForm">
-                <div class="form-group"><label>Work Email</label><input type="email" id="loginEmail" placeholder="john.doe@cephasgm.com"></div>
-                <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
+                <div class="form-group"><label>Work Email</label><input type="email" id="loginEmail" value="abc@cephasgm.com"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="loginPassword" value="123456"></div>
                 <button class="btn-auth" onclick="login()">Log In</button>
-                <div class="auth-footer"><span onclick="showForgotPassword()">Forgot password?</span></div>
+                <div class="auth-footer"><span onclick="alert('Demo: reset link sent')">Forgot password?</span></div>
             </div>
-            <!-- Signup Form -->
             <div class="auth-form" id="signupForm">
-                <div class="form-group"><label>Full Name</label><input type="text" id="signupName" placeholder="John Doe"></div>
-                <div class="form-group"><label>Work Email</label><input type="email" id="signupEmail" placeholder="john.doe@cephasgm.com"></div>
-                <div class="form-group"><label>Department</label><input type="text" id="signupDept" value="Engineering"></div>
-                <div class="form-group"><label>Job Title</label><input type="text" id="signupTitle" value="Software Developer"></div>
-                <div class="form-group"><label>Password</label><input type="password" id="signupPassword" placeholder="••••••••"></div>
-                <div class="form-group"><label>Confirm</label><input type="password" id="signupConfirm" placeholder="••••••••"></div>
+                <div class="form-group"><label>Full Name</label><input type="text" id="signupName"></div>
+                <div class="form-group"><label>Work Email</label><input type="email" id="signupEmail"></div>
+                <div class="form-group"><label>Department</label><input type="text" id="signupDept"></div>
+                <div class="form-group"><label>Job Title</label><input type="text" id="signupTitle"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="signupPassword"></div>
+                <div class="form-group"><label>Confirm</label><input type="password" id="signupConfirm"></div>
                 <button class="btn-auth" onclick="signup()">Create Account</button>
             </div>
         </div>
     </div>
 
-    <!-- Main App Container (dynamic) -->
+    <!-- Main App -->
     <div class="app-container" id="appContainer">
-        <!-- top nav will be populated via js but we keep static skeleton for clarity; we'll control content via js -->
+        <!-- Top Nav -->
+        <div class="top-nav">
+            <div class="nav-left">
+                <div class="logo" onclick="showFeed()">CephasGM Social</div>
+                <div class="search-bar">
+                    <span>🔍</span>
+                    <input type="text" placeholder="Search employees..." id="searchInput" onkeyup="searchUsers()">
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+            </div>
+            <div class="nav-middle">
+                <div class="nav-icon active" onclick="showFeed()">🏠</div>
+                <div class="nav-icon" onclick="showFriends()">👥</div>
+                <div class="nav-icon" onclick="showProfile()">👤</div>
+                <div class="nav-icon" id="notificationsIcon" onclick="toggleNotifications()">🔔<span class="badge" id="notificationBadge">3</span></div>
+                <div class="nav-icon" id="messagesIcon" onclick="toggleMessages()">💬<span class="badge" id="messageBadge">2</span></div>
+            </div>
+            <div class="nav-right">
+                <div class="profile-badge" onclick="toggleProfileDropdown()">
+                    <div class="avatar" id="currentUserAvatar">CGM</div><span id="currentUserName">Cephas GM</span>
+                </div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="dropdown-item" onclick="viewMyProfile()">👤 View Profile</div>
+                    <div class="dropdown-item" onclick="showSettings()">⚙️ Settings</div>
+                    <div class="dropdown-item" onclick="showPrivacy()">🔒 Privacy</div>
+                    <div class="dropdown-item logout" onclick="logout()">🚪 Logout</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications / Messages panels -->
+        <div class="notifications-panel" id="notificationsPanel">
+            <div style="padding:1rem; font-weight:600; border-bottom:1px solid #f0f2f5;">Notifications</div>
+            <div class="notification-item unread"><div class="avatar">SW</div><div><strong>Sarah Wilson</strong> accepted request<div style="color:#65676b;">5min</div></div></div>
+            <div class="notification-item unread"><div class="avatar">MK</div><div><strong>Mike</strong> commented<div style="color:#65676b;">1h</div></div></div>
+            <div class="notification-item"><div class="avatar">EC</div><div><strong>Emily</strong> liked your post<div style="color:#65676b;">3h</div></div></div>
+        </div>
+        <div class="messages-panel" id="messagesPanel">
+            <div style="padding:1rem; font-weight:600;">Messages</div>
+            <div class="message-item"><div class="avatar">SW</div><div><strong>Sarah</strong><div class="message-preview">Q1 report?</div></div></div>
+            <div class="message-item"><div class="avatar">MK</div><div><strong>Mike</strong><div class="message-preview">Thanks!</div></div></div>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-container" id="mainContent">
+            <!-- Left sidebar -->
+            <div class="left-sidebar">
+                <div class="sidebar-card">
+                    <div class="sidebar-item" onclick="viewMyProfile()"><div class="avatar" id="sidebarAvatar">JD</div><div><div>Cephas GM</div><div style="color:#65676b;">Software Developer</div></div></div>
+                    <div class="sidebar-item" onclick="showFeed()"><div class="sidebar-icon">📰</div> News Feed</div>
+                    <div class="sidebar-item" onclick="showFriends()"><div class="sidebar-icon">👥</div> Friends <span class="badge-count">124</span></div>
+                    <div class="sidebar-item" onclick="showGroups()"><div class="sidebar-icon">👥</div> Groups <span class="badge-count">8</span></div>
+                </div>
+                <div class="sidebar-card">
+                    <div style="display:flex; justify-content:space-between;"><span>Friend Requests</span><span style="color:#0066cc; cursor:pointer;" onclick="alert('show all')">See All</span></div>
+                    <div class="friend-request-item" data-request="alex">
+                        <div class="avatar">AL</div><div><div>Cephas GM</div><div style="font-size:0.7rem;">3 mutual</div></div>
+                        <div class="friend-request-actions"><button class="btn-accept" onclick="acceptRequest(this)">✓</button><button class="btn-decline" onclick="declineRequest(this)">✗</button></div>
+                    </div>
+                    <div class="friend-request-item" data-request="maria">
+                        <div class="avatar">MR</div><div><div>Maria R.</div><div style="font-size:0.7rem;">2 mutual</div></div>
+                        <div class="friend-request-actions"><button class="btn-accept" onclick="acceptRequest(this)">✓</button><button class="btn-decline" onclick="declineRequest(this)">✗</button></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feed View (default) -->
+            <div class="feed-container" id="feedView">
+                <div class="stories-container">
+                    <div class="stories-header"><span>Stories</span><span style="color:#0066cc; cursor:pointer;" onclick="alert('all stories')">See All</span></div>
+                    <div class="stories-grid">
+                        <div class="story-item" onclick="addStory()"><div class="story-ring" style="background:#0066cc;"><div class="story-avatar" style="background:#0066cc;">+</div></div><span>Add</span></div>
+                        <div class="story-item" onclick="viewStory('Cephas')"><div class="story-ring"><div class="story-avatar">👩‍💼</div></div><span>Sarah</span></div>
+                        <div class="story-item" onclick="viewStory('Prince')"><div class="story-ring"><div class="story-avatar">👨‍💻</div></div><span>Mike</span></div>
+                    </div>
+                </div>
+                <!-- Create Post -->
+                <div class="create-post">
+                    <div class="avatar" id="postAvatar">JD</div>
+                    <div class="post-input" onclick="openCreatePostModal()">What's on your mind?</div>
+                </div>
+                <div class="post-actions">
+                    <div class="post-action" onclick="postPhoto()">📷 Photo</div>
+                    <div class="post-action" onclick="postVideo()">🎥 Video</div>
+                    <div class="post-action" onclick="postFeeling()">😊 Feeling</div>
+                </div>
+
+                <!-- Dynamic posts container -->
+                <div id="postsContainer">
+                    <!-- posts will be injected via js -->
+                </div>
+            </div>
+
+            <!-- Profile View -->
+            <div class="feed-container" id="profileView" style="display:none;">
+                <div class="profile-page">
+                    <div class="profile-cover"><div class="edit-cover" onclick="editCover()">📷 Edit Cover</div></div>
+                    <div class="profile-avatar-container">
+                        <div class="profile-avatar" id="profileAvatar" onclick="changeProfilePhoto()">JD</div>
+                        <div class="edit-avatar" onclick="changeProfilePhoto()">✏️</div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-header">
+                            <div><div class="profile-name" id="profileName">Cephas GM</div><div class="profile-title" id="profileTitle">Inventory Control Secialist at MMS</div></div>
+                            <div><button class="btn-follow" onclick="editProfile()">Edit Profile</button></div>
+                        </div>
+                        <div class="profile-bio" id="profileBio">Passionate developer. <span class="edit-info" onclick="editBio()">Edit</span></div>
+                        <div class="profile-stats">
+                            <div class="stat" onclick="showFriends()"><div class="stat-number">124</div><div>Friends</div></div>
+                            <div class="stat"><div class="stat-number">89</div><div>Followers</div></div>
+                            <div class="stat"><div class="stat-number">48</div><div>Posts</div></div>
+                        </div>
+                        <div class="profile-tabs">
+                            <div class="profile-tab active" onclick="switchProfileTab('posts')">Posts</div>
+                            <div class="profile-tab" onclick="switchProfileTab('about')">About</div>
+                            <div class="profile-tab" onclick="switchProfileTab('friends')">Friends</div>
+                        </div>
+                        <div class="profile-section active" id="profilePosts"></div>
+                        <div class="profile-section" id="profileAbout">
+                            <div class="info-grid">
+                                <div class="info-item"><div class="info-label">Work</div><div class="info-value">CephasGM <span class="edit-info" onclick="editWork()">Edit</span></div></div>
+                                <div class="info-item"><div class="info-label">Education</div><div class="info-value">Stanford <span class="edit-info" onclick="editEducation()">Edit</span></div></div>
+                                <div class="info-item"><div class="info-label">Location</div><div class="info-value">SF <span class="edit-info" onclick="editLocation()">Edit</span></div></div>
+                                <div class="info-item"><div class="info-label">Skills</div><div class="info-value">JS, React <span class="edit-info" onclick="editSkills()">Edit</span></div></div>
+                            </div>
+                        </div>
+                        <div class="profile-section" id="profileFriends"><div class="friends-grid" id="friendsGrid"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Friends View -->
+            <div class="feed-container" id="friendsView" style="display:none;">
+                <div style="padding:1rem;"><h2>Friends (124)</h2>
+                <input type="text" placeholder="Search friends..." id="friendSearch" style="width:100%; padding:0.8rem; border-radius:30px; border:1px solid #ddd; margin:1rem 0;">
+                <div class="friends-grid" id="allFriendsGrid"></div></div>
+            </div>
+
+            <!-- Right sidebar -->
+            <div class="right-sidebar">
+                <div class="sidebar-card">
+                    <div style="display:flex; justify-content:space-between;"><span>Suggestions</span><span style="color:#0066cc;">See All</span></div>
+                    <div class="suggestion-item"><div class="avatar">AT</div><div><div>Alex T.</div><div class="suggestion-mutual">5 mutual</div></div><button class="btn-add-friend" onclick="sendFriendRequest(this)">+</button></div>
+                    <div class="suggestion-item"><div class="avatar">LW</div><div><div>Lisa W.</div><div class="suggestion-mutual">3 mutual</div></div><button class="btn-add-friend" onclick="sendFriendRequest(this)">+</button></div>
+                </div>
+                <div class="sidebar-card">
+                    <span>Online Friends</span>
+                    <div class="online-item" onclick="messageFriend('Sarah')"><div style="position:relative;"><div class="avatar">SW</div><div class="online-indicator"></div></div><div>Sarah</div></div>
+                    <div class="online-item" onclick="messageFriend('Mike')"><div style="position:relative;"><div class="avatar">MK</div><div class="online-indicator"></div></div><div>Mike</div></div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- Hidden create post modal (simple prompt simulation) -->
     <script>
         (function() {
-            // ---------- PERSISTENCE & STATE ----------
+            // ---------- GLOBAL STATE ----------
             let currentUser = null;
-            // local collections
-            let users = [];
-            let posts = [];
-            let friendRequests = [];        // { from, to, status }
-            let notifications = [];           // { id, userId, type, read, content, time }
-            let messages = [];                 // simplified
-            let stories = [];                  // { userId, date }
-            let comments = [];                  // { postId, authorId, text, id }
+            let posts = [
+                { id: 'p1', author: 'Sarah Wilson', authorId: 'sarah', avatar: 'SW', time: '2h ago', content: 'Just finished Q1 strategy! Who is excited for offsite? 🚀', likes: 12, liked: false, comments: [{ author:'John Doe', authorId:'john', text:'Can\'t wait!' }, { author:'Mike', authorId:'mike', text:'Great job!' }] },
+                { id: 'p2', author: 'Mike Johnson', authorId: 'mike', avatar: 'MK', time: '5h ago', content: '5 years at CephasGM! 🎉', likes: 24, liked: true, comments: [] }
+            ];
+            let friendRequests = [
+                { name: 'Alex Lee', mutual: 3, id: 'alex' },
+                { name: 'Maria Rodriguez', mutual: 2, id: 'maria' }
+            ];
+            let friends = [
+                { name:'Sarah Wilson', title:'PM', avatar:'SW', mutual:0, id:'sarah' },
+                { name:'Mike Johnson', title:'UX', avatar:'MK', mutual:0, id:'mike' },
+                { name:'Emily Chen', title:'Data', avatar:'EC', mutual:0, id:'emily' }
+            ];
+            let suggestions = [
+                { name:'Alex Thompson', mutual:5, avatar:'AT' },
+                { name:'Lisa Wang', mutual:3, avatar:'LW' }
+            ];
 
-            // current viewed profile (null = self)
-            let viewingProfileId = null;
+            // ---------- AUTH ----------
+            window.switchAuthTab = (tab) => {
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                if (tab === 'login') {
+                    document.querySelector('.auth-tab').classList.add('active');
+                    document.getElementById('loginForm').classList.add('active');
+                } else {
+                    document.querySelectorAll('.auth-tab')[1].classList.add('active');
+                    document.getElementById('signupForm').classList.add('active');
+                }
+            };
 
-            // helper: save/load from localStorage (optional)
-            function loadSampleData() {
-                // create a default self if none
-                if (users.length === 0) {
-                    users.push({
-                        id: 'u1',
-                        name: 'John Doe',
-                        email: 'john.doe@cephasgm.com',
-                        avatar: 'JD',
-                        title: 'Software Developer',
-                        department: 'Engineering',
-                        bio: 'Passionate software developer with 5+ years experience. Love building products. Hiking & photography.',
-                        location: 'San Francisco',
-                        phone: '+1 (555) 123-4567',
-                        skills: 'JavaScript, Python, React',
-                        languages: 'English, Spanish',
-                        education: 'BSc CS Stanford',
-                        work: 'CephasGM since 2021',
-                        friends: ['u2','u3','u4'],   // ids
-                        followers: [],
-                        following: ['u2','u5']
-                    });
-                    users.push({ id:'u2', name:'Sarah Wilson', avatar:'👩‍💼', title:'Product Manager', department:'Product', email:'s@w.com', bio:'Product lead', friends:['u1'] });
-                    users.push({ id:'u3', name:'Mike Johnson', avatar:'👨‍💻', title:'UX Designer', department:'Design', email:'m@j.com', bio:'Designer', friends:['u1'] });
-                    users.push({ id:'u4', name:'Emily Chen', avatar:'👩‍🔧', title:'Data Scientist', department:'Data', email:'e@c.com', bio:'Data', friends:['u1'] });
-                    users.push({ id:'u5', name:'Alex Thompson', avatar:'AT', title:'Engineer', department:'Eng', email:'a@t.com', bio:'dev' });
-                    // posts
-                    posts.push({ id:'p1', authorId:'u2', content:'Just finished Q1 strategy! Excited for offsite 🚀', time:'2h', likes:['u1','u3'], comments:['c1','c2'] });
-                    posts.push({ id:'p2', authorId:'u3', content:'Celebrating 5 years at CephasGM! 🎉', time:'5h', likes:['u1'], comments:[] });
-                    comments.push({ id:'c1', postId:'p1', authorId:'u1', text:'Can\'t wait! The presentation looks amazing' });
-                    comments.push({ id:'c2', postId:'p1', authorId:'u3', text:'Great job Sarah!' });
-                    // friendRequests (pending)
-                    friendRequests.push({ from:'u5', to:'u1', status:'pending' }); // Alex -> John
-                    // notifications
-                    notifications.push({ id:'n1', userId:'u1', content:'Sarah Wilson accepted your friend request', read:false, time:'5 min' });
-                    notifications.push({ id:'n2', userId:'u1', content:'Mike Johnson commented on your post', read:false, time:'1h' });
+            window.login = () => {
+                const email = document.getElementById('loginEmail').value;
+                if (email) {
+                    currentUser = { name: 'Cephas GM', email, avatar: 'CGM', title: 'Software Developer', dept: 'Engineering' };
+                    document.getElementById('authModal').classList.remove('active');
+                    document.getElementById('appContainer').classList.add('logged-in');
+                    updateUI();
+                    renderAll();
+                } else alert('Enter email');
+            };
+
+            window.signup = () => {
+                const name = document.getElementById('signupName').value;
+                if (name) {
+                    currentUser = { name, avatar: name.split(' ').map(n=>n[0]).join(''), title: 'New Member', dept: '' };
+                    document.getElementById('authModal').classList.remove('active');
+                    document.getElementById('appContainer').classList.add('logged-in');
+                    updateUI();
+                    renderAll();
+                } else alert('fill fields');
+            };
+
+            window.logout = () => {
+                currentUser = null;
+                document.getElementById('appContainer').classList.remove('logged-in');
+                document.getElementById('authModal').classList.add('active');
+                document.getElementById('profileDropdown').classList.remove('active');
+            };
+
+            function updateUI() {
+                if (currentUser) {
+                    document.getElementById('currentUserAvatar').textContent = currentUser.avatar;
+                    document.getElementById('currentUserName').textContent = currentUser.name;
+                    document.getElementById('sidebarAvatar').textContent = currentUser.avatar;
+                    document.getElementById('profileAvatar').textContent = currentUser.avatar;
+                    document.getElementById('profileName').textContent = currentUser.name;
+                    document.getElementById('profileTitle').textContent = currentUser.title + (currentUser.dept ? ' at '+currentUser.dept : '');
+                    document.getElementById('postAvatar').textContent = currentUser.avatar;
                 }
             }
-            loadSampleData();
 
-            // ---------- RENDER ENTIRE APP (after login) ----------
-            function renderApp() {
-                if (!currentUser) return;
-                const container = document.getElementById('appContainer');
-                // build fresh HTML with current data
-                container.innerHTML = generateAppHTML();
-                // after inserting, update dynamic fields
-                updateUserInfo();
-                attachGlobalListeners();
-                showFeed(); // default view
-            }
-
-            function generateAppHTML() {
-                const u = currentUser;
-                const avatarText = u.avatar || u.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
-                return `
-                <!-- Top Navigation -->
-                <div class="top-nav">
-                    <div class="nav-left">
-                        <div class="logo" onclick="showFeed()">CephasGM Social</div>
-                        <div class="search-bar" id="searchContainer">
-                            <span>🔍</span>
-                            <input type="text" placeholder="Search employees..." id="searchInput" onkeyup="searchUsers()">
-                            <div class="search-results" id="searchResults"></div>
-                        </div>
-                    </div>
-                    <div class="nav-middle">
-                        <div class="nav-icon active" id="navFeed" onclick="showFeed()">🏠</div>
-                        <div class="nav-icon" id="navFriends" onclick="showFriends()">👥</div>
-                        <div class="nav-icon" id="navProfile" onclick="showProfile()">👤</div>
-                        <div class="nav-icon" id="notificationsIcon" onclick="toggleNotifications()">🔔
-                            <span class="badge" id="notificationBadge">${notifications.filter(n=>n.userId===u.id && !n.read).length}</span>
-                        </div>
-                        <div class="nav-icon" id="messagesIcon" onclick="toggleMessages()">💬
-                            <span class="badge" id="messageBadge">${messages.filter(m=>m.to===u.id && !m.read).length}</span>
-                        </div>
-                    </div>
-                    <div class="nav-right">
-                        <div class="profile-badge" onclick="toggleProfileDropdown()">
-                            <div class="avatar" id="currentUserAvatar">${avatarText}</div>
-                            <span id="currentUserName">${u.name}</span>
-                        </div>
-                        <div class="profile-dropdown" id="profileDropdown">
-                            <div class="dropdown-item" onclick="viewMyProfile()"><span>👤</span> View Profile</div>
-                            <div class="dropdown-item" onclick="showSettings()"><span>⚙️</span> Settings</div>
-                            <div class="dropdown-item" onclick="showPrivacy()"><span>🔒</span> Privacy</div>
-                            <div class="dropdown-item logout" onclick="logout()"><span>🚪</span> Logout</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Notifications Panel -->
-                <div class="notifications-panel" id="notificationsPanel">${renderNotifications()}</div>
-                <div class="messages-panel" id="messagesPanel">${renderMessagesPanel()}</div>
-
-                <!-- Main Content Area -->
-                <div class="main-container" id="mainContent">
-                    <!-- Left Sidebar -->
-                    <div class="left-sidebar">
-                        <div class="sidebar-card">
-                            <div class="sidebar-item" onclick="viewMyProfile()">
-                                <div class="avatar">${avatarText}</div>
-                                <div><div class="sidebar-text">${u.name}</div><div style="color: #65676b; font-size:0.8rem;">${u.title}</div></div>
-                            </div>
-                            <div class="sidebar-item" onclick="showFeed()"><div class="sidebar-icon">📰</div><div>News Feed</div></div>
-                            <div class="sidebar-item" onclick="showFriends()"><div class="sidebar-icon">👥</div><div>Friends</div><span class="badge-count">${(u.friends || []).length}</span></div>
-                            <div class="sidebar-item" onclick="showGroups()"><div class="sidebar-icon">👥</div><div>Groups</div><span class="badge-count">8</span></div>
-                            <div class="sidebar-item" onclick="showEvents()"><div class="sidebar-icon">📅</div><div>Events</div><span class="badge-count">3</span></div>
-                        </div>
-                        <div class="sidebar-card">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
-                                <span>Friend Requests</span><span style="color:#0066cc; cursor:pointer;" onclick="viewAllRequests()">See All</span>
-                            </div>
-                            ${renderFriendRequests()}
-                        </div>
-                        <div class="sidebar-card">
-                            <div class="sidebar-text" style="margin-bottom:1rem;">Your Groups</div>
-                            <div class="sidebar-item"><div class="sidebar-icon">💻</div><div>Engineering<div style="color:#65676b; font-size:0.7rem;">12 online</div></div></div>
-                            <div class="sidebar-item"><div class="sidebar-icon">📊</div><div>Marketing<div style="color:#65676b; font-size:0.7rem;">5 online</div></div></div>
-                        </div>
-                    </div>
-
-                    <!-- Center Views: Feed, Profile, Friends dynamically shown -->
-                    <div id="dynamicCenter"></div>
-
-                    <!-- Right Sidebar -->
-                    <div class="right-sidebar">
-                        <div class="sidebar-card">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:1rem;"><span>Suggestions</span><span style="color:#0066cc; cursor:pointer;">See All</span></div>
-                            ${renderSuggestions()}
-                        </div>
-                        <div class="sidebar-card">
-                            <div style="margin-bottom:1rem;">Online Friends</div>
-                            ${renderOnlineFriends()}
-                        </div>
-                    </div>
-                </div>
-                `;
-            }
-
-            // ----- sub-renderers -----
-            function renderNotifications() {
-                let userNotes = notifications.filter(n=> n.userId === currentUser.id).slice(0,5);
-                if (!userNotes.length) return '<div style="padding:1rem;">No notifications</div>';
-                return '<div style="padding:1rem; font-weight:600; border-bottom:1px solid #f0f2f5;">Notifications</div>' + 
-                    userNotes.map(n=>`
-                        <div class="notification-item ${!n.read ? 'unread' : ''}" onclick="markNotifRead('${n.id}')">
-                            <div class="avatar">📢</div><div><div>${n.content}</div><div style="color:#65676b;font-size:0.8rem;">${n.time}</div></div>
-                        </div>`).join('');
-            }
-            function renderMessagesPanel() {
-                return '<div style="padding:1rem; font-weight:600; border-bottom:1px solid #f0f2f5;">Messages</div>' +
-                    '<div class="message-item" onclick="openChat(\'u2\')"><div class="avatar">SW</div><div><strong>Sarah</strong><div class="message-preview">Hi!</div></div></div>';
-            }
-            function renderFriendRequests() {
-                let reqs = friendRequests.filter(r => r.to === currentUser.id && r.status === 'pending');
-                if (!reqs.length) return '<div>No pending requests</div>';
-                return reqs.map(r => {
-                    let fromUser = users.find(u => u.id === r.from) || { name:'Unknown', avatar:'??' };
-                    return `<div class="friend-request-item">
-                        <div class="avatar">${fromUser.avatar || '?'}</div>
-                        <div><div>${fromUser.name}</div><div style="color:#65676b;font-size:0.7rem;">mutual</div></div>
-                        <div class="friend-request-actions">
-                            <div class="btn-accept" onclick="acceptRequest('${r.from}')">✓</div>
-                            <div class="btn-decline" onclick="declineRequest('${r.from}')">✗</div>
-                        </div>
-                    </div>`;
-                }).join('');
-            }
-            function renderSuggestions() {
-                let suggestions = users.filter(u => u.id !== currentUser.id && !(currentUser.friends||[]).includes(u.id)).slice(0,3);
-                return suggestions.map(s => `
-                    <div class="suggestion-item">
-                        <div class="avatar">${s.avatar || '?'}</div>
-                        <div class="suggestion-info">
-                            <div class="suggestion-name" onclick="viewProfile('${s.id}')">${s.name}</div>
-                            <div class="suggestion-mutual">${s.title || ''}</div>
-                        </div>
-                        <button class="btn-add-friend" onclick="sendFriendRequest('${s.id}')">+</button>
-                    </div>`).join('');
-            }
-            function renderOnlineFriends() {
-                let online = (currentUser.friends || []).slice(0,3);
-                return online.map(fid => {
-                    let f = users.find(u=>u.id===fid) || { name:'', avatar:'' };
-                    return `<div class="online-item" onclick="messageFriend('${fid}')"><div style="position:relative"><div class="avatar">${f.avatar||'?'}</div><div class="online-indicator"></div></div><div>${f.name}<div style="color:#65676b;font-size:0.8rem;">online</div></div></div>`;
-                }).join('');
-            }
-
-            // ----- view controllers -----
-            window.showFeed = function() {
-                let center = document.getElementById('dynamicCenter');
-                if (!center) return;
-                let postsHtml = posts.map(p => {
-                    let author = users.find(u=>u.id===p.authorId) || { name:'Unknown', avatar:'' };
-                    let liked = p.likes.includes(currentUser.id) ? 'active' : '';
-                    let comms = comments.filter(c=>c.postId===p.id).map(c=> {
-                        let cauthor = users.find(u=>u.id===c.authorId) || { name:'?', avatar:'' };
-                        return `<div class="comment"><div class="avatar" style="width:28px;height:28px;">${cauthor.avatar||'?'}</div><div class="comment-content"><span class="comment-author" onclick="viewProfile('${c.authorId}')">${cauthor.name}</span> ${c.text}</div></div>`;
-                    }).join('');
-                    return `<div class="post-card" id="post-${p.id}">
-                        <div class="post-header"><div class="post-author-info" onclick="viewProfile('${p.authorId}')"><div class="avatar">${author.avatar||'?'}</div><div><div class="post-author">${author.name}</div><div class="post-time">${p.time}</div></div></div><div class="post-options" onclick="postOptions('${p.id}')">⋯</div></div>
+            // ---------- RENDER POSTS ----------
+            function renderPosts(containerId = 'postsContainer') {
+                let html = '';
+                posts.forEach(p => {
+                    let likeClass = p.liked ? 'active' : '';
+                    let likeText = p.liked ? '❤️ Liked' : '❤️ Like';
+                    let commentsHtml = p.comments.map(c => `<div class="comment"><div class="avatar" style="width:28px;">${c.authorId==='john'?currentUser?.avatar||'JD':c.avatar||'👤'}</div><div class="comment-content"><span class="comment-author" onclick="viewProfile('${c.authorId}')">${c.author}</span> ${c.text} <span class="delete-comment" onclick="deleteComment('${p.id}', '${c.author}')">🗑️</span></div></div>`).join('');
+                    html += `<div class="post-card" id="post-${p.id}">
+                        <div class="post-header"><div class="post-author-info" onclick="viewProfile('${p.authorId}')"><div class="avatar">${p.avatar}</div><div><div class="post-author">${p.author}</div><div class="post-time">${p.time}</div></div></div><div class="post-options" onclick="deletePost('${p.id}')">🗑️</div></div>
                         <div class="post-content">${p.content}</div>
                         <div class="post-engagement">
-                            <div class="engage-btn ${liked}" onclick="likePost(this,'${p.id}')"><span>❤️</span> ${liked?'Liked':'Like'}</div>
-                            <div class="engage-btn" onclick="commentOnPost('${p.id}')"><span>💬</span> Comment</div>
-                            <div class="engage-btn" onclick="sharePost('${p.id}')"><span>↗️</span> Share</div>
+                            <div class="engage-btn ${likeClass}" onclick="likePost(this, '${p.id}')">${likeText}</div>
+                            <div class="engage-btn" onclick="commentOnPost('${p.id}')">💬 Comment</div>
+                            <div class="engage-btn" onclick="sharePost('${p.id}')">↗️ Share</div>
                         </div>
-                        <div class="comments-section" id="comments-${p.id}">${comms}
-                            <div style="color:#0066cc;cursor:pointer;margin-top:0.5rem;" onclick="addCommentUI('${p.id}')">Add a comment...</div>
-                        </div>
+                        <div class="comments-section" id="comments-${p.id}">${commentsHtml}</div>
                     </div>`;
-                }).join('');
-                center.innerHTML = `<div class="feed-container" id="feedView">
-                    <div class="stories-container"><div class="stories-header"><span>Stories</span><span style="color:#0066cc;cursor:pointer;" onclick="viewAllStories()">See All</span></div>
-                    <div class="stories-grid">${renderStories()}</div></div>
-                    <div class="create-post"><div class="avatar">${currentUser.avatar||'?'}</div><div class="post-input" onclick="createPost()">What's on your mind?</div></div>
-                    <div class="post-actions"><div class="post-action" onclick="postPhoto()"><span>📷</span> Photo</div><div class="post-action" onclick="postVideo()"><span>🎥</span> Video</div></div>
-                    ${postsHtml}
-                </div>`;
-                setActiveNav('feed');
+                });
+                document.getElementById(containerId).innerHTML = html;
+            }
+
+            window.likePost = (btn, postId) => {
+                let post = posts.find(p => p.id === postId);
+                if (post) { post.liked = !post.liked; renderPosts(); }
             };
-
-            function renderStories() {
-                let items = users.slice(0,3).map(u => `<div class="story-item" onclick="viewStory('${u.id}')"><div class="story-ring"><div class="story-avatar">${u.avatar||'📸'}</div></div><span>${u.name.split(' ')[0]}</span></div>`);
-                items.unshift(`<div class="story-item" onclick="addStory()"><div class="story-ring" style="background:#0066cc;"><div class="story-avatar" style="background:#0066cc;color:white;">+</div></div><span>Add Story</span></div>`);
-                return items.join('');
-            }
-
-            window.showProfile = function(id) {
-                let profileUser = id ? users.find(u=>u.id===id) : currentUser;
-                if (!profileUser) return;
-                viewingProfileId = profileUser.id;
-                let isSelf = profileUser.id === currentUser.id;
-                let avatarBig = profileUser.avatar || profileUser.name.split(' ').map(n=>n[0]).join('').substring(0,2);
-                let center = document.getElementById('dynamicCenter');
-                center.innerHTML = `<div class="feed-container" id="profileView">
-                    <div class="profile-page">
-                        <div class="profile-cover"><div class="edit-cover" onclick="${isSelf?'editCover()':''}" style="position:absolute;bottom:1rem;right:1rem;background:white;padding:0.5rem;border-radius:30px;cursor:${isSelf?'pointer':'none'};">📷 Edit Cover</div></div>
-                        <div class="profile-avatar-container"><div class="profile-avatar" onclick="${isSelf?'changeProfilePhoto()':''}">${avatarBig}</div>${isSelf?'<div class="edit-avatar" onclick="changeProfilePhoto()">✏️</div>':''}</div>
-                        <div class="profile-info">
-                            <div class="profile-header"><div><div class="profile-name">${profileUser.name}</div><div class="profile-title">${profileUser.title} at ${profileUser.department}</div><div>📍 ${profileUser.location||'SF'}</div></div>
-                            ${isSelf ? '<button class="btn-follow" onclick="editProfile()">Edit Profile</button>' : `<button class="btn-follow" onclick="sendFriendRequest('${profileUser.id}')">➕ Add Friend</button>`}</div>
-                            <div class="profile-bio" id="profileBio">${profileUser.bio || ''} ${isSelf ? '<span class="edit-info" onclick="editBio()">Edit</span>' : ''}</div>
-                            <div class="profile-stats"><div class="stat" onclick="showFriends()"><div class="stat-number">${(profileUser.friends||[]).length}</div><div class="stat-label">Friends</div></div></div>
-                            <div class="profile-tabs"><div class="profile-tab active" onclick="switchProfileTab('posts')">Posts</div><div class="profile-tab" onclick="switchProfileTab('about')">About</div><div class="profile-tab" onclick="switchProfileTab('friends')">Friends</div></div>
-                            <div class="profile-section active" id="profilePosts">${renderProfilePosts(profileUser.id)}</div>
-                            <div class="profile-section" id="profileAbout">${renderAbout(profileUser)}</div>
-                            <div class="profile-section" id="profileFriends">${renderFriendsList(profileUser.friends||[])}</div>
-                        </div>
-                    </div>
-                </div>`;
-                setActiveNav('profile');
+            window.commentOnPost = (postId) => {
+                let comment = prompt('Write a comment:');
+                if (comment && currentUser) {
+                    let post = posts.find(p => p.id === postId);
+                    if (post) {
+                        post.comments.push({ author: currentUser.name, authorId: 'john', text: comment });
+                        renderPosts();
+                    }
+                }
             };
-
-            function renderProfilePosts(uid) {
-                let userPosts = posts.filter(p=>p.authorId===uid);
-                if (!userPosts.length) return '<p>No posts yet.</p>';
-                return userPosts.map(p => `<div class="post-card"><div class="post-content">${p.content}</div></div>`).join('');
-            }
-            function renderAbout(u) {
-                return `<div class="info-grid">
-                    <div class="info-item"><div class="info-label">Work</div><div class="info-value">${u.work||'CephasGM'}</div></div>
-                    <div class="info-item"><div class="info-label">Education</div><div class="info-value">${u.education||'Stanford'}</div></div>
-                    <div class="info-item"><div class="info-label">Skills</div><div class="info-value">${u.skills||'JavaScript'}</div></div>
-                </div>`;
-            }
-            function renderFriendsList(fids) {
-                let list = fids.map(fid=>users.find(u=>u.id===fid)).filter(Boolean);
-                return `<div class="friends-grid">${list.map(f=>`<div class="friend-card" onclick="viewProfile('${f.id}')"><div class="friend-avatar">${f.avatar||'?'}</div><div class="friend-name">${f.name}</div><div class="friend-title">${f.title||''}</div></div>`).join('')}</div>`;
-            }
-
-            window.showFriends = function() {
-                let center = document.getElementById('dynamicCenter');
-                center.innerHTML = `<div class="feed-container" id="friendsView"><h2>Friends (${(currentUser.friends||[]).length})</h2>${renderFriendsList(currentUser.friends||[])}</div>`;
-                setActiveNav('friends');
+            window.deleteComment = (postId, author) => {
+                let post = posts.find(p => p.id === postId);
+                if (post && (author === currentUser?.name || author === 'John Doe')) {
+                    post.comments = post.comments.filter(c => c.author !== author);
+                    renderPosts();
+                } else alert('You can only delete your own comments');
             };
+            window.deletePost = (postId) => {
+                let post = posts.find(p => p.id === postId);
+                if (post && (post.author === currentUser?.name || post.authorId === 'john')) {
+                    posts = posts.filter(p => p.id !== postId);
+                    renderPosts();
+                } else alert('Cannot delete this post');
+            };
+            window.sharePost = (id) => { alert('Post shared'); };
 
-            function setActiveNav(active) {
-                document.querySelectorAll('.nav-icon').forEach(el => el.classList.remove('active'));
-                if (active === 'feed') document.getElementById('navFeed')?.classList.add('active');
-                if (active === 'friends') document.getElementById('navFriends')?.classList.add('active');
-                if (active === 'profile') document.getElementById('navProfile')?.classList.add('active');
-            }
-
-            // ----- interactivity (edit, save, delete) -----
-            window.createPost = function() {
+            // create post
+            window.openCreatePostModal = () => {
                 let content = prompt('Write your post:');
-                if (!content) return;
-                let newPost = { id:'p'+Date.now(), authorId:currentUser.id, content, time:'now', likes:[], comments:[] };
-                posts.unshift(newPost);
-                showFeed();
-            };
-            window.likePost = function(btn, pid) {
-                let post = posts.find(p=>p.id===pid);
-                if (!post) return;
-                if (post.likes.includes(currentUser.id)) {
-                    post.likes = post.likes.filter(id=>id!==currentUser.id);
-                } else {
-                    post.likes.push(currentUser.id);
-                }
-                showFeed(); // refresh
-            };
-            window.commentOnPost = function(pid) {
-                let txt = prompt('Your comment:');
-                if (!txt) return;
-                let newComment = { id:'c'+Date.now(), postId:pid, authorId:currentUser.id, text:txt };
-                comments.push(newComment);
-                showFeed();
-            };
-            window.addCommentUI = window.commentOnPost;
-
-            window.postOptions = function(pid) {
-                let post = posts.find(p=>p.id===pid);
-                if (post.authorId !== currentUser.id) { alert('Only author can delete'); return; }
-                if (confirm('Delete post?')) {
-                    posts = posts.filter(p=>p.id!==pid);
-                    comments = comments.filter(c=>c.postId!==pid);
-                    showFeed();
+                if (content && currentUser) {
+                    let newPost = {
+                        id: 'p'+Date.now(),
+                        author: currentUser.name,
+                        authorId: 'john',
+                        avatar: currentUser.avatar,
+                        time: 'just now',
+                        content: content,
+                        likes: 0,
+                        liked: false,
+                        comments: []
+                    };
+                    posts.unshift(newPost);
+                    renderPosts();
                 }
             };
 
-            // profile editing
-            window.editBio = function() {
-                let newBio = prompt('Edit bio:', currentUser.bio);
-                if (newBio !== null) { currentUser.bio = newBio; renderApp(); }
-            };
-            window.editProfile = function() {
-                let newName = prompt('Name:', currentUser.name);
-                if (newName) currentUser.name = newName;
-                let newTitle = prompt('Title:', currentUser.title);
-                if (newTitle) currentUser.title = newTitle;
-                renderApp();
-            };
-            window.changeProfilePhoto = function() {
-                let newAvatar = prompt('Enter new avatar emoji/initials (2 letters):', currentUser.avatar);
-                if (newAvatar) currentUser.avatar = newAvatar.slice(0,2);
-                renderApp();
-            };
-            window.editCover = function() { alert('Cover photo updated (demo)'); };
+            // profile posts
+            function renderProfilePosts() {
+                let myPosts = posts.filter(p => p.authorId === 'john' || p.author === currentUser?.name);
+                let html = myPosts.map(p => `<div class="post-card"><div class="post-content">${p.content}</div><div class="post-engagement"><div class="engage-btn">❤️ ${p.likes}</div></div></div>`).join('');
+                document.getElementById('profilePosts').innerHTML = html || '<p>No posts yet</p>';
+            }
 
-            // friend requests
-            window.sendFriendRequest = function(toId) {
-                if (friendRequests.some(r=>r.from===currentUser.id && r.to===toId)) return alert('Request already sent');
-                friendRequests.push({ from:currentUser.id, to:toId, status:'pending' });
-                alert('Friend request sent');
-            };
-            window.acceptRequest = function(fromId) {
-                let req = friendRequests.find(r=>r.from===fromId && r.to===currentUser.id);
-                if (req) { req.status='accepted';
-                    if (!currentUser.friends) currentUser.friends=[];
-                    if (!currentUser.friends.includes(fromId)) currentUser.friends.push(fromId);
-                    let fromUser = users.find(u=>u.id===fromId);
-                    if (fromUser) { if (!fromUser.friends) fromUser.friends=[]; fromUser.friends.push(currentUser.id); }
-                    friendRequests = friendRequests.filter(r=>!(r.from===fromId && r.to===currentUser.id));
-                }
-                renderApp();
-            };
-            window.declineRequest = function(fromId) {
-                friendRequests = friendRequests.filter(r=>!(r.from===fromId && r.to===currentUser.id));
-                renderApp();
-            };
+            // friends
+            function renderFriends() {
+                let fhtml = friends.map(f => `<div class="friend-card" onclick="viewProfile('${f.id}')"><div class="friend-avatar">${f.avatar}</div><div class="friend-name">${f.name}</div><div class="friend-title">${f.title}</div><button class="btn-friends" onclick="event.stopPropagation(); messageFriend('${f.name}')">Message</button></div>`).join('');
+                document.getElementById('friendsGrid') && (document.getElementById('friendsGrid').innerHTML = fhtml);
+                document.getElementById('allFriendsGrid') && (document.getElementById('allFriendsGrid').innerHTML = fhtml);
+            }
 
-            // notifications
-            window.toggleNotifications = function() {
-                document.getElementById('notificationsPanel')?.classList.toggle('active');
+            // requests
+            window.acceptRequest = (btn) => {
+                let item = btn.closest('.friend-request-item');
+                if (item) { item.remove(); alert('Friend added'); }
             };
-            window.toggleMessages = function() { document.getElementById('messagesPanel')?.classList.toggle('active'); };
-            window.markNotifRead = function(nid) {
-                let n = notifications.find(n=>n.id===nid);
-                if (n) n.read=true;
-                renderApp();
+            window.declineRequest = (btn) => {
+                let item = btn.closest('.friend-request-item');
+                if (item) item.remove();
             };
+            window.sendFriendRequest = (btn) => { btn.textContent = '✓ Sent'; btn.disabled = true; };
 
-            // search
-            window.searchUsers = function() {
-                let q = document.getElementById('searchInput')?.value.toLowerCase() || '';
-                let resDiv = document.getElementById('searchResults');
-                if (q.length<1) { resDiv.classList.remove('active'); return; }
-                let matches = users.filter(u => u.id !== currentUser.id && u.name.toLowerCase().includes(q)).slice(0,5);
-                resDiv.innerHTML = matches.map(u=>`<div class="search-result-item" onclick="viewProfile('${u.id}')"><div class="avatar">${u.avatar||'?'}</div><div><div>${u.name}</div><div style="color:#65676b;">${u.title}</div></div></div>`).join('');
-                resDiv.classList.add('active');
+            // ---------- NAV ----------
+            window.showFeed = () => {
+                document.getElementById('feedView').style.display = 'block';
+                document.getElementById('profileView').style.display = 'none';
+                document.getElementById('friendsView').style.display = 'none';
+                document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'));
+                document.querySelectorAll('.nav-icon')[0].classList.add('active');
+                renderPosts();
             };
-            document.addEventListener('click', function(e) { if (!e.target.closest('.search-bar')) document.getElementById('searchResults')?.classList.remove('active'); });
+            window.showProfile = () => {
+                document.getElementById('feedView').style.display = 'none';
+                document.getElementById('profileView').style.display = 'block';
+                document.getElementById('friendsView').style.display = 'none';
+                document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'));
+                document.querySelectorAll('.nav-icon')[2].classList.add('active');
+                renderProfilePosts();
+                renderFriends();
+            };
+            window.showFriends = () => {
+                document.getElementById('feedView').style.display = 'none';
+                document.getElementById('profileView').style.display = 'none';
+                document.getElementById('friendsView').style.display = 'block';
+                document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'));
+                document.querySelectorAll('.nav-icon')[1].classList.add('active');
+                renderFriends();
+            };
+            window.viewMyProfile = () => { showProfile(); document.getElementById('profileDropdown').classList.remove('active'); };
+            window.viewProfile = (id) => { alert('View profile of '+id); };
+            window.toggleNotifications = () => { document.getElementById('notificationsPanel').classList.toggle('active'); document.getElementById('messagesPanel').classList.remove('active'); };
+            window.toggleMessages = () => { document.getElementById('messagesPanel').classList.toggle('active'); document.getElementById('notificationsPanel').classList.remove('active'); };
+            window.toggleProfileDropdown = () => { document.getElementById('profileDropdown').classList.toggle('active'); };
 
-            // auth
-            window.switchAuthTab = (tab) => {
-                document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
-                document.querySelectorAll('.auth-form').forEach(f=>f.classList.remove('active'));
-                if (tab==='login') { document.querySelector('.auth-tab').classList.add('active'); document.getElementById('loginForm').classList.add('active'); }
-                else { document.querySelectorAll('.auth-tab')[1].classList.add('active'); document.getElementById('signupForm').classList.add('active'); }
-            };
-            window.login = function() {
-                let email = document.getElementById('loginEmail').value;
-                let pw = document.getElementById('loginPassword').value;
-                let found = users.find(u=>u.email===email);
-                if (found) { currentUser = found; }
-                else { // fallback default
-                    currentUser = users[0];
-                }
-                document.getElementById('authModal').classList.remove('active');
-                renderApp();
-            };
-            window.signup = function() {
-                let name = document.getElementById('signupName').value;
-                let email = document.getElementById('signupEmail').value;
-                let dept = document.getElementById('signupDept').value;
-                let title = document.getElementById('signupTitle').value;
-                if (!name) return alert('fill name');
-                let newUser = { id:'u'+Date.now(), name, email, avatar: name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase(), title, department:dept, bio:'', friends:[] };
-                users.push(newUser);
-                currentUser = newUser;
-                document.getElementById('authModal').classList.remove('active');
-                renderApp();
-            };
-            window.logout = function() { currentUser=null; location.reload(); };
-            window.viewMyProfile = function() { showProfile(currentUser.id); };
-            window.viewProfile = function(id) { showProfile(id); };
-            window.toggleProfileDropdown = function() { document.getElementById('profileDropdown')?.classList.toggle('active'); };
-            window.showSettings = ()=>alert('Settings (save works)');
-            window.showPrivacy = ()=>alert('Privacy');
-
-            // misc stubs
-            window.showGroups = ()=>alert('Groups (editable)');
-            window.showEvents = ()=>alert('Events');
-            window.messageFriend = (id)=>alert(`Chat with ${id}`);
-            window.postPhoto = ()=>alert('photo post');
-            window.postVideo = ()=>alert('video');
-            window.addStory = ()=>alert('story created');
-            window.viewStory = (id)=>alert(`story ${id}`);
-            window.viewAllStories = ()=>alert('all stories');
-            window.sharePost = (pid)=>alert('share');
+            // edit profile
+            window.editBio = () => { let newBio = prompt('Edit bio:', 'Passionate developer.'); if(newBio) document.getElementById('profileBio').innerHTML = newBio + ' <span class="edit-info" onclick="editBio()">Edit</span>'; };
+            window.editWork = () => { alert('Edit work'); };
+            window.editEducation = () => { alert('Edit education'); };
+            window.editLocation = () => { alert('Edit location'); };
+            window.editSkills = () => { alert('Edit skills'); };
+            window.changeProfilePhoto = () => { alert('Change photo'); };
+            window.editCover = () => { alert('Change cover'); };
+            window.editProfile = () => { alert('Edit profile'); };
             window.switchProfileTab = (tab) => {
                 document.querySelectorAll('.profile-tab').forEach(t=>t.classList.remove('active'));
                 document.querySelectorAll('.profile-section').forEach(s=>s.classList.remove('active'));
-                if (tab==='posts') { document.querySelectorAll('.profile-tab')[0].classList.add('active'); document.getElementById('profilePosts').classList.add('active'); }
-                else if (tab==='about') { document.querySelectorAll('.profile-tab')[1].classList.add('active'); document.getElementById('profileAbout').classList.add('active'); }
-                else if (tab==='friends') { document.querySelectorAll('.profile-tab')[2].classList.add('active'); document.getElementById('profileFriends').classList.add('active'); }
+                if(tab==='posts') { document.querySelectorAll('.profile-tab')[0].classList.add('active'); document.getElementById('profilePosts').classList.add('active'); renderProfilePosts(); }
+                else if(tab==='about') { document.querySelectorAll('.profile-tab')[1].classList.add('active'); document.getElementById('profileAbout').classList.add('active'); }
+                else if(tab==='friends') { document.querySelectorAll('.profile-tab')[2].classList.add('active'); document.getElementById('profileFriends').classList.add('active'); renderFriends(); }
             };
-            window.showForgotPassword = ()=>alert('reset email sent');
-            window.viewAllRequests = ()=>alert('friend requests');
 
-            function attachGlobalListeners() {
-                document.addEventListener('click', function(e) {
-                    if (!e.target.closest('.nav-icon') && !e.target.closest('.profile-badge')) {
-                        document.getElementById('notificationsPanel')?.classList.remove('active');
-                        document.getElementById('messagesPanel')?.classList.remove('active');
-                        document.getElementById('profileDropdown')?.classList.remove('active');
-                    }
-                });
+            // search
+            window.searchUsers = () => {
+                let q = document.getElementById('searchInput').value;
+                let res = document.getElementById('searchResults');
+                if (q.length < 2) { res.classList.remove('active'); return; }
+                res.innerHTML = `<div class="search-result-item" onclick="viewProfile('sarah')"><div class="avatar">SW</div><div>Sarah Wilson</div></div><div class="search-result-item" onclick="viewProfile('mike')"><div class="avatar">MK</div><div>Mike Johnson</div></div>`;
+                res.classList.add('active');
+            };
+            document.addEventListener('click', (e) => { if (!e.target.closest('.search-bar')) document.getElementById('searchResults').classList.remove('active'); });
+
+            // misc
+            window.postPhoto = () => alert('Post photo');
+            window.postVideo = () => alert('Post video');
+            window.postFeeling = () => alert('Feeling');
+            window.addStory = () => alert('Add story');
+            window.viewStory = (u) => alert(u+'\'s story');
+            window.messageFriend = (n) => alert('Chat with '+n);
+            window.showGroups = () => alert('Groups');
+            window.showSettings = () => alert('Settings');
+            window.showPrivacy = () => alert('Privacy');
+
+            function renderAll() {
+                renderPosts();
+                renderFriends();
+                renderProfilePosts();
             }
-            function updateUserInfo() { /* handled by render */ }
+
+            // initial demo data (will be overwritten after login)
+            window.showFeed();
         })();
     </script>
 </body>
