@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Training & Development - CephasGM ERP</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
             --primary: #2563eb;
@@ -13,6 +14,7 @@
             --success: #10b981;
             --warning: #f59e0b;
             --error: #ef4444;
+            --info: #3b82f6;
             --background: #f8fafc;
             --surface: #ffffff;
             --text: #1e293b;
@@ -125,11 +127,19 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .header h1 {
             font-size: 1.875rem;
             font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .stats-grid {
@@ -144,9 +154,15 @@
             padding: 1.5rem;
             border-radius: 12px;
             border: 1px solid var(--border);
-            text-align: center;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         .stat-card::before {
@@ -171,104 +187,160 @@
             font-size: 0.9rem;
         }
 
-        /* Enhanced Module Grid */
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .module-card {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-
-        .module-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-color: var(--primary);
-        }
-
-        .module-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
+        .card-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            background: var(--surface);
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .filter-group select, .filter-group input {
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--background);
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
             color: white;
         }
 
-        .module-card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+        .btn-primary:hover {
+            background: var(--primary-dark);
         }
 
-        .module-card p {
-            color: var(--text-light);
-            font-size: 0.95rem;
+        .btn-success {
+            background: var(--success);
+            color: white;
         }
 
-        /* New Enhanced Components */
-        .chart-container {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
             border: 1px solid var(--border);
-            margin-bottom: 2rem;
-        }
-
-        .chart-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .training-management {
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .training-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        .training-table th,
-        .training-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .training-table th {
-            background: var(--background);
-            font-weight: 600;
             color: var(--text);
         }
 
-        .training-status {
+        .btn-outline:hover {
+            background: var(--background);
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .tab-container {
+            margin-bottom: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 6px 6px 0 0;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            background: var(--background);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 2rem 0;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--surface);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .data-table th {
+            background: var(--background);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .data-table th:hover {
+            background: var(--border);
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--background);
+            cursor: pointer;
+        }
+
+        .status-badge {
             padding: 0.25rem 0.75rem;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
+            display: inline-block;
         }
 
         .status-active {
@@ -291,83 +363,16 @@
             color: #991b1b;
         }
 
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+        .status-draft {
+            background: #e2e8f0;
+            color: #475569;
         }
 
-        .skills-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
+        .status-waitlisted {
+            background: #fed7aa;
+            color: #9a3412;
         }
 
-        .skill-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .skill-item:last-child {
-            border-bottom: none;
-        }
-
-        .skill-progress {
-            width: 100px;
-            height: 8px;
-            background: var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .skill-progress-bar {
-            height: 100%;
-            background: var(--primary);
-            border-radius: 4px;
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text);
-        }
-
-        .btn-outline:hover {
-            background: var(--background);
-        }
-
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            color: var(--text-light);
-            border-top: 1px solid var(--border);
-        }
-
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -377,16 +382,21 @@
             height: 100%;
             background: rgba(0,0,0,0.5);
             z-index: 1000;
+            overflow-y: auto;
         }
 
         .modal-content {
             background: var(--surface);
-            margin: 5% auto;
+            margin: 2rem auto;
             padding: 2rem;
             border-radius: 12px;
             width: 90%;
-            max-width: 600px;
+            max-width: 800px;
             position: relative;
+        }
+
+        .modal-lg {
+            max-width: 1000px;
         }
 
         .close-modal {
@@ -398,6 +408,12 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--text-light);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
         }
 
         .form-group {
@@ -420,18 +436,102 @@
             background: var(--background);
         }
 
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
         .currency-input {
             display: flex;
             align-items: center;
+            gap: 0.5rem;
         }
 
         .currency-input select {
-            width: 100px;
-            margin-right: 1rem;
+            width: 80px;
         }
 
         .currency-input input {
             flex: 1;
+        }
+
+        .progress-bar {
+            width: 100px;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: var(--background);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin: 0.125rem;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem;
+            background: var(--surface);
+            border-left: 4px solid var(--primary);
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 2000;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.success {
+            border-left-color: var(--success);
+        }
+
+        .notification.error {
+            border-left-color: var(--error);
+        }
+
+        .notification.warning {
+            border-left-color: var(--warning);
+        }
+
+        .notification.info {
+            border-left-color: var(--info);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border);
         }
 
         @media (max-width: 1024px) {
@@ -440,20 +540,21 @@
             }
             .sidebar {
                 transform: translateX(-100%);
+                z-index: 1500;
             }
             .main-content {
                 margin-left: 0;
                 grid-column: 1;
             }
-            .chart-grid {
-                grid-template-columns: 1fr;
+            .sidebar.active {
+                transform: translateX(0);
             }
         }
     </style>
 </head>
 <body>
     <div class="dashboard">
-        <nav class="sidebar">
+        <nav class="sidebar" id="sidebar">
             <a href="index.html" class="logo">
                 <div class="logo-icon">CG</div>
                 <div>
@@ -497,433 +598,1649 @@
 
         <main class="main-content">
             <div class="header">
-                <h1>Training & Development</h1>
-                <div style="color: var(--text-light);">Employee skills development and professional growth programs</div>
+                <div>
+                    <h1>Training & Development</h1>
+                    <div style="color: var(--text-light);">Employee skills development and professional growth programs</div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-outline" onclick="toggleSidebar()">☰ Menu</button>
+                    <button class="btn btn-primary" onclick="openModal('addTrainingModal')">+ New Program</button>
+                    <button class="btn btn-success" onclick="exportToExcel()">📊 Export</button>
+                </div>
             </div>
 
+            <!-- Global Stats -->
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number">24</div>
+                <div class="stat-card" onclick="filterByStatus('active')">
+                    <div class="stat-number" id="activePrograms">24</div>
                     <div class="stat-label">Active Programs</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">89%</div>
+                <div class="stat-card" onclick="filterByStatus('completed')">
+                    <div class="stat-number" id="completionRate">89%</div>
                     <div class="stat-label">Completion Rate</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">156</div>
+                <div class="stat-card" onclick="showAllEmployees()">
+                    <div class="stat-number" id="employeesTrained">156</div>
                     <div class="stat-label">Employees Trained</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">TZS 3.8M</div>
+                <div class="stat-card" onclick="showBudgetDetails()">
+                    <div class="stat-number" id="totalBudget">TZS 3.8M</div>
                     <div class="stat-label">Training Budget</div>
                 </div>
             </div>
 
-            <!-- Performance Charts -->
-            <div class="chart-grid">
-                <div class="chart-container">
-                    <div class="card-header">
-                        <div class="card-title">Training Completion</div>
-                        <select onchange="updateCharts()" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--background);">
-                            <option>Last 30 Days</option>
-                            <option>Last 90 Days</option>
-                            <option>Last Year</option>
-                        </select>
-                    </div>
-                    <canvas id="completionChart" height="250"></canvas>
+            <!-- Tabs Navigation -->
+            <div class="tab-container">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('programs')">📚 Programs</div>
+                    <div class="tab" onclick="switchTab('skills')">🔧 Skills</div>
+                    <div class="tab" onclick="switchTab('career')">🚀 Career</div>
+                    <div class="tab" onclick="switchTab('compliance')">🛡️ Compliance</div>
+                    <div class="tab" onclick="switchTab('elearning')">💻 E-Learning</div>
+                    <div class="tab" onclick="switchTab('certifications')">🏆 Certifications</div>
+                    <div class="tab" onclick="switchTab('budget')">💰 Budget</div>
+                    <div class="tab" onclick="switchTab('analytics')">📊 Analytics</div>
                 </div>
 
-                <div class="chart-container">
-                    <div class="card-header">
-                        <div class="card-title">Skills Distribution</div>
-                        <div style="color: var(--success); font-weight: 600;">+15% Growth</div>
-                    </div>
-                    <canvas id="skillsChart" height="250"></canvas>
-                </div>
-            </div>
-
-            <!-- Training Programs Management -->
-            <div class="training-management">
-                <div class="card-header">
-                    <div class="card-title">Training Programs</div>
-                    <button class="btn btn-primary" onclick="openModal('addTrainingModal')">+ New Program</button>
-                </div>
-                <table class="training-table">
-                    <thead>
-                        <tr>
-                            <th>Program Name</th>
-                            <th>Type</th>
-                            <th>Participants</th>
-                            <th>Start Date</th>
-                            <th>Status</th>
-                            <th>Budget</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Leadership Development</strong></td>
-                            <td>Management</td>
-                            <td>24/30</td>
-                            <td>2024-02-01</td>
-                            <td><span class="training-status status-active">Active</span></td>
-                            <td>TZS 450,000</td>
-                            <td>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Digital Skills Bootcamp</strong></td>
-                            <td>Technical</td>
-                            <td>45/45</td>
-                            <td>2024-01-15</td>
-                            <td><span class="training-status status-completed">Completed</span></td>
-                            <td>TZS 680,000</td>
-                            <td>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Sales Excellence</strong></td>
-                            <td>Sales</td>
-                            <td>18/25</td>
-                            <td>2024-02-15</td>
-                            <td><span class="training-status status-upcoming">Upcoming</span></td>
-                            <td>TZS 320,000</td>
-                            <td>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Safety Compliance</strong></td>
-                            <td>Compliance</td>
-                            <td>89/89</td>
-                            <td>2024-01-05</td>
-                            <td><span class="training-status status-completed">Completed</span></td>
-                            <td>TZS 210,000</td>
-                            <td>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">View</button>
-                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;">Edit</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Skills Inventory -->
-            <div class="skills-grid">
-                <div class="skills-card">
-                    <div class="card-header">
-                        <div class="card-title">Technical Skills</div>
-                    </div>
-                    <div class="skill-item">
-                        <span>JavaScript Development</span>
-                        <div class="skill-progress">
-                            <div class="skill-progress-bar" style="width: 75%"></div>
+                <!-- Programs Tab -->
+                <div id="programs-tab" class="tab-content active">
+                    <!-- Filter Bar -->
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <select id="programCountryFilter" onchange="filterPrograms()">
+                                <option value="">All Countries</option>
+                                <option value="Tanzania">Tanzania</option>
+                                <option value="Kenya">Kenya</option>
+                                <option value="Uganda">Uganda</option>
+                                <option value="Rwanda">Rwanda</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <select id="programStatusFilter" onchange="filterPrograms()">
+                                <option value="">All Statuses</option>
+                                <option value="active">Active</option>
+                                <option value="completed">Completed</option>
+                                <option value="upcoming">Upcoming</option>
+                                <option value="draft">Draft</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <select id="programTypeFilter" onchange="filterPrograms()">
+                                <option value="">All Types</option>
+                                <option value="technical">Technical</option>
+                                <option value="soft-skills">Soft Skills</option>
+                                <option value="leadership">Leadership</option>
+                                <option value="compliance">Compliance</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <input type="text" id="programSearch" placeholder="Search programs..." onkeyup="filterPrograms()">
                         </div>
                     </div>
-                    <div class="skill-item">
-                        <span>Data Analysis</span>
-                        <div class="skill-progress">
-                            <div class="skill-progress-bar" style="width: 60%"></div>
+
+                    <!-- Programs Table -->
+                    <table class="data-table" id="programsTable">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('programs', 0)">ID</th>
+                                <th onclick="sortTable('programs', 1)">Program Name</th>
+                                <th onclick="sortTable('programs', 2)">Type</th>
+                                <th onclick="sortTable('programs', 3)">Country</th>
+                                <th onclick="sortTable('programs', 4)">Language</th>
+                                <th onclick="sortTable('programs', 5)">Participants</th>
+                                <th onclick="sortTable('programs', 6)">Start Date</th>
+                                <th onclick="sortTable('programs', 7)">Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="programsTableBody">
+                            <!-- Dynamic content will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Skills Tab -->
+                <div id="skills-tab" class="tab-content">
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <select id="skillCategoryFilter" onchange="filterSkills()">
+                                <option value="">All Categories</option>
+                                <option value="technical">Technical</option>
+                                <option value="soft">Soft Skills</option>
+                                <option value="compliance">Compliance</option>
+                                <option value="language">Language</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <select id="skillDepartmentFilter" onchange="filterSkills()">
+                                <option value="">All Departments</option>
+                                <option value="IT">IT</option>
+                                <option value="Sales">Sales</option>
+                                <option value="HR">HR</option>
+                                <option value="Finance">Finance</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="skill-item">
-                        <span>Cloud Computing</span>
-                        <div class="skill-progress">
-                            <div class="skill-progress-bar" style="width: 45%"></div>
+
+                    <div class="skills-grid" id="skillsGrid">
+                        <!-- Dynamic skills grid will be inserted here -->
+                    </div>
+
+                    <!-- Skills Matrix -->
+                    <div class="chart-container" style="margin-top: 2rem;">
+                        <div class="card-header">
+                            <div class="card-title">Skills Heatmap - Organizational Gaps</div>
+                            <button class="btn btn-sm btn-outline" onclick="refreshSkillsHeatmap()">Refresh</button>
+                        </div>
+                        <canvas id="skillsHeatmap" height="300"></canvas>
+                    </div>
+                </div>
+
+                <!-- Career Tab -->
+                <div id="career-tab" class="tab-content">
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <select id="careerPathFilter" onchange="filterCareerPaths()">
+                                <option value="">All Career Paths</option>
+                                <option value="technical">Technical Track</option>
+                                <option value="management">Management Track</option>
+                                <option value="sales">Sales Track</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="skill-item">
-                        <span>Cybersecurity</span>
-                        <div class="skill-progress">
-                            <div class="skill-progress-bar" style="width: 35%"></div>
+
+                    <div class="skills-grid" id="careerGrid">
+                        <!-- Dynamic career paths will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Compliance Tab -->
+                <div id="compliance-tab" class="tab-content">
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <select id="complianceStatusFilter" onchange="filterCompliance()">
+                                <option value="">All Statuses</option>
+                                <option value="compliant">Compliant</option>
+                                <option value="non-compliant">Non-Compliant</option>
+                                <option value="overdue">Overdue</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <table class="data-table" id="complianceTable">
+                        <thead>
+                            <tr>
+                                <th>Requirement</th>
+                                <th>Regulation</th>
+                                <th>Country</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Employees</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="complianceTableBody">
+                            <!-- Dynamic compliance data -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- E-Learning Tab -->
+                <div id="elearning-tab" class="tab-content">
+                    <div class="module-grid" id="elearningGrid">
+                        <!-- Dynamic e-learning courses -->
+                    </div>
+                </div>
+
+                <!-- Certifications Tab -->
+                <div id="certifications-tab" class="tab-content">
+                    <table class="data-table" id="certificationsTable">
+                        <thead>
+                            <tr>
+                                <th>Certification</th>
+                                <th>Employee</th>
+                                <th>Issuing Body</th>
+                                <th>Issue Date</th>
+                                <th>Expiry Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="certificationsTableBody">
+                            <!-- Dynamic certifications data -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Budget Tab -->
+                <div id="budget-tab" class="tab-content">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="budgetAllocated">TZS 4.2M</div>
+                            <div class="stat-label">Allocated</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="budgetSpent">TZS 2.8M</div>
+                            <div class="stat-label">Spent</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="budgetRemaining">TZS 1.4M</div>
+                            <div class="stat-label">Remaining</div>
+                        </div>
+                    </div>
+
+                    <table class="data-table" id="budgetTable">
+                        <thead>
+                            <tr>
+                                <th>Program</th>
+                                <th>Budget Period</th>
+                                <th>Allocated</th>
+                                <th>Committed</th>
+                                <th>Spent</th>
+                                <th>Remaining</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="budgetTableBody">
+                            <!-- Dynamic budget data -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Analytics Tab -->
+                <div id="analytics-tab" class="tab-content">
+                    <div class="chart-grid">
+                        <div class="chart-container">
+                            <div class="card-header">
+                                <div class="card-title">Training Hours Trend</div>
+                                <select id="trendPeriod" onchange="updateAnalytics()">
+                                    <option value="30">Last 30 Days</option>
+                                    <option value="90">Last 90 Days</option>
+                                    <option value="365">Last Year</option>
+                                </select>
+                            </div>
+                            <canvas id="trendChart" height="250"></canvas>
+                        </div>
+
+                        <div class="chart-container">
+                            <div class="card-header">
+                                <div class="card-title">ROI Analysis</div>
+                            </div>
+                            <canvas id="roiChart" height="250"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="skills-grid">
+                        <div class="skills-card">
+                            <div class="card-header">
+                                <div class="card-title">Key Metrics</div>
+                            </div>
+                            <div id="analyticsMetrics">
+                                <!-- Dynamic metrics -->
+                            </div>
+                        </div>
+
+                        <div class="skills-card">
+                            <div class="card-header">
+                                <div class="card-title">Department Performance</div>
+                            </div>
+                            <div id="departmentMetrics">
+                                <!-- Dynamic department metrics -->
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="skills-card">
-                    <div class="card-header">
-                        <div class="card-title">Soft Skills</div>
-                    </div>
-                    <div class="skill-item">
-                        <span>Leadership</span>
-                        <div class="skill-progress">
-                            <div class="skill-progress-bar" style="width: 80%"></div>
-                        </div>
-                    </div>
-                    <div class="skill-item">
-                        <span>Communication</span>
-                        <div class="skill-progress">
-                            <div class="skill-progress-bar" style="width: 85%"></div>
-                        </div>
-                    </div>
-                    <div class="skill-item">
-                        <span>Problem Solving</span>
-                        <div class="skill-progress">
-                            <div class="skill-progress-bar" style="width: 70%"></div>
-                        </div>
-                    </div>
-                    <div class="skill-item">
-                        <span>Team Collaboration</span>
-                        <div class="skill-progress">
-                            <div class="skill-progress-bar" style="width: 90%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Training Management Modules -->
-            <div class="module-grid">
-                <div class="module-card" onclick="openModal('programsModal')">
-                    <div class="module-icon">📚</div>
-                    <h3>Training Programs</h3>
-                    <p>Manage training courses, schedules, and enrollment with detailed tracking</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('skillsModal')">
-                    <div class="module-icon">🔧</div>
-                    <h3>Skills Inventory</h3>
-                    <p>Track employee skills, competencies, certifications, and skill gaps</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('careerModal')">
-                    <div class="module-icon">🚀</div>
-                    <h3>Career Development</h3>
-                    <p>Career paths, growth plans, promotion tracking, and succession planning</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('elearningModal')">
-                    <div class="module-icon">💻</div>
-                    <h3>E-Learning Portal</h3>
-                    <p>Online courses, webinars, digital training materials, and progress tracking</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('budgetModal')">
-                    <div class="module-icon">💰</div>
-                    <h3>Training Budget</h3>
-                    <p>Manage training costs, approvals, budget allocation, and ROI analysis</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('complianceModal')">
-                    <div class="module-icon">🛡️</div>
-                    <h3>Compliance Training</h3>
-                    <p>Mandatory training, certifications, compliance tracking, and audit reports</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('analyticsModal')">
-                    <div class="module-icon">📊</div>
-                    <h3>Training Analytics</h3>
-                    <p>Performance metrics, effectiveness analysis, and training impact measurement</p>
-                </div>
-
-                <div class="module-card" onclick="openModal('certificationsModal')">
-                    <div class="module-icon">🏆</div>
-                    <h3>Certifications</h3>
-                    <p>Professional certifications, renewal tracking, and credential management</p>
-                </div>
-            </div>
-
-            <div class="footer">
-                Copyright © 2025 😀
             </div>
         </main>
     </div>
 
-    <!-- Modals -->
+    <!-- Add Training Program Modal -->
     <div id="addTrainingModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content modal-lg">
             <button class="close-modal" onclick="closeModal('addTrainingModal')">×</button>
             <h2 style="margin-bottom: 1.5rem;">Create New Training Program</h2>
+            
+            <form id="trainingForm" onsubmit="event.preventDefault(); saveTrainingProgram();">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Program ID</label>
+                        <input type="text" id="programId" readonly value="TRN-" + new Date().getTime()>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Program Name *</label>
+                        <input type="text" id="programName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="programDescription" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="programCategory">
+                            <option value="technical">Technical</option>
+                            <option value="soft-skills">Soft Skills</option>
+                            <option value="leadership">Leadership</option>
+                            <option value="compliance">Compliance</option>
+                            <option value="onboarding">Onboarding</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="programType">
+                            <option value="classroom">Classroom</option>
+                            <option value="online">Online</option>
+                            <option value="blended">Blended</option>
+                            <option value="workshop">Workshop</option>
+                            <option value="seminar">Seminar</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Delivery Method</label>
+                        <select id="deliveryMethod">
+                            <option value="instructor-led">Instructor-Led</option>
+                            <option value="self-paced">Self-Paced</option>
+                            <option value="virtual-live">Virtual Live</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Provider/Vendor</label>
+                        <input type="text" id="provider">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trainer Name</label>
+                        <input type="text" id="trainerName">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trainer Qualifications</label>
+                        <input type="text" id="trainerQuals">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Duration</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <input type="number" id="duration" style="width: 100px;">
+                            <select id="durationUnit">
+                                <option value="hours">Hours</option>
+                                <option value="days">Days</option>
+                                <option value="weeks">Weeks</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>CPD Points</label>
+                        <input type="number" id="cpdPoints">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Prerequisites</label>
+                        <input type="text" id="prerequisites" placeholder="Comma separated skills">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Target Audience</label>
+                        <input type="text" id="targetAudience" placeholder="Job roles, departments">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Max Participants</label>
+                        <input type="number" id="maxParticipants">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Country</label>
+                        <select id="country">
+                            <option value="Tanzania">Tanzania</option>
+                            <option value="Kenya">Kenya</option>
+                            <option value="Uganda">Uganda</option>
+                            <option value="Rwanda">Rwanda</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Language</label>
+                        <select id="language">
+                            <option value="English">English</option>
+                            <option value="Swahili">Swahili</option>
+                            <option value="French">French</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Legal Entity</label>
+                        <select id="legalEntity">
+                            <option value="CephasGM Tanzania">CephasGM Tanzania</option>
+                            <option value="CephasGM Kenya">CephasGM Kenya</option>
+                            <option value="CephasGM Uganda">CephasGM Uganda</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" id="startDate">
+                    </div>
+
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="date" id="endDate">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Registration Deadline</label>
+                        <input type="date" id="regDeadline">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Location/Venue</label>
+                        <input type="text" id="location">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Budget</label>
+                        <div class="currency-input">
+                            <select id="budgetCurrency">
+                                <option value="TZS">TZS</option>
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                            </select>
+                            <input type="number" id="budgetAmount" step="0.01">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Exchange Rate (to TZS)</label>
+                        <input type="number" id="exchangeRate" value="1" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Local Regulatory Requirement</label>
+                        <input type="checkbox" id="regulatoryRequired">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Materials/Documents</label>
+                        <input type="file" id="materials" multiple>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Evaluation Form Link</label>
+                        <input type="url" id="evaluationForm">
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Create Program</button>
+                    <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeModal('addTrainingModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Participant Enrollment Modal -->
+    <div id="enrollmentModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('enrollmentModal')">×</button>
+            <h2 style="margin-bottom: 1.5rem;">Manage Enrollment</h2>
+            
             <div class="form-group">
-                <label>Program Name</label>
-                <input type="text" placeholder="Enter program name">
-            </div>
-            <div class="form-group">
-                <label>Training Type</label>
-                <select>
-                    <option>Technical Skills</option>
-                    <option>Soft Skills</option>
-                    <option>Leadership</option>
-                    <option>Compliance</option>
-                    <option>Sales</option>
-                    <option>Customer Service</option>
+                <label>Select Employee</label>
+                <select id="enrollmentEmployee" onchange="loadEmployeeDetails()">
+                    <option value="">Choose employee...</option>
                 </select>
             </div>
+
+            <div id="employeeDetails" style="display: none; margin-bottom: 1rem; padding: 1rem; background: var(--background); border-radius: 8px;">
+                <!-- Employee details will be displayed here -->
+            </div>
+
             <div class="form-group">
-                <label>Start Date</label>
-                <input type="date">
+                <label>Enrollment Status</label>
+                <select id="enrollmentStatus">
+                    <option value="registered">Registered</option>
+                    <option value="waitlisted">Waitlisted</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="attended">Attended</option>
+                    <option value="completed">Completed</option>
+                    <option value="dropped">Dropped</option>
+                </select>
             </div>
-                <div class="form-group">
-                <label>End Date</label>
-                <input type="date">
-            </div>
+
             <div class="form-group">
-                <label>Maximum Participants</label>
-                <input type="number" placeholder="Enter maximum participants">
+                <label>Attendance %</label>
+                <input type="number" id="attendance" min="0" max="100">
             </div>
+
             <div class="form-group">
-                <label>Training Budget</label>
-                <div class="currency-input">
-                    <select>
-                        <option>TZS</option>
-                        <option>USD</option>
-                        <option>EUR</option>
-                    </select>
-                    <input type="number" placeholder="0.00" step="0.01">
-                </div>
+                <label>Pre-Training Assessment Score</label>
+                <input type="number" id="preScore" min="0" max="100">
             </div>
+
             <div class="form-group">
-                <label>Description</label>
-                <textarea rows="3" placeholder="Enter program description"></textarea>
+                <label>Post-Training Assessment Score</label>
+                <input type="number" id="postScore" min="0" max="100">
             </div>
+
+            <div class="form-group">
+                <label>Skills Gained</label>
+                <input type="text" id="skillsGained" placeholder="Comma separated skills">
+            </div>
+
+            <div class="form-group">
+                <label>Feedback Score</label>
+                <input type="number" id="feedbackScore" min="1" max="5" step="0.1">
+            </div>
+
+            <div class="form-group">
+                <label>Feedback Comments</label>
+                <textarea id="feedbackComments" rows="3"></textarea>
+            </div>
+
             <div style="margin-top: 2rem; display: flex; gap: 1rem;">
-                <button class="btn btn-primary" style="flex: 1;" onclick="createTrainingProgram()">Create Program</button>
-                <button class="btn btn-outline" style="flex: 1;" onclick="closeModal('addTrainingModal')">Cancel</button>
+                <button class="btn btn-primary" style="flex: 1;" onclick="saveEnrollment()">Save Enrollment</button>
+                <button class="btn btn-outline" style="flex: 1;" onclick="closeModal('enrollmentModal')">Cancel</button>
             </div>
         </div>
     </div>
 
-    <div id="programsModal" class="modal">
+    <!-- Add Skill Modal -->
+    <div id="addSkillModal" class="modal">
         <div class="modal-content">
-            <button class="close-modal" onclick="closeModal('programsModal')">×</button>
-            <h2 style="margin-bottom: 1.5rem;">Training Programs Management</h2>
-            <div class="form-group">
-                <label>Search Programs</label>
-                <input type="text" placeholder="Search by program name or type...">
-            </div>
-            <div class="form-group">
-                <label>Filter by Status</label>
-                <select>
-                    <option>All Statuses</option>
-                    <option>Active</option>
-                    <option>Completed</option>
-                    <option>Upcoming</option>
-                    <option>Cancelled</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Filter by Department</label>
-                <select>
-                    <option>All Departments</option>
-                    <option>IT</option>
-                    <option>Sales</option>
-                    <option>Finance</option>
-                    <option>HR</option>
-                    <option>Operations</option>
-                </select>
-            </div>
-            <div style="margin-top: 2rem; text-align: center;">
-                <button class="btn btn-primary" onclick="closeModal('programsModal')">Manage Programs</button>
-            </div>
+            <button class="close-modal" onclick="closeModal('addSkillModal')">×</button>
+            <h2 style="margin-bottom: 1.5rem;">Add/Edit Skill</h2>
+            
+            <form id="skillForm" onsubmit="event.preventDefault(); saveSkill();">
+                <div class="form-group">
+                    <label>Skill ID</label>
+                    <input type="text" id="skillId" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Skill Name *</label>
+                    <input type="text" id="skillName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="skillCategory">
+                        <option value="technical">Technical</option>
+                        <option value="soft">Soft Skill</option>
+                        <option value="compliance">Compliance</option>
+                        <option value="language">Language</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Sub-Category</label>
+                    <input type="text" id="skillSubCategory">
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="skillDescription" rows="2"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Proficiency Level (1-5)</label>
+                    <input type="number" id="proficiencyLevel" min="1" max="5">
+                </div>
+
+                <div class="form-group">
+                    <label>Target Level for Role</label>
+                    <input type="number" id="targetLevel" min="1" max="5">
+                </div>
+
+                <div class="form-group">
+                    <label>Criticality</label>
+                    <select id="criticality">
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+
+                <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Save Skill</button>
+                    <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeModal('addSkillModal')">Cancel</button>
+                </div>
+            </form>
         </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <span id="notificationMessage"></span>
     </div>
 
     <script>
-        // Chart Initialization
-        let completionChart, skillsChart;
+        // Global data stores
+        let trainingPrograms = [];
+        let employees = [];
+        let skills = [];
+        let enrollments = [];
+        let certifications = [];
+        let complianceRequirements = [];
+        let careerPaths = [];
+        let elearningCourses = [];
+        let budgetItems = [];
 
-        function initializeCharts() {
-            // Training Completion Chart
-            const completionCtx = document.getElementById('completionChart').getContext('2d');
-            completionChart = new Chart(completionCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Completed Training',
-                        data: [45, 52, 48, 65, 58, 70],
-                        backgroundColor: '#10b981'
-                    }, {
-                        label: 'In Progress',
-                        data: [15, 12, 18, 8, 12, 5],
-                        backgroundColor: '#f59e0b'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
-                    }
-                }
-            });
-
-            // Skills Distribution Chart
-            const skillsCtx = document.getElementById('skillsChart').getContext('2d');
-            skillsChart = new Chart(skillsCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Technical', 'Soft Skills', 'Leadership', 'Compliance', 'Sales'],
-                    datasets: [{
-                        data: [35, 25, 15, 15, 10],
-                        backgroundColor: [
-                            '#2563eb',
-                            '#10b981',
-                            '#8b5cf6',
-                            '#f59e0b',
-                            '#ef4444'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                        }
-                    }
-                }
-            });
+        // Initialize the system with sample data
+        function initializeData() {
+            // Load from localStorage if available
+            const savedData = localStorage.getItem('trainingData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                trainingPrograms = data.programs || [];
+                employees = data.employees || generateSampleEmployees();
+                skills = data.skills || generateSampleSkills();
+                enrollments = data.enrollments || [];
+                certifications = data.certifications || generateSampleCertifications();
+                complianceRequirements = data.compliance || generateSampleCompliance();
+                careerPaths = data.careerPaths || generateSampleCareerPaths();
+                elearningCourses = data.elearning || generateSampleElearning();
+                budgetItems = data.budget || generateSampleBudget();
+            } else {
+                // Generate sample data
+                employees = generateSampleEmployees();
+                trainingPrograms = generateSamplePrograms();
+                skills = generateSampleSkills();
+                enrollments = generateSampleEnrollments();
+                certifications = generateSampleCertifications();
+                complianceRequirements = generateSampleCompliance();
+                careerPaths = generateSampleCareerPaths();
+                elearningCourses = generateSampleElearning();
+                budgetItems = generateSampleBudget();
+            }
+            
+            updateAllDisplays();
+            initializeCharts();
+            updateStats();
         }
 
-        // Modal Functions
+        function generateSampleEmployees() {
+            return [
+                { id: 'EMP001', name: 'John Doe', department: 'IT', role: 'Developer', email: 'john@cephasgm.com' },
+                { id: 'EMP002', name: 'Jane Smith', department: 'Sales', role: 'Sales Manager', email: 'jane@cephasgm.com' },
+                { id: 'EMP003', name: 'Peter Jones', department: 'HR', role: 'HR Specialist', email: 'peter@cephasgm.com' },
+                { id: 'EMP004', name: 'Mary Johnson', department: 'Finance', role: 'Accountant', email: 'mary@cephasgm.com' },
+                { id: 'EMP005', name: 'James Brown', department: 'Operations', role: 'Operations Manager', email: 'james@cephasgm.com' }
+            ];
+        }
+
+        function generateSamplePrograms() {
+            return [
+                {
+                    id: 'TRN001',
+                    name: 'Leadership Development',
+                    description: 'Comprehensive leadership skills program',
+                    category: 'leadership',
+                    type: 'classroom',
+                    deliveryMethod: 'instructor-led',
+                    provider: 'Internal',
+                    trainer: 'Dr. Sarah Wilson',
+                    trainerQuals: 'PhD Leadership, 15 years experience',
+                    duration: 5,
+                    durationUnit: 'days',
+                    cpdPoints: 20,
+                    prerequisites: '3+ years management experience',
+                    targetAudience: 'Team Leads, Managers',
+                    maxParticipants: 30,
+                    enrolled: 24,
+                    waitlist: 2,
+                    status: 'active',
+                    startDate: '2024-02-01',
+                    endDate: '2024-02-05',
+                    regDeadline: '2024-01-25',
+                    country: 'Tanzania',
+                    language: 'English',
+                    legalEntity: 'CephasGM Tanzania',
+                    location: 'Dar es Salaam',
+                    budget: 450000,
+                    currency: 'TZS',
+                    exchangeRate: 1,
+                    regulatoryRequired: false,
+                    materials: [],
+                    evaluationForm: ''
+                },
+                {
+                    id: 'TRN002',
+                    name: 'Digital Skills Bootcamp',
+                    description: 'Intensive digital transformation training',
+                    category: 'technical',
+                    type: 'online',
+                    deliveryMethod: 'self-paced',
+                    provider: 'Tech Academy',
+                    trainer: 'Prof. Michael Chen',
+                    trainerQuals: 'MSc Computer Science',
+                    duration: 40,
+                    durationUnit: 'hours',
+                    cpdPoints: 15,
+                    prerequisites: 'Basic computer skills',
+                    targetAudience: 'All employees',
+                    maxParticipants: 45,
+                    enrolled: 45,
+                    waitlist: 0,
+                    status: 'completed',
+                    startDate: '2024-01-15',
+                    endDate: '2024-01-30',
+                    regDeadline: '2024-01-10',
+                    country: 'Kenya',
+                    language: 'English',
+                    legalEntity: 'CephasGM Kenya',
+                    location: 'Online',
+                    budget: 680000,
+                    currency: 'KES',
+                    exchangeRate: 5.5,
+                    regulatoryRequired: false,
+                    materials: [],
+                    evaluationForm: ''
+                }
+            ];
+        }
+
+        function generateSampleSkills() {
+            return [
+                { id: 'SK001', name: 'JavaScript', category: 'technical', subCategory: 'Frontend', description: 'Modern JavaScript development', proficiency: 75, targetLevel: 80, criticality: 'high', employees: ['EMP001', 'EMP003'] },
+                { id: 'SK002', name: 'Data Analysis', category: 'technical', subCategory: 'Analytics', description: 'Data interpretation and visualization', proficiency: 60, targetLevel: 70, criticality: 'high', employees: ['EMP002', 'EMP004'] },
+                { id: 'SK003', name: 'Leadership', category: 'soft', subCategory: 'Management', description: 'Team leadership and motivation', proficiency: 80, targetLevel: 85, criticality: 'high', employees: ['EMP002', 'EMP005'] },
+                { id: 'SK004', name: 'Communication', category: 'soft', subCategory: 'Interpersonal', description: 'Effective workplace communication', proficiency: 85, targetLevel: 90, criticality: 'medium', employees: ['EMP001', 'EMP002', 'EMP003', 'EMP004', 'EMP005'] }
+            ];
+        }
+
+        function generateSampleEnrollments() {
+            return [
+                { id: 'ENR001', programId: 'TRN001', employeeId: 'EMP001', enrollmentDate: '2024-01-10', status: 'confirmed', attendance: 80, preScore: 65, postScore: 85, skillsGained: 'Leadership, Strategy', feedbackScore: 4.5, feedbackComments: 'Excellent program' },
+                { id: 'ENR002', programId: 'TRN001', employeeId: 'EMP002', enrollmentDate: '2024-01-12', status: 'confirmed', attendance: 100, preScore: 70, postScore: 88, skillsGained: 'Team Management', feedbackScore: 4.8, feedbackComments: 'Very practical' }
+            ];
+        }
+
+        function generateSampleCertifications() {
+            return [
+                { id: 'CERT001', name: 'PMP', employee: 'EMP002', issuingBody: 'PMI', level: 'Professional', issueDate: '2023-06-15', expiryDate: '2026-06-15', status: 'active', cost: 500, currency: 'USD' },
+                { id: 'CERT002', name: 'CISSP', employee: 'EMP001', issuingBody: 'ISC2', level: 'Professional', issueDate: '2023-08-20', expiryDate: '2026-08-20', status: 'active', cost: 700, currency: 'USD' }
+            ];
+        }
+
+        function generateSampleCompliance() {
+            return [
+                { id: 'COMP001', requirement: 'Data Privacy Training', regulation: 'GDPR', country: 'All', frequency: 'Annual', dueDate: '2024-12-31', status: 'active', employees: 150, compliant: 120, overdue: 5 },
+                { id: 'COMP002', requirement: 'Workplace Safety', regulation: 'OSHA', country: 'Tanzania', frequency: 'Annual', dueDate: '2024-06-30', status: 'active', employees: 200, compliant: 180, overdue: 2 }
+            ];
+        }
+
+        function generateSampleCareerPaths() {
+            return [
+                { id: 'CP001', name: 'Technical Track', levels: ['Associate', 'Specialist', 'Senior', 'Lead', 'Architect'], employees: ['EMP001', 'EMP003'] },
+                { id: 'CP002', name: 'Management Track', levels: ['Team Lead', 'Manager', 'Senior Manager', 'Director'], employees: ['EMP002', 'EMP005'] }
+            ];
+        }
+
+        function generateSampleElearning() {
+            return [
+                { id: 'EL001', title: 'Introduction to Python', type: 'Video', duration: 120, author: 'Tech Academy', rating: 4.6, enrolled: 45, completed: 32 },
+                { id: 'EL002', title: 'Project Management Fundamentals', type: 'Interactive', duration: 180, author: 'PM Institute', rating: 4.8, enrolled: 38, completed: 25 }
+            ];
+        }
+
+        function generateSampleBudget() {
+            return [
+                { id: 'BUD001', program: 'Leadership Development', period: 'Q1 2024', allocated: 450000, committed: 400000, spent: 350000, remaining: 100000, status: 'approved' },
+                { id: 'BUD002', program: 'Digital Skills Bootcamp', period: 'Q1 2024', allocated: 680000, committed: 680000, spent: 680000, remaining: 0, status: 'completed' }
+            ];
+        }
+
+        // Update all displays
+        function updateAllDisplays() {
+            updateProgramsTable();
+            updateSkillsGrid();
+            updateCareerGrid();
+            updateComplianceTable();
+            updateElearningGrid();
+            updateCertificationsTable();
+            updateBudgetTable();
+            updateAnalytics();
+            updateStats();
+            saveToLocalStorage();
+        }
+
+        function updateProgramsTable() {
+            const tbody = document.getElementById('programsTableBody');
+            if (!tbody) return;
+
+            let filteredPrograms = [...trainingPrograms];
+            
+            // Apply filters
+            const countryFilter = document.getElementById('programCountryFilter')?.value;
+            const statusFilter = document.getElementById('programStatusFilter')?.value;
+            const typeFilter = document.getElementById('programTypeFilter')?.value;
+            const searchTerm = document.getElementById('programSearch')?.value.toLowerCase();
+
+            if (countryFilter) {
+                filteredPrograms = filteredPrograms.filter(p => p.country === countryFilter);
+            }
+            if (statusFilter) {
+                filteredPrograms = filteredPrograms.filter(p => p.status === statusFilter);
+            }
+            if (typeFilter) {
+                filteredPrograms = filteredPrograms.filter(p => p.category === typeFilter);
+            }
+            if (searchTerm) {
+                filteredPrograms = filteredPrograms.filter(p => 
+                    p.name.toLowerCase().includes(searchTerm) || 
+                    p.id.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            tbody.innerHTML = filteredPrograms.map(program => `
+                <tr onclick="viewProgramDetails('${program.id}')">
+                    <td>${program.id}</td>
+                    <td><strong>${program.name}</strong></td>
+                    <td>${program.category}</td>
+                    <td>${program.country || 'N/A'}</td>
+                    <td>${program.language || 'N/A'}</td>
+                    <td>${program.enrolled || 0}/${program.maxParticipants || 0}</td>
+                    <td>${program.startDate || 'N/A'}</td>
+                    <td><span class="status-badge status-${program.status}">${program.status}</span></td>
+                    <td>
+                        <div class="action-buttons" onclick="event.stopPropagation()">
+                            <button class="btn btn-sm btn-outline" onclick="editProgram('${program.id}')">✏️</button>
+                            <button class="btn btn-sm btn-outline" onclick="manageEnrollments('${program.id}')">👥</button>
+                            <button class="btn btn-sm btn-outline" onclick="deleteProgram('${program.id}')">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateSkillsGrid() {
+            const grid = document.getElementById('skillsGrid');
+            if (!grid) return;
+
+            const categoryFilter = document.getElementById('skillCategoryFilter')?.value;
+            const deptFilter = document.getElementById('skillDepartmentFilter')?.value;
+
+            let filteredSkills = [...skills];
+            if (categoryFilter) {
+                filteredSkills = filteredSkills.filter(s => s.category === categoryFilter);
+            }
+
+            grid.innerHTML = filteredSkills.map(skill => `
+                <div class="skills-card" onclick="viewSkillDetails('${skill.id}')">
+                    <div class="card-header">
+                        <div class="card-title">${skill.name}</div>
+                        <span class="status-badge status-${skill.criticality}">${skill.criticality}</span>
+                    </div>
+                    <p>${skill.description || ''}</p>
+                    <div style="margin: 1rem 0;">
+                        <div>Proficiency: ${skill.proficiency || 0}%</div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" style="width: ${skill.proficiency || 0}%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <small>Target: ${skill.targetLevel || 0}% | Gap: ${(skill.targetLevel || 0) - (skill.proficiency || 0)}%</small>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        ${(skill.employees || []).map(empId => {
+                            const emp = employees.find(e => e.id === empId);
+                            return emp ? `<span class="skill-tag">${emp.name}</span>` : '';
+                        }).join('')}
+                    </div>
+                    <div class="action-buttons" style="margin-top: 1rem;" onclick="event.stopPropagation()">
+                        <button class="btn btn-sm btn-outline" onclick="editSkill('${skill.id}')">Edit</button>
+                        <button class="btn btn-sm btn-outline" onclick="deleteSkill('${skill.id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateCareerGrid() {
+            const grid = document.getElementById('careerGrid');
+            if (!grid) return;
+
+            grid.innerHTML = careerPaths.map(path => `
+                <div class="skills-card">
+                    <div class="card-header">
+                        <div class="card-title">${path.name}</div>
+                    </div>
+                    <div style="margin: 1rem 0;">
+                        <strong>Levels:</strong> ${path.levels.join(' → ')}
+                    </div>
+                    <div>
+                        <strong>Employees on Path:</strong>
+                        ${(path.employees || []).map(empId => {
+                            const emp = employees.find(e => e.id === empId);
+                            return emp ? `<div>${emp.name} - ${emp.role}</div>` : '';
+                        }).join('')}
+                    </div>
+                    <div class="action-buttons" style="margin-top: 1rem;">
+                        <button class="btn btn-sm btn-outline" onclick="editCareerPath('${path.id}')">Edit</button>
+                        <button class="btn btn-sm btn-outline" onclick="deleteCareerPath('${path.id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateComplianceTable() {
+            const tbody = document.getElementById('complianceTableBody');
+            if (!tbody) return;
+
+            tbody.innerHTML = complianceRequirements.map(req => `
+                <tr onclick="viewComplianceDetails('${req.id}')">
+                    <td>${req.requirement}</td>
+                    <td>${req.regulation}</td>
+                    <td>${req.country}</td>
+                    <td>${req.dueDate}</td>
+                    <td><span class="status-badge status-${req.status}">${req.status}</span></td>
+                    <td>${req.compliant}/${req.employees} (${req.overdue} overdue)</td>
+                    <td>
+                        <div class="action-buttons" onclick="event.stopPropagation()">
+                            <button class="btn btn-sm btn-outline" onclick="editCompliance('${req.id}')">Edit</button>
+                            <button class="btn btn-sm btn-outline" onclick="trackCompliance('${req.id}')">Track</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateElearningGrid() {
+            const grid = document.getElementById('elearningGrid');
+            if (!grid) return;
+
+            grid.innerHTML = elearningCourses.map(course => `
+                <div class="module-card" onclick="viewCourse('${course.id}')">
+                    <div class="module-icon">💻</div>
+                    <h3>${course.title}</h3>
+                    <p>Type: ${course.type} | Duration: ${course.duration} min</p>
+                    <p>Rating: ${course.rating}/5.0 | Enrolled: ${course.enrolled}</p>
+                    <div class="progress-bar" style="width: 100%; margin-top: 1rem;">
+                        <div class="progress-bar-fill" style="width: ${(course.completed/course.enrolled)*100 || 0}%"></div>
+                    </div>
+                    <p style="margin-top: 0.5rem;">${course.completed} completed</p>
+                </div>
+            `).join('');
+        }
+
+        function updateCertificationsTable() {
+            const tbody = document.getElementById('certificationsTableBody');
+            if (!tbody) return;
+
+            tbody.innerHTML = certifications.map(cert => {
+                const employee = employees.find(e => e.id === cert.employee);
+                const expiryDate = new Date(cert.expiryDate);
+                const today = new Date();
+                const daysToExpiry = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+                let status = cert.status;
+                if (daysToExpiry < 30 && daysToExpiry > 0) status = 'expiring-soon';
+                if (daysToExpiry <= 0) status = 'expired';
+
+                return `
+                    <tr onclick="viewCertification('${cert.id}')">
+                        <td>${cert.name}</td>
+                        <td>${employee ? employee.name : 'N/A'}</td>
+                        <td>${cert.issuingBody}</td>
+                        <td>${cert.issueDate}</td>
+                        <td>${cert.expiryDate}</td>
+                        <td><span class="status-badge status-${status}">${status}</span></td>
+                        <td>
+                            <div class="action-buttons" onclick="event.stopPropagation()">
+                                <button class="btn btn-sm btn-outline" onclick="renewCertification('${cert.id}')">Renew</button>
+                                <button class="btn btn-sm btn-outline" onclick="uploadCertificate('${cert.id}')">Upload</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateBudgetTable() {
+            const tbody = document.getElementById('budgetTableBody');
+            if (!tbody) return;
+
+            tbody.innerHTML = budgetItems.map(item => `
+                <tr onclick="viewBudgetDetails('${item.id}')">
+                    <td>${item.program}</td>
+                    <td>${item.period}</td>
+                    <td>TZS ${item.allocated.toLocaleString()}</td>
+                    <td>TZS ${item.committed.toLocaleString()}</td>
+                    <td>TZS ${item.spent.toLocaleString()}</td>
+                    <td>TZS ${item.remaining.toLocaleString()}</td>
+                    <td><span class="status-badge status-${item.status}">${item.status}</span></td>
+                    <td>
+                        <div class="action-buttons" onclick="event.stopPropagation()">
+                            <button class="btn btn-sm btn-outline" onclick="approveBudget('${item.id}')">Approve</button>
+                            <button class="btn btn-sm btn-outline" onclick="trackInvoice('${item.id}')">Invoices</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStats() {
+            const activePrograms = trainingPrograms.filter(p => p.status === 'active').length;
+            const completedPrograms = trainingPrograms.filter(p => p.status === 'completed').length;
+            const completionRate = trainingPrograms.length > 0 ? Math.round((completedPrograms / trainingPrograms.length) * 100) : 0;
+            
+            const uniqueEmployees = new Set();
+            enrollments.forEach(e => uniqueEmployees.add(e.employeeId));
+            
+            const totalBudget = budgetItems.reduce((sum, item) => sum + item.allocated, 0);
+
+            document.getElementById('activePrograms').textContent = activePrograms;
+            document.getElementById('completionRate').textContent = completionRate + '%';
+            document.getElementById('employeesTrained').textContent = uniqueEmployees.size;
+            document.getElementById('totalBudget').textContent = 'TZS ' + (totalBudget / 1000000).toFixed(1) + 'M';
+        }
+
+        // Chart functions
+        let trendChart, roiChart, skillsHeatmap;
+
+        function initializeCharts() {
+            // Trend Chart
+            const trendCtx = document.getElementById('trendChart')?.getContext('2d');
+            if (trendCtx) {
+                trendChart = new Chart(trendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Training Hours',
+                            data: [120, 150, 180, 140, 200, 170],
+                            borderColor: '#2563eb',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: true }
+                        }
+                    }
+                });
+            }
+
+            // ROI Chart
+            const roiCtx = document.getElementById('roiChart')?.getContext('2d');
+            if (roiCtx) {
+                roiChart = new Chart(roiCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                        datasets: [
+                            {
+                                label: 'Investment',
+                                data: [500000, 600000, 550000, 700000],
+                                backgroundColor: '#ef4444'
+                            },
+                            {
+                                label: 'Return',
+                                data: [650000, 800000, 700000, 950000],
+                                backgroundColor: '#10b981'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: true }
+                        }
+                    }
+                });
+            }
+
+            // Skills Heatmap
+            const heatmapCtx = document.getElementById('skillsHeatmap')?.getContext('2d');
+            if (heatmapCtx) {
+                skillsHeatmap = new Chart(heatmapCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['JavaScript', 'Data Analysis', 'Leadership', 'Communication', 'Python', 'Project Management'],
+                        datasets: [
+                            {
+                                label: 'Current Level',
+                                data: [75, 60, 80, 85, 45, 70],
+                                backgroundColor: '#2563eb'
+                            },
+                            {
+                                label: 'Target Level',
+                                data: [80, 70, 85, 90, 70, 80],
+                                backgroundColor: '#10b981'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: true }
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateAnalytics() {
+            // Update analytics metrics
+            const metricsDiv = document.getElementById('analyticsMetrics');
+            if (metricsDiv) {
+                const totalHours = enrollments.reduce((sum, e) => {
+                    const program = trainingPrograms.find(p => p.id === e.programId);
+                    return sum + (program ? program.duration || 0 : 0);
+                }, 0);
+                
+                const avgHoursPerEmployee = employees.length > 0 ? Math.round(totalHours / employees.length) : 0;
+                const avgSatisfaction = enrollments.reduce((sum, e) => sum + (e.feedbackScore || 0), 0) / (enrollments.length || 1);
+
+                metricsDiv.innerHTML = `
+                    <div class="skill-item">
+                        <span>Total Training Hours</span>
+                        <strong>${totalHours}</strong>
+                    </div>
+                    <div class="skill-item">
+                        <span>Avg Hours/Employee</span>
+                        <strong>${avgHoursPerEmployee}</strong>
+                    </div>
+                    <div class="skill-item">
+                        <span>Avg Satisfaction</span>
+                        <strong>${avgSatisfaction.toFixed(1)}/5.0</strong>
+                    </div>
+                    <div class="skill-item">
+                        <span>Training Cost/Employee</span>
+                        <strong>TZS ${Math.round(totalBudget / employees.length).toLocaleString()}</strong>
+                    </div>
+                    <div class="skill-item">
+                        <span>Skills Gap Closure</span>
+                        <strong>65%</strong>
+                    </div>
+                `;
+            }
+
+            // Update department metrics
+            const deptDiv = document.getElementById('departmentMetrics');
+            if (deptDiv) {
+                const deptStats = {};
+                employees.forEach(emp => {
+                    if (!deptStats[emp.department]) {
+                        deptStats[emp.department] = { count: 0, trained: 0, hours: 0 };
+                    }
+                    deptStats[emp.department].count++;
+                    
+                    const empEnrollments = enrollments.filter(e => e.employeeId === emp.id);
+                    if (empEnrollments.length > 0) {
+                        deptStats[emp.department].trained++;
+                        empEnrollments.forEach(e => {
+                            const program = trainingPrograms.find(p => p.id === e.programId);
+                            if (program) deptStats[emp.department].hours += program.duration || 0;
+                        });
+                    }
+                });
+
+                deptDiv.innerHTML = Object.entries(deptStats).map(([dept, stats]) => `
+                    <div class="skill-item">
+                        <span>${dept}</span>
+                        <div>
+                            <small>Trained: ${stats.trained}/${stats.count} | Hours: ${stats.hours}</small>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Update charts if they exist
+            if (trendChart) {
+                const period = document.getElementById('trendPeriod')?.value || '30';
+                // In real implementation, fetch data for selected period
+                trendChart.data.datasets[0].data = [120, 150, 180, 140, 200, 170];
+                trendChart.update();
+            }
+        }
+
+        // CRUD Operations
+        function saveTrainingProgram() {
+            const program = {
+                id: document.getElementById('programId').value,
+                name: document.getElementById('programName').value,
+                description: document.getElementById('programDescription').value,
+                category: document.getElementById('programCategory').value,
+                type: document.getElementById('programType').value,
+                deliveryMethod: document.getElementById('deliveryMethod').value,
+                provider: document.getElementById('provider').value,
+                trainer: document.getElementById('trainerName').value,
+                trainerQuals: document.getElementById('trainerQuals').value,
+                duration: parseInt(document.getElementById('duration').value) || 0,
+                durationUnit: document.getElementById('durationUnit').value,
+                cpdPoints: parseInt(document.getElementById('cpdPoints').value) || 0,
+                prerequisites: document.getElementById('prerequisites').value,
+                targetAudience: document.getElementById('targetAudience').value,
+                maxParticipants: parseInt(document.getElementById('maxParticipants').value) || 0,
+                country: document.getElementById('country').value,
+                language: document.getElementById('language').value,
+                legalEntity: document.getElementById('legalEntity').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                regDeadline: document.getElementById('regDeadline').value,
+                location: document.getElementById('location').value,
+                budget: parseFloat(document.getElementById('budgetAmount').value) || 0,
+                currency: document.getElementById('budgetCurrency').value,
+                exchangeRate: parseFloat(document.getElementById('exchangeRate').value) || 1,
+                regulatoryRequired: document.getElementById('regulatoryRequired').checked,
+                status: 'draft',
+                enrolled: 0,
+                waitlist: 0
+            };
+
+            trainingPrograms.push(program);
+            showNotification('Training program created successfully!', 'success');
+            closeModal('addTrainingModal');
+            updateAllDisplays();
+        }
+
+        function editProgram(id) {
+            const program = trainingPrograms.find(p => p.id === id);
+            if (program) {
+                // Populate form with program data
+                document.getElementById('programId').value = program.id;
+                document.getElementById('programName').value = program.name;
+                document.getElementById('programDescription').value = program.description || '';
+                document.getElementById('programCategory').value = program.category;
+                document.getElementById('programType').value = program.type;
+                document.getElementById('deliveryMethod').value = program.deliveryMethod;
+                document.getElementById('provider').value = program.provider || '';
+                document.getElementById('trainerName').value = program.trainer || '';
+                document.getElementById('trainerQuals').value = program.trainerQuals || '';
+                document.getElementById('duration').value = program.duration;
+                document.getElementById('durationUnit').value = program.durationUnit;
+                document.getElementById('cpdPoints').value = program.cpdPoints;
+                document.getElementById('prerequisites').value = program.prerequisites || '';
+                document.getElementById('targetAudience').value = program.targetAudience || '';
+                document.getElementById('maxParticipants').value = program.maxParticipants;
+                document.getElementById('country').value = program.country;
+                document.getElementById('language').value = program.language;
+                document.getElementById('legalEntity').value = program.legalEntity;
+                document.getElementById('startDate').value = program.startDate;
+                document.getElementById('endDate').value = program.endDate;
+                document.getElementById('regDeadline').value = program.regDeadline;
+                document.getElementById('location').value = program.location || '';
+                document.getElementById('budgetAmount').value = program.budget;
+                document.getElementById('budgetCurrency').value = program.currency;
+                document.getElementById('exchangeRate').value = program.exchangeRate;
+                document.getElementById('regulatoryRequired').checked = program.regulatoryRequired;
+
+                openModal('addTrainingModal');
+            }
+        }
+
+        function deleteProgram(id) {
+            if (confirm('Are you sure you want to delete this program?')) {
+                trainingPrograms = trainingPrograms.filter(p => p.id !== id);
+                enrollments = enrollments.filter(e => e.programId !== id);
+                showNotification('Program deleted successfully', 'success');
+                updateAllDisplays();
+            }
+        }
+
+        function saveSkill() {
+            const skill = {
+                id: document.getElementById('skillId').value || 'SK' + new Date().getTime(),
+                name: document.getElementById('skillName').value,
+                category: document.getElementById('skillCategory').value,
+                subCategory: document.getElementById('skillSubCategory').value,
+                description: document.getElementById('skillDescription').value,
+                proficiency: parseInt(document.getElementById('proficiencyLevel').value) || 0,
+                targetLevel: parseInt(document.getElementById('targetLevel').value) || 0,
+                criticality: document.getElementById('criticality').value,
+                employees: []
+            };
+
+            const existingIndex = skills.findIndex(s => s.id === skill.id);
+            if (existingIndex >= 0) {
+                skills[existingIndex] = skill;
+            } else {
+                skills.push(skill);
+            }
+
+            showNotification('Skill saved successfully', 'success');
+            closeModal('addSkillModal');
+            updateAllDisplays();
+        }
+
+        function editSkill(id) {
+            const skill = skills.find(s => s.id === id);
+            if (skill) {
+                document.getElementById('skillId').value = skill.id;
+                document.getElementById('skillName').value = skill.name;
+                document.getElementById('skillCategory').value = skill.category;
+                document.getElementById('skillSubCategory').value = skill.subCategory || '';
+                document.getElementById('skillDescription').value = skill.description || '';
+                document.getElementById('proficiencyLevel').value = skill.proficiency;
+                document.getElementById('targetLevel').value = skill.targetLevel;
+                document.getElementById('criticality').value = skill.criticality;
+                openModal('addSkillModal');
+            }
+        }
+
+        function deleteSkill(id) {
+            if (confirm('Are you sure you want to delete this skill?')) {
+                skills = skills.filter(s => s.id !== id);
+                showNotification('Skill deleted successfully', 'success');
+                updateAllDisplays();
+            }
+        }
+
+        // Enrollment Management
+        function manageEnrollments(programId) {
+            const program = trainingPrograms.find(p => p.id === programId);
+            if (!program) return;
+
+            // Populate employee dropdown
+            const select = document.getElementById('enrollmentEmployee');
+            select.innerHTML = '<option value="">Choose employee...</option>' + 
+                employees.map(emp => `<option value="${emp.id}">${emp.name} - ${emp.department}</option>`).join('');
+
+            // Store current program ID for enrollment
+            select.setAttribute('data-program', programId);
+            
+            openModal('enrollmentModal');
+        }
+
+        function loadEmployeeDetails() {
+            const empId = document.getElementById('enrollmentEmployee').value;
+            const employee = employees.find(e => e.id === empId);
+            const detailsDiv = document.getElementById('employeeDetails');
+            
+            if (employee) {
+                detailsDiv.innerHTML = `
+                    <strong>${employee.name}</strong><br>
+                    Department: ${employee.department}<br>
+                    Role: ${employee.role}<br>
+                    Email: ${employee.email}
+                `;
+                detailsDiv.style.display = 'block';
+            } else {
+                detailsDiv.style.display = 'none';
+            }
+        }
+
+        function saveEnrollment() {
+            const empId = document.getElementById('enrollmentEmployee').value;
+            const programId = document.getElementById('enrollmentEmployee').getAttribute('data-program');
+            
+            if (!empId || !programId) {
+                showNotification('Please select an employee', 'error');
+                return;
+            }
+
+            const enrollment = {
+                id: 'ENR' + new Date().getTime(),
+                programId: programId,
+                employeeId: empId,
+                enrollmentDate: new Date().toISOString().split('T')[0],
+                status: document.getElementById('enrollmentStatus').value,
+                attendance: parseInt(document.getElementById('attendance').value) || 0,
+                preScore: parseInt(document.getElementById('preScore').value) || 0,
+                postScore: parseInt(document.getElementById('postScore').value) || 0,
+                skillsGained: document.getElementById('skillsGained').value,
+                feedbackScore: parseFloat(document.getElementById('feedbackScore').value) || 0,
+                feedbackComments: document.getElementById('feedbackComments').value
+            };
+
+            enrollments.push(enrollment);
+
+            // Update program enrollment count
+            const program = trainingPrograms.find(p => p.id === programId);
+            if (program) {
+                program.enrolled = (program.enrolled || 0) + 1;
+            }
+
+            showNotification('Enrollment saved successfully', 'success');
+            closeModal('enrollmentModal');
+            updateAllDisplays();
+        }
+
+        // Export functionality
+        function exportToExcel() {
+            const wb = XLSX.utils.book_new();
+            
+            // Add programs sheet
+            const programsSheet = XLSX.utils.json_to_sheet(trainingPrograms);
+            XLSX.utils.book_append_sheet(wb, programsSheet, 'Programs');
+
+            // Add enrollments sheet
+            const enrollmentsSheet = XLSX.utils.json_to_sheet(enrollments.map(e => {
+                const program = trainingPrograms.find(p => p.id === e.programId);
+                const employee = employees.find(emp => emp.id === e.employeeId);
+                return {
+                    ...e,
+                    programName: program?.name,
+                    employeeName: employee?.name,
+                    department: employee?.department
+                };
+            }));
+            XLSX.utils.book_append_sheet(wb, enrollmentsSheet, 'Enrollments');
+
+            // Add skills sheet
+            const skillsSheet = XLSX.utils.json_to_sheet(skills);
+            XLSX.utils.book_append_sheet(wb, skillsSheet, 'Skills');
+
+            // Add certifications sheet
+            const certsSheet = XLSX.utils.json_to_sheet(certifications);
+            XLSX.utils.book_append_sheet(wb, certsSheet, 'Certifications');
+
+            // Add budget sheet
+            const budgetSheet = XLSX.utils.json_to_sheet(budgetItems);
+            XLSX.utils.book_append_sheet(wb, budgetSheet, 'Budget');
+
+            // Save file
+            XLSX.writeFile(wb, 'training_report.xlsx');
+            showNotification('Report exported successfully', 'success');
+        }
+
+        // Filter functions
+        function filterPrograms() {
+            updateProgramsTable();
+        }
+
+        function filterSkills() {
+            updateSkillsGrid();
+        }
+
+        function filterCareerPaths() {
+            updateCareerGrid();
+        }
+
+        function filterCompliance() {
+            updateComplianceTable();
+        }
+
+        function filterByStatus(status) {
+            document.getElementById('programStatusFilter').value = status;
+            filterPrograms();
+        }
+
+        function showAllEmployees() {
+            switchTab('programs');
+            // Show all employees in a modal or separate view
+            alert('Showing all trained employees - This would open a detailed employee view');
+        }
+
+        function showBudgetDetails() {
+            switchTab('budget');
+        }
+
+        // Sorting
+        function sortTable(tableId, columnIndex) {
+            // Implement sorting logic
+            showNotification('Table sorted', 'info');
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        // View functions
+        function viewProgramDetails(id) {
+            const program = trainingPrograms.find(p => p.id === id);
+            if (program) {
+                alert(`Program Details:\n\nID: ${program.id}\nName: ${program.name}\nDescription: ${program.description}\nStatus: ${program.status}\nEnrolled: ${program.enrolled}/${program.maxParticipants}`);
+            }
+        }
+
+        function viewSkillDetails(id) {
+            const skill = skills.find(s => s.id === id);
+            if (skill) {
+                alert(`Skill Details:\n\nName: ${skill.name}\nCategory: ${skill.category}\nProficiency: ${skill.proficiency}%\nTarget: ${skill.targetLevel}%\nCriticality: ${skill.criticality}`);
+            }
+        }
+
+        function viewComplianceDetails(id) {
+            const req = complianceRequirements.find(r => r.id === id);
+            if (req) {
+                alert(`Compliance Requirement:\n\n${req.requirement}\nRegulation: ${req.regulation}\nDue: ${req.dueDate}\nCompliant: ${req.compliant}/${req.employees}`);
+            }
+        }
+
+        function viewCourse(id) {
+            const course = elearningCourses.find(c => c.id === id);
+            if (course) {
+                alert(`Course: ${course.title}\nType: ${course.type}\nDuration: ${course.duration} min\nRating: ${course.rating}`);
+            }
+        }
+
+        function viewCertification(id) {
+            const cert = certifications.find(c => c.id === id);
+            if (cert) {
+                alert(`Certification: ${cert.name}\nIssuer: ${cert.issuingBody}\nExpiry: ${cert.expiryDate}`);
+            }
+        }
+
+        function viewBudgetDetails(id) {
+            const item = budgetItems.find(b => b.id === id);
+            if (item) {
+                alert(`Budget Details:\n\nProgram: ${item.program}\nAllocated: TZS ${item.allocated}\nSpent: TZS ${item.spent}\nRemaining: TZS ${item.remaining}`);
+            }
+        }
+
+        // Action functions
+        function editCompliance(id) {
+            alert('Edit compliance requirement: ' + id);
+        }
+
+        function trackCompliance(id) {
+            alert('Track compliance for: ' + id);
+        }
+
+        function renewCertification(id) {
+            alert('Renew certification: ' + id);
+        }
+
+        function uploadCertificate(id) {
+            alert('Upload certificate for: ' + id);
+        }
+
+        function approveBudget(id) {
+            const item = budgetItems.find(b => b.id === id);
+            if (item) {
+                item.status = 'approved';
+                showNotification('Budget approved', 'success');
+                updateAllDisplays();
+            }
+        }
+
+        function trackInvoice(id) {
+            alert('Track invoices for budget item: ' + id);
+        }
+
+        function editCareerPath(id) {
+            alert('Edit career path: ' + id);
+        }
+
+        function deleteCareerPath(id) {
+            if (confirm('Delete career path?')) {
+                careerPaths = careerPaths.filter(c => c.id !== id);
+                showNotification('Career path deleted', 'success');
+                updateAllDisplays();
+            }
+        }
+
+        function refreshSkillsHeatmap() {
+            if (skillsHeatmap) {
+                // Update with latest data
+                skillsHeatmap.data.datasets[0].data = skills.map(s => s.proficiency || 0);
+                skillsHeatmap.data.datasets[1].data = skills.map(s => s.targetLevel || 0);
+                skillsHeatmap.update();
+            }
+        }
+
+        // Modal functions
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'block';
         }
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
+            // Reset form if exists
+            const form = document.querySelector(`#${modalId} form`);
+            if (form) form.reset();
         }
 
-        // System Functions
-        function createTrainingProgram() {
-            alert('New training program created successfully!');
-            closeModal('addTrainingModal');
-        }
-
-        function updateCharts() {
-            alert('Updating charts with latest training data...');
-            // In real implementation, this would fetch new data
-        }
-
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeCharts();
+        // Notification
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const messageSpan = document.getElementById('notificationMessage');
             
-            // Navigation active state
+            messageSpan.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Save to localStorage
+        function saveToLocalStorage() {
+            const data = {
+                programs: trainingPrograms,
+                employees: employees,
+                skills: skills,
+                enrollments: enrollments,
+                certifications: certifications,
+                compliance: complianceRequirements,
+                careerPaths: careerPaths,
+                elearning: elearningCourses,
+                budget: budgetItems
+            };
+            localStorage.setItem('trainingData', JSON.stringify(data));
+        }
+
+        // Sidebar toggle for mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            
+            // Set active navigation
             document.querySelectorAll('.nav-item').forEach(item => {
                 if (item.href === window.location.href) {
                     item.classList.add('active');
                 }
             });
 
-            // Module card hover effects
-            document.querySelectorAll('.module-card').forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-4px)';
-                });
-                card.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                });
-            });
-
-            // Close modal when clicking outside
+            // Close modals when clicking outside
             window.onclick = function(event) {
                 if (event.target.classList.contains('modal')) {
                     event.target.style.display = 'none';
@@ -931,19 +2248,12 @@
             }
         });
 
-        // Simulate real-time updates
+        // Simulate real-time updates (for demo purposes)
         setInterval(() => {
-            // Update training completion rates randomly
-            const completionRates = document.querySelectorAll('.training-table td:nth-child(3)');
-            completionRates.forEach(cell => {
-                if (cell.textContent.includes('/')) {
-                    const [current, max] = cell.textContent.split('/').map(Number);
-                    if (current < max && Math.random() > 0.7) {
-                        cell.textContent = `${current + 1}/${max}`;
-                    }
-                }
-            });
-        }, 30000);
+            if (Math.random() > 0.7) { // 30% chance of update
+                updateAllDisplays();
+            }
+        }, 60000); // Check every minute
     </script>
 </body>
 </html>
