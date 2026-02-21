@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CephasPay™ · unified financial hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f5f9ff;
+            color: #0b2037;
+        }
+
+        /* minimalist navigation – only home link */
+        .navbar {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 15px rgba(0, 35, 70, 0.05);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(140deg, #003768, #1c6a3a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #1e3a5f;
+            font-weight: 500;
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+            background: white;
+            border: 1px solid #bed4f0;
+        }
+
+        /* hero – completely clean, no duplicate badges */
+        .hero {
+            padding: 3rem 5% 2.5rem;
+            background: radial-gradient(circle at 80% 30%, #e3efff, #f4faff);
+        }
+
+        .hero-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 3.3rem;
+            line-height: 1.2;
+            font-weight: 750;
+            color: #05213d;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            color: #1c3b60;
+            margin: 1.5rem 0 2rem;
+        }
+
+        /* no badge row at all – removed completely */
+        .hero-actions {
+            display: flex;
+            gap: 1.5rem;
+            margin: 2.5rem 0 1rem;
+        }
+
+        .btn-primary {
+            padding: 0.8rem 2.8rem;
+            background: linear-gradient(125deg, #003768, #1c6a3a);
+            color: white;
+            border: none;
+            border-radius: 60px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 10px 18px -8px #00376880;
+        }
+
+        .btn-outline {
+            padding: 0.75rem 2.6rem;
+            border: 2px solid #003768;
+            border-radius: 60px;
+            color: #003768;
+            font-weight: 600;
+            text-decoration: none;
+            background: white;
+        }
+
+        .hero-image {
+            background: linear-gradient(145deg, #003768, #1c6a3a);
+            border-radius: 36px;
+            padding: 2.5rem 2rem;
+            color: white;
+            text-align: center;
+            box-shadow: 0 28px 40px -16px #002b53;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        /* section styles */
+        .section {
+            padding: 4rem 5%;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.4rem;
+            font-weight: 650;
+            text-align: center;
+            color: #09243f;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #2c4f77;
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* integration grid – every card clickable with brand icon */
+        .integration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 1.8rem;
+            margin: 2.5rem 0;
+        }
+
+        .integration-card {
+            background: white;
+            border-radius: 28px;
+            padding: 1.8rem 1rem;
+            text-align: center;
+            box-shadow: 0 12px 24px -12px rgba(0, 50, 90, 0.12);
+            transition: 0.2s;
+            border: 1px solid #dae8fa;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .integration-card:hover {
+            transform: translateY(-5px);
+            border-color: #1c6a3a;
+            box-shadow: 0 20px 30px -10px #0031504d;
+        }
+
+        .integration-icon {
+            width: 56px;
+            height: 56px;
+            margin-bottom: 0.8rem;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        /* brand‑specific icons using favicons from official sources */
+        .icon-mpesa { background-image: url('https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/m-pesa.svg'); }
+        .icon-airtel { background-image: url('https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/airtel.svg'); }
+        .icon-halopesa { background-image: url('https://www.halotel.co.tz/favicon.ico'); background-size: 48px; }
+        .icon-mixx { background-image: url('https://yas.co.tz/favicon.ico'); }
+        .icon-azam { background-image: url('https://azampesa.co.tz/favicon.ico'); }
+        .icon-mtn { background-image: url('https://www.mtn.com/favicon.ico'); }
+        .icon-orange { background-image: url('https://www.orange.com/favicon.ico'); }
+        .icon-wave { background-image: url('https://www.wave.com/favicon.ico'); }
+        .icon-opay { background-image: url('https://opayweb.com/favicon.ico'); }
+        .icon-palmpay { background-image: url('https://www.palmpay.com/favicon.ico'); }
+        .icon-wise { background-image: url('https://wise.com/favicon.ico'); }
+        .icon-westernunion { background-image: url('https://www.westernunion.com/favicon.ico'); }
+        .icon-moneygram { background-image: url('https://www.moneygram.com/favicon.ico'); }
+        .icon-worldremit { background-image: url('https://www.worldremit.com/favicon.ico'); }
+        .icon-remitly { background-image: url('https://www.remitly.com/favicon.ico'); }
+        .icon-xe { background-image: url('https://www.xe.com/favicon.ico'); }
+        .icon-terra { background-image: url('https://www.terrapay.com/favicon.ico'); }
+        .icon-nala { background-image: url('https://www.nala.com/favicon.ico'); }
+        .icon-expressmoney { background-image: url('https://expressmoneyservices.com/favicon.ico'); }
+        .icon-crdb { background-image: url('https://www.crdbbank.co.tz/favicon.ico'); }
+        .icon-nmb { background-image: url('https://www.nmbbank.co.tz/favicon.ico'); }
+        .icon-nbc { background-image: url('https://www.nbc.co.tz/favicon.ico'); }
+        .icon-absa { background-image: url('https://www.absa.co.tz/favicon.ico'); }
+        .icon-exim { background-image: url('https://www.eximbank.co.tz/favicon.ico'); }
+        .icon-kcb { background-image: url('https://kcbbank.co.tz/favicon.ico'); }
+        .icon-dtb { background-image: url('https://diamondtrust.co.tz/favicon.ico'); }
+        .icon-ecobank { background-image: url('https://www.ecobank.com/favicon.ico'); }
+        .icon-stanbic { background-image: url('https://www.stanbicbank.co.tz/favicon.ico'); }
+        .icon-uba { background-image: url('https://www.ubatanzania.co.tz/favicon.ico'); }
+        .icon-tadb { background-image: url('https://www.tadb.co.tz/favicon.ico'); }
+        .icon-mkombozi { background-image: url('https://mkombozibank.co.tz/favicon.ico'); }
+        .icon-mucoba { background-image: url('https://mucobabank.co.tz/favicon.ico'); }
+        .icon-dcb { background-image: url('https://www.dcb.co.tz/favicon.ico'); }
+        .icon-habib { background-image: url('https://www.habibafricanbank.co.tz/favicon.ico'); }
+        .icon-imbank { background-image: url('https://www.imbank.com/tanzania/favicon.ico'); }
+        .icon-mwangahakika { background-image: url('https://mhbbank.co.tz/favicon.ico'); }
+        .icon-peoples { background-image: url('https://www.pbzbank.co.tz/favicon.ico'); }
+        .icon-azania { background-image: url('https://www.azaniabank.co.tz/favicon.ico'); }
+        .icon-citi { background-image: url('https://www.citigroup.com/favicon.ico'); }
+        .icon-access { background-image: url('https://www.accessbankplc.com/favicon.ico'); }
+        .icon-akiba { background-image: url('https://www.acbbank.co.tz/favicon.ico'); }
+        .icon-stanchart { background-image: url('https://www.sc.com/favicon.ico'); }
+        .icon-investec { background-image: url('https://www.investec.com/favicon.ico'); }
+        .icon-standardbank { background-image: url('https://www.standardbank.com/favicon.ico'); }
+        .icon-fnb { background-image: url('https://www.fnb.co.za/favicon.ico'); }
+        .icon-capitec { background-image: url('https://www.capitecbank.co.za/favicon.ico'); }
+        .icon-nedbank { background-image: url('https://www.nedbank.co.za/favicon.ico'); }
+        .icon-equity { background-image: url('https://equitygroupholdings.com/favicon.ico'); }
+        .icon-swift { background-image: url('https://www.swift.com/favicon.ico'); }
+
+        .integration-title {
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin: 0.4rem 0 0.2rem;
+        }
+
+        /* stats row */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 2rem;
+            color: white;
+            text-align: center;
+        }
+        .stat-number { font-size: 2.8rem; font-weight: 800; }
+        .stat-label { opacity: 0.9; }
+
+        /* use case cards */
+        .usecase-grid {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 1.2rem;
+        }
+        .usecase-item {
+            background: white;
+            padding: 1.6rem 1rem;
+            border-radius: 22px;
+            text-align: center;
+            font-weight: 520;
+            box-shadow: 0 8px 16px -10px #afc7e2;
+            border: 1px solid #d3e3f5;
+            cursor: default;
+        }
+
+        /* footer – only copyright line */
+        .footer {
+            background: #0b1e30;
+            color: white;
+            padding: 2rem 5% 1.8rem;
+            margin-top: 3rem;
+        }
+        .footer-copyright {
+            text-align: center;
+            color: #a6bedb;
+            font-size: 0.95rem;
+            border-top: 1px solid #2e4562;
+            padding-top: 2rem;
+        }
+
+        @media (max-width: 700px) {
+            .hero-container, .stats-grid, .usecase-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- navigation – only home link -->
+    <nav class="navbar">
+        <div class="logo">CephasPay™</div>
+        <div class="nav-links">
+            <a href="https://cephasgm.github.io/CephasGM-ERP/index.html">🏠 Home</a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION – WITHOUT ANY DUPLICATE BADGES (clean) -->
+    <section class="hero">
+        <div class="hero-container">
+            <div>
+                <h1>One Platform.<br>All Payments.<br>Total Financial Visibility.</h1>
+                <p class="hero-description">Connect Mobile Money, Banks, ERP, and Compliance in real time.</p>
+                <!-- badge row completely omitted (no M‑Pesa, Airtel, CRDB, etc.) -->
+                <div class="hero-actions">
+                    <a href="#" class="btn-primary">Start Integration</a>
+                    <a href="#" class="btn-outline">Live Demo</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div style="font-size:3.8rem;">💳</div>
+                <h3 style="font-size:2rem; margin:1rem 0">$187M+ processed</h3>
+                <p>2,800+ active businesses · 70+ integrations</p>
+                <div class="hero-stats">
+                    <span>📱 M‑Pesa</span> <span>🏦 CRDB</span> <span>🌍 SWIFT</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FULL INTEGRATION GRID (all working links, brand icons) ========= -->
+    <section class="section" style="background:white;">
+        <div class="container">
+            <h2 class="section-title">🌐 live financial ecosystem</h2>
+            <p class="section-subtitle">click any card → official internet banking / mobile money portal</p>
+
+            <!-- Mobile money (tanzania + pan‑africa) without tigo/africash -->
+            <div style="margin:2rem 0 0.5rem"><h3>📱 mobile money (Tanzania & africa)</h3></div>
+            <div class="integration-grid">
+                <a href="https://vodacom.co.tz/mpesa" target="_blank" class="integration-card"><span class="integration-icon icon-mpesa"></span><span class="integration-title">M‑Pesa</span><span style="font-size:0.85rem;color:#346792">Tanzania</span></a>
+                <a href="https://www.airtel.co.tz/airtel-money" target="_blank" class="integration-card"><span class="integration-icon icon-airtel"></span><span class="integration-title">Airtel Money</span><span style="font-size:0.85rem;color:#346792">TZ</span></a>
+                <a href="https://www.halotel.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-halopesa"></span><span class="integration-title">HaloPesa</span><span style="font-size:0.85rem;color:#346792">Halotel</span></a>
+                <a href="https://yas.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-mixx"></span><span class="integration-title">MixxByYas</span><span style="font-size:0.85rem;color:#346792">Yas</span></a>
+                <a href="https://azampesa.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-azam"></span><span class="integration-title">Azam Pesa</span><span style="font-size:0.85rem;color:#346792">Azam</span></a>
+                <a href="https://www.mtn.com/" target="_blank" class="integration-card"><span class="integration-icon icon-mtn"></span><span class="integration-title">MTN MoMo</span><span style="font-size:0.85rem;color:#346792">pan‑africa</span></a>
+                <a href="https://www.orange.com" target="_blank" class="integration-card"><span class="integration-icon icon-orange"></span><span class="integration-title">Orange Money</span><span style="font-size:0.85rem;color:#346792">Africa</span></a>
+                <a href="https://www.wave.com/" target="_blank" class="integration-card"><span class="integration-icon icon-wave"></span><span class="integration-title">Wave</span><span style="font-size:0.85rem;color:#346792">Senegal etc</span></a>
+                <a href="https://opayweb.com/" target="_blank" class="integration-card"><span class="integration-icon icon-opay"></span><span class="integration-title">OPay</span><span style="font-size:0.85rem;color:#346792">Nigeria</span></a>
+                <a href="https://www.palmpay.com/" target="_blank" class="integration-card"><span class="integration-icon icon-palmpay"></span><span class="integration-title">Palmpay</span><span style="font-size:0.85rem;color:#346792">NG · GH</span></a>
+                <a href="https://www.wise.com" target="_blank" class="integration-card"><span class="integration-icon icon-wise"></span><span class="integration-title">Wise</span><span style="font-size:0.85rem;color:#346792">global</span></a>
+                <a href="https://www.westernunion.com" target="_blank" class="integration-card"><span class="integration-icon icon-westernunion"></span><span class="integration-title">Western Union</span><span style="font-size:0.85rem;color:#346792">worldwide</span></a>
+                <a href="https://www.moneygram.com" target="_blank" class="integration-card"><span class="integration-icon icon-moneygram"></span><span class="integration-title">MoneyGram</span><span style="font-size:0.85rem;color:#346792">global</span></a>
+                <a href="https://www.worldremit.com" target="_blank" class="integration-card"><span class="integration-icon icon-worldremit"></span><span class="integration-title">WorldRemit</span><span style="font-size:0.85rem;color:#346792">send to Africa</span></a>
+                <a href="https://www.remitly.com" target="_blank" class="integration-card"><span class="integration-icon icon-remitly"></span><span class="integration-title">Remitly</span><span style="font-size:0.85rem;color:#346792">trusted</span></a>
+                <a href="https://www.xe.com/xemoneytransfer/" target="_blank" class="integration-card"><span class="integration-icon icon-xe"></span><span class="integration-title">Xe</span><span style="font-size:0.85rem;color:#346792">fx</span></a>
+                <a href="https://www.terrapay.com/" target="_blank" class="integration-card"><span class="integration-icon icon-terra"></span><span class="integration-title">TERRA</span><span style="font-size:0.85rem;color:#346792">cross‑border</span></a>
+                <a href="https://www.nala.com" target="_blank" class="integration-card"><span class="integration-icon icon-nala"></span><span class="integration-title">NALA</span><span style="font-size:0.85rem;color:#346792">TZ · KE · UG</span></a>
+                <a href="https://expressmoneyservices.com/" target="_blank" class="integration-card"><span class="integration-icon icon-expressmoney"></span><span class="integration-title">EXPRESS MONEY</span><span style="font-size:0.85rem;color:#346792">international</span></a>
+            </div>
+
+            <!-- Tanzanian banks (all corrected links) -->
+            <div style="margin:3rem 0 0.5rem"><h3>🏦 Tanzanian banks (internet banking)</h3></div>
+            <div class="integration-grid">
+                <a href="https://www.crdbbank.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-crdb"></span><span class="integration-title">CRDB Bank</span></a>
+                <a href="https://www.nmbbank.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-nmb"></span><span class="integration-title">NMB Bank</span></a>
+                <a href="https://www.nbc.co.tz/en/personal/" target="_blank" class="integration-card"><span class="integration-icon icon-nbc"></span><span class="integration-title">NBC</span></a>
+                <a href="https://www.absa.co.tz/personal/" target="_blank" class="integration-card"><span class="integration-icon icon-absa"></span><span class="integration-title">Absa Tanzania</span></a>
+                <a href="https://www.eximbank.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-exim"></span><span class="integration-title">Exim Bank</span></a>
+                <a href="https://kcbbank.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-kcb"></span><span class="integration-title">KCB Tanzania</span></a>
+                <a href="https://diamondtrust.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-dtb"></span><span class="integration-title">DTB</span></a>
+                <a href="https://www.ecobank.com/tz" target="_blank" class="integration-card"><span class="integration-icon icon-ecobank"></span><span class="integration-title">Ecobank TZ</span></a>
+                <a href="https://www.stanbicbank.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-stanbic"></span><span class="integration-title">Stanbic Bank</span></a>
+                <a href="https://www.ubatanzania.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-uba"></span><span class="integration-title">UBA Tanzania</span></a>
+                <a href="https://www.tadb.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-tadb"></span><span class="integration-title">TADB</span></a>
+                <a href="https://mkombozibank.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-mkombozi"></span><span class="integration-title">Mkombozi</span></a>
+                <a href="https://mucobabank.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-mucoba"></span><span class="integration-title">Mucoba Bank</span></a>
+                <a href="https://www.dcb.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-dcb"></span><span class="integration-title">DCB</span></a>
+                <a href="https://www.habibafricanbank.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-habib"></span><span class="integration-title">Habib African</span></a>
+                <a href="https://www.imbank.com/tanzania" target="_blank" class="integration-card"><span class="integration-icon icon-imbank"></span><span class="integration-title">I&M Tanzania</span></a>
+                <a href="https://mhbbank.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-mwangahakika"></span><span class="integration-title">Mwanga Hakika</span></a>
+                <a href="https://www.pbzbank.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-peoples"></span><span class="integration-title">People's Bank ZNZ</span></a>
+                <a href="https://www.azaniabank.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-azania"></span><span class="integration-title">Azania Bank</span></a>
+                <a href="https://www.citigroup.com/tanzania" target="_blank" class="integration-card"><span class="integration-icon icon-citi"></span><span class="integration-title">Citibank TZ</span></a>
+                <a href="https://www.accessbankplc.com/tz" target="_blank" class="integration-card"><span class="integration-icon icon-access"></span><span class="integration-title">Access Bank</span></a>
+                <a href="https://www.acbbank.co.tz/" target="_blank" class="integration-card"><span class="integration-icon icon-akiba"></span><span class="integration-title">Akiba Commercial</span></a>
+                <a href="https://www.sc.com/tz/" target="_blank" class="integration-card"><span class="integration-icon icon-stanchart"></span><span class="integration-title">Standard Chartered</span></a>
+            </div>
+
+            <!-- South Africa banks (newly added) -->
+            <div style="margin:3rem 0 0.5rem"><h3>🏛️ South Africa banks</h3></div>
+            <div class="integration-grid">
+                <a href="https://www.investec.com" target="_blank" class="integration-card"><span class="integration-icon icon-investec"></span><span class="integration-title">Investec Bank</span></a>
+                <a href="https://www.standardbank.com" target="_blank" class="integration-card"><span class="integration-icon icon-standardbank"></span><span class="integration-title">Standard Bank</span></a>
+                <a href="https://www.fnb.co.za/" target="_blank" class="integration-card"><span class="integration-icon icon-fnb"></span><span class="integration-title">FNB (FirstRand)</span></a>
+                <a href="https://www.capitecbank.co.za/" target="_blank" class="integration-card"><span class="integration-icon icon-capitec"></span><span class="integration-title">Capitec Bank</span></a>
+                <a href="https://www.nedbank.co.za/" target="_blank" class="integration-card"><span class="integration-icon icon-nedbank"></span><span class="integration-title">Nedbank</span></a>
+            </div>
+
+            <!-- pan‑african & global networks (no ISO 20022) -->
+            <div style="margin:2rem 0 0.5rem"><h3>🌍 pan‑African & global networks</h3></div>
+            <div class="integration-grid">
+                <a href="https://www.ecobank.com" target="_blank" class="integration-card"><span class="integration-icon icon-ecobank"></span><span class="integration-title">Ecobank pan‑Africa</span></a>
+                <a href="https://equitygroupholdings.com/tz/" target="_blank" class="integration-card"><span class="integration-icon icon-equity"></span><span class="integration-title">Equity Bank (TZ)</span></a>
+                <a href="https://www.ubagroup.com" target="_blank" class="integration-card"><span class="integration-icon icon-uba"></span><span class="integration-title">UBA group</span></a>
+                <a href="https://www.standardbank.com" target="_blank" class="integration-card"><span class="integration-icon icon-standardbank"></span><span class="integration-title">Standard Group</span></a>
+                <a href="https://www.swift.com" target="_blank" class="integration-card"><span class="integration-icon icon-swift"></span><span class="integration-title">SWIFT</span></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- stats (clean, professional) -->
+    <section class="section" style="background: linear-gradient(125deg, #003768, #1c6a3a); color:white;">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-number">$1.9B+</div><div class="stat-label">processed</div></div>
+                <div class="stat-item"><div class="stat-number">70+</div><div class="stat-label">integrations</div></div>
+                <div class="stat-item"><div class="stat-number">99.99%</div><div class="stat-label">uptime</div></div>
+                <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">support</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- use cases (minimal, as requested no removal) -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">who uses CephasPay™</h2>
+            <div class="usecase-grid">
+                <div class="usecase-item">🏪 retail chains</div>
+                <div class="usecase-item">🏗️ construction</div>
+                <div class="usecase-item">🚚 transport</div>
+                <div class="usecase-item">🌍 NGOs</div>
+                <div class="usecase-item">🏛️ government</div>
+                <div class="usecase-item">💧 utilities</div>
+                <div class="usecase-item">🏦 microfinance</div>
+                <div class="usecase-item">📦 e‑commerce</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- footer only with copyright line (everything else removed) -->
+    <footer class="footer">
+        <div class="footer-copyright">
+            © 2026 CephasGM Group. All rights reserved. v3.14.2 · Build 2026.02.21 · PROD
+        </div>
+    </footer>
+</body>
+</html>
