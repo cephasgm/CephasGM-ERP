@@ -101,17 +101,6 @@ CephasGM-ERP/
 ├── icon-512.png               # PWA icon (512x512)
 └── README.md                  # Project documentation
 
-
-🚀 Getting Started
-1️⃣ Clone the Repository
-git clone https://github.com/cephasgm/CephasGM-ERP.git
-cd CephasGM-ERP
-2️⃣ Run Locally
-
-Use any static server:
-
-npx http-server . -p 8080
-
 GitHub Pages serves the project automatically from the main branch.
 
 📱 Progressive Web App (PWA)
@@ -132,7 +121,7 @@ This project is a frontend prototype. For production use:
 Add a strict Content Security Policy (CSP)
 Serve only via HTTPS
 Avoid storing sensitive data in local storage
-Integrate authentication & authorization at backend level
+Integrate authentication & authorization at the backend level
 
 🛣️ Roadmap (Planned)
 
