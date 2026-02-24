@@ -112,10 +112,6 @@ Use any static server:
 
 npx http-server . -p 8080
 
-Then open:
-
-http://localhost:8080/
-
 GitHub Pages serves the project automatically from the main branch.
 
 📱 Progressive Web App (PWA)
