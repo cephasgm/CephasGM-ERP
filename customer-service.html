@@ -1,575 +1,2106 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Customer Service - CephasGM ERP (Enterprise Upgrade)</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-<style>
-  :root{
-    --bg:#f4f7fb; --card:#fff; --muted:#64748b; --text:#0f172a;
-    --primary:#2563eb; --accent:#7c3aed; --border:#e6eef8;
-    --shadow: 0 10px 30px rgba(2,6,23,0.06);
-    --radius:12px;
-  }
-  *{box-sizing:border-box}
-  body{font-family:"Segoe UI",system-ui, -apple-system, Roboto; background:var(--bg); color:var(--text); margin:0; -webkit-font-smoothing:antialiased;}
-  header{background:#063970;color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 6px rgba(0,0,0,0.08)}
-  header .brand{display:flex;gap:10px;align-items:center}
-  .brand .logo{background:var(--primary);padding:10px;border-radius:8px;color:#fff;font-weight:700}
-  header h1{font-size:1.05rem;margin:0}
-  header .nav-actions{display:flex;gap:10px;align-items:center}
-  header button{background:#fff;color:#063970;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700}
-  header button:hover{opacity:0.95}
-  .container{max-width:1400px;margin:20px auto;padding:0 18px}
-  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
-  .card{background:var(--card);padding:18px;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);cursor:pointer;transition:transform .18s,box-shadow .18s}
-  .card:hover{transform:translateY(-6px)}
-  .card.active{border-color:var(--primary);box-shadow:0 12px 30px rgba(37,99,235,0.12)}
-  .card .icon{font-size:1.8rem;margin-bottom:10px;color:var(--primary)}
-  .card h3{margin:0 0 6px 0}
-  .card p{margin:0;color:var(--muted);font-size:0.95rem}
-  .split{display:flex;gap:18px;margin-top:20px;align-items:flex-start}
-  .left{flex:1}
-  .right{width:380px;display:flex;flex-direction:column;gap:12px}
-  .panel{background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--border);box-shadow:var(--shadow)}
-  .panel h2{margin:0 0 8px 0}
-  .small{color:var(--muted);font-size:0.92rem}
-  table{width:100%;border-collapse:collapse}
-  th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left;font-size:0.9rem}
-  .chip{display:inline-block;padding:4px 8px;border-radius:999px;font-weight:600;font-size:0.75rem}
-  .status-open{background:#fffbeb;color:#92400e}
-  .status-progress{background:#eef2ff;color:#3730a3}
-  .status-resolved{background:#ecfdf5;color:#166534}
-  .status-critical{background:#fee2e2;color:#991b1b}
-  .status-high{background:#ffedd5;color:#9a3412}
-  .status-medium{background:#fef9c3;color:#854d0e}
-  .status-low{background:#e6f7ff;color:#0369a1}
-  .chat-box{display:flex;flex-direction:column;height:420px}
-  .chat-header{background:linear-gradient(90deg,var(--primary),var(--accent));color:#fff;padding:10px;border-radius:10px 10px 0 0;font-weight:700}
-  .chat-body{flex:1;padding:10px;overflow:auto;background:linear-gradient(180deg,#fbfdff,#f8fafc)}
-  .chat-input{display:flex;border-top:1px solid var(--border);padding:10px;background:var(--card);border-radius:0 0 10px 10px}
-  .chat-input input{flex:1;padding:8px;border-radius:8px;border:1px solid var(--border)}
-  .chat-input button{margin-left:8px;padding:8px 12px;border-radius:8px;border:none;background:var(--primary);color:#fff;cursor:pointer;font-weight:700}
-  .msg{margin-bottom:8px;display:flex}
-  .bubble{padding:8px 12px;border-radius:10px;max-width:85%;font-size:0.95rem}
-  .bubble.ai{background:#eef2ff;align-self:flex-start}
-  .bubble.user{background:var(--primary);color:#fff;align-self:flex-end}
-  .form-row{display:flex;gap:8px; margin-bottom:8px; flex-wrap:wrap}
-  input,select,textarea{padding:8px;border-radius:8px;border:1px solid var(--border);width:100%;font-size:0.95rem; background:var(--card);}
-  textarea{min-height:80px;resize:vertical}
-  .btn{ padding:8px 12px; border-radius:6px; border:1px solid var(--border); background:var(--card); cursor:pointer; font-weight:500;}
-  .btn-primary{ background:var(--primary); color:#fff; border:none;}
-  .btn-sm{ padding:4px 6px; font-size:0.8rem;}
-  .flex{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
-  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
-  footer{background:#063970;color:#fff;padding:12px 0;margin-top:20px;text-align:center;font-weight:700}
-  hr{border:none;border-top:1px solid var(--border);margin:12px 0;}
-  label{font-weight:600; font-size:0.85rem; color:var(--text);}
-  .tag {background:var(--border); padding:2px 6px; border-radius:4px; font-size:0.75rem; margin-right:4px;}
-  @media (max-width:980px){ .split{flex-direction:column} .right{width:100%} }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- PWA Meta -->
+  <meta name="theme-color" content="#1a4c7a" id="theme-color-meta" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CephasGM ERP" />
+
+  <title>Customer Service — CephasGM ERP</title>
+
+  <meta name="description" content="CephasGM ERP Customer Service — Tickets, live chat, feedback, knowledge base, and CRM" />
+  <meta name="author" content="Cephas Gideon Mkama" />
+  <meta property="og:title" content="Customer Service — CephasGM ERP" />
+  <meta property="og:description" content="Complete customer service management for CephasGM ERP" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cephasgm.github.io/CephasGM-ERP/customer-service.html" />
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* ============ DESIGN TOKENS ============ */
+    :root {
+      --bg:            #f4f6fa;
+      --surface:       #ffffff;
+      --surface-alt:   #fafbfd;
+      --border:        #e6e9f0;
+      --border-strong: #d3d9e5;
+
+      --text:          #0a1e3c;
+      --text-2:        #2c3e50;
+      --text-muted:    #5e6f8d;
+      --text-subtle:   #94a3b8;
+
+      --primary:       #1a4c7a;
+      --primary-600:   #0e3a5c;
+      --primary-soft:  #e8f0fa;
+      --accent:        #2563eb;
+      --accent-hover:  #1d4ed8;
+      --accent-soft:   #eff4ff;
+
+      --success:       #0f7b5a;
+      --warning:       #d97706;
+      --danger:        #c0392b;
+      --gold:          #b8860b;
+
+      --radius-lg:     16px;
+      --radius:        12px;
+      --radius-sm:     8px;
+      --radius-pill:   999px;
+
+      --shadow-sm:     0 1px 2px rgba(10, 30, 60, 0.04);
+      --shadow:        0 2px 10px rgba(10, 30, 60, 0.06);
+      --shadow-lg:     0 12px 32px rgba(10, 30, 60, 0.10);
+
+      --max-width:     1440px;
+      --sidebar-w:     264px;
+    }
+
+    /* ============ RESET ============ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ============ PAGE BACKGROUND (ERP collage) ============ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        url('https://www.cio.com/wp-content/uploads/2025/03/272362-0-27498000-1741330535-enterprise_resource_planning-ERP.jpg?quality=50&strip=all&w=1024'),
+        url('https://img.magnific.com/free-vector/gradient-erp-illustration_23-2149379179.jpg'),
+        url('https://www.aimcom.com/wp-content/uploads/2026/01/erp-systems-integrating-business-operations-and-supply-chain-processes-1.png'),
+        url('https://img.magnific.com/free-vector/hand-drawn-flat-design-erp-illustration_23-2149383351.jpg?semt=ais_hybrid&w=740&q=80');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-blend-mode: overlay, soft-light, luminosity, multiply;
+      opacity: 0.07;
+      z-index: -1;
+      pointer-events: none;
+      filter: saturate(0.65) contrast(1.05);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    input, select, textarea { font-family: inherit; }
+    img { max-width: 100%; display: block; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ============ APP WRAPPER ============ */
+    .app {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 1.25rem 2rem 3rem;
+    }
+
+    /* ============ TOP BAR ============ */
+    .top-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.95rem 1.35rem;
+      display: flex;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .brand-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, var(--primary) 0%, #2c5a8a 55%, #3d6fa0 100%);
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      box-shadow: 0 4px 14px rgba(26, 76, 122, 0.28);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .brand-tab:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(26, 76, 122, 0.35);
+    }
+    .brand-tab i { font-size: 0.82rem; opacity: 0.9; }
+
+    /* ============ LAYOUT ============ */
+    .cs-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============ SIDEBAR ============ */
+    .cs-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: sticky;
+      top: 1rem;
+      max-height: calc(100vh - 2rem);
+      overflow-y: auto;
+      padding: 0.75rem 0.6rem 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .cs-sidebar::-webkit-scrollbar { width: 6px; }
+    .cs-sidebar::-webkit-scrollbar-thumb {
+      background: var(--border-strong); border-radius: 6px;
+    }
+
+    .nav-section { margin-bottom: 0.5rem; }
+    .nav-section-title {
+      padding: 0.75rem 0.75rem 0.4rem;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-subtle);
+      font-weight: 700;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.84rem;
+      transition: background 0.12s, color 0.12s;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 100%;
+      text-align: left;
+    }
+    .nav-link i {
+      width: 16px; text-align: center;
+      font-size: 0.82rem; color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .nav-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .nav-link:hover i { color: var(--accent); }
+    .nav-link.active {
+      background: var(--accent-soft); color: var(--accent); font-weight: 600;
+    }
+    .nav-link.active i { color: var(--accent); }
+
+    /* ============ MAIN ============ */
+    .cs-main { min-width: 0; }
+
+    .cs-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .cs-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text);
+    }
+    .cs-title i { color: var(--primary); font-size: 1.05rem; }
+    .cs-subtitle {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .cs-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+
+    /* ============ BUTTONS ============ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover); border-color: var(--accent-hover);
+    }
+    .btn-success {
+      background: var(--success); color: #fff; border-color: var(--success);
+    }
+    .btn-success:hover { background: #0b6349; border-color: #0b6349; }
+    .btn-secondary {
+      background: var(--surface); color: var(--text); border-color: var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--border-strong); }
+    .btn-danger {
+      background: var(--danger); color: #fff; border-color: var(--danger);
+    }
+    .btn-danger:hover { background: #a13024; border-color: #a13024; }
+    .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.72rem; }
+
+    /* ============ TAB CONTENT ============ */
+    .tab-content { display: none; }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============ CARDS ============ */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.15rem;
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-title i { color: var(--primary); font-size: 0.85rem; }
+
+    /* ============ STATS GRID ============ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.25rem;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    }
+    .stat-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .stat-title {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    .stat-icon {
+      width: 28px; height: 28px;
+      display: grid; place-items: center;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+    .stat-change {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ============ CHARTS ============ */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      height: 300px;
+      position: relative;
+    }
+    .chart-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--text-subtle);
+      font-size: 0.83rem;
+    }
+    .chart-empty i { font-size: 1.5rem; opacity: 0.5; }
+
+    /* ============ TABLES ============ */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 1.5rem;
+    }
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding: 1.1rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-toolbar h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .table-toolbar-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    .data-table th {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover { background: var(--surface-alt); }
+    .data-table .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-subtle);
+    }
+    .data-table .empty-state i {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 0.55rem;
+      opacity: 0.5;
+    }
+
+    .table-actions { display: flex; gap: 0.35rem; }
+    .action-icon {
+      cursor: pointer;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      transition: background 0.12s, color 0.12s;
+    }
+    .action-icon:hover { background: var(--accent-soft); color: var(--accent); }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .badge-success { background: #dcfce7; color: #166534; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger  { background: #fee2e2; color: #991b1b; }
+    .badge-info    { background: var(--accent-soft); color: var(--accent); }
+    .badge-gray    { background: #f1f5f9; color: #475569; }
+
+    /* ============ CHAT PANEL ============ */
+    .chat-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+    .chat-header-bar {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      padding: 0.85rem 1.15rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .chat-body {
+      height: 320px;
+      padding: 1rem;
+      overflow-y: auto;
+      background: var(--surface-alt);
+    }
+    .chat-msg {
+      margin-bottom: 0.6rem;
+      display: flex;
+    }
+    .chat-bubble {
+      padding: 0.55rem 0.9rem;
+      border-radius: 12px;
+      max-width: 80%;
+      font-size: 0.83rem;
+      line-height: 1.4;
+    }
+    .chat-bubble.agent {
+      background: var(--accent-soft);
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+    }
+    .chat-bubble.user {
+      background: var(--accent);
+      color: #fff;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+    .chat-input-row {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .chat-input-row input {
+      flex: 1;
+      padding: 0.55rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      background: var(--surface);
+      font-size: 0.83rem;
+      outline: none;
+    }
+    .chat-input-row input:focus { border-color: var(--accent); }
+
+    /* ============ FORMS ============ */
+    .form-group { margin-bottom: 1.15rem; }
+    .form-label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: var(--text-2);
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.85rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+
+    /* ============ MODAL ============ */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      padding: 1rem;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 720px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalSlideIn 0.25s ease;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      padding: 1.15rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1;
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+    }
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      width: 34px; height: 34px;
+      display: grid; place-items: center;
+      border-radius: var(--radius-sm);
+      transition: background 0.12s, color 0.12s;
+    }
+    .modal-close:hover { background: var(--accent-soft); color: var(--accent); }
+    .modal-body { padding: 1.35rem; }
+    .modal-footer {
+      padding: 1rem 1.35rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.55rem;
+      position: sticky;
+      bottom: 0;
+      background: var(--surface);
+      border-bottom-left-radius: var(--radius-lg);
+      border-bottom-right-radius: var(--radius-lg);
+    }
+
+    /* ============ NOTIFICATION ============ */
+    .notification {
+      position: fixed;
+      top: 20px; right: 20px;
+      padding: 0.85rem 1.25rem;
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      font-size: 0.83rem;
+      font-weight: 500;
+      animation: slideIn 0.25s ease;
+      max-width: 400px;
+    }
+    .notification.success { background: var(--success); }
+    .notification.error   { background: var(--danger); }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ============ FOOTER ============ */
+    .app-footer {
+      margin-top: 2.5rem;
+      padding: 1.4rem 0 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .app-footer strong { color: var(--text-2); font-weight: 600; }
+
+    /* ============ MOBILE ============ */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem; left: 1rem;
+      background: var(--primary); color: #fff;
+      border-radius: var(--radius-sm);
+      width: 42px; height: 42px;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: var(--shadow);
+    }
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.5);
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+    .sidebar-overlay.active { display: block; }
+
+    @media (max-width: 960px) {
+      .app { padding: 1rem; padding-top: 4rem; }
+      .cs-layout { grid-template-columns: 1fr; }
+      .cs-sidebar {
+        position: fixed;
+        top: 0; left: 0;
+        width: var(--sidebar-w);
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        border: none;
+        border-right: 1px solid var(--border);
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        z-index: 1000;
+      }
+      .cs-sidebar.active { transform: translateX(0); }
+      .mobile-menu-toggle { display: flex; }
+    }
+    @media (max-width: 640px) {
+      .stats-grid, .charts-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .cs-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
 </head>
 <body>
-<header>
-  <div class="brand">
-    <div class="logo">CG</div>
-    <h1>CephasGM — Customer Service (Enterprise)</h1>
-  </div>
-  <div class="nav-actions">
-    <button id="dashboardBtn">📊 Dashboard</button>
-    <button id="newTicketTop">+ New Ticket</button>
-  </div>
-</header>
+  <a href="#main-content" class="sr-only">Skip to main content</a>
 
-<main class="container">
-  <section class="cards" id="cards">
-    <div class="card" data-key="ticket"><div class="icon">🎫</div><h3>Ticket Management</h3><p>Advanced tracking with SLA, categories & full history.</p></div>
-    <div class="card" data-key="livechat"><div class="icon">💬</div><h3>Live Chat Support</h3><p>Real-time chat with transcripts, ratings & queues.</p></div>
-    <div class="card" data-key="feedback"><div class="icon">⭐</div><h3>Feedback & CSAT</h3><p>NPS, CES, sentiment analysis & trend reports.</p></div>
-    <div class="card" data-key="kb"><div class="icon">📚</div><h3>Knowledge Base</h3><p>Multi-language articles with versioning & ratings.</p></div>
-    <div class="card" data-key="analytics"><div class="icon">📈</div><h3>Service Analytics</h3><p>SLA, backlog, agent perf, cost & forecast.</p></div>
-    <div class="card" data-key="crm"><div class="icon">👥</div><h3>CRM 360°</h3><p>Customer view with history, contracts & risk.</p></div>
-  </section>
+  <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu" aria-expanded="false">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <section class="split">
-    <div class="left">
-      <div id="panelContainer" class="panel">
-        <h2>Enterprise Customer Service</h2>
-        <p class="small">Click any card to access the full-featured module below. All data is fully editable, savable, and deletable. This system includes all upgrades for multi-national operations.</p>
-        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn-primary btn" id="openTicketsQuick" style="padding:10px 12px;">Open Tickets</button>
-          <button class="btn" id="openChatQuick" style="padding:10px 12px;">Open Live Chat</button>
-        </div>
-      </div>
-    </div>
+  <div class="app">
+    <!-- TOP BAR -->
+    <header class="top-bar">
+      <a href="index.html" class="brand-tab" aria-label="CephasGM ERP — return to homepage">
+        <i class="fas fa-bolt" aria-hidden="true"></i>
+        CephasGM ERP
+      </a>
+    </header>
 
-    <aside class="right">
-      <div class="panel">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div><div style="font-weight:700">Quick Stats</div><div class="small">Global Snapshot</div></div>
-          <div style="text-align:right"><div id="statOpen" style="font-weight:800;font-size:1.25rem;color:var(--primary)">0</div><div class="small">Open</div></div>
-        </div>
-        <hr>
-        <div class="flex" style="justify-content:space-between;">
-          <div class="small">Avg Resp: <span id="statAvg">0m</span></div>
-          <div class="small">CSAT: <span id="statSat">0%</span></div>
-          <div class="small">SLA%: <span id="statSLA">0%</span></div>
-        </div>
-      </div>
-      <div class="panel chat-box" id="aiPanel">
-        <div class="chat-header">🤖 CephasAI (Global Support)</div>
-        <div class="chat-body" id="aiBody">
-          <div class="msg"><div class="bubble ai">I'm upgraded. Ask me: 'open ticket', 'show breached SLA', 'find customer'</div></div>
-        </div>
-        <div class="chat-input">
-          <input id="aiInput" placeholder="Ask CephasAI...">
-          <button id="aiSend">Ask</button>
-        </div>
-      </div>
-    </aside>
-  </section>
-</main>
-<footer>Copyright © 2025 CephasGM ERP — Full Enterprise Upgrade</footer>
+    <div class="cs-layout">
+      <!-- SIDEBAR -->
+      <aside class="cs-sidebar" id="csSidebar" aria-label="Customer service navigation">
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <div class="nav-section-title">Overview</div>
+            <button class="nav-link active" data-tab="dashboard">
+              <i class="fas fa-chart-line"></i><span>Dashboard</span>
+            </button>
+            <button class="nav-link" data-tab="analytics">
+              <i class="fas fa-chart-bar"></i><span>Analytics</span>
+            </button>
+          </div>
 
-<script>
-/* ========== CONFIG ========== */
-const DASHBOARD_URL = 'index.html';
-const SOCKET_SERVER_URL = null; // keep null for full local demo
+          <div class="nav-section">
+            <div class="nav-section-title">Support</div>
+            <button class="nav-link" data-tab="tickets">
+              <i class="fas fa-ticket"></i><span>Tickets</span>
+            </button>
+            <button class="nav-link" data-tab="chats">
+              <i class="fas fa-comments"></i><span>Live Chat</span>
+            </button>
+            <button class="nav-link" data-tab="feedback">
+              <i class="fas fa-star"></i><span>Feedback &amp; CSAT</span>
+            </button>
+          </div>
 
-/* ========== UTILITIES ========== */
-const uid = (p='id') => p+'-'+Math.random().toString(36).slice(2,12);
-const nowISO = () => new Date().toISOString();
-const qs = s => document.querySelector(s);
-const qsa = s => Array.from(document.querySelectorAll(s));
+          <div class="nav-section">
+            <div class="nav-section-title">Knowledge</div>
+            <button class="nav-link" data-tab="kb">
+              <i class="fas fa-book"></i><span>Knowledge Base</span>
+            </button>
+          </div>
 
-/* ========== LOCAL STORAGE KEYS (Upgraded) ========== */
-const K_TICKETS = 'cgm_tickets_v3';         // upgraded with 50+ fields
-const K_CUSTOMERS = 'cgm_customers_v3';      // 360 view
-const K_CHATS = 'cgm_chats_v3';              // upgraded chat
-const K_FEEDBACK = 'cgm_feedback_v3';         // NPS, CES, sentiment
-const K_KB = 'cgm_kb_v3';                     // versioned, multi-lang
-const K_AGENTS = 'cgm_agents_v3';              // agent skills, shifts
-const K_AUDIT = 'cgm_audit_v3';                // audit log
+          <div class="nav-section">
+            <div class="nav-section-title">Customers</div>
+            <button class="nav-link" data-tab="customers">
+              <i class="fas fa-users"></i><span>Customers</span>
+            </button>
+            <button class="nav-link" data-tab="agents">
+              <i class="fas fa-user-tie"></i><span>Agents</span>
+            </button>
+          </div>
 
-/* ========== SEED DATA (with all upgrades) ========== */
-function seedIfEmpty(){
-  // Customers (360 view)
-  if(!localStorage.getItem(K_CUSTOMERS)){
-    localStorage.setItem(K_CUSTOMERS, JSON.stringify([
-      {id:'cust-1', name:'Acme Corp (John M)', email:'john.m@acme.com', phone:'+255700000001', country:'TZ', region:'East Africa', language:'en', timezone:'EAT', tier:'Gold', accountManager:'Alice', lifetimeValue:150000, churnRisk:'Low', contract:'ENT-2025-001', supportLevel:'Premium', preferredContact:'email', marketingOptIn:true, dataProcessingConsent:true, createdAt:nowISO()},
-      {id:'cust-2', name:'Global Biz (Sarah K)', email:'sarah.k@globalbiz.co', phone:'+255700000002', country:'KE', region:'East Africa', language:'en', timezone:'EAT', tier:'Silver', accountManager:'Bob', lifetimeValue:85000, churnRisk:'Medium', contract:'STD-2025-045', supportLevel:'Standard', preferredContact:'phone', marketingOptIn:false, dataProcessingConsent:true, createdAt:nowISO()},
-      {id:'cust-3', name:'EuroTech GmbH', email:'info@eurotech.de', phone:'+4930123456', country:'DE', region:'EU', language:'de', timezone:'CET', tier:'Platinum', accountManager:'Clara', lifetimeValue:420000, churnRisk:'Low', contract:'PRE-2024-998', supportLevel:'VIP', preferredContact:'chat', marketingOptIn:true, dataProcessingConsent:true, createdAt:'2024-06-01T10:00:00Z'}
-    ]));
-  }
+          <div class="nav-section">
+            <div class="nav-section-title">Other Modules</div>
+            <a href="sales.html" class="nav-link">
+              <i class="fas fa-tags"></i><span>Sales</span>
+            </a>
+            <a href="finance.html" class="nav-link">
+              <i class="fas fa-chart-pie"></i><span>Finance</span>
+            </a>
+            <a href="hr.html" class="nav-link">
+              <i class="fas fa-user-tie"></i><span>HR</span>
+            </a>
+            <a href="quality.html" class="nav-link">
+              <i class="fas fa-medal"></i><span>Quality</span>
+            </a>
+            <a href="admin.html" class="nav-link">
+              <i class="fas fa-sliders"></i><span>Admin</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
 
-  // Agents with skills, shifts
-  if(!localStorage.getItem(K_AGENTS)){
-    localStorage.setItem(K_AGENTS, JSON.stringify([
-      {id:'agent-1', name:'Alice', email:'alice@cephasgm.com', skills:['technical','billing'], languages:['en','sw'], shift:'morning', maxConcurrent:5, status:'online', region:'East Africa', manager:'Diana', hireDate:'2023-01-15', satisfaction:4.8},
-      {id:'agent-2', name:'Bob', email:'bob@cephasgm.com', skills:['general','complaint'], languages:['en'], shift:'afternoon', maxConcurrent:4, status:'away', region:'East Africa', manager:'Diana', hireDate:'2023-06-20', satisfaction:4.5},
-      {id:'agent-3', name:'Clara', email:'clara@cephasgm.com', skills:['vip','technical','escalation'], languages:['en','de','fr'], shift:'morning', maxConcurrent:3, status:'online', region:'EU', manager:'Erik', hireDate:'2022-11-01', satisfaction:4.9}
-    ]));
-  }
+      <!-- MAIN -->
+      <main class="cs-main" id="main-content" tabindex="-1">
+        <!-- Header -->
+        <header class="cs-header">
+          <div>
+            <h1 class="cs-title" id="pageTitle">
+              <i class="fas fa-headset"></i>
+              Customer Service Dashboard
+            </h1>
+            <p class="cs-subtitle" id="pageSubtitle">
+              Overview of tickets, chats, and customer satisfaction
+            </p>
+          </div>
+          <div class="cs-actions">
+            <button class="btn btn-secondary" onclick="exportCurrentTab()">
+              <i class="fas fa-download"></i> Export
+            </button>
+            <button class="btn btn-primary" id="addRecordBtn" onclick="openAddModal()">
+              <i class="fas fa-plus"></i> New Ticket
+            </button>
+          </div>
+        </header>
 
-  // Tickets (fully upgraded)
-  if(!localStorage.getItem(K_TICKETS)){
-    const tickets = [
-      {id:'T-1001', title:'Delivery delayed', description:'Customer reported delay on order #ORD-5001', customerId:'cust-1', status:'open', priority:'High', category:'Technical', subCategory:'Shipping', contactMethod:'email', assignedAgent:'agent-1', team:'L1 Support', created:nowISO(), updated:nowISO(), resolved:null, closed:null, firstResponseAt:null, resolutionTime:null, slaDeadline: new Date(Date.now() + 48*3600000).toISOString(), slaStatus:'Within SLA', tags:['delivery','urgent'], internalNotes:[], customerReplies:[{by:'customer', text:'Any update?', at:nowISO()}], attachments:[], linkedTickets:[], escalationLevel:null, rootCause:null, tempSolution:null, permanentSolution:null, followUpRequired:false, country:'TZ', language:'en', timezone:'EAT', localOffice:'Dar es Salaam', dataPrivacyCompliant:true, customFields:{}}, 
-      {id:'T-1002', title:'API integration error', description:'500 error on payment endpoint', customerId:'cust-2', status:'inprogress', priority:'Critical', category:'Technical', subCategory:'API', contactMethod:'chat', assignedAgent:'agent-1', team:'L2 Technical', created:nowISO(), updated:nowISO(), resolved:null, closed:null, firstResponseAt:nowISO(), resolutionTime:null, slaDeadline: new Date(Date.now() + 4*3600000).toISOString(), slaStatus:'At Risk', tags:['api','urgent','5xx'], internalNotes:[{by:'agent-1', note:'Checking logs', at:nowISO()}], customerReplies:[], attachments:[], linkedTickets:[], escalationLevel:1, escalationReason:'Timeout', rootCause:null, tempSolution:'Retry after 5 min', permanentSolution:null, followUpRequired:true, country:'KE', language:'en', timezone:'EAT', localOffice:'Nairobi', dataPrivacyCompliant:true, customFields:{}}
-    ];
-    // Add one ticket with breached SLA
-    let breached = {id:'T-1003', title:'License key not received', description:'Customer paid but no key', customerId:'cust-3', status:'open', priority:'High', category:'Billing', subCategory:'License', contactMethod:'webform', assignedAgent:null, team:'L1 Support', created: new Date(Date.now() - 72*3600000).toISOString(), updated: new Date(Date.now() - 70*3600000).toISOString(), resolved:null, closed:null, firstResponseAt:null, resolutionTime:null, slaDeadline: new Date(Date.now() - 24*3600000).toISOString(), slaStatus:'Breached', tags:['license','urgent'], internalNotes:[], customerReplies:[{by:'customer', text:'Still waiting', at: new Date(Date.now() - 48*3600000).toISOString()}], attachments:[], linkedTickets:[], escalationLevel:null, rootCause:null, tempSolution:null, permanentSolution:null, followUpRequired:false, country:'DE', language:'de', timezone:'CET', localOffice:'Berlin', dataPrivacyCompliant:true, customFields:{}};
-    tickets.push(breached);
-    localStorage.setItem(K_TICKETS, JSON.stringify(tickets));
-  }
-
-  // Chats upgraded
-  if(!localStorage.getItem(K_CHATS)){
-    localStorage.setItem(K_CHATS, JSON.stringify([
-      {id:'chat-1', customerId:'cust-1', visitorName:'John', visitorEmail:'john@acme.com', startPage:'/support', startTime:nowISO(), endTime:null, duration:null, messages:[{from:'customer', text:'Is my order shipped?', at:nowISO()},{from:'agent', text:'Checking now', at:nowISO(), agentId:'agent-1'}], agentId:'agent-1', rating:null, chatDuration:120, proactiveInvite:false, cobrowsing:false, fileTransfer:false, botHandoff:false, queuePosition:0, estimatedWait:0, missed:false, transcript:'Full transcript...', tags:['order']}
-    ]));
-  }
-
-  // Feedback upgraded
-  if(!localStorage.getItem(K_FEEDBACK)){
-    localStorage.setItem(K_FEEDBACK, JSON.stringify([
-      {id:'fb-1', customerId:'cust-1', surveyType:'Post-Ticket', csat:4, nps:8, ces:3, comment:'Good support, but slow', sentiment:'Neutral', category:'speed', date:nowISO(), ticketId:'T-1001', agentId:'agent-1', response:null, improvementAction:null},
-      {id:'fb-2', customerId:'cust-2', surveyType:'Post-Chat', csat:5, nps:9, ces:2, comment:'Great chat!', sentiment:'Positive', category:'agent', date:nowISO(), ticketId:'T-1002', agentId:'agent-1', response:'Thank you!', improvementAction:null}
-    ]));
-  }
-
-  // Knowledge Base upgraded
-  if(!localStorage.getItem(K_KB)){
-    localStorage.setItem(K_KB, JSON.stringify([
-      {id:'kb-1', title:'Track Order', category:'Getting Started', tags:['order','track'], author:'Alice', status:'Published', publishDate:'2024-01-10', updated:nowISO(), reviewer:'Bob', version:'1.2', content:'Go to Orders > Track and enter number. <video>...</video>', views:1450, helpful:230, notHelpful:45, comments:[], searchKeywords:['track package','where is my order'], relatedArticles:['kb-3'], internalNotes:'Approved', language:'en', translationStatus:'Original'},
-      {id:'kb-2', title:'Refund Policy', category:'Billing', tags:['refund','money back'], author:'Clara', status:'Published', publishDate:'2024-02-15', updated:nowISO(), reviewer:'Alice', version:'2.0', content:'Refunds within 14 days. Conditions apply.', views:890, helpful:120, notHelpful:15, comments:[], searchKeywords:['return','refund'], relatedArticles:[], internalNotes:'Updated for EU', language:'en', translationStatus:'Translated (DE)'}
-    ]));
-  }
-
-  // Audit log
-  if(!localStorage.getItem(K_AUDIT)) localStorage.setItem(K_AUDIT, JSON.stringify([]));
-}
-
-/* ========== LOAD/SAVE HELPERS ========== */
-const load = (k) => JSON.parse(localStorage.getItem(k) || '[]');
-const save = (k, v) => { localStorage.setItem(k, JSON.stringify(v)); logAudit(k, 'UPDATE', v.length); };
-
-function logAudit(entity, action, details){ let a=load(K_AUDIT); a.push({at:nowISO(), user:'agent1', entity, action, details}); save(K_AUDIT, a); }
-
-/* ========== UI GLOBALS ========== */
-let activeCard = null;
-const cardEls = qsa('.card');
-cardEls.forEach(c => c.addEventListener('click', ()=> { setActiveCard(c.dataset.key); renderModule(c.dataset.key); }));
-function setActiveCard(key){ cardEls.forEach(c => c.classList.toggle('active', c.dataset.key === key)); activeCard = key; }
-
-qs('#dashboardBtn').addEventListener('click', ()=> location.href = DASHBOARD_URL);
-qs('#newTicketTop').addEventListener('click', ()=> { setActiveCard('ticket'); renderModule('ticket', {focusNew:true}); });
-qs('#openTicketsQuick').addEventListener('click', ()=> { setActiveCard('ticket'); renderModule('ticket'); });
-qs('#openChatQuick').addEventListener('click', ()=> { setActiveCard('livechat'); renderModule('livechat'); });
-
-/* ========== RENDER MODULE DISPATCH ========== */
-const panel = qs('#panelContainer');
-function renderModule(key, opts={}){
-  if(key === 'ticket') return renderTickets(opts);
-  if(key === 'livechat') return renderLiveChat(opts);
-  if(key === 'feedback') return renderFeedback(opts);
-  if(key === 'kb') return renderKB(opts);
-  if(key === 'analytics') return renderAnalytics(opts);
-  if(key === 'crm') return renderCRM(opts);
-}
-
-/* ========== TICKET MANAGEMENT (FULLY UPGRADED) ========== */
-function renderTickets(opts){
-  const tickets = load(K_TICKETS);
-  const customers = load(K_CUSTOMERS);
-  const agents = load(K_AGENTS);
-  const teams = ['L1 Support', 'L2 Technical', 'L3 VIP', 'Billing', 'Escalations'];
-  
-  panel.innerHTML = `
-    <h2>🎫 Enterprise Ticket Management</h2>
-    <div class="small flex">50+ fields: SLA, category, linked, root cause, global flags. All editable/savable.</div>
-    <div class="flex" style="justify-content:space-between; margin:10px 0">
-      <div><select id="filterTicketStatus"><option value="all">All Status</option><option value="open">Open</option><option value="inprogress">In Progress</option><option value="resolved">Resolved</option><option value="closed">Closed</option></select></div>
-      <div><select id="filterPriority"><option value="all">Any Priority</option><option value="Critical">Critical</option><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option></select></div>
-      <div><select id="filterSLA"><option value="all">SLA: All</option><option value="breached">Breached</option><option value="atrisk">At Risk</option><option value="within">Within</option></select></div>
-      <div><button class="btn-sm" id="applyTicketFilter">Filter</button></div>
-    </div>
-    <div style="display:flex; gap:12px; flex-wrap:wrap">
-      <div style="flex:2; min-width:500px">
-        <div style="border:1px solid var(--border); border-radius:8px; max-height:500px; overflow:auto">
-          <table style="min-width:1000px"><thead><tr><th>ID</th><th>Title</th><th>Customer</th><th>Status</th><th>Priority</th><th>Category</th><th>Agent</th><th>SLA Status</th><th>Country</th><th>Actions</th></tr></thead><tbody id="ticketTableBody"></tbody></table>
-        </div>
-      </div>
-      <div style="flex:1; min-width:350px">
-        <div style="background:var(--card); border:1px solid var(--border); padding:12px; border-radius:8px;">
-          <h3 style="margin:0 0 8px" id="ticketFormTitle">➕ Create / Edit Ticket</h3>
-          <form id="ticketForm" onsubmit="event.preventDefault(); saveTicket();">
-            <input type="hidden" id="ticketId" value="">
-            <div class="grid-2">
-              <div><label>Title</label><input id="t_title" required></div>
-              <div><label>Customer</label><select id="t_customer" required>${customers.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select></div>
-              <div><label>Status</label><select id="t_status"><option>open</option><option>inprogress</option><option>resolved</option><option>closed</option><option>pending</option></select></div>
-              <div><label>Priority</label><select id="t_priority"><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select></div>
-              <div><label>Category</label><select id="t_category"><option>Technical</option><option>Billing</option><option>General</option><option>Feature</option><option>Complaint</option></select></div>
-              <div><label>Sub-Category</label><input id="t_subcat" placeholder="e.g., API"></div>
-              <div><label>Contact Method</label><select id="t_contact"><option>email</option><option>chat</option><option>phone</option><option>web</option></select></div>
-              <div><label>Assigned Agent</label><select id="t_agent"><option value="">Unassigned</option>${agents.map(a=>`<option value="${a.id}">${a.name}</option>`).join('')}</select></div>
-              <div><label>Team</label><select id="t_team">${teams.map(t=>`<option>${t}</option>`).join('')}</select></div>
-              <div><label>SLA Deadline (hours)</label><input id="t_slaHours" type="number" value="48" min="1"></div>
+        <!-- ============ DASHBOARD ============ -->
+        <div id="dashboard-tab" class="tab-content active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Open Tickets</span>
+                <span class="stat-icon"><i class="fas fa-ticket"></i></span>
+              </div>
+              <div class="stat-value" id="openTickets">—</div>
+              <div class="stat-change">No data yet</div>
             </div>
-            <label>Description</label><textarea id="t_desc" rows="2"></textarea>
-            <div class="grid-2">
-              <div><label>Country</label><input id="t_country" value="TZ"></div>
-              <div><label>Language</label><select id="t_lang"><option>en</option><option>de</option><option>sw</option><option>fr</option></select></div>
-              <div><label>Timezone</label><input id="t_tz" value="EAT"></div>
-              <div><label>Local Office</label><input id="t_office" value="Dar es Salaam"></div>
-              <div><label>Tags</label><input id="t_tags" placeholder="comma,separated"></div>
-              <div><label>Escalation Level</label><input id="t_esc" type="number" min="0"></div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Active Chats</span>
+                <span class="stat-icon"><i class="fas fa-comments"></i></span>
+              </div>
+              <div class="stat-value" id="activeChats">—</div>
+              <div class="stat-change">No data yet</div>
             </div>
-            <label>Internal Notes</label><textarea id="t_internalNotes" rows="2" placeholder="Add note..."></textarea>
-            <label>Root Cause / Temp Solution / Perm Solution</label><textarea id="t_root" rows="1" placeholder="Root cause"></textarea>
-            <div class="flex"><input id="t_followup" type="checkbox"> <label>Follow-up required</label></div>
-            <div class="flex" style="margin-top:8px"><button type="submit" class="btn-primary">💾 Save Ticket</button> <button type="button" class="btn" id="cancelTicketForm">Cancel</button> <button type="button" class="btn" id="deleteTicketBtn" style="color:red">Delete</button></div>
-          </form>
-          <div class="small" style="margin-top:8px">Linked Tickets, Attachments, Replies appear in detail view (click ID in table).</div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Avg CSAT</span>
+                <span class="stat-icon"><i class="fas fa-star"></i></span>
+              </div>
+              <div class="stat-value" id="avgCsat">—</div>
+              <div class="stat-change">No data yet</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">SLA Compliance</span>
+                <span class="stat-icon"><i class="fas fa-clock"></i></span>
+              </div>
+              <div class="stat-value" id="slaCompliance">—</div>
+              <div class="stat-change">No data yet</div>
+            </div>
+          </div>
+
+          <div class="charts-grid">
+            <div class="chart-container">
+              <canvas id="ticketStatusChart"></canvas>
+              <div class="chart-empty" id="ticketStatusChartEmpty">
+                <i class="fas fa-chart-bar"></i>
+                No ticket data yet
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="csatChart"></canvas>
+              <div class="chart-empty" id="csatChartEmpty">
+                <i class="fas fa-chart-pie"></i>
+                No CSAT data yet
+              </div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Recent Tickets</h3>
+              <button class="btn btn-secondary btn-sm" onclick="switchTab('tickets')">View All</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Customer</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="recentTicketsBody"></tbody>
+            </table>
+          </div>
         </div>
+
+        <!-- ============ ANALYTICS ============ -->
+        <div id="analytics-tab" class="tab-content">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Total Tickets</span></div>
+              <div class="stat-value" id="totalTicketsStat">—</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Resolved</span></div>
+              <div class="stat-value" id="resolvedStat">—</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Breached SLA</span></div>
+              <div class="stat-value" id="breachedStat">—</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">NPS Score</span></div>
+              <div class="stat-value" id="npsStat">—</div>
+            </div>
+          </div>
+
+          <div class="charts-grid">
+            <div class="chart-container">
+              <canvas id="priorityChart"></canvas>
+              <div class="chart-empty" id="priorityChartEmpty">
+                <i class="fas fa-chart-bar"></i>
+                No priority data yet
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="countryChart"></canvas>
+              <div class="chart-empty" id="countryChartEmpty">
+                <i class="fas fa-chart-pie"></i>
+                No country data yet
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ TICKETS ============ -->
+        <div id="tickets-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>All Tickets</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('tickets')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('ticket')">
+                  <i class="fas fa-plus"></i> New Ticket
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Customer</th>
+                  <th>Category</th>
+                  <th>Priority</th>
+                  <th>Agent</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="ticketsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ CHATS ============ -->
+        <div id="chats-tab" class="tab-content">
+          <div class="chat-panel">
+            <div class="chat-header-bar">
+              <i class="fas fa-comments"></i>
+              Live Chat Console
+            </div>
+            <div class="chat-body" id="chatBody">
+              <div class="chat-msg">
+                <div class="chat-bubble agent">Select a chat session from the list below to begin responding.</div>
+              </div>
+            </div>
+            <div class="chat-input-row">
+              <input type="text" id="chatInput" placeholder="Type a message…" />
+              <button class="btn btn-primary btn-sm" onclick="sendChatMessage()">
+                <i class="fas fa-paper-plane"></i> Send
+              </button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Chat Sessions</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('chats')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('chat')">
+                  <i class="fas fa-plus"></i> New Session
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Visitor</th>
+                  <th>Email</th>
+                  <th>Agent</th>
+                  <th>Messages</th>
+                  <th>Rating</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="chatsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ FEEDBACK ============ -->
+        <div id="feedback-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Customer Feedback</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('feedback')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('feedback')">
+                  <i class="fas fa-plus"></i> Add Feedback
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Survey Type</th>
+                  <th>CSAT</th>
+                  <th>NPS</th>
+                  <th>Sentiment</th>
+                  <th>Comment</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="feedbackBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ KNOWLEDGE BASE ============ -->
+        <div id="kb-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Knowledge Base Articles</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('kb')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('kb')">
+                  <i class="fas fa-plus"></i> New Article
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Author</th>
+                  <th>Version</th>
+                  <th>Language</th>
+                  <th>Views</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="kbBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ CUSTOMERS ============ -->
+        <div id="customers-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Customer Directory</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('customers')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('customer')">
+                  <i class="fas fa-plus"></i> Add Customer
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Country</th>
+                  <th>Tier</th>
+                  <th>Account Manager</th>
+                  <th>Churn Risk</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="customersBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ AGENTS ============ -->
+        <div id="agents-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Support Agents</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('agents')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('agent')">
+                  <i class="fas fa-plus"></i> Add Agent
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Skills</th>
+                  <th>Languages</th>
+                  <th>Shift</th>
+                  <th>Status</th>
+                  <th>Satisfaction</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="agentsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="app-footer">
+      Copyright © 2025 <strong>Cephas GM</strong> | Innovating for Tomorrow
+    </footer>
+  </div>
+
+  <!-- ============ MODAL ============ -->
+  <div class="modal" id="editModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">New Record</h2>
+        <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+      </div>
+      <form id="editForm" onsubmit="saveItem(event)">
+        <div class="modal-body">
+          <div id="formFields"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="deleteModal" role="dialog" aria-modal="true">
+    <div class="modal-content" style="max-width:420px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirm Delete</h2>
+        <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-muted);font-size:0.88rem;">Are you sure you want to delete this record? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
       </div>
     </div>
-  `;
-  
-  function renderTicketTable(){
-    let list = load(K_TICKETS);
-    const statusFilter = qs('#filterTicketStatus')?.value || 'all';
-    const priorityFilter = qs('#filterPriority')?.value || 'all';
-    const slaFilter = qs('#filterSLA')?.value || 'all';
-    if(statusFilter !== 'all') list = list.filter(t=>t.status === statusFilter);
-    if(priorityFilter !== 'all') list = list.filter(t=>t.priority === priorityFilter);
-    if(slaFilter !== 'all') list = list.filter(t=> t.slaStatus?.toLowerCase().replace(' ','') === slaFilter);
-    
-    const tbody = qs('#ticketTableBody'); tbody.innerHTML = '';
-    list.forEach(t => {
-      const cust = customers.find(c=>c.id===t.customerId) || {name:'?'};
-      const agent = t.assignedAgent ? agents.find(a=>a.id===t.assignedAgent)?.name || t.assignedAgent : '—';
-      const slaClass = t.slaStatus === 'Breached' ? 'status-critical' : (t.slaStatus === 'At Risk' ? 'status-high' : 'status-low');
-      tbody.innerHTML += `<tr>
-        <td><a href="#" class="ticket-id-link" data-id="${t.id}">${t.id}</a></td>
-        <td>${t.title}</td><td>${cust.name}</td>
-        <td><span class="chip status-${t.status}">${t.status}</span></td>
-        <td><span class="chip status-${t.priority?.toLowerCase()}">${t.priority}</span></td>
-        <td>${t.category||''}</td><td>${agent}</td>
-        <td><span class="chip ${slaClass}">${t.slaStatus||'N/A'}</span></td>
-        <td>${t.country||'—'}</td>
-        <td><button class="btn-sm edit-ticket" data-id="${t.id}">✏️</button> <button class="btn-sm delete-ticket" data-id="${t.id}">🗑️</button></td>
-      </tr>`;
-    });
-    qsa('.ticket-id-link').forEach(a => a.addEventListener('click', (e)=> { e.preventDefault(); viewTicketDetail(a.dataset.id); }));
-    qsa('.edit-ticket').forEach(b => b.addEventListener('click', ()=> editTicket(b.dataset.id)));
-    qsa('.delete-ticket').forEach(b => b.addEventListener('click', ()=> deleteTicket(b.dataset.id)));
-  }
-  
-  window.saveTicket = function(){
-    const id = qs('#ticketId').value;
-    const tickets = load(K_TICKETS);
-    const slaHours = Number(qs('#t_slaHours').value) || 48;
-    const created = id ? (tickets.find(t=>t.id===id)?.created || nowISO()) : nowISO();
-    const ticket = {
-      id: id || uid('T-'), title: qs('#t_title').value, description: qs('#t_desc').value, customerId: qs('#t_customer').value,
-      status: qs('#t_status').value, priority: qs('#t_priority').value, category: qs('#t_category').value, subCategory: qs('#t_subcat').value,
-      contactMethod: qs('#t_contact').value, assignedAgent: qs('#t_agent').value || null, team: qs('#t_team').value,
-      created, updated: nowISO(), resolved: null, closed: null, firstResponseAt: null, resolutionTime: null,
-      slaDeadline: new Date(Date.now() + slaHours*3600000).toISOString(),
-      slaStatus: 'Within SLA', // will recalc later
-      tags: qs('#t_tags').value.split(',').map(s=>s.trim()).filter(Boolean),
-      internalNotes: [{by:'agent', note:qs('#t_internalNotes').value, at:nowISO()}],
-      customerReplies: [], attachments: [], linkedTickets: [],
-      escalationLevel: qs('#t_esc').value || null, rootCause: qs('#t_root').value, tempSolution: null, permanentSolution: null,
-      followUpRequired: qs('#t_followup').checked,
-      country: qs('#t_country').value, language: qs('#t_lang').value, timezone: qs('#t_tz').value, localOffice: qs('#t_office').value,
-      dataPrivacyCompliant: true, customFields: {}
+  </div>
+
+  <script>
+  /* =========================================================
+     CephasGM ERP — Customer Service Module v4.0
+     Empty-state on first load. Data persisted to localStorage.
+     ========================================================= */
+
+  const TAB_META = {
+    dashboard: ['Customer Service Dashboard', 'Overview of tickets, chats, and customer satisfaction'],
+    analytics: ['Service Analytics',          'Deep metrics on ticket volume, priority, and SLA'],
+    tickets:   ['Ticket Management',          'All support tickets and their resolution status'],
+    chats:     ['Live Chat',                  'Real-time chat sessions and transcripts'],
+    feedback:  ['Feedback & CSAT',            'Customer satisfaction, NPS, and sentiment'],
+    kb:        ['Knowledge Base',             'Self-service articles and help content'],
+    customers: ['Customers',                  'Customer directory and 360° profiles'],
+    agents:    ['Support Agents',             'Agent skills, shifts, and performance']
+  };
+
+  /* ---------- STATE ---------- */
+  let csData = loadData();
+  let activeTab = 'dashboard';
+  let activeChatId = null;
+  let charts = {};
+  let currentEditType = null;
+  let deleteType = null;
+  let deleteId = null;
+
+  function loadData() {
+    const saved = localStorage.getItem('cephasgm_cs_data');
+    if (saved) return JSON.parse(saved);
+    return {
+      tickets: [],
+      chats: [],
+      feedback: [],
+      kb: [],
+      customers: [],
+      agents: [],
+      nextIds: { ticket: 1, chat: 1, feedback: 1, kb: 1, customer: 1, agent: 1 }
     };
-    if(id){ Object.assign(tickets.find(t=>t.id===id), ticket); } else { tickets.unshift(ticket); }
-    save(K_TICKETS, tickets); renderTicketTable(); updateStats(); clearTicketForm(); alert('Ticket saved.');
-  };
-  
-  window.editTicket = function(id){
-    const t = load(K_TICKETS).find(x=>x.id===id); if(!t) return;
-    qs('#ticketId').value = t.id;
-    qs('#t_title').value = t.title || '';
-    qs('#t_customer').value = t.customerId || '';
-    qs('#t_status').value = t.status || 'open';
-    qs('#t_priority').value = t.priority || 'Medium';
-    qs('#t_category').value = t.category || 'General';
-    qs('#t_subcat').value = t.subCategory || '';
-    qs('#t_contact').value = t.contactMethod || 'email';
-    qs('#t_agent').value = t.assignedAgent || '';
-    qs('#t_team').value = t.team || 'L1 Support';
-    qs('#t_desc').value = t.description || '';
-    const slaHours = t.slaDeadline ? Math.round((new Date(t.slaDeadline) - new Date())/3600000) : 48;
-    qs('#t_slaHours').value = slaHours > 0 ? slaHours : 24;
-    qs('#t_country').value = t.country || 'TZ';
-    qs('#t_lang').value = t.language || 'en';
-    qs('#t_tz').value = t.timezone || 'EAT';
-    qs('#t_office').value = t.localOffice || '';
-    qs('#t_tags').value = (t.tags || []).join(', ');
-    qs('#t_esc').value = t.escalationLevel || '';
-    qs('#t_root').value = t.rootCause || '';
-    qs('#t_followup').checked = t.followUpRequired || false;
-  };
-  
-  window.deleteTicket = function(id){
-    if(!confirm('Delete ticket?')) return;
-    save(K_TICKETS, load(K_TICKETS).filter(t=>t.id!==id)); renderTicketTable(); updateStats(); if(qs('#ticketId').value===id) clearTicketForm();
-  };
-  
-  function clearTicketForm(){ qs('#ticketId').value=''; qs('#t_title').value=''; qs('#t_desc').value=''; qs('#t_internalNotes').value=''; }
-  qs('#cancelTicketForm')?.addEventListener('click', clearTicketForm);
-  qs('#deleteTicketBtn')?.addEventListener('click', ()=>{ if(qs('#ticketId').value) deleteTicket(qs('#ticketId').value); });
-  qs('#applyTicketFilter')?.addEventListener('click', renderTicketTable);
-  
-  renderTicketTable();
-  if(opts.focusNew) { clearTicketForm(); qs('#t_title')?.focus(); }
-}
+  }
+  function saveData() {
+    localStorage.setItem('cephasgm_cs_data', JSON.stringify(csData));
+  }
 
-function viewTicketDetail(id){ alert('Detailed view with linked tickets, replies, attachments would open. For brevity, use Edit.'); }
+  /* ---------- HELPERS ---------- */
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
-/* ========== LIVE CHAT (UPGRADED) ========== */
-function renderLiveChat(){
-  panel.innerHTML = `<h2>💬 Live Chat (Upgraded)</h2><p class="small">Full transcript, ratings, agent skills, proactive chat, file transfer.</p>`+
-    `<div style="display:flex;gap:12px"><div style="flex:1" id="chatListPanel">Loading chats...</div><div style="flex:2" id="chatDetailPanel">Select a chat</div></div>`;
-  renderChatList();
-}
+  function emptyRow(cols, message, icon = 'fa-inbox') {
+    return `<tr><td colspan="${cols}" class="empty-state"><i class="fas ${icon}"></i>${message}</td></tr>`;
+  }
+  function notify(msg, type = 'info') {
+    const n = document.createElement('div');
+    n.className = `notification ${type}`;
+    n.textContent = msg;
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 3200);
+  }
+  function badgeForStatus(status) {
+    const s = (status || '').toLowerCase();
+    if (s.includes('resolved') || s.includes('closed') || s.includes('active') || s.includes('published') || s.includes('online')) return 'success';
+    if (s.includes('open') || s.includes('progress') || s.includes('pending') || s.includes('draft') || s.includes('away')) return 'warning';
+    if (s.includes('breached') || s.includes('cancelled') || s.includes('overdue')) return 'danger';
+    return 'gray';
+  }
+  function badgeForPriority(priority) {
+    const p = (priority || '').toLowerCase();
+    if (p.includes('critical')) return 'danger';
+    if (p.includes('high')) return 'warning';
+    if (p.includes('medium')) return 'info';
+    if (p.includes('low')) return 'success';
+    return 'gray';
+  }
 
-function renderChatList(){
-  const chats = load(K_CHATS); const customers = load(K_CUSTOMERS);
-  let html = '<h3>Active Conversations</h3><div style="max-height:400px; overflow:auto">';
-  chats.forEach(c => { let cust = customers.find(cu=>cu.id===c.customerId) || {name:'Visitor'}; html+=`<div style="border:1px solid var(--border);padding:8px;margin-bottom:6px;border-radius:6px"><strong>${cust.name}</strong> <span class="small">${c.messages?.length||0} msgs</span><br><span class="small">${c.startTime?new Date(c.startTime).toLocaleString():''}</span><div><button class="btn-sm open-chat" data-id="${c.id}">Open</button> <button class="btn-sm delete-chat" data-id="${c.id}">🗑️</button></div></div>`; });
-  html+='</div><button class="btn-primary" id="newChatBtn">➕ New Chat Session</button>';
-  qs('#chatListPanel').innerHTML = html;
-  qsa('.open-chat').forEach(b=>b.addEventListener('click', ()=> openChatDetail(b.dataset.id)));
-  qsa('.delete-chat').forEach(b=>b.addEventListener('click', ()=>{ if(confirm('Delete chat?')){ save(K_CHATS, load(K_CHATS).filter(c=>c.id!==b.dataset.id)); renderChatList(); }}));
-  qs('#newChatBtn').addEventListener('click', ()=>{
-    let newChat = {id:uid('chat-'), customerId:'cust-1', messages:[{from:'agent',text:'Hello, how can I help?',at:nowISO(),agentId:'agent-1'}], startTime:nowISO(), agentId:'agent-1', missed:false};
-    let chats = load(K_CHATS); chats.unshift(newChat); save(K_CHATS, chats); renderChatList(); openChatDetail(newChat.id);
+  /* ---------- BOOT ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNav();
+    setupMobileMenu();
+    setupAddButton();
+    renderAll();
+    initCharts();
   });
-}
 
-function openChatDetail(chatId){
-  let chat = load(K_CHATS).find(c=>c.id===chatId); if(!chat) return;
-  let customers = load(K_CUSTOMERS); let cust = customers.find(c=>c.id===chat.customerId) || {name:'Unknown'};
-  let agents = load(K_AGENTS);
-  let html = `<h3>Chat with ${cust.name}</h3>`;
-  html += `<div style="border:1px solid var(--border); padding:8px; height:300px; overflow:auto; background:#f9f9f9" id="chatMessages">`;
-  chat.messages.forEach(m => { html += `<div class="msg"><div class="bubble ${m.from==='agent'?'user':'ai'}">${m.text}<br><span class="small">${new Date(m.at).toLocaleTimeString()}</span></div></div>`; });
-  html += `</div><div class="flex"><input id="chatReplyInput" placeholder="Type reply..." style="flex:1"><button class="btn-primary" id="sendChatReply" data-id="${chat.id}">Send</button></div>`;
-  html += `<div><label>Rating:</label> <input id="chatRating" value="${chat.rating||''}"> <button class="btn-sm" id="updateChatRating" data-id="${chat.id}">Save Rating</button></div>`;
-  html += `<div class="small">Start: ${chat.startTime} | Agent: ${agents.find(a=>a.id===chat.agentId)?.name||chat.agentId} | Cobrowsing: ${chat.cobrowsing?'Yes':'No'}</div>`;
-  qs('#chatDetailPanel').innerHTML = html;
-  qs('#sendChatReply')?.addEventListener('click', ()=>{
-    let txt = qs('#chatReplyInput').value; if(!txt) return;
-    let chats = load(K_CHATS); let c = chats.find(x=>x.id===chatId); if(!c) return;
-    c.messages.push({from:'agent', text:txt, at:nowISO(), agentId:'agent-1'});
-    save(K_CHATS, chats); openChatDetail(chatId);
+  function setupNav() {
+    $$('.nav-link[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+  }
+  function setupMobileMenu() {
+    const toggle = $('#mobileMenuToggle');
+    const sidebar = $('#csSidebar');
+    const overlay = $('#sidebarOverlay');
+    toggle.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('active');
+      overlay.classList.toggle('active', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  }
+  function setupAddButton() {
+    const btn = $('#addRecordBtn');
+    if (btn) {
+      btn.onclick = () => openAddModal();
+      updateAddButtonLabel();
+    }
+  }
+  function updateAddButtonLabel() {
+    const btn = $('#addRecordBtn');
+    if (!btn) return;
+    const type = inferTypeFromTab(activeTab);
+    const labels = {
+      ticket:   'New Ticket',
+      chat:     'New Chat Session',
+      feedback: 'Add Feedback',
+      kb:       'New Article',
+      customer: 'Add Customer',
+      agent:    'Add Agent'
+    };
+    btn.innerHTML = `<i class="fas fa-plus"></i> ${labels[type] || 'New Ticket'}`;
+  }
+
+  function switchTab(tab) {
+    activeTab = tab;
+    $$('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.tab === tab));
+    $$('.tab-content').forEach(c => c.classList.toggle('active', c.id === `${tab}-tab`));
+    const meta = TAB_META[tab] || TAB_META.dashboard;
+    $('#pageTitle').innerHTML = `<i class="fas fa-headset"></i> ${meta[0]}`;
+    $('#pageSubtitle').textContent = meta[1];
+    updateAddButtonLabel();
+    const sidebar = $('#csSidebar');
+    if (sidebar.classList.contains('active')) {
+      sidebar.classList.remove('active');
+      $('#sidebarOverlay').classList.remove('active');
+      $('#mobileMenuToggle').setAttribute('aria-expanded', 'false');
+    }
+  }
+  window.switchTab = switchTab;
+
+  /* ---------- RENDER ALL ---------- */
+  function renderAll() {
+    renderDashboard();
+    renderAnalytics();
+    renderTickets();
+    renderChats();
+    renderFeedback();
+    renderKb();
+    renderCustomers();
+    renderAgents();
+    refreshCharts();
+  }
+
+  /* ---------- DASHBOARD ---------- */
+  function renderDashboard() {
+    const tickets = csData.tickets;
+    const chats = csData.chats;
+    const feedback = csData.feedback;
+
+    const openTix = tickets.filter(t => (t.status || '').toLowerCase() === 'open').length;
+    const activeChats = chats.filter(c => !c.endTime).length;
+    const avgCsat = feedback.length
+      ? (feedback.reduce((s, f) => s + (parseFloat(f.csat) || 0), 0) / feedback.length).toFixed(1)
+      : null;
+    const breached = tickets.filter(t => (t.slaStatus || '').toLowerCase() === 'breached').length;
+    const slaPct = tickets.length ? Math.round(((tickets.length - breached) / tickets.length) * 100) : null;
+
+    $('#openTickets').textContent = tickets.length ? openTix : '—';
+    $('#activeChats').textContent = chats.length ? activeChats : '—';
+    $('#avgCsat').textContent = avgCsat !== null ? avgCsat + '/5' : '—';
+    $('#slaCompliance').textContent = slaPct !== null ? slaPct + '%' : '—';
+
+    const body = $('#recentTicketsBody');
+    const recent = [...tickets].slice(-5).reverse();
+    if (!recent.length) {
+      body.innerHTML = emptyRow(6, 'No tickets yet — click "New Ticket" to log your first one.', 'fa-ticket');
+    } else {
+      body.innerHTML = recent.map(t => `
+        <tr>
+          <td>${t.ticketId}</td>
+          <td>${t.title}</td>
+          <td>${t.customer || '—'}</td>
+          <td><span class="badge badge-${badgeForPriority(t.priority)}">${t.priority || '—'}</span></td>
+          <td><span class="badge badge-${badgeForStatus(t.status)}">${t.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('ticket', ${t.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+  }
+
+  /* ---------- ANALYTICS ---------- */
+  function renderAnalytics() {
+    const tickets = csData.tickets;
+    const feedback = csData.feedback;
+
+    const resolved = tickets.filter(t => {
+      const s = (t.status || '').toLowerCase();
+      return s === 'resolved' || s === 'closed';
+    }).length;
+    const breached = tickets.filter(t => (t.slaStatus || '').toLowerCase() === 'breached').length;
+    const avgNps = feedback.length
+      ? (feedback.reduce((s, f) => s + (parseFloat(f.nps) || 0), 0) / feedback.length).toFixed(1)
+      : null;
+
+    $('#totalTicketsStat').textContent = tickets.length || '—';
+    $('#resolvedStat').textContent = tickets.length ? resolved : '—';
+    $('#breachedStat').textContent = tickets.length ? breached : '—';
+    $('#npsStat').textContent = avgNps !== null ? avgNps : '—';
+  }
+
+  /* ---------- TICKETS ---------- */
+  function renderTickets() {
+    const body = $('#ticketsBody');
+    if (!csData.tickets.length) {
+      body.innerHTML = emptyRow(8, 'No tickets yet — create one to start tracking support requests.', 'fa-ticket');
+      return;
+    }
+    body.innerHTML = csData.tickets.map(t => `
+      <tr>
+        <td>${t.ticketId}</td>
+        <td>${t.title}</td>
+        <td>${t.customer || '—'}</td>
+        <td>${t.category || '—'}</td>
+        <td><span class="badge badge-${badgeForPriority(t.priority)}">${t.priority || '—'}</span></td>
+        <td>${t.agent || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(t.status)}">${t.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('ticket', ${t.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- CHATS ---------- */
+  function renderChats() {
+    const body = $('#chatsBody');
+    if (!csData.chats.length) {
+      body.innerHTML = emptyRow(7, 'No chat sessions yet.', 'fa-comments');
+      return;
+    }
+    body.innerHTML = csData.chats.map(c => {
+      const msgCount = (c.messages || []).length;
+      const status = c.endTime ? 'Closed' : 'Active';
+      return `
+        <tr>
+          <td>${c.visitor || 'Visitor'}</td>
+          <td>${c.email || '—'}</td>
+          <td>${c.agent || '—'}</td>
+          <td>${msgCount}</td>
+          <td>${c.rating ? c.rating + '/5' : '—'}</td>
+          <td><span class="badge badge-${badgeForStatus(status)}">${status}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-comment action-icon" onclick="openChat(${c.id})" title="Open"></i>
+            <i class="fas fa-trash action-icon" onclick="openDelete('chat', ${c.id})" title="Delete"></i>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  function openChat(id) {
+    const chat = csData.chats.find(c => c.id === id);
+    if (!chat) return;
+    activeChatId = id;
+    renderChatBody(chat);
+    notify(`Opened chat with ${chat.visitor || 'visitor'}`, 'info');
+  }
+  window.openChat = openChat;
+
+  function renderChatBody(chat) {
+    const body = $('#chatBody');
+    const messages = chat.messages || [];
+    if (!messages.length) {
+      body.innerHTML = `<div class="chat-msg"><div class="chat-bubble agent">Chat session started. Waiting for first message.</div></div>`;
+      return;
+    }
+    body.innerHTML = messages.map(m => `
+      <div class="chat-msg">
+        <div class="chat-bubble ${m.from === 'agent' ? 'agent' : 'user'}">${m.text}</div>
+      </div>`).join('');
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function sendChatMessage() {
+    const input = $('#chatInput');
+    const text = input.value.trim();
+    if (!text || !activeChatId) {
+      if (!activeChatId) notify('Select a chat session first', 'info');
+      return;
+    }
+    const chat = csData.chats.find(c => c.id === activeChatId);
+    if (!chat) return;
+    chat.messages = chat.messages || [];
+    chat.messages.push({ from: 'agent', text, at: new Date().toISOString() });
+    input.value = '';
+    saveData();
+    renderChatBody(chat);
+    renderChats();
+  }
+  window.sendChatMessage = sendChatMessage;
+
+  /* ---------- FEEDBACK ---------- */
+  function renderFeedback() {
+    const body = $('#feedbackBody');
+    if (!csData.feedback.length) {
+      body.innerHTML = emptyRow(7, 'No feedback yet — surveys will appear here.', 'fa-star');
+      return;
+    }
+    body.innerHTML = csData.feedback.map(f => `
+      <tr>
+        <td>${f.customer || '—'}</td>
+        <td>${f.surveyType || '—'}</td>
+        <td>${f.csat || '—'}</td>
+        <td>${f.nps || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(f.sentiment)}">${f.sentiment || '—'}</span></td>
+        <td>${(f.comment || '').slice(0, 60)}</td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('feedback', ${f.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- KNOWLEDGE BASE ---------- */
+  function renderKb() {
+    const body = $('#kbBody');
+    if (!csData.kb.length) {
+      body.innerHTML = emptyRow(8, 'No articles yet — publish your first help article.', 'fa-book');
+      return;
+    }
+    body.innerHTML = csData.kb.map(k => `
+      <tr>
+        <td>${k.title}</td>
+        <td>${k.category || '—'}</td>
+        <td>${k.author || '—'}</td>
+        <td>${k.version || '1.0'}</td>
+        <td>${k.language || 'en'}</td>
+        <td>${k.views || 0}</td>
+        <td><span class="badge badge-${badgeForStatus(k.status)}">${k.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('kb', ${k.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- CUSTOMERS ---------- */
+  function renderCustomers() {
+    const body = $('#customersBody');
+    if (!csData.customers.length) {
+      body.innerHTML = emptyRow(7, 'No customers yet — add your first account.', 'fa-users');
+      return;
+    }
+    body.innerHTML = csData.customers.map(c => `
+      <tr>
+        <td>${c.name}</td>
+        <td>${c.email || '—'}</td>
+        <td>${c.country || '—'}</td>
+        <td>${c.tier || '—'}</td>
+        <td>${c.accountManager || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(c.churnRisk)}">${c.churnRisk || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('customer', ${c.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- AGENTS ---------- */
+  function renderAgents() {
+    const body = $('#agentsBody');
+    if (!csData.agents.length) {
+      body.innerHTML = emptyRow(8, 'No support agents configured yet.', 'fa-user-tie');
+      return;
+    }
+    body.innerHTML = csData.agents.map(a => `
+      <tr>
+        <td>${a.name}</td>
+        <td>${a.email || '—'}</td>
+        <td>${(a.skills || []).join(', ') || '—'}</td>
+        <td>${(a.languages || []).join(', ') || '—'}</td>
+        <td>${a.shift || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(a.status)}">${a.status || '—'}</span></td>
+        <td>${a.satisfaction ? a.satisfaction + '/5' : '—'}</td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('agent', ${a.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- CHARTS ---------- */
+  function initCharts() {
+    refreshCharts();
+  }
+
+  function refreshCharts() {
+    const hasTickets = csData.tickets.length > 0;
+    const hasFeedback = csData.feedback.length > 0;
+
+    const showEmpty = (canvasId, emptyId, has) => {
+      const c = document.getElementById(canvasId);
+      const e = document.getElementById(emptyId);
+      if (c) c.style.display = has ? 'block' : 'none';
+      if (e) e.style.display = has ? 'none' : 'flex';
+    };
+
+    showEmpty('ticketStatusChart', 'ticketStatusChartEmpty', hasTickets);
+    showEmpty('csatChart', 'csatChartEmpty', hasFeedback);
+    showEmpty('priorityChart', 'priorityChartEmpty', hasTickets);
+    showEmpty('countryChart', 'countryChartEmpty', hasTickets);
+
+    Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} });
+    charts = {};
+
+    if (hasTickets) {
+      // Ticket status doughnut
+      const ctx1 = document.getElementById('ticketStatusChart')?.getContext('2d');
+      if (ctx1) {
+        const byStatus = {};
+        csData.tickets.forEach(t => {
+          const k = t.status || 'Unknown';
+          byStatus[k] = (byStatus[k] || 0) + 1;
+        });
+        charts.status = new Chart(ctx1, {
+          type: 'doughnut',
+          data: {
+            labels: Object.keys(byStatus),
+            datasets: [{
+              data: Object.values(byStatus),
+              backgroundColor: ['#2563eb','#0f7b5a','#d97706','#c0392b','#8b5cf6']
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } }
+          }
+        });
+      }
+
+      // Priority bar
+      const ctx2 = document.getElementById('priorityChart')?.getContext('2d');
+      if (ctx2) {
+        const byPriority = {};
+        csData.tickets.forEach(t => {
+          const k = t.priority || 'Unknown';
+          byPriority[k] = (byPriority[k] || 0) + 1;
+        });
+        charts.priority = new Chart(ctx2, {
+          type: 'bar',
+          data: {
+            labels: Object.keys(byPriority),
+            datasets: [{
+              label: 'Tickets',
+              data: Object.values(byPriority),
+              backgroundColor: '#2563eb',
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+      }
+
+      // Country pie
+      const ctx3 = document.getElementById('countryChart')?.getContext('2d');
+      if (ctx3) {
+        const byCountry = {};
+        csData.tickets.forEach(t => {
+          const k = t.country || 'Unknown';
+          byCountry[k] = (byCountry[k] || 0) + 1;
+        });
+        charts.country = new Chart(ctx3, {
+          type: 'pie',
+          data: {
+            labels: Object.keys(byCountry),
+            datasets: [{
+              data: Object.values(byCountry),
+              backgroundColor: ['#2563eb','#0f7b5a','#d97706','#c0392b','#8b5cf6','#ec4899','#f97316']
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } }
+          }
+        });
+      }
+    }
+
+    if (hasFeedback) {
+      const ctx = document.getElementById('csatChart')?.getContext('2d');
+      if (ctx) {
+        const byCsat = { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0 };
+        csData.feedback.forEach(f => {
+          const v = String(f.csat || '');
+          if (byCsat[v] !== undefined) byCsat[v]++;
+        });
+        charts.csat = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: Object.keys(byCsat),
+            datasets: [{
+              label: 'Responses',
+              data: Object.values(byCsat),
+              backgroundColor: '#0f7b5a',
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+      }
+    }
+  }
+
+  /* ---------- ADD MODAL ---------- */
+  function openAddModal(type) {
+    type = type || inferTypeFromTab(activeTab);
+    currentEditType = type;
+    const titles = {
+      ticket:   'New Support Ticket',
+      chat:     'New Chat Session',
+      feedback: 'Add Customer Feedback',
+      kb:       'New Knowledge Base Article',
+      customer: 'Add Customer',
+      agent:    'Add Support Agent'
+    };
+    $('#modalTitle').textContent = titles[type] || 'New Record';
+    $('#formFields').innerHTML = formFor(type);
+    $('#editModal').classList.add('active');
+  }
+  window.openAddModal = openAddModal;
+
+  function inferTypeFromTab(tab) {
+    return ({
+      dashboard: 'ticket',
+      analytics: 'ticket',
+      tickets:   'ticket',
+      chats:     'chat',
+      feedback:  'feedback',
+      kb:        'kb',
+      customers: 'customer',
+      agents:    'agent'
+    })[tab] || 'ticket';
+  }
+
+  function formFor(type) {
+    if (type === 'ticket') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Ticket ID</label><input type="text" class="form-control" name="ticketId" placeholder="Auto-generated"></div>
+        <div class="form-group"><label class="form-label">Customer</label><input type="text" class="form-control" name="customer" required></div>
+      </div>
+      <div class="form-group"><label class="form-label">Title</label><input type="text" class="form-control" name="title" required></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Category</label>
+          <select class="form-control" name="category">
+            <option>Technical</option><option>Billing</option>
+            <option>General</option><option>Feature Request</option><option>Complaint</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Priority</label>
+          <select class="form-control" name="priority">
+            <option>Low</option><option>Medium</option><option>High</option><option>Critical</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Assigned Agent</label><input type="text" class="form-control" name="agent"></div>
+        <div class="form-group"><label class="form-label">Country</label><input type="text" class="form-control" name="country" placeholder="e.g. TZ"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Open</option><option>In Progress</option><option>Pending</option>
+            <option>Resolved</option><option>Closed</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">SLA Status</label>
+          <select class="form-control" name="slaStatus">
+            <option>Within SLA</option><option>At Risk</option><option>Breached</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-control" name="description" rows="3"></textarea></div>`;
+
+    if (type === 'chat') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Visitor Name</label><input type="text" class="form-control" name="visitor"></div>
+        <div class="form-group"><label class="form-label">Visitor Email</label><input type="email" class="form-control" name="email"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Agent</label><input type="text" class="form-control" name="agent"></div>
+        <div class="form-group"><label class="form-label">Start Page</label><input type="text" class="form-control" name="startPage" placeholder="/support"></div>
+      </div>`;
+
+    if (type === 'feedback') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Customer</label><input type="text" class="form-control" name="customer" required></div>
+        <div class="form-group"><label class="form-label">Survey Type</label>
+          <select class="form-control" name="surveyType">
+            <option>Post-Ticket</option><option>Post-Chat</option><option>NPS</option><option>Periodic</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">CSAT (1-5)</label><input type="number" class="form-control" name="csat" min="1" max="5"></div>
+        <div class="form-group"><label class="form-label">NPS (0-10)</label><input type="number" class="form-control" name="nps" min="0" max="10"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Sentiment</label>
+          <select class="form-control" name="sentiment">
+            <option>Positive</option><option>Neutral</option><option>Negative</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Category</label><input type="text" class="form-control" name="category" placeholder="e.g. speed"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Comment</label><textarea class="form-control" name="comment" rows="3"></textarea></div>`;
+
+    if (type === 'kb') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Title</label><input type="text" class="form-control" name="title" required></div>
+        <div class="form-group"><label class="form-label">Category</label>
+          <select class="form-control" name="category">
+            <option>Getting Started</option><option>Billing</option>
+            <option>Technical</option><option>Account</option><option>Integrations</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Author</label><input type="text" class="form-control" name="author"></div>
+        <div class="form-group"><label class="form-label">Language</label>
+          <select class="form-control" name="language">
+            <option value="en">English</option><option value="sw">Swahili</option>
+            <option value="de">German</option><option value="fr">French</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Version</label><input type="text" class="form-control" name="version" value="1.0"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Draft</option><option>Published</option><option>Archived</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Content</label><textarea class="form-control" name="content" rows="5"></textarea></div>`;
+
+    if (type === 'customer') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Customer Name</label><input type="text" class="form-control" name="name" required></div>
+        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-control" name="email"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-control" name="phone"></div>
+        <div class="form-group"><label class="form-label">Country</label><input type="text" class="form-control" name="country"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Tier</label>
+          <select class="form-control" name="tier">
+            <option>Standard</option><option>Silver</option><option>Gold</option><option>Platinum</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Churn Risk</label>
+          <select class="form-control" name="churnRisk">
+            <option>Low</option><option>Medium</option><option>High</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Account Manager</label><input type="text" class="form-control" name="accountManager"></div>`;
+
+    if (type === 'agent') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Name</label><input type="text" class="form-control" name="name" required></div>
+        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-control" name="email"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Skills (comma-separated)</label><input type="text" class="form-control" name="skills" placeholder="technical, billing"></div>
+        <div class="form-group"><label class="form-label">Languages (comma-separated)</label><input type="text" class="form-control" name="languages" placeholder="en, sw"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Shift</label>
+          <select class="form-control" name="shift">
+            <option>Morning</option><option>Afternoon</option><option>Night</option><option>Rotating</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Online</option><option>Away</option><option>Offline</option>
+          </select>
+        </div>
+      </div>`;
+
+    return '<p style="color:var(--text-muted);font-size:0.85rem;">No form available for this record type.</p>';
+  }
+
+  function saveItem(e) {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const type = currentEditType;
+    if (!type) return;
+    const data = Object.fromEntries(f.entries());
+    addRecord(type, data);
+    closeModal('editModal');
+    renderAll();
+    notify('Saved successfully', 'success');
+  }
+  window.saveItem = saveItem;
+
+  function addRecord(type, data) {
+    if (type === 'ticket') {
+      csData.tickets.push({
+        id: csData.nextIds.ticket++,
+        ticketId: data.ticketId || `T-${String(csData.tickets.length + 1).padStart(4, '0')}`,
+        customer: data.customer, title: data.title,
+        category: data.category || 'General',
+        priority: data.priority || 'Medium',
+        agent: data.agent || '',
+        country: data.country || '',
+        status: data.status || 'Open',
+        slaStatus: data.slaStatus || 'Within SLA',
+        description: data.description || '',
+        createdAt: new Date().toISOString()
+      });
+    }
+    else if (type === 'chat') {
+      csData.chats.push({
+        id: csData.nextIds.chat++,
+        visitor: data.visitor || 'Visitor',
+        email: data.email || '',
+        agent: data.agent || '',
+        startPage: data.startPage || '/support',
+        startTime: new Date().toISOString(),
+        endTime: null,
+        messages: [],
+        rating: null
+      });
+    }
+    else if (type === 'feedback') {
+      csData.feedback.push({
+        id: csData.nextIds.feedback++,
+        customer: data.customer,
+        surveyType: data.surveyType || 'Post-Ticket',
+        csat: parseInt(data.csat, 10) || null,
+        nps: parseInt(data.nps, 10) || null,
+        sentiment: data.sentiment || 'Neutral',
+        category: data.category || '',
+        comment: data.comment || '',
+        date: new Date().toISOString()
+      });
+    }
+    else if (type === 'kb') {
+      csData.kb.push({
+        id: csData.nextIds.kb++,
+        title: data.title,
+        category: data.category || 'General',
+        author: data.author || '',
+        language: data.language || 'en',
+        version: data.version || '1.0',
+        status: data.status || 'Draft',
+        content: data.content || '',
+        views: 0
+      });
+    }
+    else if (type === 'customer') {
+      csData.customers.push({
+        id: csData.nextIds.customer++,
+        name: data.name,
+        email: data.email || '',
+        phone: data.phone || '',
+        country: data.country || '',
+        tier: data.tier || 'Standard',
+        churnRisk: data.churnRisk || 'Low',
+        accountManager: data.accountManager || ''
+      });
+    }
+    else if (type === 'agent') {
+      csData.agents.push({
+        id: csData.nextIds.agent++,
+        name: data.name,
+        email: data.email || '',
+        skills: (data.skills || '').split(',').map(s => s.trim()).filter(Boolean),
+        languages: (data.languages || '').split(',').map(s => s.trim()).filter(Boolean),
+        shift: data.shift || 'Morning',
+        status: data.status || 'Offline',
+        satisfaction: null
+      });
+    }
+    saveData();
+  }
+
+  /* ---------- DELETE ---------- */
+  function openDelete(type, id) {
+    deleteType = type;
+    deleteId = id;
+    $('#deleteModal').classList.add('active');
+  }
+  window.openDelete = openDelete;
+
+  function confirmDelete() {
+    if (!deleteType || deleteId == null) return;
+    const map = {
+      ticket: 'tickets', chat: 'chats', feedback: 'feedback',
+      kb: 'kb', customer: 'customers', agent: 'agents'
+    };
+    const key = map[deleteType];
+    if (key && csData[key]) {
+      csData[key] = csData[key].filter(x => String(x.id) !== String(deleteId));
+      saveData();
+      renderAll();
+      notify('Deleted', 'success');
+    }
+    closeModal('deleteModal');
+  }
+  window.confirmDelete = confirmDelete;
+
+  /* ---------- MODAL HELPERS ---------- */
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+  window.closeModal = closeModal;
+
+  /* ---------- EXPORT ---------- */
+  function exportTable(type) {
+    const map = {
+      tickets: 'tickets', chats: 'chats', feedback: 'feedback',
+      kb: 'kb', customers: 'customers', agents: 'agents'
+    };
+    const key = map[type] || type;
+    const rows = csData[key];
+    if (!rows || !rows.length) { notify('No data to export', 'info'); return; }
+    const headers = Object.keys(rows[0]);
+    const csv = [headers.join(',')]
+      .concat(rows.map(r => headers.map(h => JSON.stringify(r[h] ?? '')).join(',')))
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${key}_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    notify('Exported successfully', 'success');
+  }
+  window.exportTable = exportTable;
+
+  function exportCurrentTab() {
+    const map = {
+      tickets: 'tickets', chats: 'chats', feedback: 'feedback',
+      kb: 'kb', customers: 'customers', agents: 'agents'
+    };
+    const key = map[activeTab];
+    if (key) exportTable(key);
+    else notify('Nothing to export from this section', 'info');
+  }
+  window.exportCurrentTab = exportCurrentTab;
+
+  /* ---------- KEYBOARD ---------- */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+    }
+    if (e.key === 'Enter' && document.activeElement?.id === 'chatInput') {
+      sendChatMessage();
+    }
   });
-  qs('#updateChatRating')?.addEventListener('click', ()=>{
-    let chats = load(K_CHATS); let c = chats.find(x=>x.id===chatId); if(c) { c.rating = qs('#chatRating').value; save(K_CHATS, chats); alert('Rating saved'); }
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('modal')) e.target.classList.remove('active');
   });
-}
-
-/* ========== FEEDBACK (NPS, CES, Sentiment) ========== */
-function renderFeedback(){
-  panel.innerHTML = `<h2>⭐ Feedback & CSAT (NPS, CES, Sentiment)</h2><div class="flex">Avg CSAT: <span id="avgCsat">0</span> | NPS: <span id="avgNps">0</span> | CES: <span id="avgCes">0</span></div>`+
-    `<div style="display:flex;gap:12px"><div style="flex:1" id="feedbackList">Loading...</div><div style="flex:1"><div style="border:1px solid var(--border);padding:12px;border-radius:8px"><h3>Add Feedback</h3>`+
-    `<select id="fb_customer">${load(K_CUSTOMERS).map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select>`+
-    `<input id="fb_csat" placeholder="CSAT 1-5" type="number" min="1" max="5"><input id="fb_nps" placeholder="NPS 0-10" type="number" min="0" max="10"><input id="fb_ces" placeholder="CES 1-5" type="number" min="1" max="5">`+
-    `<textarea id="fb_comment" placeholder="Comment"></textarea><select id="fb_sentiment"><option>Positive</option><option>Neutral</option><option>Negative</option></select>`+
-    `<button class="btn-primary" id="saveFeedback">Save</button></div></div></div>`;
-  renderFeedbackList();
-  qs('#saveFeedback').addEventListener('click', ()=>{
-    let fb = {id:uid('fb-'), customerId:qs('#fb_customer').value, csat:Number(qs('#fb_csat').value), nps:Number(qs('#fb_nps').value), ces:Number(qs('#fb_ces').value), comment:qs('#fb_comment').value, sentiment:qs('#fb_sentiment').value, date:nowISO()};
-    let list = load(K_FEEDBACK); list.unshift(fb); save(K_FEEDBACK, list); renderFeedbackList(); updateStats(); 
-  });
-}
-
-function renderFeedbackList(){
-  let list = load(K_FEEDBACK); let customers = load(K_CUSTOMERS);
-  let html = list.map(f=>{ let c = customers.find(cu=>cu.id===f.customerId) || {name:'?'}; return `<div style="border-bottom:1px solid var(--border);padding:6px"><strong>${c.name}</strong> CSAT:${f.csat} NPS:${f.nps} CES:${f.ces} <span class="chip">${f.sentiment}</span><br>${f.comment}<br><span class="small">${new Date(f.date).toLocaleString()}</span></div>`; }).join('');
-  qs('#feedbackList').innerHTML = html || '<p>No feedback yet.</p>';
-  let avgCsat = list.length? (list.reduce((s,i)=>s+i.csat,0)/list.length).toFixed(2):0;
-  let avgNps = list.length? (list.reduce((s,i)=>s+i.nps,0)/list.length).toFixed(2):0;
-  let avgCes = list.length? (list.reduce((s,i)=>s+i.ces,0)/list.length).toFixed(2):0;
-  qs('#avgCsat').innerText = avgCsat; qs('#avgNps').innerText = avgNps; qs('#avgCes').innerText = avgCes;
-}
-
-/* ========== KNOWLEDGE BASE ========== */
-function renderKB(){
-  panel.innerHTML = `<h2>📚 Knowledge Base (Multi-lingual, Versioned)</h2><div style="display:flex;gap:12px"><div style="flex:1" id="kbList"></div><div style="flex:1" id="kbForm"></div></div>`;
-  renderKBList();
-}
-
-function renderKBList(){
-  let articles = load(K_KB);
-  let html = '<h3>Articles</h3><input id="kbSearch" placeholder="Search..."><div style="max-height:400px;overflow:auto">';
-  articles.forEach(a => { html += `<div style="border:1px solid var(--border);padding:8px;margin:6px 0"><strong>${a.title}</strong> (${a.language}) v${a.version} 👍 ${a.helpful||0}<br><span class="small">${a.category}</span><div><button class="btn-sm edit-kb" data-id="${a.id}">Edit</button> <button class="btn-sm delete-kb" data-id="${a.id}">🗑️</button></div></div>`; });
-  html += '</div><button class="btn-primary" id="newKB">➕ New Article</button>';
-  qs('#kbList').innerHTML = html;
-  qs('#kbForm').innerHTML = `<div style="border:1px solid var(--border);padding:12px"><h4>Edit/Create</h4><input id="kbId" type="hidden"><input id="kbTitle" placeholder="Title"><select id="kbLang"><option>en</option><option>de</option><option>sw</option></select><br><textarea id="kbContent" placeholder="Content" rows="6"></textarea><br><button class="btn-primary" id="saveKB">💾 Save</button> <button class="btn" id="cancelKB">Cancel</button></div>`;
-  qsa('.edit-kb').forEach(b=>b.addEventListener('click', ()=> editKB(b.dataset.id)));
-  qsa('.delete-kb').forEach(b=>b.addEventListener('click', ()=> { if(confirm('Delete?')){ save(K_KB, load(K_KB).filter(a=>a.id!==b.dataset.id)); renderKBList(); } }));
-  qs('#newKB')?.addEventListener('click', ()=>{ qs('#kbId').value=''; qs('#kbTitle').value=''; qs('#kbContent').value=''; qs('#kbLang').value='en'; });
-  qs('#saveKB')?.addEventListener('click', ()=>{
-    let id = qs('#kbId').value; let list = load(K_KB);
-    let art = { id: id || uid('kb-'), title: qs('#kbTitle').value, content: qs('#kbContent').value, language: qs('#kbLang').value, version: id ? list.find(a=>a.id===id)?.version+0.1||1.1 : 1.0, updated: nowISO() };
-    if(id){ Object.assign(list.find(a=>a.id===id), art); } else { list.unshift(art); }
-    save(K_KB, list); renderKBList();
-  });
-}
-
-function editKB(id){ let a = load(K_KB).find(x=>x.id===id); if(!a) return; qs('#kbId').value=a.id; qs('#kbTitle').value=a.title; qs('#kbContent').value=a.content; qs('#kbLang').value=a.language||'en'; }
-
-/* ========== ANALYTICS ========== */
-function renderAnalytics(){
-  let tickets = load(K_TICKETS); let feedback = load(K_FEEDBACK); let chats = load(K_CHATS);
-  let openTix = tickets.filter(t=>t.status==='open').length;
-  let breached = tickets.filter(t=>t.slaStatus==='Breached').length;
-  let slaPct = tickets.length? Math.round((tickets.length-breached)/tickets.length*100) : 0;
-  let avgResp = '12m'; let csat = feedback.length? (feedback.reduce((s,i)=>s+i.csat,0)/feedback.length*20).toFixed(0) : 0;
-  panel.innerHTML = `<h2>📈 Service Analytics</h2><div class="grid-2">
-    <div style="border:1px solid var(--border);padding:12px"><h3>Volume</h3>Open: ${openTix}<br>Backlog: ${tickets.filter(t=>t.status!=='resolved'&&t.status!=='closed').length}<br>SLA Compliance: ${slaPct}%</div>
-    <div style="border:1px solid var(--border);padding:12px"><h3>Performance</h3>Avg 1st Resp: ${avgResp}<br>CSAT: ${csat}%<br>Reopen Rate: 4%</div>
-    <div style="border:1px solid var(--border);padding:12px"><h3>Cost/Agent</h3>Cost/Ticket: $4.20<br>Agent Load: 85%</div>
-    <div style="border:1px solid var(--border);padding:12px"><h3>Forecast</h3>Next week: 245 tickets<br>Peak: Tue 10am</div>
-  </div><p class="small">Full reports (aging, root cause, channel perf) can be exported.</p>`;
-}
-
-/* ========== CRM 360° ========== */
-function renderCRM(){
-  panel.innerHTML = `<h2>👥 CRM 360° (Global View)</h2><div style="display:flex;gap:12px"><div style="flex:1" id="custListDiv"></div><div style="flex:1" id="custDetailDiv"></div></div>`;
-  renderCustList();
-}
-
-function renderCustList(){
-  let customers = load(K_CUSTOMERS);
-  let html = '<h3>Customers</h3><div style="max-height:400px;overflow:auto">';
-  customers.forEach(c => html += `<div style="border:1px solid var(--border);padding:8px;margin:6px 0"><strong>${c.name}</strong> (${c.country}) ${c.tier} <br><span class="small">${c.email} | LTV: $${c.lifetimeValue}</span><div><button class="btn-sm view-cust" data-id="${c.id}">View</button> <button class="btn-sm edit-cust" data-id="${c.id}">Edit</button></div></div>`);
-  html += '</div><button class="btn-primary" id="newCust">➕ New Customer</button>';
-  qs('#custListDiv').innerHTML = html;
-  qs('#custDetailDiv').innerHTML = '<div style="border:1px solid var(--border);padding:12px">Select a customer to see 360° view (tickets, chats, feedback, contracts).</div>';
-  qsa('.view-cust').forEach(b=>b.addEventListener('click', ()=> viewCust360(b.dataset.id)));
-  qsa('.edit-cust').forEach(b=>b.addEventListener('click', ()=> editCust(b.dataset.id)));
-  qs('#newCust').addEventListener('click', ()=> editCust(null));
-}
-
-function viewCust360(id){
-  let cust = load(K_CUSTOMERS).find(c=>c.id===id); if(!cust) return;
-  let tickets = load(K_TICKETS).filter(t=>t.customerId===id).length;
-  let feedback = load(K_FEEDBACK).filter(f=>f.customerId===id).length;
-  let chats = load(K_CHATS).filter(c=>c.customerId===id).length;
-  qs('#custDetailDiv').innerHTML = `<h3>${cust.name} - 360°</h3><p>Email: ${cust.email} | Phone: ${cust.phone}<br>Tier: ${cust.tier} | Manager: ${cust.accountManager}<br>LTV: $${cust.lifetimeValue} | Risk: ${cust.churnRisk}<br>Support Level: ${cust.supportLevel}<br>Country: ${cust.country} (${cust.language})<br>Consent: ${cust.dataProcessingConsent}</p><p>Tickets: ${tickets} | Feedback: ${feedback} | Chats: ${chats}</p><p>Contract: ${cust.contract}</p>`;
-}
-
-function editCust(id){
-  let cust = id ? load(K_CUSTOMERS).find(c=>c.id===id) : {id:'', name:'', email:'', phone:'', country:'', tier:'', accountManager:'', lifetimeValue:0, churnRisk:'Low', language:'en'};
-  let html = `<h3>${id?'Edit':'New'} Customer</h3><form id="custForm" onsubmit="event.preventDefault(); saveCust('${id||''}');"><input id="custName" placeholder="Name" value="${cust.name||''}"><input id="custEmail" placeholder="Email" value="${cust.email||''}"><input id="custPhone" placeholder="Phone" value="${cust.phone||''}"><select id="custCountry"><option>TZ</option><option>KE</option><option>DE</option></select><select id="custTier"><option>Platinum</option><option>Gold</option><option>Silver</option></select><input id="custLTV" placeholder="Lifetime Value" value="${cust.lifetimeValue||0}"><select id="custRisk"><option>Low</option><option>Medium</option><option>High</option></select><br><button type="submit" class="btn-primary">Save</button> <button class="btn" id="cancelCust">Cancel</button></form>`;
-  qs('#custDetailDiv').innerHTML = html;
-  window.saveCust = (id)=>{
-    let list = load(K_CUSTOMERS); let newCust = { id: id || uid('cust-'), name: qs('#custName').value, email: qs('#custEmail').value, phone: qs('#custPhone').value, country: qs('#custCountry').value, tier: qs('#custTier').value, lifetimeValue: Number(qs('#custLTV').value), churnRisk: qs('#custRisk').value, accountManager: 'Alice', language: 'en', dataProcessingConsent: true, createdAt: id ? (list.find(c=>c.id===id)?.createdAt || nowISO()) : nowISO() };
-    if(id){ Object.assign(list.find(c=>c.id===id), newCust); } else { list.unshift(newCust); }
-    save(K_CUSTOMERS, list); renderCustList(); alert('Customer saved');
-  };
-  qs('#cancelCust')?.addEventListener('click', ()=> renderCustList());
-}
-
-/* ========== AI ASSISTANT (with local upgrades) ========== */
-function appendAi(who, text){ let c = qs('#aiBody'); let d = document.createElement('div'); d.className='msg'; d.innerHTML=`<div class="bubble ${who==='user'?'user':'ai'}">${text}</div>`; c.appendChild(d); c.scrollTop=c.scrollHeight; }
-function localAiReply(text){
-  let t = text.toLowerCase();
-  if(t.includes('open ticket')){ setActiveCard('ticket'); renderModule('ticket'); return 'Opened Ticket Management (fully upgraded).'; }
-  if(t.includes('sla breached')){ setActiveCard('ticket'); renderModule('ticket'); setTimeout(()=>{ if(qs('#filterSLA')) qs('#filterSLA').value='breached'; qs('#applyTicketFilter')?.click(); },200); return 'Showing breached SLA tickets.'; }
-  if(t.includes('find customer')) return 'Try CRM module and search.';
-  return "I can navigate: 'ticket', 'chat', 'feedback', 'kb', 'analytics', 'crm'.";
-}
-qs('#aiSend').addEventListener('click', ()=> { let txt=qs('#aiInput').value.trim(); if(!txt) return; appendAi('user', txt); qs('#aiInput').value=''; setTimeout(()=> appendAi('ai', localAiReply(txt)), 200); });
-qs('#aiInput').addEventListener('keypress', e=> { if(e.key==='Enter') qs('#aiSend').click(); });
-
-/* ========== STATS UPDATE ========== */
-function updateStats(){
-  let tickets = load(K_TICKETS); let feedback = load(K_FEEDBACK);
-  qs('#statOpen').textContent = tickets.filter(t=>t.status==='open').length;
-  qs('#statAvg').textContent = Math.floor(Math.random()*20+5)+'m';
-  let avgCsat = feedback.length? (feedback.reduce((s,i)=>s+i.csat,0)/feedback.length*20).toFixed(0) : 0;
-  qs('#statSat').textContent = avgCsat+'%';
-  let slaOk = tickets.length? tickets.filter(t=>t.slaStatus==='Within SLA').length/tickets.length*100 : 0;
-  qs('#statSLA').textContent = Math.round(slaOk)+'%';
-}
-
-/* ========== INIT ========== */
-seedIfEmpty();
-updateStats();
-
-// if socket configured elsewhere, keep
-if(SOCKET_SERVER_URL){ /* optional socket init */ }
-
-</script>
+  </script>
 </body>
 </html>
