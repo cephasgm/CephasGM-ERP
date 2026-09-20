@@ -1,0 +1,2605 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- PWA Meta -->
+  <meta name="theme-color" content="#1a4c7a" id="theme-color-meta" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CephasGM ERP" />
+
+  <title>System Admin — CephasGM ERP</title>
+
+  <meta name="description" content="CephasGM ERP System Admin — IAM, security, middleware, database, and workflows" />
+  <meta name="author" content="Cephas Gideon Mkama" />
+  <meta property="og:title" content="System Admin — CephasGM ERP" />
+  <meta property="og:description" content="Enterprise system administration control panel" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cephasgm.github.io/CephasGM-ERP/admin.html" />
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* ============ DESIGN TOKENS ============ */
+    :root {
+      --bg:            #f4f6fa;
+      --surface:       #ffffff;
+      --surface-alt:   #fafbfd;
+      --border:        #e6e9f0;
+      --border-strong: #d3d9e5;
+
+      --text:          #0a1e3c;
+      --text-2:        #2c3e50;
+      --text-muted:    #5e6f8d;
+      --text-subtle:   #94a3b8;
+
+      --primary:       #1a4c7a;
+      --primary-600:   #0e3a5c;
+      --primary-soft:  #e8f0fa;
+      --accent:        #2563eb;
+      --accent-hover:  #1d4ed8;
+      --accent-soft:   #eff4ff;
+
+      --success:       #0f7b5a;
+      --warning:       #d97706;
+      --danger:        #c0392b;
+      --gold:          #b8860b;
+      --cyber:         #06b6d4;
+      --cyber-soft:    #ecfeff;
+      --matrix:        #10b981;
+
+      --radius-lg:     16px;
+      --radius:        12px;
+      --radius-sm:     8px;
+      --radius-pill:   999px;
+
+      --shadow-sm:     0 1px 2px rgba(10, 30, 60, 0.04);
+      --shadow:        0 2px 10px rgba(10, 30, 60, 0.06);
+      --shadow-lg:     0 12px 32px rgba(10, 30, 60, 0.10);
+
+      --max-width:     1440px;
+      --sidebar-w:     272px;
+    }
+
+    /* ============ RESET ============ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ============ PAGE BACKGROUND (ERP collage) ============ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        url('https://www.cio.com/wp-content/uploads/2025/03/272362-0-27498000-1741330535-enterprise_resource_planning-ERP.jpg?quality=50&strip=all&w=1024'),
+        url('https://img.magnific.com/free-vector/gradient-erp-illustration_23-2149379179.jpg'),
+        url('https://www.aimcom.com/wp-content/uploads/2026/01/erp-systems-integrating-business-operations-and-supply-chain-processes-1.png'),
+        url('https://img.magnific.com/free-vector/hand-drawn-flat-design-erp-illustration_23-2149383351.jpg?semt=ais_hybrid&w=740&q=80');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-blend-mode: overlay, soft-light, luminosity, multiply;
+      opacity: 0.07;
+      z-index: -1;
+      pointer-events: none;
+      filter: saturate(0.65) contrast(1.05);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    input, select, textarea { font-family: inherit; }
+    img { max-width: 100%; display: block; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ============ APP WRAPPER ============ */
+    .app {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 1.25rem 2rem 3rem;
+    }
+
+    /* ============ TOP BAR ============ */
+    .top-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.95rem 1.35rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .brand-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, var(--primary) 0%, #2c5a8a 55%, #3d6fa0 100%);
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      box-shadow: 0 4px 14px rgba(26, 76, 122, 0.28);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .brand-tab:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(26, 76, 122, 0.35);
+    }
+    .brand-tab i { font-size: 0.82rem; opacity: 0.9; }
+
+    .product-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-pill);
+      background: var(--cyber-soft);
+      color: var(--cyber);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .live-metrics {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .live-metrics .metric {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .live-metrics .metric strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+    .live-metrics .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--matrix);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* ============ LAYOUT ============ */
+    .ad-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============ SIDEBAR ============ */
+    .ad-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: sticky;
+      top: 1rem;
+      max-height: calc(100vh - 2rem);
+      overflow-y: auto;
+      padding: 0.75rem 0.6rem 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .ad-sidebar::-webkit-scrollbar { width: 6px; }
+    .ad-sidebar::-webkit-scrollbar-thumb {
+      background: var(--border-strong); border-radius: 6px;
+    }
+
+    .nav-section { margin-bottom: 0.5rem; }
+    .nav-section-title {
+      padding: 0.75rem 0.75rem 0.4rem;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-subtle);
+      font-weight: 700;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.84rem;
+      transition: background 0.12s, color 0.12s;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 100%;
+      text-align: left;
+    }
+    .nav-link i {
+      width: 16px; text-align: center;
+      font-size: 0.82rem; color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .nav-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .nav-link:hover i { color: var(--accent); }
+    .nav-link.active {
+      background: var(--accent-soft); color: var(--accent); font-weight: 600;
+    }
+    .nav-link.active i { color: var(--accent); }
+
+    /* ============ MAIN ============ */
+    .ad-main { min-width: 0; }
+
+    .ad-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .ad-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text);
+    }
+    .ad-title i { color: var(--cyber); font-size: 1.05rem; }
+    .ad-subtitle {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .ad-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+
+    /* ============ BUTTONS ============ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover); border-color: var(--accent-hover);
+    }
+    .btn-success {
+      background: var(--success); color: #fff; border-color: var(--success);
+    }
+    .btn-success:hover { background: #0b6349; border-color: #0b6349; }
+    .btn-secondary {
+      background: var(--surface); color: var(--text); border-color: var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--border-strong); }
+    .btn-danger {
+      background: var(--danger); color: #fff; border-color: var(--danger);
+    }
+    .btn-danger:hover { background: #a13024; border-color: #a13024; }
+    .btn-cyber {
+      background: var(--cyber); color: #fff; border-color: var(--cyber);
+    }
+    .btn-cyber:hover { background: #0891b2; border-color: #0891b2; }
+    .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.72rem; }
+
+    /* ============ TAB CONTENT ============ */
+    .tab-content { display: none; }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============ CARDS ============ */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.15rem;
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-title i { color: var(--cyber); font-size: 0.85rem; }
+    .card-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    /* ============ STATS GRID ============ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.25rem;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cyber), var(--matrix));
+    }
+    .stat-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .stat-title {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    .stat-icon {
+      width: 28px; height: 28px;
+      display: grid; place-items: center;
+      background: var(--cyber-soft);
+      color: var(--cyber);
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+    .stat-change {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ============ CHARTS ============ */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      height: 300px;
+      position: relative;
+    }
+    .chart-container.tall { height: 360px; }
+    .chart-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--text-subtle);
+      font-size: 0.83rem;
+      text-align: center;
+      padding: 1rem;
+    }
+    .chart-empty i { font-size: 1.5rem; opacity: 0.5; }
+
+    /* ============ TABLES ============ */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 1.5rem;
+    }
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding: 1.1rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-toolbar h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .table-toolbar-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    .data-table th {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover { background: var(--surface-alt); }
+    .data-table .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-subtle);
+    }
+    .data-table .empty-state i {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 0.55rem;
+      opacity: 0.5;
+    }
+
+    .table-actions { display: flex; gap: 0.35rem; }
+    .action-icon {
+      cursor: pointer;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      transition: background 0.12s, color 0.12s;
+    }
+    .action-icon:hover { background: var(--accent-soft); color: var(--accent); }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .badge-success { background: #dcfce7; color: #166534; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger  { background: #fee2e2; color: #991b1b; }
+    .badge-info    { background: var(--accent-soft); color: var(--accent); }
+    .badge-gray    { background: #f1f5f9; color: #475569; }
+    .badge-cyber   { background: var(--cyber-soft); color: var(--cyber); }
+
+    /* Toggle switch */
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 38px;
+      height: 20px;
+      cursor: pointer;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--border-strong);
+      border-radius: 20px;
+      transition: 0.2s;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      height: 14px; width: 14px;
+      left: 3px; bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--matrix); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+    /* Permission matrix cells */
+    .perm-yes { color: var(--matrix); font-weight: 700; }
+    .perm-no  { color: var(--text-subtle); font-weight: 700; }
+
+    /* ============ WORKFLOW VISUAL ============ */
+    .workflow-canvas {
+      background: linear-gradient(180deg, #f8fafd, #f0f6ff);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .workflow-canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(6, 182, 212, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(6, 182, 212, 0.08) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+    }
+    .workflow-node {
+      background: var(--surface);
+      border: 2px solid var(--cyber);
+      border-radius: var(--radius);
+      padding: 0.85rem 1.25rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      box-shadow: var(--shadow);
+      position: relative;
+      z-index: 1;
+      min-width: 220px;
+      text-align: center;
+    }
+    .workflow-node .role {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-top: 0.15rem;
+    }
+    .workflow-connector {
+      width: 2px;
+      height: 24px;
+      background: var(--cyber);
+      opacity: 0.5;
+      position: relative;
+      z-index: 1;
+    }
+    .workflow-empty {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-subtle);
+      position: relative;
+      z-index: 1;
+    }
+    .workflow-empty i {
+      display: block;
+      font-size: 2rem;
+      opacity: 0.5;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ============ EMPTY BLOCK ============ */
+    .empty-block {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-subtle);
+      font-size: 0.83rem;
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-sm);
+    }
+    .empty-block i {
+      display: block;
+      font-size: 1.5rem;
+      opacity: 0.5;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ============ MINI KPIS ============ */
+    .mini-kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .mini-kpi {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+    }
+    .mini-kpi .label {
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    .mini-kpi .value {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+    .mini-kpi .sub {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    /* ============ TWO-COLUMN ============ */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1.5rem;
+    }
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    /* ============ FORMS ============ */
+    .form-group { margin-bottom: 1.15rem; }
+    .form-label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: var(--text-2);
+      text-transform: capitalize;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.85rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+
+    /* ============ MODAL ============ */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      padding: 1rem;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 640px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalSlideIn 0.25s ease;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      padding: 1.15rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1;
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+    }
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      width: 34px; height: 34px;
+      display: grid; place-items: center;
+      border-radius: var(--radius-sm);
+      transition: background 0.12s, color 0.12s;
+    }
+    .modal-close:hover { background: var(--accent-soft); color: var(--accent); }
+    .modal-body { padding: 1.35rem; }
+    .modal-footer {
+      padding: 1rem 1.35rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.55rem;
+      position: sticky;
+      bottom: 0;
+      background: var(--surface);
+      border-bottom-left-radius: var(--radius-lg);
+      border-bottom-right-radius: var(--radius-lg);
+    }
+
+    /* ============ NOTIFICATION ============ */
+    .notification {
+      position: fixed;
+      top: 20px; right: 20px;
+      padding: 0.85rem 1.25rem;
+      background: var(--matrix);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      font-size: 0.83rem;
+      font-weight: 500;
+      animation: slideIn 0.25s ease;
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .notification.warning { background: var(--warning); }
+    .notification.error   { background: var(--danger); }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ============ FOOTER ============ */
+    .app-footer {
+      margin-top: 2.5rem;
+      padding: 1.4rem 0 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .app-footer strong { color: var(--text-2); font-weight: 600; }
+
+    /* ============ MOBILE ============ */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem; left: 1rem;
+      background: var(--cyber); color: #fff;
+      border-radius: var(--radius-sm);
+      width: 42px; height: 42px;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: var(--shadow);
+    }
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.5);
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+    .sidebar-overlay.active { display: block; }
+
+    @media (max-width: 960px) {
+      .app { padding: 1rem; padding-top: 4rem; }
+      .ad-layout { grid-template-columns: 1fr; }
+      .ad-sidebar {
+        position: fixed;
+        top: 0; left: 0;
+        width: var(--sidebar-w);
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        border: none;
+        border-right: 1px solid var(--border);
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        z-index: 1000;
+      }
+      .ad-sidebar.active { transform: translateX(0); }
+      .mobile-menu-toggle { display: flex; }
+      .two-col { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .stats-grid, .charts-grid, .three-col, .mini-kpis { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .ad-header { flex-direction: column; align-items: flex-start; }
+      .live-metrics { font-size: 0.72rem; gap: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="sr-only">Skip to main content</a>
+
+  <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu" aria-expanded="false">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="app">
+    <!-- TOP BAR -->
+    <header class="top-bar">
+      <a href="index.html" class="brand-tab" aria-label="CephasGM ERP — return to homepage">
+        <i class="fas fa-bolt" aria-hidden="true"></i>
+        CephasGM ERP
+      </a>
+      <span class="product-tag">
+        <i class="fas fa-shield-halved" aria-hidden="true"></i>
+        System Admin
+      </span>
+      <div class="live-metrics">
+        <span class="metric"><span class="dot"></span> Live</span>
+        <span class="metric">Uptime: <strong id="lmUptime">—</strong></span>
+        <span class="metric">Sessions: <strong id="lmSessions">—</strong></span>
+        <span class="metric">DB Status: <strong id="lmDb">—</strong></span>
+        <span class="metric">Storage: <strong id="lmStorage">—</strong></span>
+      </div>
+    </header>
+
+    <div class="ad-layout">
+      <!-- SIDEBAR -->
+      <aside class="ad-sidebar" id="adSidebar" aria-label="Admin navigation">
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <div class="nav-section-title">Overview</div>
+            <button class="nav-link active" data-tab="overview">
+              <i class="fas fa-chart-line"></i><span>System Vitals</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Identity &amp; Access</div>
+            <button class="nav-link" data-tab="users">
+              <i class="fas fa-users"></i><span>Users</span>
+            </button>
+            <button class="nav-link" data-tab="roles">
+              <i class="fas fa-lock"></i><span>Roles &amp; Permissions</span>
+            </button>
+            <button class="nav-link" data-tab="sod">
+              <i class="fas fa-triangle-exclamation"></i><span>Segregation of Duties</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Security &amp; Compliance</div>
+            <button class="nav-link" data-tab="audit">
+              <i class="fas fa-clipboard-list"></i><span>Audit Log</span>
+            </button>
+            <button class="nav-link" data-tab="exfiltration">
+              <i class="fas fa-download"></i><span>Data Exfiltration</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Middleware &amp; ETL</div>
+            <button class="nav-link" data-tab="api">
+              <i class="fas fa-plug"></i><span>API Gateway</span>
+            </button>
+            <button class="nav-link" data-tab="etl">
+              <i class="fas fa-clock-rotate-left"></i><span>ETL Scheduler</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Database &amp; DR</div>
+            <button class="nav-link" data-tab="database">
+              <i class="fas fa-database"></i><span>Database Health</span>
+            </button>
+            <button class="nav-link" data-tab="backup">
+              <i class="fas fa-cloud-arrow-up"></i><span>Backup &amp; DR</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Low-Code &amp; Localization</div>
+            <button class="nav-link" data-tab="workflow">
+              <i class="fas fa-diagram-project"></i><span>Workflow Builder</span>
+            </button>
+            <button class="nav-link" data-tab="localization">
+              <i class="fas fa-globe"></i><span>Localization</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Other Modules</div>
+            <a href="index.html" class="nav-link">
+              <i class="fas fa-house"></i><span>Main Dashboard</span>
+            </a>
+            <a href="finance.html" class="nav-link">
+              <i class="fas fa-chart-pie"></i><span>Finance</span>
+            </a>
+            <a href="hr.html" class="nav-link">
+              <i class="fas fa-user-tie"></i><span>HR</span>
+            </a>
+            <a href="legal.html" class="nav-link">
+              <i class="fas fa-scale-balanced"></i><span>Legal</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="ad-main" id="main-content" tabindex="-1">
+        <!-- Header -->
+        <header class="ad-header">
+          <div>
+            <h1 class="ad-title" id="pageTitle">
+              <i class="fas fa-shield-halved"></i>
+              Global System Vitals Overview
+            </h1>
+            <p class="ad-subtitle" id="pageSubtitle">
+              Consolidated KPIs across IAM, security, middleware, database, and workflows
+            </p>
+          </div>
+          <div class="ad-actions">
+            <button class="btn btn-secondary" onclick="exportCurrentTab()">
+              <i class="fas fa-download"></i> Export
+            </button>
+            <button class="btn btn-cyber" id="addRecordBtn" onclick="openAddModal()">
+              <i class="fas fa-plus"></i> New Record
+            </button>
+          </div>
+        </header>
+
+        <!-- ============ 1. OVERVIEW ============ -->
+        <div id="overview-tab" class="tab-content active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">System Availability</span>
+                <span class="stat-icon"><i class="fas fa-server"></i></span>
+              </div>
+              <div class="stat-value" id="ovUptime">—</div>
+              <div class="stat-change">Rolling 30 days</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Active Sessions</span>
+                <span class="stat-icon"><i class="fas fa-user-shield"></i></span>
+              </div>
+              <div class="stat-value" id="ovSessions">—</div>
+              <div class="stat-change">Concurrent users</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Active Security Alerts</span>
+                <span class="stat-icon"><i class="fas fa-triangle-exclamation"></i></span>
+              </div>
+              <div class="stat-value" id="ovAlerts">—</div>
+              <div class="stat-change">Open items</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Storage Utilized</span>
+                <span class="stat-icon"><i class="fas fa-hard-drive"></i></span>
+              </div>
+              <div class="stat-value" id="ovStorage">—</div>
+              <div class="stat-change">Of total capacity</div>
+            </div>
+          </div>
+
+          <div class="mini-kpis" id="overviewMini"></div>
+
+          <div class="charts-grid">
+            <div class="chart-container">
+              <canvas id="ovApiChart"></canvas>
+              <div class="chart-empty" id="ovApiChartEmpty">
+                <i class="fas fa-chart-bar"></i>
+                No API metrics yet
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="ovAuditChart"></canvas>
+              <div class="chart-empty" id="ovAuditChartEmpty">
+                <i class="fas fa-chart-pie"></i>
+                No audit data yet
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="ovDbChart"></canvas>
+              <div class="chart-empty" id="ovDbChartEmpty">
+                <i class="fas fa-chart-line"></i>
+                No database metrics yet
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-triangle-exclamation"></i> Cross-Module Alerts</div>
+            </div>
+            <div id="overviewAlerts">
+              <div class="empty-block">
+                <i class="fas fa-circle-check"></i>
+                No active alerts. All systems within specification.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 2. USERS ============ -->
+        <div id="users-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Global User Directory</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('users')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-cyber btn-sm" onclick="openAddModal('user')">
+                  <i class="fas fa-plus"></i> Add User
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Employee ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Job Title</th>
+                  <th>Department</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 3. ROLES & PERMISSIONS ============ -->
+        <div id="roles-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-lock"></i> User Roles &amp; Permissions Matrix</div>
+              <button class="btn btn-cyber btn-sm" onclick="openAddModal('role')">
+                <i class="fas fa-plus"></i> Add Role
+              </button>
+            </div>
+            <p class="card-desc">
+              Role-based access control grid mapping each role across all system modules.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Role Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('roles')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Role</th>
+                  <th>Module</th>
+                  <th>Create</th>
+                  <th>Read</th>
+                  <th>Update</th>
+                  <th>Delete</th>
+                  <th>Scope</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="rolesBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 4. SOD CONFLICTS ============ -->
+        <div id="sod-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-triangle-exclamation"></i> Segregation of Duties (SoD) Conflict Panel</div>
+              <button class="btn btn-cyber btn-sm" onclick="openAddModal('sod')">
+                <i class="fas fa-plus"></i> Log Conflict
+              </button>
+            </div>
+            <p class="card-desc">
+              Active compliance violations where a single user holds incompatible access rights.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>SoD Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('sod')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Permission A</th>
+                  <th>Permission B</th>
+                  <th>Risk Level</th>
+                  <th>Detected</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="sodBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 5. AUDIT LOG ============ -->
+        <div id="audit-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-clipboard-list"></i> System Audit Log</div>
+              <button class="btn btn-cyber btn-sm" onclick="openAddModal('audit')">
+                <i class="fas fa-plus"></i> Add Entry
+              </button>
+            </div>
+            <p class="card-desc">
+              Streaming audit log with timestamp, user, action, IP address, and diff viewer.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Audit Trail</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('audit')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>User</th>
+                  <th>Action</th>
+                  <th>Resource</th>
+                  <th>IP Address</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="auditBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 6. DATA EXFILTRATION ============ -->
+        <div id="exfiltration-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-download"></i> Data Exfiltration Monitor</div>
+              <button class="btn btn-cyber btn-sm" onclick="openAddModal('exfiltration')">
+                <i class="fas fa-plus"></i> Log Event
+              </button>
+            </div>
+            <p class="card-desc">
+              Daily report download volume tracking with threshold alerts.
+            </p>
+          </div>
+
+          <div class="chart-container tall">
+            <canvas id="exfilChart"></canvas>
+            <div class="chart-empty" id="exfilChartEmpty">
+              <i class="fas fa-chart-line"></i>
+              No exfiltration events yet — add an event to see the trend
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Exfiltration Event Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('exfiltration')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>User</th>
+                  <th>Report Type</th>
+                  <th>Rows</th>
+                  <th>Volume (MB)</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="exfiltrationBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 7. API GATEWAY ============ -->
+        <div id="api-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-plug"></i> API Gateway Endpoint Monitor</div>
+              <button class="btn btn-cyber btn-sm" onclick="openAddModal('endpoint')">
+                <i class="fas fa-plus"></i> Add Endpoint
+              </button>
+            </div>
+            <p class="card-desc">
+              Response latency, HTTP success rates, and live traffic throughput per endpoint.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Endpoint Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('endpoints')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Endpoint</th>
+                  <th>Method</th>
+                  <th>Avg Latency</th>
+                  <th>Success Rate</th>
+                  <th>Traffic (tps)</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="apiBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 8. ETL SCHEDULER ============ -->
+        <div id="etl-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-clock-rotate-left"></i> ETL Batch Scheduler</div>
+              <button class="btn btn-cyber btn-sm" onclick="openAddModal('etl')">
+                <i class="fas fa-plus"></i> Add Routine
+              </button>
+            </div>
+            <p class="card-desc">
+              Overnight sync routines with last execution statuses and manual trigger.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>ETL Routine Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('etl')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Routine</th>
+                  <th>Schedule</th>
+                  <th>Last Run</th>
+                  <th>Duration</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="etlBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 9. DATABASE HEALTH ============ -->
+        <div id="database-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-database"></i> Database Health Vitals</div>
+              <button class="btn btn-cyber btn-sm" onclick="openAddModal('dbmetric')">
+                <i class="fas fa-plus"></i> Record Metric
+              </button>
+            </div>
+            <p class="card-desc">
+              Live CPU load, memory consumption, storage IOPS, and transaction lock counts.
+            </p>
+          </div>
+
+          <div class="mini-kpis" id="dbMini"></div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Database Metric Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('dbmetrics')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Database</th>
+                  <th>CPU Load</th>
+                  <th>Memory</th>
+                  <th>IOPS</th>
+                  <th>Locks</th>
+                  <th>Recorded</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="dbBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 10. BACKUP & DR ============ -->
+        <div id="backup-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-cloud-arrow-up"></i> Disaster Recovery Backup Ledger</div>
+              <button class="btn btn-cyber btn-sm" onclick="openAddModal('backup')">
+                <i class="fas fa-plus"></i> Log Snapshot
+              </button>
+            </div>
+            <p class="card-desc">
+              Incremental and full snapshots with verification status and point-in-time restore.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Backup Snapshot Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('backups')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Snapshot ID</th>
+                  <th>Type</th>
+                  <th>Database</th>
+                  <th>Size</th>
+                  <th>Created</th>
+                  <th>Verification</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="backupBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 11. WORKFLOW BUILDER ============ -->
+        <div id="workflow-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-diagram-project"></i> Visual Approval Workflow Builder</div>
+              <button class="btn btn-cyber btn-sm" onclick="openAddModal('workflow')">
+                <i class="fas fa-plus"></i> Add Step
+              </button>
+            </div>
+            <p class="card-desc">
+              Multi-tier approval routes (e.g. AFE capital expenditure authorization). Steps render in sequence below.
+            </p>
+          </div>
+
+          <div class="workflow-canvas" id="workflowCanvas">
+            <div class="workflow-empty">
+              <i class="fas fa-diagram-project"></i>
+              No workflow steps defined yet — add a step to begin building the approval route.
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 12. LOCALIZATION ============ -->
+        <div id="localization-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-globe"></i> Localization &amp; Currency Engine</div>
+              <button class="btn btn-cyber btn-sm" onclick="openAddModal('localization')">
+                <i class="fas fa-plus"></i> Add Locale
+              </button>
+            </div>
+            <p class="card-desc">
+              Active base currencies, regional tax rules (VAT, GST), and default time zones per region.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Locale Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('locales')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Region</th>
+                  <th>Country</th>
+                  <th>Currency</th>
+                  <th>Tax Rule</th>
+                  <th>Tax Rate</th>
+                  <th>Time Zone</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="localizationBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="app-footer">
+      Copyright © 2025 <strong>Cephas GM</strong> | Innovating for Tomorrow
+    </footer>
+  </div>
+
+  <!-- ============ GENERIC MODAL ============ -->
+  <div class="modal" id="genericModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">
+          <i class="fas fa-plus-circle"></i> New Record
+        </h2>
+        <button class="modal-close" onclick="closeModal('genericModal')">&times;</button>
+      </div>
+      <form id="modalForm" onsubmit="saveModal(event)">
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('genericModal')">Cancel</button>
+          <button type="submit" class="btn btn-cyber">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+  /* =========================================================
+     CephasGM ERP — Admin Module v4.0
+     Empty-state on first load. Data persisted to localStorage.
+     ========================================================= */
+
+  const TAB_META = {
+    overview:     ['Global System Vitals Overview',  'Consolidated KPIs across IAM, security, middleware, database, and workflows'],
+    users:        ['Global User Directory',          'All system users with roles and status'],
+    roles:        ['Roles & Permissions Matrix',     'Role-based access control grid'],
+    sod:          ['Segregation of Duties',          'Active compliance conflicts by user'],
+    audit:        ['System Audit Log',               'Streaming audit trail with IP and diff viewer'],
+    exfiltration: ['Data Exfiltration Monitor',      'Daily report download volume with alerts'],
+    api:          ['API Gateway Endpoint Monitor',   'Latency, success rates, and traffic per endpoint'],
+    etl:          ['ETL Batch Scheduler',            'Overnight sync routines and execution status'],
+    database:     ['Database Health Vitals',         'CPU, memory, IOPS, and lock counts'],
+    backup:       ['Disaster Recovery Backups',      'Snapshot ledger with verification status'],
+    workflow:     ['Workflow Builder',               'Multi-tier approval routes'],
+    localization: ['Localization & Currency',        'Base currencies, tax rules, and time zones']
+  };
+
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+
+  /* ---------- STATE ---------- */
+  let adData = loadData();
+  let activeTab = 'overview';
+  let charts = {};
+  let currentEditType = null;
+
+  function loadData() {
+    const saved = localStorage.getItem('cephasgm_admin_data');
+    if (saved) return JSON.parse(saved);
+    return {
+      users: [],
+      roles: [],
+      sod: [],
+      audit: [],
+      exfiltration: [],
+      endpoints: [],
+      etl: [],
+      dbmetrics: [],
+      backups: [],
+      workflow: [],
+      locales: [],
+      nextIds: {
+        user: 1, role: 1, sod: 1, audit: 1, exfiltration: 1,
+        endpoint: 1, etl: 1, dbmetric: 1, backup: 1, workflow: 1, locale: 1
+      }
+    };
+  }
+  function saveData() {
+    localStorage.setItem('cephasgm_admin_data', JSON.stringify(adData));
+  }
+
+  /* ---------- HELPERS ---------- */
+  function emptyRow(cols, message, icon = 'fa-inbox') {
+    return `<tr><td colspan="${cols}" class="empty-state"><i class="fas ${icon}"></i>${message}</td></tr>`;
+  }
+  function notify(msg, type = 'success') {
+    const n = document.createElement('div');
+    n.className = `notification ${type}`;
+    n.innerHTML = `<i class="fas fa-${type === 'error' ? 'circle-exclamation' : type === 'warning' ? 'triangle-exclamation' : 'circle-check'}"></i> ${msg}`;
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 3400);
+  }
+  window.notify = notify;
+
+  function badgeForStatus(status) {
+    const s = (status || '').toLowerCase();
+    if (s.includes('active') || s.includes('operational') || s.includes('healthy') || s.includes('verified') || s.includes('resolved') || s.includes('clean') || s.includes('low') || s.includes('success') || s.includes('on')) return 'success';
+    if (s.includes('pending') || s.includes('warning') || s.includes('beta') || s.includes('degraded') || s.includes('medium') || s.includes('in progress')) return 'warning';
+    if (s.includes('inactive') || s.includes('critical') || s.includes('failed') || s.includes('high') || s.includes('error') || s.includes('off')) return 'danger';
+    return 'gray';
+  }
+
+  /* ---------- NAV ---------- */
+  function setupNav() {
+    $$('.nav-link[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+  }
+  function setupMobileMenu() {
+    const toggle = $('#mobileMenuToggle');
+    const sidebar = $('#adSidebar');
+    const overlay = $('#sidebarOverlay');
+    toggle.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('active');
+      overlay.classList.toggle('active', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  }
+  function switchTab(tab) {
+    activeTab = tab;
+    $$('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.tab === tab));
+    $$('.tab-content').forEach(c => c.classList.toggle('active', c.id === `${tab}-tab`));
+    const meta = TAB_META[tab] || TAB_META.overview;
+    $('#pageTitle').innerHTML = `<i class="fas fa-shield-halved"></i> ${meta[0]}`;
+    $('#pageSubtitle').textContent = meta[1];
+    updateAddButtonLabel();
+    const sidebar = $('#adSidebar');
+    if (sidebar.classList.contains('active')) {
+      sidebar.classList.remove('active');
+      $('#sidebarOverlay').classList.remove('active');
+      $('#mobileMenuToggle').setAttribute('aria-expanded', 'false');
+    }
+  }
+  window.switchTab = switchTab;
+
+  function updateAddButtonLabel() {
+    const btn = $('#addRecordBtn');
+    if (!btn) return;
+    const type = inferTypeFromTab(activeTab);
+    const labels = {
+      user:         'Add User',
+      role:         'Add Role',
+      sod:          'Log Conflict',
+      audit:        'Add Entry',
+      exfiltration: 'Log Event',
+      endpoint:     'Add Endpoint',
+      etl:          'Add Routine',
+      dbmetric:     'Record Metric',
+      backup:       'Log Snapshot',
+      workflow:     'Add Step',
+      locale:       'Add Locale'
+    };
+    btn.innerHTML = `<i class="fas fa-plus"></i> ${labels[type] || 'New Record'}`;
+  }
+
+  /* ---------- MODAL ---------- */
+  function openModal(title, fields, onSave) {
+    currentEditType = onSave;
+    $('#modalTitle').innerHTML = `<i class="fas fa-plus-circle"></i> ${title}`;
+    $('#modalBody').innerHTML = fields.map(f => {
+      if (f.type === 'select') {
+        return `
+          <label class="form-label">${f.label || f.name}</label>
+          <select class="form-control" name="${f.name}">
+            ${(f.options || []).map(o => `<option value="${o}">${o}</option>`).join('')}
+          </select>
+        `;
+      }
+      return `
+        <label class="form-label">${f.label || f.name}</label>
+        <input type="${f.type || 'text'}" class="form-control" name="${f.name}"
+               placeholder="${f.placeholder || ''}" value="${f.value || ''}"
+               ${f.required ? 'required' : ''}>
+      `;
+    }).join('');
+    $('#genericModal').classList.add('active');
+  }
+  window.openModal = openModal;
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+  window.closeModal = closeModal;
+  function saveModal(e) {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const data = Object.fromEntries(f.entries());
+    if (currentEditType) currentEditType(data);
+    closeModal('genericModal');
+    renderAll();
+    notify('Saved successfully.', 'success');
+  }
+  window.saveModal = saveModal;
+
+  /* ---------- RENDER ALL ---------- */
+  function renderAll() {
+    renderLiveMetrics();
+    renderOverview();
+    renderUsers();
+    renderRoles();
+    renderSod();
+    renderAudit();
+    renderExfiltration();
+    renderApi();
+    renderEtl();
+    renderDatabase();
+    renderBackup();
+    renderWorkflow();
+    renderLocalization();
+    refreshCharts();
+  }
+
+  /* ---------- LIVE METRICS ---------- */
+  function renderLiveMetrics() {
+    // Uptime derived from endpoints
+    const healthyEndpoints = adData.endpoints.filter(e => (e.status || '').toLowerCase() === 'operational').length;
+    const totalEndpoints = adData.endpoints.length;
+    const uptime = totalEndpoints ? ((healthyEndpoints / totalEndpoints) * 100).toFixed(2) + '%' : '—';
+
+    // Sessions = active users
+    const sessions = adData.users.filter(u => (u.status || '').toLowerCase() === 'active').length;
+
+    // DB status from latest metric
+    const latestDb = adData.dbmetrics.length ? adData.dbmetrics[adData.dbmetrics.length - 1] : null;
+    const dbStatus = latestDb ? (parseFloat(latestDb.cpu) > 80 ? 'Degraded' : 'Operational') : '—';
+
+    // Storage from latest backup
+    const latestBackup = adData.backups.length ? adData.backups[adData.backups.length - 1] : null;
+    const storage = latestBackup ? latestBackup.size : '—';
+
+    $('#lmUptime').textContent = uptime;
+    $('#lmSessions').textContent = sessions || '—';
+    $('#lmDb').textContent = dbStatus;
+    $('#lmStorage').textContent = storage;
+  }
+
+  /* ---------- OVERVIEW ---------- */
+  function renderOverview() {
+    const healthyEndpoints = adData.endpoints.filter(e => (e.status || '').toLowerCase() === 'operational').length;
+    const totalEndpoints = adData.endpoints.length;
+    const uptime = totalEndpoints ? ((healthyEndpoints / totalEndpoints) * 100).toFixed(2) + '%' : null;
+
+    const sessions = adData.users.filter(u => (u.status || '').toLowerCase() === 'active').length;
+
+    // Security alerts: SoD conflicts + critical audit
+    const sodCritical = adData.sod.filter(s => (s.risk || '').toLowerCase() === 'critical').length;
+    const auditAlerts = adData.audit.filter(a => (a.action || '').toLowerCase().includes('delete')).length;
+    const alerts = sodCritical + auditAlerts;
+
+    const latestBackup = adData.backups.length ? adData.backups[adData.backups.length - 1] : null;
+    const storage = latestBackup ? latestBackup.size : null;
+
+    $('#ovUptime').textContent = uptime || '—';
+    $('#ovSessions').textContent = sessions || '—';
+    $('#ovAlerts').textContent = alerts || '—';
+    $('#ovStorage').textContent = storage || '—';
+
+    // Mini KPIs
+    const activeRoles = new Set(adData.roles.map(r => r.role).filter(Boolean)).size;
+    const activeEtl = adData.etl.filter(e => (e.status || '').toLowerCase() === 'success').length;
+    const activeEndpoints = totalEndpoints;
+    const avgLatency = adData.endpoints.length
+      ? (adData.endpoints.reduce((s, e) => s + (parseFloat(e.latency) || 0), 0) / adData.endpoints.length).toFixed(0) + 'ms'
+      : null;
+    const localeCount = adData.locales.length;
+    const workflowSteps = adData.workflow.length;
+
+    $('#overviewMini').innerHTML = `
+      <div class="mini-kpi"><div class="label">Active Roles</div><div class="value">${activeRoles || '—'}</div><div class="sub">Distinct roles</div></div>
+      <div class="mini-kpi"><div class="label">API Endpoints</div><div class="value">${activeEndpoints || '—'}</div><div class="sub">Monitored</div></div>
+      <div class="mini-kpi"><div class="label">Avg Latency</div><div class="value">${avgLatency || '—'}</div><div class="sub">Across endpoints</div></div>
+      <div class="mini-kpi"><div class="label">ETL Successes</div><div class="value">${adData.etl.length ? activeEtl : '—'}</div><div class="sub">Last 24h</div></div>
+      <div class="mini-kpi"><div class="label">Locales</div><div class="value">${localeCount || '—'}</div><div class="sub">Configured</div></div>
+      <div class="mini-kpi"><div class="label">Workflow Steps</div><div class="value">${workflowSteps || '—'}</div><div class="sub">Approval chain</div></div>
+    `;
+
+    // Alerts
+    const alertList = [];
+    adData.sod.forEach(s => {
+      if ((s.risk || '').toLowerCase() === 'critical') {
+        alertList.push({ severity: 'critical', text: `Critical SoD conflict: ${s.user} has ${s.permA} + ${s.permB}`, meta: 'Segregation of duties' });
+      }
+    });
+    adData.endpoints.forEach(e => {
+      if ((e.status || '').toLowerCase() !== 'operational') {
+        alertList.push({ severity: 'warning', text: `Endpoint ${e.endpoint} is ${e.status}`, meta: 'API Gateway' });
+      }
+    });
+    adData.etl.forEach(e => {
+      if ((e.status || '').toLowerCase() === 'failed') {
+        alertList.push({ severity: 'critical', text: `ETL routine "${e.routine}" failed last run`, meta: 'ETL Scheduler' });
+      }
+    });
+    adData.backups.forEach(b => {
+      if ((b.verification || '').toLowerCase() !== 'verified clean') {
+        alertList.push({ severity: 'warning', text: `Backup snapshot ${b.snapshotId} not verified clean`, meta: 'Disaster recovery' });
+      }
+    });
+
+    const alertBlock = $('#overviewAlerts');
+    if (!alertList.length) {
+      alertBlock.innerHTML = `<div class="empty-block"><i class="fas fa-circle-check"></i>No active alerts. All systems within specification.</div>`;
+    } else {
+      alertBlock.innerHTML = alertList.map(a => `
+        <div class="waterfall-tier" style="border-left-color:${a.severity === 'critical' ? 'var(--danger)' : 'var(--warning)'};">
+          <div class="info">
+            <strong>${a.text}</strong>
+            <span>${a.meta}</span>
+          </div>
+          <span class="badge badge-${a.severity === 'critical' ? 'danger' : 'warning'}">${a.severity}</span>
+        </div>
+      `).join('');
+    }
+  }
+
+  /* ---------- USERS ---------- */
+  function renderUsers() {
+    const body = $('#usersBody');
+    if (!adData.users.length) {
+      body.innerHTML = emptyRow(8, 'No users registered yet — add the first user.', 'fa-users');
+      return;
+    }
+    body.innerHTML = adData.users.map(u => `
+      <tr>
+        <td><strong>${u.employeeId}</strong></td>
+        <td>${u.name}</td>
+        <td>${u.email || '—'}</td>
+        <td>${u.title || '—'}</td>
+        <td>${u.department || '—'}</td>
+        <td>${u.role || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(u.status)}">${u.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('user', ${u.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* ---------- ROLES ---------- */
+  function renderRoles() {
+    const body = $('#rolesBody');
+    if (!adData.roles.length) {
+      body.innerHTML = emptyRow(8, 'No roles defined yet.', 'fa-lock');
+      return;
+    }
+    body.innerHTML = adData.roles.map(r => `
+      <tr>
+        <td><strong>${r.role}</strong></td>
+        <td>${r.module}</td>
+        <td><span class="${r.create === 'yes' ? 'perm-yes' : 'perm-no'}">${r.create === 'yes' ? '✓' : '✗'}</span></td>
+        <td><span class="${r.read === 'yes' ? 'perm-yes' : 'perm-no'}">${r.read === 'yes' ? '✓' : '✗'}</span></td>
+        <td><span class="${r.update === 'yes' ? 'perm-yes' : 'perm-no'}">${r.update === 'yes' ? '✓' : '✗'}</span></td>
+        <td><span class="${r.delete === 'yes' ? 'perm-yes' : 'perm-no'}">${r.delete === 'yes' ? '✓' : '✗'}</span></td>
+        <td><span class="badge badge-info">${r.scope || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('role', ${r.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* ---------- SOD ---------- */
+  function renderSod() {
+    const body = $('#sodBody');
+    if (!adData.sod.length) {
+      body.innerHTML = emptyRow(7, 'No SoD conflicts detected — all user accesses comply.', 'fa-shield-halved');
+      return;
+    }
+    body.innerHTML = adData.sod.map(s => `
+      <tr>
+        <td><strong>${s.user}</strong></td>
+        <td>${s.permA}</td>
+        <td>${s.permB}</td>
+        <td><span class="badge badge-${s.risk === 'critical' ? 'danger' : s.risk === 'high' ? 'warning' : 'info'}">${s.risk || '—'}</span></td>
+        <td>${s.detected || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(s.status)}">${s.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('sod', ${s.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* ---------- AUDIT ---------- */
+  function renderAudit() {
+    const body = $('#auditBody');
+    if (!adData.audit.length) {
+      body.innerHTML = emptyRow(6, 'No audit entries yet.', 'fa-clipboard-list');
+      return;
+    }
+    body.innerHTML = adData.audit.map(a => `
+      <tr>
+        <td>${a.timestamp}</td>
+        <td>${a.user}</td>
+        <td><span class="badge badge-${a.action && a.action.toLowerCase().includes('delete') ? 'danger' : 'info'}">${a.action}</span></td>
+        <td>${a.resource || '—'}</td>
+        <td>${a.ip || '—'}</td>
+        <td class="table-actions">
+          <i class="fas fa-code action-icon" onclick="notify('Diff JSON viewer would open here.', 'success')" title="View Diff"></i>
+          <i class="fas fa-trash action-icon" onclick="openDelete('audit', ${a.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* ---------- EXFILTRATION ---------- */
+  function renderExfiltration() {
+    const body = $('#exfiltrationBody');
+    if (!adData.exfiltration.length) {
+      body.innerHTML = emptyRow(7, 'No exfiltration events logged yet.', 'fa-download');
+      return;
+    }
+    body.innerHTML = adData.exfiltration.map(e => `
+      <tr>
+        <td>${e.date}</td>
+        <td>${e.user}</td>
+        <td>${e.reportType || '—'}</td>
+        <td>${e.rows || 0}</td>
+        <td>${e.volume || 0} MB</td>
+        <td><span class="badge badge-${badgeForStatus(e.status)}">${e.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('exfiltration', ${e.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* ---------- API ---------- */
+  function renderApi() {
+    const body = $('#apiBody');
+    if (!adData.endpoints.length) {
+      body.innerHTML = emptyRow(7, 'No API endpoints registered yet.', 'fa-plug');
+      return;
+    }
+    body.innerHTML = adData.endpoints.map(e => `
+      <tr>
+        <td><strong>${e.endpoint}</strong></td>
+        <td><span class="badge badge-info">${e.method || 'GET'}</span></td>
+        <td>${e.latency || 0} ms</td>
+        <td>${e.successRate || 0}%</td>
+        <td>${e.tps || 0}</td>
+        <td><span class="badge badge-${badgeForStatus(e.status)}">${e.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('endpoint', ${e.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* ---------- ETL ---------- */
+  function renderEtl() {
+    const body = $('#etlBody');
+    if (!adData.etl.length) {
+      body.innerHTML = emptyRow(6, 'No ETL routines scheduled yet.', 'fa-clock-rotate-left');
+      return;
+    }
+    body.innerHTML = adData.etl.map(e => `
+      <tr>
+        <td><strong>${e.routine}</strong></td>
+        <td>${e.schedule || '—'}</td>
+        <td>${e.lastRun || '—'}</td>
+        <td>${e.duration || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(e.status)}">${e.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-play action-icon" onclick="runEtl(${e.id})" title="Run Now"></i>
+          <i class="fas fa-trash action-icon" onclick="openDelete('etl', ${e.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+  function runEtl(id) {
+    const routine = adData.etl.find(r => r.id === id);
+    if (!routine) return;
+    routine.lastRun = new Date().toISOString().replace('T', ' ').substr(0, 16);
+    routine.status = 'Success';
+    saveData();
+    renderEtl();
+    notify(`ETL routine "${routine.routine}" completed successfully.`, 'success');
+  }
+  window.runEtl = runEtl;
+
+  /* ---------- DATABASE ---------- */
+  function renderDatabase() {
+    const body = $('#dbBody');
+    const latest = adData.dbmetrics.length ? adData.dbmetrics[adData.dbmetrics.length - 1] : null;
+
+    // Mini KPIs
+    const avgCpu = adData.dbmetrics.length
+      ? (adData.dbmetrics.reduce((s, m) => s + (parseFloat(m.cpu) || 0), 0) / adData.dbmetrics.length).toFixed(1)
+      : null;
+    const avgMem = adData.dbmetrics.length
+      ? (adData.dbmetrics.reduce((s, m) => s + (parseFloat(m.memory) || 0), 0) / adData.dbmetrics.length).toFixed(1)
+      : null;
+    const avgIops = adData.dbmetrics.length
+      ? Math.round(adData.dbmetrics.reduce((s, m) => s + (parseFloat(m.iops) || 0), 0) / adData.dbmetrics.length)
+      : null;
+    const locks = latest ? latest.locks : null;
+
+    $('#dbMini').innerHTML = `
+      <div class="mini-kpi"><div class="label">Avg CPU Load</div><div class="value">${avgCpu !== null ? avgCpu + '%' : '—'}</div><div class="sub">All databases</div></div>
+      <div class="mini-kpi"><div class="label">Avg Memory</div><div class="value">${avgMem !== null ? avgMem + '%' : '—'}</div><div class="sub">All databases</div></div>
+      <div class="mini-kpi"><div class="label">Avg IOPS</div><div class="value">${avgIops !== null ? avgIops : '—'}</div><div class="sub">Latest period</div></div>
+      <div class="mini-kpi"><div class="label">Active Locks</div><div class="value">${locks !== null ? locks : '—'}</div><div class="sub">Transaction locks</div></div>
+    `;
+
+    if (!adData.dbmetrics.length) {
+      body.innerHTML = emptyRow(7, 'No database metrics recorded yet.', 'fa-database');
+      return;
+    }
+    body.innerHTML = adData.dbmetrics.map(m => `
+      <tr>
+        <td><strong>${m.database}</strong></td>
+        <td>${m.cpu || 0}%</td>
+        <td>${m.memory || 0}%</td>
+        <td>${m.iops || 0}</td>
+        <td>${m.locks || 0}</td>
+        <td>${m.recorded || '—'}</td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('dbmetric', ${m.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* ---------- BACKUP ---------- */
+  function renderBackup() {
+    const body = $('#backupBody');
+    if (!adData.backups.length) {
+      body.innerHTML = emptyRow(7, 'No backup snapshots logged yet.', 'fa-cloud-arrow-up');
+      return;
+    }
+    body.innerHTML = adData.backups.map(b => `
+      <tr>
+        <td><strong>${b.snapshotId}</strong></td>
+        <td>${b.type || '—'}</td>
+        <td>${b.database || '—'}</td>
+        <td>${b.size || '—'}</td>
+        <td>${b.created || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(b.verification)}">${b.verification || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-rotate-left action-icon" onclick="notify('Restore to point-in-time initiated.', 'success')" title="Restore"></i>
+          <i class="fas fa-trash action-icon" onclick="openDelete('backup', ${b.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* ---------- WORKFLOW ---------- */
+  function renderWorkflow() {
+    const canvas = $('#workflowCanvas');
+    if (!adData.workflow.length) {
+      canvas.innerHTML = `
+        <div class="workflow-empty">
+          <i class="fas fa-diagram-project"></i>
+          No workflow steps defined yet — add a step to begin building the approval route.
+        </div>`;
+      return;
+    }
+    // Sort by stepOrder
+    const sorted = [...adData.workflow].sort((a, b) => (parseInt(a.step) || 0) - (parseInt(b.step) || 0));
+    canvas.innerHTML = sorted.map((w, i) => `
+      <div class="workflow-node">
+        <div>Step ${w.step}: ${w.name}</div>
+        <div class="role">${w.role || 'Approver'}</div>
+      </div>
+      ${i < sorted.length - 1 ? '<div class="workflow-connector"></div>' : ''}
+    `).join('');
+  }
+
+  /* ---------- LOCALIZATION ---------- */
+  function renderLocalization() {
+    const body = $('#localizationBody');
+    if (!adData.locales.length) {
+      body.innerHTML = emptyRow(7, 'No locales configured yet.', 'fa-globe');
+      return;
+    }
+    body.innerHTML = adData.locales.map(l => `
+      <tr>
+        <td><strong>${l.region}</strong></td>
+        <td>${l.country || '—'}</td>
+        <td>${l.currency || '—'}</td>
+        <td>${l.taxRule || '—'}</td>
+        <td>${l.taxRate || 0}%</td>
+        <td>${l.timeZone || '—'}</td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('locale', ${l.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* ---------- ADD MODAL ROUTER ---------- */
+  function openAddModal(type) {
+    type = type || inferTypeFromTab(activeTab);
+    currentEditType = type;
+    switch (type) {
+      case 'user':         return openAddUser();
+      case 'role':         return openAddRole();
+      case 'sod':          return openAddSod();
+      case 'audit':        return openAddAudit();
+      case 'exfiltration': return openAddExfiltration();
+      case 'endpoint':     return openAddEndpoint();
+      case 'etl':          return openAddEtl();
+      case 'dbmetric':     return openAddDbMetric();
+      case 'backup':       return openAddBackup();
+      case 'workflow':     return openAddWorkflow();
+      case 'locale':       return openAddLocale();
+      default:             return notify('Select a section first.', 'warning');
+    }
+  }
+  window.openAddModal = openAddModal;
+
+  function inferTypeFromTab(tab) {
+    return ({
+      overview:     'user',
+      users:        'user',
+      roles:        'role',
+      sod:          'sod',
+      audit:        'audit',
+      exfiltration: 'exfiltration',
+      api:          'endpoint',
+      etl:          'etl',
+      database:     'dbmetric',
+      backup:       'backup',
+      workflow:     'workflow',
+      localization: 'locale'
+    })[tab] || 'user';
+  }
+
+  function openAddUser() {
+    openModal('Add User', [
+      { name:'employeeId', label:'Employee ID', placeholder:'EMP-1001', required:true },
+      { name:'name', label:'Full Name', placeholder:'John Doe', required:true },
+      { name:'email', label:'Email', type:'email', placeholder:'john.doe@cephasgm.com' },
+      { name:'title', label:'Job Title', placeholder:'Sales Manager' },
+      { name:'department', label:'Department', placeholder:'Sales' },
+      { name:'role', label:'Role', type:'select', options:['Admin','Manager','Accountant','Engineer','Operations','Viewer'] },
+      { name:'status', label:'Status', type:'select', options:['Active','Inactive','Locked'] }
+    ], (data) => {
+      adData.users.push({
+        id: adData.nextIds.user++,
+        employeeId: data.employeeId, name: data.name,
+        email: data.email || '', title: data.title || '',
+        department: data.department || '', role: data.role || 'Viewer',
+        status: data.status || 'Active'
+      });
+      saveData();
+    });
+  }
+
+  function openAddRole() {
+    openModal('Add Role Permission', [
+      { name:'role', label:'Role', type:'select', options:['Admin','Manager','Accountant','Engineer','Operations','Viewer'] },
+      { name:'module', label:'Module', placeholder:'Finance' },
+      { name:'create', label:'Create', type:'select', options:['yes','no'] },
+      { name:'read', label:'Read', type:'select', options:['yes','no'] },
+      { name:'update', label:'Update', type:'select', options:['yes','no'] },
+      { name:'delete', label:'Delete', type:'select', options:['yes','no'] },
+      { name:'scope', label:'Scope', type:'select', options:['global','region','dept','own'] }
+    ], (data) => {
+      adData.roles.push({
+        id: adData.nextIds.role++,
+        role: data.role, module: data.module,
+        create: data.create, read: data.read,
+        update: data.update, delete: data.delete,
+        scope: data.scope || 'global'
+      });
+      saveData();
+    });
+  }
+
+  function openAddSod() {
+    openModal('Log SoD Conflict', [
+      { name:'user', label:'User', placeholder:'j.doe', required:true },
+      { name:'permA', label:'Permission A', placeholder:'Create Vendor', required:true },
+      { name:'permB', label:'Permission B', placeholder:'Authorize Payment', required:true },
+      { name:'risk', label:'Risk Level', type:'select', options:['Critical','High','Medium','Low'] },
+      { name:'status', label:'Status', type:'select', options:['Open','Mitigating','Resolved'] }
+    ], (data) => {
+      adData.sod.push({
+        id: adData.nextIds.sod++,
+        user: data.user, permA: data.permA, permB: data.permB,
+        risk: data.risk || 'High',
+        detected: new Date().toISOString().split('T')[0],
+        status: data.status || 'Open'
+      });
+      saveData();
+    });
+  }
+
+  function openAddAudit() {
+    openModal('Add Audit Entry', [
+      { name:'user', label:'User', placeholder:'admin', required:true },
+      { name:'action', label:'Action', type:'select', options:['CREATE','UPDATE','DELETE','LOGIN','LOGOUT','EXPORT','VIEW'] },
+      { name:'resource', label:'Resource', placeholder:'User #1002' },
+      { name:'ip', label:'IP Address', placeholder:'10.0.0.12' }
+    ], (data) => {
+      adData.audit.unshift({
+        id: adData.nextIds.audit++,
+        timestamp: new Date().toISOString().replace('T', ' ').substr(0, 16),
+        user: data.user, action: data.action,
+        resource: data.resource || '', ip: data.ip || ''
+      });
+      saveData();
+    });
+  }
+
+  function openAddExfiltration() {
+    openModal('Log Exfiltration Event', [
+      { name:'date', label:'Date', type:'date', required:true },
+      { name:'user', label:'User', placeholder:'j.doe', required:true },
+      { name:'reportType', label:'Report Type', placeholder:'Financial Summary' },
+      { name:'rows', label:'Rows Exported', type:'number', placeholder:'12500' },
+      { name:'volume', label:'Volume (MB)', type:'number', placeholder:'48' },
+      { name:'status', label:'Status', type:'select', options:['Normal','Review','Blocked'] }
+    ], (data) => {
+      adData.exfiltration.unshift({
+        id: adData.nextIds.exfiltration++,
+        date: data.date, user: data.user,
+        reportType: data.reportType || '',
+        rows: parseInt(data.rows, 10) || 0,
+        volume: parseFloat(data.volume) || 0,
+        status: data.status || 'Normal'
+      });
+      saveData();
+    });
+  }
+
+  function openAddEndpoint() {
+    openModal('Add API Endpoint', [
+      { name:'endpoint', label:'Endpoint', placeholder:'/api/v1/scada-ingest', required:true },
+      { name:'method', label:'Method', type:'select', options:['GET','POST','PUT','PATCH','DELETE'] },
+      { name:'latency', label:'Avg Latency (ms)', type:'number', placeholder:'12' },
+      { name:'successRate', label:'Success Rate (%)', type:'number', placeholder:'99.8' },
+      { name:'tps', label:'Traffic (tps)', type:'number', placeholder:'450' },
+      { name:'status', label:'Status', type:'select', options:['Operational','Degraded','Down'] }
+    ], (data) => {
+      adData.endpoints.push({
+        id: adData.nextIds.endpoint++,
+        endpoint: data.endpoint, method: data.method || 'GET',
+        latency: parseFloat(data.latency) || 0,
+        successRate: parseFloat(data.successRate) || 0,
+        tps: parseFloat(data.tps) || 0,
+        status: data.status || 'Operational'
+      });
+      saveData();
+    });
+  }
+
+  function openAddEtl() {
+    openModal('Add ETL Routine', [
+      { name:'routine', label:'Routine Name', placeholder:'Nightly Sales Sync', required:true },
+      { name:'schedule', label:'Schedule', placeholder:'Daily 02:00 UTC' },
+      { name:'duration', label:'Expected Duration', placeholder:'4m 22s' },
+      { name:'status', label:'Status', type:'select', options:['Success','Failed','Running','Pending'] }
+    ], (data) => {
+      adData.etl.push({
+        id: adData.nextIds.etl++,
+        routine: data.routine,
+        schedule: data.schedule || '',
+        lastRun: '',
+        duration: data.duration || '',
+        status: data.status || 'Pending'
+      });
+      saveData();
+    });
+  }
+
+  function openAddDbMetric() {
+    openModal('Record Database Metric', [
+      { name:'database', label:'Database', placeholder:'prod-primary-eu', required:true },
+      { name:'cpu', label:'CPU Load (%)', type:'number', placeholder:'42' },
+      { name:'memory', label:'Memory (%)', type:'number', placeholder:'68' },
+      { name:'iops', label:'Storage IOPS', type:'number', placeholder:'18500' },
+      { name:'locks', label:'Active Locks', type:'number', placeholder:'0' }
+    ], (data) => {
+      adData.dbmetrics.push({
+        id: adData.nextIds.dbmetric++,
+        database: data.database,
+        cpu: parseFloat(data.cpu) || 0,
+        memory: parseFloat(data.memory) || 0,
+        iops: parseFloat(data.iops) || 0,
+        locks: parseInt(data.locks, 10) || 0,
+        recorded: new Date().toISOString().replace('T', ' ').substr(0, 16)
+      });
+      saveData();
+    });
+  }
+
+  function openAddBackup() {
+    openModal('Log Backup Snapshot', [
+      { name:'snapshotId', label:'Snapshot ID', placeholder:'SNP-20260221-001', required:true },
+      { name:'type', label:'Type', type:'select', options:['Full','Incremental','Differential'] },
+      { name:'database', label:'Database', placeholder:'prod-primary-eu' },
+      { name:'size', label:'Size', placeholder:'4.2 TB' },
+      { name:'verification', label:'Verification', type:'select', options:['Verified Clean','Pending','Failed'] }
+    ], (data) => {
+      adData.backups.push({
+        id: adData.nextIds.backup++,
+        snapshotId: data.snapshotId,
+        type: data.type || 'Full',
+        database: data.database || '',
+        size: data.size || '',
+        created: new Date().toISOString().replace('T', ' ').substr(0, 16),
+        verification: data.verification || 'Pending'
+      });
+      saveData();
+    });
+  }
+
+  function openAddWorkflow() {
+    openModal('Add Workflow Step', [
+      { name:'step', label:'Step Number', type:'number', placeholder:'1', required:true },
+      { name:'name', label:'Step Name', placeholder:'Project Manager Review', required:true },
+      { name:'role', label:'Approver Role', type:'select', options:['Project Manager','Finance Director','CFO','CEO','Board'] }
+    ], (data) => {
+      adData.workflow.push({
+        id: adData.nextIds.workflow++,
+        step: parseInt(data.step, 10) || 1,
+        name: data.name,
+        role: data.role || 'Project Manager'
+      });
+      saveData();
+    });
+  }
+
+  function openAddLocale() {
+    openModal('Add Locale', [
+      { name:'region', label:'Region', placeholder:'East Africa', required:true },
+      { name:'country', label:'Country', placeholder:'Tanzania' },
+      { name:'currency', label:'Currency', placeholder:'TZS' },
+      { name:'taxRule', label:'Tax Rule', placeholder:'VAT' },
+      { name:'taxRate', label:'Tax Rate (%)', type:'number', placeholder:'18' },
+      { name:'timeZone', label:'Time Zone', placeholder:'Africa/Dar_es_Salaam' }
+    ], (data) => {
+      adData.locales.push({
+        id: adData.nextIds.locale++,
+        region: data.region,
+        country: data.country || '',
+        currency: data.currency || '',
+        taxRule: data.taxRule || '',
+        taxRate: parseFloat(data.taxRate) || 0,
+        timeZone: data.timeZone || ''
+      });
+      saveData();
+    });
+  }
+
+  /* ---------- DELETE ---------- */
+  function openDelete(type, id) {
+    if (!confirm('Delete this record?')) return;
+    const map = {
+      user: 'users', role: 'roles', sod: 'sod', audit: 'audit',
+      exfiltration: 'exfiltration', endpoint: 'endpoints', etl: 'etl',
+      dbmetric: 'dbmetrics', backup: 'backups',
+      workflow: 'workflow', locale: 'locales'
+    };
+    const key = map[type];
+    if (key && adData[key]) {
+      adData[key] = adData[key].filter(x => String(x.id) !== String(id));
+      saveData();
+      renderAll();
+      notify('Deleted.', 'success');
+    }
+  }
+  window.openDelete = openDelete;
+
+  /* ---------- EXPORT ---------- */
+  function exportTable(type) {
+    const map = {
+      users: 'users', roles: 'roles', sod: 'sod', audit: 'audit',
+      exfiltration: 'exfiltration', endpoints: 'endpoints', etl: 'etl',
+      dbmetrics: 'dbmetrics', backups: 'backups',
+      workflow: 'workflow', locales: 'locales'
+    };
+    const key = map[type] || type;
+    const rows = adData[key];
+    if (!rows || !rows.length) { notify('No data to export.', 'warning'); return; }
+    const headers = Object.keys(rows[0]);
+    const csv = [headers.join(',')]
+      .concat(rows.map(r => headers.map(h => JSON.stringify(r[h] ?? '')).join(',')))
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${key}_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    notify('Exported successfully.', 'success');
+  }
+  window.exportTable = exportTable;
+
+  function exportCurrentTab() {
+    const map = {
+      users: 'users', roles: 'roles', sod: 'sod', audit: 'audit',
+      exfiltration: 'exfiltration', api: 'endpoints', etl: 'etl',
+      database: 'dbmetrics', backup: 'backups',
+      workflow: 'workflow', localization: 'locales'
+    };
+    const key = map[activeTab];
+    if (key) exportTable(key);
+    else notify('Nothing to export from this section.', 'warning');
+  }
+  window.exportCurrentTab = exportCurrentTab;
+
+  /* ---------- CHARTS ---------- */
+  function showEmpty(canvasId, emptyId, has) {
+    const c = document.getElementById(canvasId);
+    const e = document.getElementById(emptyId);
+    if (c) c.style.display = has ? 'block' : 'none';
+    if (e) e.style.display = has ? 'none' : 'flex';
+  }
+
+  function refreshCharts() {
+    Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} });
+    charts = {};
+
+    const commonOpts = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
+    };
+
+    // API latency chart
+    const apiHas = adData.endpoints.length > 0;
+    showEmpty('ovApiChart', 'ovApiChartEmpty', apiHas);
+    if (apiHas) {
+      charts.api = new Chart(document.getElementById('ovApiChart'), {
+        type: 'bar',
+        data: {
+          labels: adData.endpoints.map(e => e.endpoint),
+          datasets: [{
+            label: 'Latency (ms)',
+            data: adData.endpoints.map(e => parseFloat(e.latency) || 0),
+            backgroundColor: '#06b6d4',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          ...commonOpts,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } }, x: { grid: { display: false } } }
+        }
+      });
+    }
+
+    // Audit actions doughnut
+    const auditHas = adData.audit.length > 0;
+    showEmpty('ovAuditChart', 'ovAuditChartEmpty', auditHas);
+    if (auditHas) {
+      const byAction = {};
+      adData.audit.forEach(a => {
+        const k = a.action || 'OTHER';
+        byAction[k] = (byAction[k] || 0) + 1;
+      });
+      charts.audit = new Chart(document.getElementById('ovAuditChart'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(byAction),
+          datasets: [{
+            data: Object.values(byAction),
+            backgroundColor: ['#2563eb','#0f7b5a','#d97706','#c0392b','#8b5cf6','#06b6d4','#10b981']
+          }]
+        },
+        options: commonOpts
+      });
+    }
+
+    // DB CPU trend
+    const dbHas = adData.dbmetrics.length > 0;
+    showEmpty('ovDbChart', 'ovDbChartEmpty', dbHas);
+    if (dbHas) {
+      charts.db = new Chart(document.getElementById('ovDbChart'), {
+        type: 'line',
+        data: {
+          labels: adData.dbmetrics.map(m => m.database),
+          datasets: [
+            { label: 'CPU %', data: adData.dbmetrics.map(m => parseFloat(m.cpu) || 0), borderColor: '#06b6d4', tension: 0.35 },
+            { label: 'Memory %', data: adData.dbmetrics.map(m => parseFloat(m.memory) || 0), borderColor: '#d97706', tension: 0.35 }
+          ]
+        },
+        options: {
+          ...commonOpts,
+          scales: { y: { beginAtZero: true, max: 100, grid: { color: 'rgba(0,0,0,0.04)' } }, x: { grid: { display: false } } }
+        }
+      });
+    }
+
+    // Exfiltration trend
+    const exfilHas = adData.exfiltration.length > 0;
+    showEmpty('exfilChart', 'exfilChartEmpty', exfilHas);
+    if (exfilHas) {
+      const sorted = [...adData.exfiltration].reverse();
+      charts.exfil = new Chart(document.getElementById('exfilChart'), {
+        type: 'line',
+        data: {
+          labels: sorted.map(e => e.date),
+          datasets: [{
+            label: 'Volume (MB)',
+            data: sorted.map(e => parseFloat(e.volume) || 0),
+            borderColor: '#06b6d4',
+            backgroundColor: 'rgba(6, 182, 212, 0.08)',
+            tension: 0.35,
+            fill: true,
+            pointBackgroundColor: '#06b6d4',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          ...commonOpts,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } }, x: { grid: { display: false } } }
+        }
+      });
+    }
+  }
+
+  /* ---------- KEYBOARD ---------- */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+    }
+  });
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('modal')) e.target.classList.remove('active');
+  });
+
+  /* ---------- BOOT ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNav();
+    setupMobileMenu();
+    renderAll();
+    updateAddButtonLabel();
+  });
+  </script>
+</body>
+</html>
