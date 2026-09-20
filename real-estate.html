@@ -1,983 +1,2721 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CephasEstate™ | Real Estate ERP</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        body {
-            background: #f1f5f9;
-            color: #0f172a;
-        }
+  <!-- PWA Meta -->
+  <meta name="theme-color" content="#1a4c7a" id="theme-color-meta" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CephasGM ERP" />
 
-        .navbar {
-            background: #0a2744;
-            color: white;
-            padding: 0.75rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+  <title>CephasEstate™ — Real Estate — CephasGM ERP</title>
 
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #fbbf24;
-            letter-spacing: -0.5px;
-        }
+  <meta name="description" content="CephasGM ERP Real Estate — Property portfolios, leases, CAM, tenant CRM, and fund accounting" />
+  <meta name="author" content="Cephas Gideon Mkama" />
+  <meta property="og:title" content="CephasEstate™ — CephasGM ERP" />
+  <meta property="og:description" content="Enterprise-tier real estate ERP" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cephasgm.github.io/CephasGM-ERP/real-estate.html" />
 
-        .home-link {
-            background: rgba(255,255,255,0.1);
-            padding: 0.5rem 1.25rem;
-            border-radius: 40px;
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
 
-        .home-link:hover {
-            background: #fbbf24;
-            color: #0a2744;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        .hero {
-            background: linear-gradient(135deg, #0a2744 0%, #1a3b5c 100%);
-            color: white;
-            padding: 3rem 5%;
-        }
+  <style>
+    /* ============ DESIGN TOKENS ============ */
+    :root {
+      --bg:            #f4f6fa;
+      --surface:       #ffffff;
+      --surface-alt:   #fafbfd;
+      --border:        #e6e9f0;
+      --border-strong: #d3d9e5;
 
-        .hero-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+      --text:          #0a1e3c;
+      --text-2:        #2c3e50;
+      --text-muted:    #5e6f8d;
+      --text-subtle:   #94a3b8;
 
-        .hero h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-        }
+      --primary:       #1a4c7a;
+      --primary-600:   #0e3a5c;
+      --primary-soft:  #e8f0fa;
+      --accent:        #2563eb;
+      --accent-hover:  #1d4ed8;
+      --accent-soft:   #eff4ff;
 
-        .stats-row {
-            display: flex;
-            gap: 2rem;
-            background: rgba(255,255,255,0.1);
-            padding: 1rem 2rem;
-            border-radius: 60px;
-            backdrop-filter: blur(10px);
-        }
+      --success:       #0f7b5a;
+      --warning:       #d97706;
+      --danger:        #c0392b;
+      --gold:          #d97706;
+      --mint:          #10b981;
+      --mint-soft:     #ecfdf5;
 
-        .stat-item {
-            text-align: center;
-        }
+      --radius-lg:     16px;
+      --radius:        12px;
+      --radius-sm:     8px;
+      --radius-pill:   999px;
 
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #fbbf24;
-        }
+      --shadow-sm:     0 1px 2px rgba(10, 30, 60, 0.04);
+      --shadow:        0 2px 10px rgba(10, 30, 60, 0.06);
+      --shadow-lg:     0 12px 32px rgba(10, 30, 60, 0.10);
 
-        .stat-label {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
+      --max-width:     1440px;
+      --sidebar-w:     272px;
+    }
 
-        .section {
-            padding: 3rem 5%;
-        }
+    /* ============ RESET ============ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      position: relative;
+    }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+    /* ============ PAGE BACKGROUND (ERP collage) ============ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        url('https://www.cio.com/wp-content/uploads/2025/03/272362-0-27498000-1741330535-enterprise_resource_planning-ERP.jpg?quality=50&strip=all&w=1024'),
+        url('https://img.magnific.com/free-vector/gradient-erp-illustration_23-2149379179.jpg'),
+        url('https://www.aimcom.com/wp-content/uploads/2026/01/erp-systems-integrating-business-operations-and-supply-chain-processes-1.png'),
+        url('https://img.magnific.com/free-vector/hand-drawn-flat-design-erp-illustration_23-2149383351.jpg?semt=ais_hybrid&w=740&q=80');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-blend-mode: overlay, soft-light, luminosity, multiply;
+      opacity: 0.07;
+      z-index: -1;
+      pointer-events: none;
+      filter: saturate(0.65) contrast(1.05);
+    }
 
-        .section-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    input, select, textarea { font-family: inherit; }
+    img { max-width: 100%; display: block; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
 
-        .section-title:after {
-            content: '';
-            flex: 1;
-            height: 2px;
-            background: linear-gradient(90deg, #cbd5e1, transparent);
-        }
+    /* ============ APP WRAPPER ============ */
+    .app {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 1.25rem 2rem 3rem;
+    }
 
-        /* Property Gallery */
-        .property-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 1.5rem;
-        }
+    /* ============ TOP BAR ============ */
+    .top-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.95rem 1.35rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .brand-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, var(--primary) 0%, #2c5a8a 55%, #3d6fa0 100%);
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      box-shadow: 0 4px 14px rgba(26, 76, 122, 0.28);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .brand-tab:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(26, 76, 122, 0.35);
+    }
+    .brand-tab i { font-size: 0.82rem; opacity: 0.9; }
 
-        .property-card {
-            background: white;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
-            border: 1px solid #e2e8f0;
-        }
+    .product-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-pill);
+      background: #fbf5e2;
+      color: var(--gold);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
 
-        .property-image-gallery {
-            height: 220px;
-            position: relative;
-            overflow: hidden;
-        }
+    .live-metrics {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .live-metrics .metric {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .live-metrics .metric strong {
+      color: var(--text);
+      font-weight: 700;
+    }
 
-        .gallery-container {
-            display: flex;
-            height: 100%;
-            transition: transform 0.3s ease;
-        }
+    /* ============ LAYOUT ============ */
+    .re-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
 
-        .gallery-slide {
-            min-width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
+    /* ============ SIDEBAR ============ */
+    .re-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: sticky;
+      top: 1rem;
+      max-height: calc(100vh - 2rem);
+      overflow-y: auto;
+      padding: 0.75rem 0.6rem 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .re-sidebar::-webkit-scrollbar { width: 6px; }
+    .re-sidebar::-webkit-scrollbar-thumb {
+      background: var(--border-strong); border-radius: 6px;
+    }
 
-        .gallery-nav {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            display: flex;
-            gap: 5px;
-            z-index: 10;
-        }
+    .nav-section { margin-bottom: 0.5rem; }
+    .nav-section-title {
+      padding: 0.75rem 0.75rem 0.4rem;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-subtle);
+      font-weight: 700;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.84rem;
+      transition: background 0.12s, color 0.12s;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 100%;
+      text-align: left;
+    }
+    .nav-link i {
+      width: 16px; text-align: center;
+      font-size: 0.82rem; color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .nav-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .nav-link:hover i { color: var(--accent); }
+    .nav-link.active {
+      background: var(--accent-soft); color: var(--accent); font-weight: 600;
+    }
+    .nav-link.active i { color: var(--accent); }
 
-        .gallery-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.5);
-            cursor: pointer;
-        }
+    /* ============ MAIN ============ */
+    .re-main { min-width: 0; }
 
-        .gallery-dot.active {
-            background: #fbbf24;
-        }
+    .re-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .re-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text);
+    }
+    .re-title i { color: var(--gold); font-size: 1.05rem; }
+    .re-subtitle {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .re-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
 
-        .property-status {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            padding: 0.35rem 1rem;
-            border-radius: 30px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            z-index: 10;
-        }
+    /* ============ BUTTONS ============ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover); border-color: var(--accent-hover);
+    }
+    .btn-success {
+      background: var(--success); color: #fff; border-color: var(--success);
+    }
+    .btn-success:hover { background: #0b6349; border-color: #0b6349; }
+    .btn-secondary {
+      background: var(--surface); color: var(--text); border-color: var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--border-strong); }
+    .btn-danger {
+      background: var(--danger); color: #fff; border-color: var(--danger);
+    }
+    .btn-danger:hover { background: #a13024; border-color: #a13024; }
+    .btn-gold {
+      background: var(--gold); color: #fff; border-color: var(--gold);
+    }
+    .btn-gold:hover { background: #b86305; border-color: #b86305; }
+    .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.72rem; }
 
-        .status-available { background: #10b981; color: white; }
-        .status-rented { background: #f59e0b; color: white; }
-        .status-sold { background: #ef4444; color: white; }
-        .status-pending { background: #8b5cf6; color: white; }
+    /* ============ TAB CONTENT ============ */
+    .tab-content { display: none; }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        .property-details {
-            padding: 1.5rem;
-        }
+    /* ============ CARDS ============ */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.15rem;
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-title i { color: var(--gold); font-size: 0.85rem; }
+    .card-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
 
-        .property-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
+    /* ============ STATS GRID ============ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.25rem;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--mint));
+    }
+    .stat-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .stat-title {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    .stat-icon {
+      width: 28px; height: 28px;
+      display: grid; place-items: center;
+      background: #fbf5e2;
+      color: var(--gold);
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+    .stat-change {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
 
-        .property-title h3 {
-            font-size: 1.3rem;
-        }
+    /* ============ CHARTS ============ */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      height: 300px;
+      position: relative;
+    }
+    .chart-container.tall { height: 360px; }
+    .chart-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--text-subtle);
+      font-size: 0.83rem;
+      text-align: center;
+      padding: 1rem;
+    }
+    .chart-empty i { font-size: 1.5rem; opacity: 0.5; }
 
-        .property-price {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #0a2744;
-        }
+    /* ============ BUILDING STACKING PLAN ============ */
+    .stack-plan {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .floor-tile {
+      border-radius: var(--radius);
+      padding: 0.85rem 0.9rem;
+      font-size: 0.75rem;
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+    .floor-tile:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    .floor-tile .floor-id {
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: -0.01em;
+    }
+    .floor-tile .floor-tenant {
+      font-size: 0.7rem;
+      opacity: 0.9;
+      line-height: 1.3;
+    }
+    .floor-tile .floor-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.65rem;
+      opacity: 0.85;
+      margin-top: 0.35rem;
+    }
+    .floor-occupied { background: linear-gradient(135deg, #10b981, #0f7b5a); }
+    .floor-vacant   { background: linear-gradient(135deg, #94a3b8, #64748b); }
+    .floor-renego   { background: linear-gradient(135deg, #d97706, #b86305); }
+    .floor-maint    { background: linear-gradient(135deg, #ef4444, #c0392b); }
 
-        .property-features {
-            display: flex;
-            gap: 1rem;
-            margin: 1rem 0;
-            color: #475569;
-        }
+    .stack-empty {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-subtle);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius);
+      font-size: 0.83rem;
+    }
+    .stack-empty i {
+      display: block;
+      font-size: 1.5rem;
+      opacity: 0.5;
+      margin-bottom: 0.55rem;
+    }
 
-        .doc-badge {
-            background: #f1f5f9;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-        }
+    .stack-legend {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+    }
+    .stack-legend .item { display: flex; align-items: center; gap: 0.4rem; }
+    .stack-legend .swatch {
+      width: 12px; height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+    }
 
-        .doc-badge:hover {
-            background: #e2e8f0;
-        }
+    /* ============ TABLES ============ */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 1.5rem;
+    }
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding: 1.1rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-toolbar h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .table-toolbar-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
 
-        /* Category Pills */
-        .category-pills {
-            display: flex;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
-        }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    .data-table th {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover { background: var(--surface-alt); }
+    .data-table .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-subtle);
+    }
+    .data-table .empty-state i {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 0.55rem;
+      opacity: 0.5;
+    }
 
-        .category-pill {
-            background: white;
-            border: 1px solid #e2e8f0;
-            padding: 0.6rem 1.5rem;
-            border-radius: 40px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .table-actions { display: flex; gap: 0.35rem; }
+    .action-icon {
+      cursor: pointer;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      transition: background 0.12s, color 0.12s;
+    }
+    .action-icon:hover { background: var(--accent-soft); color: var(--accent); }
 
-        .category-pill.active {
-            background: #0a2744;
-            color: white;
-            border-color: #0a2744;
-        }
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .badge-success { background: #dcfce7; color: #166534; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger  { background: #fee2e2; color: #991b1b; }
+    .badge-info    { background: var(--accent-soft); color: var(--accent); }
+    .badge-gray    { background: #f1f5f9; color: #475569; }
+    .badge-gold    { background: #fbf5e2; color: var(--gold); }
+    .badge-mint    { background: var(--mint-soft); color: var(--success); }
 
-        .category-pill:hover {
-            background: #f8fafc;
-            transform: translateY(-2px);
-        }
+    /* Toggle switch */
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 38px;
+      height: 20px;
+      cursor: pointer;
+    }
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--border-strong);
+      border-radius: 20px;
+      transition: 0.2s;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: 0.2s;
+    }
+    .toggle input:checked + .toggle-slider {
+      background: var(--success);
+    }
+    .toggle input:checked + .toggle-slider::before {
+      transform: translateX(18px);
+    }
 
-        /* Feature Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
+    /* ============ WORK ORDER GRID ============ */
+    .wo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.85rem;
+    }
+    .wo-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+    }
+    .wo-card.critical { border-left: 3px solid var(--danger); }
+    .wo-card.high     { border-left: 3px solid var(--warning); }
+    .wo-card.medium   { border-left: 3px solid var(--accent); }
+    .wo-card.low      { border-left: 3px solid var(--text-subtle); }
+    .wo-card .asset {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+    }
+    .wo-card .title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0.35rem 0 0.5rem;
+      line-height: 1.35;
+    }
+    .wo-card .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.65rem;
+      padding-top: 0.65rem;
+      border-top: 1px solid var(--border);
+    }
 
-        .feature-card {
-            background: white;
-            padding: 1.8rem;
-            border-radius: 20px;
-            border: 1px solid #e2e8f0;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
+    /* ============ EMPTY BLOCK ============ */
+    .empty-block {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-subtle);
+      font-size: 0.83rem;
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-sm);
+    }
+    .empty-block i {
+      display: block;
+      font-size: 1.5rem;
+      opacity: 0.5;
+      margin-bottom: 0.5rem;
+    }
 
-        .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 30px -10px rgba(10,39,68,0.2);
-            border-color: #fbbf24;
-        }
+    /* ============ MINI KPIS ============ */
+    .mini-kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .mini-kpi {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+    }
+    .mini-kpi .label {
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    .mini-kpi .value {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+    .mini-kpi .sub {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
 
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #fbbf24, #f59e0b);
-            transform: scaleX(0);
-            transition: transform 0.3s;
-        }
+    /* ============ TWO-COLUMN ============ */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1.5rem;
+    }
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
 
-        .feature-card:hover::before {
-            transform: scaleX(1);
-        }
+    /* ============ WATERFALL ============ */
+    .waterfall {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+    .waterfall-tier {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--gold);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .waterfall-tier .info { flex: 1; min-width: 0; }
+    .waterfall-tier .info strong { display: block; font-size: 0.85rem; }
+    .waterfall-tier .info span { font-size: 0.72rem; color: var(--text-muted); }
+    .waterfall-tier .amount {
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
 
-        .feature-icon {
-            font-size: 2.2rem;
-            margin-bottom: 1rem;
-        }
+    /* ============ AIA / IAS PANELS ============ */
+    .statement {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.4rem;
+    }
+    .statement-line {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.55rem 0;
+      border-bottom: 1px dashed var(--border);
+      font-size: 0.82rem;
+    }
+    .statement-line:last-child { border-bottom: none; }
+    .statement-line.total {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text);
+      border-top: 2px solid var(--border);
+      border-bottom: none;
+      padding-top: 0.85rem;
+      margin-top: 0.35rem;
+    }
+    .statement-line .label { color: var(--text-muted); }
+    .statement-line .amount { font-variant-numeric: tabular-nums; font-weight: 600; }
 
-        .feature-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
+    /* ============ FORMS ============ */
+    .form-group { margin-bottom: 1.15rem; }
+    .form-label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: var(--text-2);
+      text-transform: capitalize;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.85rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
 
-        .feature-stats {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            color: #64748b;
-        }
+    /* ============ MODAL ============ */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      padding: 1rem;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 640px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalSlideIn 0.25s ease;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      padding: 1.15rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1;
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+    }
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      width: 34px; height: 34px;
+      display: grid; place-items: center;
+      border-radius: var(--radius-sm);
+      transition: background 0.12s, color 0.12s;
+    }
+    .modal-close:hover { background: var(--accent-soft); color: var(--accent); }
+    .modal-body { padding: 1.35rem; }
+    .modal-footer {
+      padding: 1rem 1.35rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.55rem;
+      position: sticky;
+      bottom: 0;
+      background: var(--surface);
+      border-bottom-left-radius: var(--radius-lg);
+      border-bottom-right-radius: var(--radius-lg);
+    }
 
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
+    /* ============ NOTIFICATION ============ */
+    .notification {
+      position: fixed;
+      top: 20px; right: 20px;
+      padding: 0.85rem 1.25rem;
+      background: var(--success);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      font-size: 0.83rem;
+      font-weight: 500;
+      animation: slideIn 0.25s ease;
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .notification.warning { background: var(--warning); }
+    .notification.error   { background: var(--danger); }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
 
-        .modal.active {
-            display: flex;
-        }
+    /* ============ FOOTER ============ */
+    .app-footer {
+      margin-top: 2.5rem;
+      padding: 1.4rem 0 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .app-footer strong { color: var(--text-2); font-weight: 600; }
 
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 24px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
+    /* ============ MOBILE ============ */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem; left: 1rem;
+      background: var(--gold); color: #fff;
+      border-radius: var(--radius-sm);
+      width: 42px; height: 42px;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: var(--shadow);
+    }
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.5);
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+    .sidebar-overlay.active { display: block; }
 
-        .modal-content h3 {
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-        }
-
-        .modal-content input, .modal-content select, .modal-content textarea {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            font-size: 1rem;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .btn-save {
-            background: #0a2744;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        .btn-cancel {
-            background: #e2e8f0;
-            color: #1e293b;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        .delete-btn {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 0.4rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        .edit-btn {
-            background: #fbbf24;
-            color: #0a2744;
-            border: none;
-            padding: 0.4rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .document-list {
-            margin: 1rem 0;
-        }
-
-        .document-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem;
-            background: #f8fafc;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-        }
-
-        .footer {
-            background: #0a2744;
-            color: white;
-            padding: 2rem 5%;
-            text-align: center;
-        }
-
-        .footer small {
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-    </style>
+    @media (max-width: 960px) {
+      .app { padding: 1rem; padding-top: 4rem; }
+      .re-layout { grid-template-columns: 1fr; }
+      .re-sidebar {
+        position: fixed;
+        top: 0; left: 0;
+        width: var(--sidebar-w);
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        border: none;
+        border-right: 1px solid var(--border);
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        z-index: 1000;
+      }
+      .re-sidebar.active { transform: translateX(0); }
+      .mobile-menu-toggle { display: flex; }
+      .two-col { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .stats-grid, .charts-grid, .three-col, .mini-kpis { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .re-header { flex-direction: column; align-items: flex-start; }
+      .live-metrics { font-size: 0.72rem; gap: 0.85rem; }
+    }
+  </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">CephasEstate™</div>
-        <a href="https://cephasgm.github.io/CephasGM-ERP/index.html" class="home-link">
-            <span>🏠</span> ERP Home
-        </a>
-    </nav>
+  <a href="#main-content" class="sr-only">Skip to main content</a>
 
-    <section class="hero">
-        <div class="hero-content">
-            <div>
-                <h1>Real Estate ERP<br>Live Portfolio Management</h1>
-                <p style="margin-top: 1rem; opacity: 0.9;">1,247 properties · $124M AUM · 98% occupancy</p>
+  <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu" aria-expanded="false">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="app">
+    <!-- TOP BAR -->
+    <header class="top-bar">
+      <a href="index.html" class="brand-tab" aria-label="CephasGM ERP — return to homepage">
+        <i class="fas fa-bolt" aria-hidden="true"></i>
+        CephasGM ERP
+      </a>
+      <span class="product-tag">
+        <i class="fas fa-building" aria-hidden="true"></i>
+        CephasEstate™
+      </span>
+      <div class="live-metrics">
+        <span class="metric">Occupancy: <strong id="lmOcc">—</strong></span>
+        <span class="metric">NOI: <strong id="lmNoi">—</strong></span>
+        <span class="metric">Open WO: <strong id="lmWo">—</strong></span>
+        <span class="metric">Escrow: <strong id="lmEscrow">—</strong></span>
+      </div>
+    </header>
+
+    <div class="re-layout">
+      <!-- SIDEBAR -->
+      <aside class="re-sidebar" id="reSidebar" aria-label="Real estate navigation">
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <div class="nav-section-title">Overview</div>
+            <button class="nav-link active" data-tab="overview">
+              <i class="fas fa-chart-line"></i><span>Portfolio Overview</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Portfolio &amp; Space</div>
+            <button class="nav-link" data-tab="stacking">
+              <i class="fas fa-building"></i><span>Stacking Plan</span>
+            </button>
+            <button class="nav-link" data-tab="areas">
+              <i class="fas fa-ruler-combined"></i><span>Rentable Area</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Lease Administration</div>
+            <button class="nav-link" data-tab="leases">
+              <i class="fas fa-file-signature"></i><span>Lease Register</span>
+            </button>
+            <button class="nav-link" data-tab="turnover">
+              <i class="fas fa-percent"></i><span>Turnover Rent</span>
+            </button>
+            <button class="nav-link" data-tab="deposits">
+              <i class="fas fa-vault"></i><span>Deposits &amp; Escrow</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Facility &amp; CAM</div>
+            <button class="nav-link" data-tab="cam">
+              <i class="fas fa-calculator"></i><span>CAM Budget</span>
+            </button>
+            <button class="nav-link" data-tab="workorders">
+              <i class="fas fa-screwdriver-wrench"></i><span>Work Orders</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Tenant &amp; Broker CRM</div>
+            <button class="nav-link" data-tab="brokers">
+              <i class="fas fa-handshake"></i><span>Broker Pipeline</span>
+            </button>
+            <button class="nav-link" data-tab="portal">
+              <i class="fas fa-user-circle"></i><span>Tenant Portal</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Fund Accounting</div>
+            <button class="nav-link" data-tab="waterfall">
+              <i class="fas fa-layer-group"></i><span>Equity Waterfall</span>
+            </button>
+            <button class="nav-link" data-tab="valuation">
+              <i class="fas fa-chart-area"></i><span>IAS 40 Valuation</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Other Modules</div>
+            <a href="finance.html" class="nav-link">
+              <i class="fas fa-chart-pie"></i><span>Finance</span>
+            </a>
+            <a href="procurement.html" class="nav-link">
+              <i class="fas fa-cart-shopping"></i><span>Procurement</span>
+            </a>
+            <a href="asset-operations.html" class="nav-link">
+              <i class="fas fa-screwdriver-wrench"></i><span>Asset Operations</span>
+            </a>
+            <a href="legal.html" class="nav-link">
+              <i class="fas fa-scale-balanced"></i><span>Legal</span>
+            </a>
+            <a href="admin.html" class="nav-link">
+              <i class="fas fa-sliders"></i><span>Admin</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="re-main" id="main-content" tabindex="-1">
+        <!-- Header -->
+        <header class="re-header">
+          <div>
+            <h1 class="re-title" id="pageTitle">
+              <i class="fas fa-building"></i>
+              Global Portfolio Financial Overview
+            </h1>
+            <p class="re-subtitle" id="pageSubtitle">
+              Consolidated KPIs across portfolio, leases, CAM, CRM, and fund accounting
+            </p>
+          </div>
+          <div class="re-actions">
+            <button class="btn btn-secondary" onclick="exportCurrentTab()">
+              <i class="fas fa-download"></i> Export
+            </button>
+            <button class="btn btn-gold" id="addRecordBtn" onclick="openAddModal()">
+              <i class="fas fa-plus"></i> New Record
+            </button>
+          </div>
+        </header>
+
+        <!-- ============ OVERVIEW ============ -->
+        <div id="overview-tab" class="tab-content active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Portfolio Occupancy</span>
+                <span class="stat-icon"><i class="fas fa-percent"></i></span>
+              </div>
+              <div class="stat-value" id="ovOccupancy">—</div>
+              <div class="stat-change">Across all buildings</div>
             </div>
-            <div class="stats-row">
-                <div class="stat-item">
-                    <div class="stat-value">247</div>
-                    <div class="stat-label">Active</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">156</div>
-                    <div class="stat-label">Rented</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">89</div>
-                    <div class="stat-label">For Sale</div>
-                </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Net Operating Income</span>
+                <span class="stat-icon"><i class="fas fa-coins"></i></span>
+              </div>
+              <div class="stat-value" id="ovNoi">—</div>
+              <div class="stat-change">Rolling 12 months</div>
             </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Open Work Orders</span>
+                <span class="stat-icon"><i class="fas fa-screwdriver-wrench"></i></span>
+              </div>
+              <div class="stat-value" id="ovWo">—</div>
+              <div class="stat-change">Facility helpdesk</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Escrow Held</span>
+                <span class="stat-icon"><i class="fas fa-vault"></i></span>
+              </div>
+              <div class="stat-value" id="ovEscrow">—</div>
+              <div class="stat-change">Deposits in trust</div>
+            </div>
+          </div>
+
+          <div class="mini-kpis" id="overviewMini"></div>
+
+          <div class="charts-grid">
+            <div class="chart-container">
+              <canvas id="ovNoiChart"></canvas>
+              <div class="chart-empty" id="ovNoiChartEmpty">
+                <i class="fas fa-chart-bar"></i>
+                No NOI data yet
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="ovLeaseChart"></canvas>
+              <div class="chart-empty" id="ovLeaseChartEmpty">
+                <i class="fas fa-chart-pie"></i>
+                No lease data yet
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="ovCamChart"></canvas>
+              <div class="chart-empty" id="ovCamChartEmpty">
+                <i class="fas fa-chart-line"></i>
+                No CAM data yet
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-triangle-exclamation"></i> Cross-Module Alerts</div>
+            </div>
+            <div id="overviewAlerts">
+              <div class="empty-block">
+                <i class="fas fa-circle-check"></i>
+                No active alerts. All systems within specification.
+              </div>
+            </div>
+          </div>
         </div>
-    </section>
 
-    <!-- Property Categories -->
-    <section class="section">
-        <div class="container">
-            <div class="category-pills" id="categoryFilters">
-                <span class="category-pill active" data-category="all">🏠 All Properties</span>
-                <span class="category-pill" data-category="residential">🏠 Residential (342)</span>
-                <span class="category-pill" data-category="commercial">🏢 Commercial (156)</span>
-                <span class="category-pill" data-category="land">🌳 Land & Plots (89)</span>
-                <span class="category-pill" data-category="rentals">🏘️ Rentals (234)</span>
-                <span class="category-pill" data-category="sales">💰 Sales (167)</span>
-                <span class="category-pill" data-category="shared">🏢 Shared Spaces (78)</span>
+        <!-- ============ STACKING PLAN ============ -->
+        <div id="stacking-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-building"></i> Visual Building Stacking Plan</div>
+              <button class="btn btn-gold btn-sm" onclick="openAddModal('floor')">
+                <i class="fas fa-plus"></i> Add Floor
+              </button>
             </div>
+            <p class="card-desc">
+              Tower layout by floor, color-coded by status: Occupied, Vacant, Renegotiation, Maintenance.
+            </p>
+
+            <div style="margin-bottom:1rem;">
+              <select class="form-control" id="stackingBuilding" onchange="renderStacking()" style="max-width:340px;">
+                <option value="">— Select Building —</option>
+              </select>
+            </div>
+
+            <div class="stack-plan" id="stackPlan">
+              <div class="stack-empty">
+                <i class="fas fa-building"></i>
+                No floors registered yet — add a floor to begin stacking plan.
+              </div>
+            </div>
+
+            <div class="stack-legend">
+              <div class="item"><span class="swatch" style="background:#10b981;"></span> Occupied</div>
+              <div class="item"><span class="swatch" style="background:#94a3b8;"></span> Vacant</div>
+              <div class="item"><span class="swatch" style="background:#d97706;"></span> Renegotiation</div>
+              <div class="item"><span class="swatch" style="background:#ef4444;"></span> Maintenance</div>
+            </div>
+          </div>
         </div>
-    </section>
 
-    <!-- Active Properties with Gallery -->
-    <section class="section">
-        <div class="container">
-            <div class="section-title">
-                <span>📋 Active Properties Gallery</span>
-                <button class="edit-btn" style="padding: 0.5rem 1.5rem;" onclick="showAddPropertyModal()">+ Add Property</button>
+        <!-- ============ RENTABLE AREA ============ -->
+        <div id="areas-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Rentable Area &amp; GLA Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('areas')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-gold btn-sm" onclick="openAddModal('area')">
+                  <i class="fas fa-plus"></i> Add Building
+                </button>
+              </div>
             </div>
-            <div class="property-grid" id="propertyGrid"></div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Building ID</th>
+                  <th>Building Name</th>
+                  <th>Gross Area (sq ft)</th>
+                  <th>Net Rentable Area</th>
+                  <th>Efficiency %</th>
+                  <th>Common Area Factor</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="areasBody"></tbody>
+            </table>
+          </div>
         </div>
-    </section>
 
-    <!-- Feature Modules -->
-    <section class="section" style="background: white;">
-        <div class="container">
-            <div class="section-title">
-                <span>⚙️ Core Modules</span>
+        <!-- ============ LEASE REGISTER ============ -->
+        <div id="leases-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Lease Escalation &amp; Options Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('leases')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-gold btn-sm" onclick="openAddModal('lease')">
+                  <i class="fas fa-plus"></i> New Lease
+                </button>
+              </div>
             </div>
-            <div class="features-grid" id="featuresGrid">
-                <div class="feature-card" data-module="registry">
-                    <div class="feature-icon">🏢</div>
-                    <div class="feature-title">Property & Unit Registry</div>
-                    <p>Complete property database with documents, images, and history.</p>
-                    <div class="feature-stats">
-                        <span>📄 1,247 properties</span>
-                        <span>🔍 3,892 documents</span>
-                    </div>
-                </div>
-                <div class="feature-card" data-module="tenant">
-                    <div class="feature-icon">👥</div>
-                    <div class="feature-title">Tenant & Lease Management</div>
-                    <p>Lease agreements, renewals, tenant communications.</p>
-                    <div class="feature-stats">
-                        <span>👤 892 tenants</span>
-                        <span>📝 456 active leases</span>
-                    </div>
-                </div>
-                <div class="feature-card" data-module="rent">
-                    <div class="feature-icon">💰</div>
-                    <div class="feature-title">Rent Invoicing & Collections</div>
-                    <p>Automated invoices, mobile money integration, arrears tracking.</p>
-                    <div class="feature-stats">
-                        <span>📊 $1.2M monthly</span>
-                        <span>⚠️ $124K arrears</span>
-                    </div>
-                </div>
-                <div class="feature-card" data-module="sales">
-                    <div class="feature-icon">📊</div>
-                    <div class="feature-title">Sales & Commission</div>
-                    <p>Track sales, agents commissions, closing schedules.</p>
-                    <div class="feature-stats">
-                        <span>💰 $45M YTD sales</span>
-                        <span>👔 23 agents</span>
-                    </div>
-                </div>
-                <div class="feature-card" data-module="maintenance">
-                    <div class="feature-icon">🔧</div>
-                    <div class="feature-title">Maintenance Requests</div>
-                    <p>Tenant requests, work orders, contractor tracking.</p>
-                    <div class="feature-stats">
-                        <span>🔨 67 open requests</span>
-                        <span>👷 12 contractors</span>
-                    </div>
-                </div>
-                <div class="feature-card" data-module="legal">
-                    <div class="feature-icon">⚖️</div>
-                    <div class="feature-title">Legal & Compliance</div>
-                    <p>Title deeds, permits, regulatory compliance.</p>
-                    <div class="feature-stats">
-                        <span>📋 892 title deeds</span>
-                        <span>✅ 98% compliant</span>
-                    </div>
-                </div>
-            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tenant</th>
+                  <th>Building</th>
+                  <th>Suite</th>
+                  <th>Expiry</th>
+                  <th>Escalation</th>
+                  <th>Base Rent</th>
+                  <th>Renewal Option</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="leasesBody"></tbody>
+            </table>
+          </div>
         </div>
-    </section>
 
-    <!-- Modal -->
-    <div class="modal" id="genericModal">
-        <div class="modal-content" id="modalContent"></div>
+        <!-- ============ TURNOVER RENT ============ -->
+        <div id="turnover-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-percent"></i> Retail Turnover Rent Calculator</div>
+              <button class="btn btn-gold btn-sm" onclick="openAddModal('turnover')">
+                <i class="fas fa-plus"></i> Add Tenant Sales
+              </button>
+            </div>
+            <p class="card-desc">
+              Monthly base sales vs break-point threshold to compute payable variable rent.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Turnover Rent Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('turnover')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tenant</th>
+                  <th>Month</th>
+                  <th>Base Sales</th>
+                  <th>Break-Point</th>
+                  <th>Turnover %</th>
+                  <th>Variable Rent Due</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="turnoverBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ DEPOSITS ============ -->
+        <div id="deposits-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Security Deposit &amp; Escrow Ledger</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('deposits')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-gold btn-sm" onclick="openAddModal('deposit')">
+                  <i class="fas fa-plus"></i> Add Deposit
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tenant</th>
+                  <th>Building</th>
+                  <th>Deposit Amount</th>
+                  <th>Currency</th>
+                  <th>Deposit Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="depositsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ CAM BUDGET ============ -->
+        <div id="cam-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-calculator"></i> Common Area Maintenance (CAM) Budget Tracker</div>
+              <button class="btn btn-gold btn-sm" onclick="openAddModal('cam')">
+                <i class="fas fa-plus"></i> Add Line
+              </button>
+            </div>
+            <p class="card-desc">
+              Dynamic costs by category, with tenant pro-rata allocation percentages.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>CAM Budget Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('cam')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Building</th>
+                  <th>Budgeted Amount</th>
+                  <th>Actual Spend</th>
+                  <th>Pro-Rata %</th>
+                  <th>Allocated to Tenants</th>
+                  <th>Variance</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="camBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ WORK ORDERS ============ -->
+        <div id="workorders-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-screwdriver-wrench"></i> Tenant Work Order Helpdesk</div>
+              <button class="btn btn-gold btn-sm" onclick="openAddModal('workorder')">
+                <i class="fas fa-plus"></i> New Work Order
+              </button>
+            </div>
+            <p class="card-desc">
+              Open maintenance tickets with asset identifiers, priority flags, and assignment statuses.
+            </p>
+          </div>
+
+          <div class="wo-grid" id="woGrid">
+            <div class="empty-block" style="grid-column:1/-1;">
+              <i class="fas fa-screwdriver-wrench"></i>
+              No work orders yet — create one to begin dispatching.
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ BROKERS ============ -->
+        <div id="brokers-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-handshake"></i> Broker Pipeline &amp; Commission Calculator</div>
+              <button class="btn btn-gold btn-sm" onclick="openAddModal('broker')">
+                <i class="fas fa-plus"></i> Add Lead
+              </button>
+            </div>
+            <p class="card-desc">
+              Prospective leads with square footage requested, commission splits, and payout approvals.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Broker Pipeline Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('brokers')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Broker</th>
+                  <th>Prospect</th>
+                  <th>Sq Ft Requested</th>
+                  <th>Deal Value</th>
+                  <th>Commission %</th>
+                  <th>Commission Due</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="brokersBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ TENANT PORTAL ============ -->
+        <div id="portal-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-user-circle"></i> Tenant Portal Interactions</div>
+              <button class="btn btn-gold btn-sm" onclick="openAddModal('portal')">
+                <i class="fas fa-plus"></i> Add Tenant
+              </button>
+            </div>
+            <p class="card-desc">
+              Logins, open balances, and e-signature statuses per tenant.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Tenant Portal Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('portal')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tenant</th>
+                  <th>Building</th>
+                  <th>Last Login</th>
+                  <th>Login Count (30d)</th>
+                  <th>Open Balance</th>
+                  <th>E-Sign Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="portalBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ WATERFALL ============ -->
+        <div id="waterfall-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-layer-group"></i> Fund Equity Waterfall Structure</div>
+              <button class="btn btn-gold btn-sm" onclick="openAddModal('waterfall')">
+                <i class="fas fa-plus"></i> Add Tier
+              </button>
+            </div>
+            <p class="card-desc">
+              Step-down milestone tiers (Preferred Return, Tier 2 Split 20/80) tracking distribution balances.
+            </p>
+          </div>
+
+          <div class="waterfall" id="waterfallList">
+            <div class="empty-block">
+              <i class="fas fa-layer-group"></i>
+              No waterfall tiers configured yet.
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ VALUATION ============ -->
+        <div id="valuation-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-chart-area"></i> Asset Investment Valuation (IAS 40)</div>
+              <button class="btn btn-gold btn-sm" onclick="openAddModal('valuation')">
+                <i class="fas fa-plus"></i> Add Valuation
+              </button>
+            </div>
+            <p class="card-desc">
+              Current cap rates, NOI, and computed present market valuations for top properties.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>IAS 40 Valuation Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('valuation')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>NOI</th>
+                  <th>Cap Rate</th>
+                  <th>Market Value</th>
+                  <th>Valuation Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="valuationBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
     </div>
 
-    <footer class="footer">
-        <small>© 2026 CephasGM Group. All rights reserved. v3.14.2 · Build 2026.02.21 · PROD</small>
+    <!-- FOOTER -->
+    <footer class="app-footer">
+      Copyright © 2025 <strong>Cephas GM</strong> | Innovating for Tomorrow
     </footer>
+  </div>
 
-    <script>
-        // Enhanced property data with images and documents
-        let properties = [
-            { 
-                id: 1, 
-                name: 'Harbor View Towers', 
-                location: 'Dar es Salaam, Tanzania', 
-                type: 'residential',
-                category: 'residential',
-                beds: 3, baths: 2, sqm: 180, 
-                price: 1800, priceType: 'mo', 
-                status: 'available',
-                images: [
-                    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=500',
-                    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500',
-                    'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=500'
-                ],
-                documents: ['Title_Deed.pdf', 'Inspection_Report.pdf', 'Floor_Plan.pdf'],
-                tenants: [],
-                leaseHistory: []
-            },
-            { 
-                id: 2, 
-                name: 'Kilimanjaro Business Park', 
-                location: 'Arusha, Tanzania', 
-                type: 'commercial',
-                category: 'commercial',
-                units: '12 offices', sqm: 850, 
-                price: 5500, priceType: 'mo', 
-                status: 'rented',
-                images: [
-                    'https://images.unsplash.com/photo-1497366216548-37526070297c?w=500',
-                    'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=500',
-                    'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=500'
-                ],
-                documents: ['Lease_Agreement.pdf', 'Business_License.pdf', 'Fire_Safety_Cert.pdf'],
-                tenants: ['Kilimanjaro Coffee', 'Tech Hub Ltd', 'Legal Associates'],
-                leaseHistory: []
-            },
-            { 
-                id: 3, 
-                name: 'Serengeti Conservation Land', 
-                location: 'Karatu, Tanzania', 
-                type: 'land',
-                category: 'land',
-                acres: 25, zoning: 'Mixed Use', 
-                price: 450000, priceType: 'total', 
-                status: 'for sale',
-                images: [
-                    'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500',
-                    'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500',
-                    'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500'
-                ],
-                documents: ['Land_Title.pdf', 'Survey_Report.pdf', 'Environmental_Assessment.pdf'],
-                tenants: [],
-                leaseHistory: []
-            },
-            { 
-                id: 4, 
-                name: 'Zanzibar Beach Resort', 
-                location: 'Zanzibar, Tanzania', 
-                type: 'rentals',
-                category: 'rentals',
-                units: '8 villas', sqm: 1200, 
-                price: 350, priceType: 'night', 
-                status: 'rented',
-                images: [
-                    'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500',
-                    'https://images.unsplash.com/photo-1582719508250-b5c9e2d6b7e0?w=500',
-                    'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=500'
-                ],
-                documents: ['Tourism_License.pdf', 'Hotel_Permit.pdf', 'Insurance.pdf'],
-                tenants: ['Booking.com Guests', 'Airbnb Guests'],
-                leaseHistory: []
-            },
-            { 
-                id: 5, 
-                name: 'Dar es Salaam Luxury Condos', 
-                location: 'Dar es Salaam, Tanzania', 
-                type: 'sales',
-                category: 'sales',
-                beds: 4, baths: 3, sqm: 250, 
-                price: 350000, priceType: 'total', 
-                status: 'for sale',
-                images: [
-                    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=500',
-                    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=500',
-                    'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=500'
-                ],
-                documents: ['Sales_Agreement.pdf', 'Property_Valuation.pdf', 'Marketing_Brochure.pdf'],
-                tenants: [],
-                leaseHistory: []
-            },
-            { 
-                id: 6, 
-                name: 'Shared Workspace - Kijitonyama', 
-                location: 'Dar es Salaam, Tanzania', 
-                type: 'shared',
-                category: 'shared',
-                units: '25 desks', sqm: 400, 
-                price: 150, priceType: 'mo', 
-                status: 'available',
-                images: [
-                    'https://images.unsplash.com/photo-1497366216548-37526070297c?w=500',
-                    'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=500',
-                    'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=500'
-                ],
-                documents: ['Membership_Agreement.pdf', 'Rules_Regulations.pdf', 'Insurance.pdf'],
-                tenants: ['Startup A', 'Freelancer B', 'Company C'],
-                leaseHistory: []
-            }
-        ];
+  <!-- ============ GENERIC MODAL ============ -->
+  <div class="modal" id="genericModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">
+          <i class="fas fa-plus-circle"></i> New Record
+        </h2>
+        <button class="modal-close" onclick="closeModal('genericModal')">&times;</button>
+      </div>
+      <form id="modalForm" onsubmit="saveModal(event)">
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('genericModal')">Cancel</button>
+          <button type="submit" class="btn btn-gold">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-        // Module data
-        let moduleData = {
-            registry: { properties: 1247, documents: 3892, lastUpdated: '2026-02-21' },
-            tenant: { tenants: 892, activeLeases: 456, renewals: 23 },
-            rent: { monthly: 1200000, arrears: 124500, collected: 1075500 },
-            sales: { ytd: 45000000, agents: 23, commissions: 2250000 },
-            maintenance: { open: 67, contractors: 12, completed: 892 },
-            legal: { deeds: 892, compliance: 98, permits: 456 }
-        };
+  <script>
+  /* =========================================================
+     CephasGM ERP — Real Estate Module v4.0
+     Empty-state on first load. Data persisted to localStorage.
+     ========================================================= */
 
-        let currentCategory = 'all';
+  const TAB_META = {
+    overview:    ['Global Portfolio Financial Overview', 'Consolidated KPIs across portfolio, leases, CAM, CRM, and fund accounting'],
+    stacking:    ['Visual Building Stacking Plan',        'Floor-by-floor occupancy status across towers'],
+    areas:       ['Rentable Area & GLA',                  'Gross and net areas with efficiency factors'],
+    leases:      ['Lease Escalation & Options',           'Lease register with escalations and renewals'],
+    turnover:    ['Retail Turnover Rent Calculator',      'Base sales vs break-point thresholds'],
+    deposits:    ['Security Deposit & Escrow',            'Deposits held in trust with status validations'],
+    cam:         ['CAM Budget Tracker',                   'Common Area Maintenance costs and allocations'],
+    workorders:  ['Tenant Work Order Helpdesk',           'Facility tickets with priority and assignment'],
+    brokers:     ['Broker Pipeline & Commissions',        'Leads, sq ft requested, and payout approvals'],
+    portal:      ['Tenant Portal Interactions',           'Logins, balances, and e-sign statuses'],
+    waterfall:   ['Fund Equity Waterfall Structure',      'Preferred return and split tiers'],
+    valuation:   ['Asset Investment Valuation (IAS 40)',  'Cap rates, NOI, and market values']
+  };
 
-        // Render properties with gallery
-        function renderProperties() {
-            const grid = document.getElementById('propertyGrid');
-            grid.innerHTML = '';
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
-            const filtered = currentCategory === 'all' 
-                ? properties 
-                : properties.filter(p => p.category === currentCategory);
+  /* ---------- STATE ---------- */
+  let reData = loadData();
+  let activeTab = 'overview';
+  let charts = {};
+  let currentEditType = null;
 
-            filtered.forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'property-card';
-                
-                // Build gallery HTML
-                let galleryHtml = '';
-                if (p.images && p.images.length) {
-                    galleryHtml = `
-                        <div class="property-image-gallery" id="gallery-${p.id}">
-                            <div class="gallery-container" id="galleryContainer-${p.id}" style="transform: translateX(0px);">
-                                ${p.images.map((img, idx) => `
-                                    <div class="gallery-slide" style="background-image: url('${img}');">
-                                        <div style="position: absolute; bottom: 10px; left: 10px; color: white; background: rgba(0,0,0,0.5); padding: 2px 8px; border-radius: 12px; font-size: 0.7rem;">${idx+1}/${p.images.length}</div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                            <div class="gallery-nav">
-                                ${p.images.map((_, idx) => `
-                                    <span class="gallery-dot ${idx === 0 ? 'active' : ''}" onclick="event.stopPropagation(); slideGallery(${p.id}, ${idx})"></span>
-                                `).join('')}
-                            </div>
-                            <span class="property-status status-${p.status === 'available' ? 'available' : (p.status === 'rented' ? 'rented' : 'sold')}">${p.status}</span>
-                            <div style="position: absolute; bottom: 10px; right: 10px; display: flex; gap: 5px;">
-                                <button class="edit-btn" onclick="event.stopPropagation(); editProperty(${p.id})">Edit</button>
-                                <button class="delete-btn" onclick="event.stopPropagation(); deleteProperty(${p.id})">Delete</button>
-                            </div>
-                        </div>
-                    `;
-                }
+  function loadData() {
+    const saved = localStorage.getItem('cephasgm_realestate_data');
+    if (saved) return JSON.parse(saved);
+    return {
+      areas: [],
+      leases: [],
+      turnover: [],
+      deposits: [],
+      cam: [],
+      workorders: [],
+      brokers: [],
+      portal: [],
+      waterfall: [],
+      valuation: [],
+      floors: [],
+      nextIds: {
+        area: 1, lease: 1, turnover: 1, deposit: 1, cam: 1,
+        workorder: 1, broker: 1, portal: 1, waterfall: 1,
+        valuation: 1, floor: 1
+      }
+    };
+  }
+  function saveData() {
+    localStorage.setItem('cephasgm_realestate_data', JSON.stringify(reData));
+  }
 
-                // Build features
-                let features = '';
-                if (p.beds) features += `<span>🛏️ ${p.beds}</span><span>🚿 ${p.baths}</span><span>📐 ${p.sqm}m²</span>`;
-                else if (p.sqm) features += `<span>📐 ${p.sqm}m²</span>`;
-                else if (p.acres) features += `<span>🌳 ${p.acres} acres</span>`;
-                if (p.units) features += `<span>🏢 ${p.units}</span>`;
+  /* ---------- HELPERS ---------- */
+  function emptyRow(cols, message, icon = 'fa-inbox') {
+    return `<tr><td colspan="${cols}" class="empty-state"><i class="fas ${icon}"></i>${message}</td></tr>`;
+  }
+  function notify(msg, type = 'success') {
+    const n = document.createElement('div');
+    n.className = `notification ${type}`;
+    n.innerHTML = `<i class="fas fa-${type === 'error' ? 'circle-exclamation' : type === 'warning' ? 'triangle-exclamation' : 'circle-check'}"></i> ${msg}`;
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 3400);
+  }
+  window.notify = notify;
 
-                // Build documents
-                const docs = p.documents.map(d => `
-                    <span class="doc-badge" onclick="event.stopPropagation(); viewDocument('${d}', ${p.id})">
-                        📄 ${d}
-                    </span>
-                `).join('');
+  function fmtMoney(amount, short = false) {
+    if (amount == null || isNaN(amount)) return '—';
+    const abs = Math.abs(amount);
+    if (short) {
+      if (abs >= 1e9) return '$' + (amount / 1e9).toFixed(2) + 'B';
+      if (abs >= 1e6) return '$' + (amount / 1e6).toFixed(2) + 'M';
+      if (abs >= 1e3) return '$' + (amount / 1e3).toFixed(1) + 'K';
+    }
+    return '$' + Math.round(amount).toLocaleString();
+  }
+  function fmtNum(n, dec = 0) {
+    if (n == null || isNaN(n)) return '—';
+    return Number(n).toLocaleString(undefined, { minimumFractionDigits: dec, maximumFractionDigits: dec });
+  }
+  function badgeForStatus(status) {
+    const s = (status || '').toLowerCase();
+    if (s.includes('occupied') || s.includes('active') || s.includes('held') || s.includes('signed') || s.includes('approved') || s.includes('paid') || s.includes('resolved') || s.includes('valid')) return 'success';
+    if (s.includes('pending') || s.includes('renego') || s.includes('progress') || s.includes('due') || s.includes('medium')) return 'warning';
+    if (s.includes('vacant') || s.includes('maint') || s.includes('disputed') || s.includes('critical') || s.includes('failed') || s.includes('overdue')) return 'danger';
+    return 'gray';
+  }
 
-                card.innerHTML = `
-                    ${galleryHtml}
-                    <div class="property-details">
-                        <div class="property-title">
-                            <h3>${p.name}</h3>
-                            <span class="property-price">${p.priceType === 'mo' ? '$' + p.price + '/mo' : '$' + p.price.toLocaleString()}</span>
-                        </div>
-                        <p style="color: #64748b;">📍 ${p.location}</p>
-                        <div class="property-features">
-                            ${features}
-                        </div>
-                        <div style="margin: 1rem 0;">
-                            <strong>Documents:</strong>
-                            <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px;">
-                                ${docs}
-                            </div>
-                        </div>
-                        ${p.tenants && p.tenants.length ? `
-                            <div style="background: #f8fafc; padding: 0.5rem; border-radius: 8px;">
-                                <small>👥 ${p.tenants.join(' · ')}</small>
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
+  /* ---------- NAV ---------- */
+  function setupNav() {
+    $$('.nav-link[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+  }
+  function setupMobileMenu() {
+    const toggle = $('#mobileMenuToggle');
+    const sidebar = $('#reSidebar');
+    const overlay = $('#sidebarOverlay');
+    toggle.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('active');
+      overlay.classList.toggle('active', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  }
+  function switchTab(tab) {
+    activeTab = tab;
+    $$('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.tab === tab));
+    $$('.tab-content').forEach(c => c.classList.toggle('active', c.id === `${tab}-tab`));
+    const meta = TAB_META[tab] || TAB_META.overview;
+    $('#pageTitle').innerHTML = `<i class="fas fa-building"></i> ${meta[0]}`;
+    $('#pageSubtitle').textContent = meta[1];
+    updateAddButtonLabel();
+    const sidebar = $('#reSidebar');
+    if (sidebar.classList.contains('active')) {
+      sidebar.classList.remove('active');
+      $('#sidebarOverlay').classList.remove('active');
+      $('#mobileMenuToggle').setAttribute('aria-expanded', 'false');
+    }
+  }
+  window.switchTab = switchTab;
+
+  function updateAddButtonLabel() {
+    const btn = $('#addRecordBtn');
+    if (!btn) return;
+    const type = inferTypeFromTab(activeTab);
+    const labels = {
+      floor:     'Add Floor',
+      area:      'Add Building',
+      lease:     'New Lease',
+      turnover:  'Add Tenant Sales',
+      deposit:   'Add Deposit',
+      cam:       'Add CAM Line',
+      workorder: 'New Work Order',
+      broker:    'Add Lead',
+      portal:    'Add Tenant',
+      waterfall: 'Add Tier',
+      valuation: 'Add Valuation'
+    };
+    btn.innerHTML = `<i class="fas fa-plus"></i> ${labels[type] || 'New Record'}`;
+  }
+
+  /* ---------- MODAL ---------- */
+  function openModal(title, fields, onSave) {
+    currentEditType = onSave;
+    $('#modalTitle').innerHTML = `<i class="fas fa-plus-circle"></i> ${title}`;
+    $('#modalBody').innerHTML = fields.map(f => {
+      if (f.type === 'select') {
+        return `
+          <label class="form-label">${f.label || f.name}</label>
+          <select class="form-control" name="${f.name}">
+            ${(f.options || []).map(o => `<option value="${o}">${o}</option>`).join('')}
+          </select>
+        `;
+      }
+      return `
+        <label class="form-label">${f.label || f.name}</label>
+        <input type="${f.type || 'text'}" class="form-control" name="${f.name}"
+               placeholder="${f.placeholder || ''}" value="${f.value || ''}"
+               ${f.required ? 'required' : ''}>
+      `;
+    }).join('');
+    $('#genericModal').classList.add('active');
+  }
+  window.openModal = openModal;
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+  window.closeModal = closeModal;
+  function saveModal(e) {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const data = Object.fromEntries(f.entries());
+    if (currentEditType) currentEditType(data);
+    closeModal('genericModal');
+    renderAll();
+    notify('Saved successfully.', 'success');
+  }
+  window.saveModal = saveModal;
+
+  /* ---------- RENDER ALL ---------- */
+  function renderAll() {
+    renderLiveMetrics();
+    renderOverview();
+    renderBuildingOptions();
+    renderStacking();
+    renderAreas();
+    renderLeases();
+    renderTurnover();
+    renderDeposits();
+    renderCam();
+    renderWorkOrders();
+    renderBrokers();
+    renderPortal();
+    renderWaterfall();
+    renderValuation();
+    refreshCharts();
+  }
+
+  /* ---------- LIVE METRICS ---------- */
+  function renderLiveMetrics() {
+    // Occupancy: occupied floors / total floors
+    const occupiedFloors = reData.floors.filter(f => (f.status || '').toLowerCase() === 'occupied').length;
+    const totalFloors = reData.floors.length;
+    const occPct = totalFloors ? Math.round((occupiedFloors / totalFloors) * 100) : null;
+
+    // NOI: latest from valuation register
+    const latest = reData.valuation.length ? reData.valuation[reData.valuation.length - 1] : null;
+    const noi = latest ? parseFloat(latest.noi) : 0;
+
+    // Open work orders
+    const openWo = reData.workorders.filter(w => (w.status || '').toLowerCase() !== 'resolved').length;
+
+    // Escrow held
+    const escrow = reData.deposits
+      .filter(d => (d.status || '').toLowerCase() === 'held')
+      .reduce((s, d) => s + (parseFloat(d.amount) || 0), 0);
+
+    $('#lmOcc').textContent = occPct !== null ? occPct + '%' : '—';
+    $('#lmNoi').textContent = noi ? fmtMoney(noi, true) : '—';
+    $('#lmWo').textContent = reData.workorders.length ? openWo : '—';
+    $('#lmEscrow').textContent = escrow ? fmtMoney(escrow, true) : '—';
+  }
+
+  /* ---------- OVERVIEW ---------- */
+  function renderOverview() {
+    const occupiedFloors = reData.floors.filter(f => (f.status || '').toLowerCase() === 'occupied').length;
+    const totalFloors = reData.floors.length;
+    const occPct = totalFloors ? Math.round((occupiedFloors / totalFloors) * 100) : null;
+
+    const latestVal = reData.valuation.length ? reData.valuation[reData.valuation.length - 1] : null;
+    const noi = latestVal ? parseFloat(latestVal.noi) : 0;
+
+    const openWo = reData.workorders.filter(w => (w.status || '').toLowerCase() !== 'resolved').length;
+    const escrowHeld = reData.deposits.filter(d => (d.status || '').toLowerCase() === 'held')
+      .reduce((s, d) => s + (parseFloat(d.amount) || 0), 0);
+
+    $('#ovOccupancy').textContent = occPct !== null ? occPct + '%' : '—';
+    $('#ovNoi').textContent = noi ? fmtMoney(noi, true) : '—';
+    $('#ovWo').textContent = reData.workorders.length ? openWo : '—';
+    $('#ovEscrow').textContent = escrowHeld ? fmtMoney(escrowHeld, true) : '—';
+
+    // Mini KPIs
+    const totalGla = reData.areas.reduce((s, a) => s + (parseFloat(a.gross) || 0), 0);
+    const totalNra = reData.areas.reduce((s, a) => s + (parseFloat(a.net) || 0), 0);
+    const activeLeases = reData.leases.length;
+    const totalCam = reData.cam.reduce((s, c) => s + (parseFloat(c.budgeted) || 0), 0);
+    const pipelineSqFt = reData.brokers.reduce((s, b) => s + (parseFloat(b.sqft) || 0), 0);
+    const tiers = reData.waterfall.length;
+
+    $('#overviewMini').innerHTML = `
+      <div class="mini-kpi"><div class="label">Total GLA</div><div class="value">${totalGla ? fmtNum(totalGla) + ' sq ft' : '—'}</div><div class="sub">Gross leasable area</div></div>
+      <div class="mini-kpi"><div class="label">Net Rentable</div><div class="value">${totalNra ? fmtNum(totalNra) + ' sq ft' : '—'}</div><div class="sub">Net rentable area</div></div>
+      <div class="mini-kpi"><div class="label">Active Leases</div><div class="value">${activeLeases || '—'}</div><div class="sub">In register</div></div>
+      <div class="mini-kpi"><div class="label">CAM Budget</div><div class="value">${totalCam ? fmtMoney(totalCam, true) : '—'}</div><div class="sub">Annual allocation</div></div>
+      <div class="mini-kpi"><div class="label">Pipeline</div><div class="value">${pipelineSqFt ? fmtNum(pipelineSqFt) + ' sq ft' : '—'}</div><div class="sub">Requested by leads</div></div>
+      <div class="mini-kpi"><div class="label">Waterfall Tiers</div><div class="value">${tiers || '—'}</div><div class="sub">Configured tiers</div></div>
+    `;
+
+    // Alerts
+    const alerts = [];
+    reData.workorders.forEach(w => {
+      if ((w.priority || '').toLowerCase() === 'critical' && (w.status || '').toLowerCase() !== 'resolved') {
+        alerts.push({ severity: 'critical', text: `Critical WO open: ${w.title} (${w.asset})`, meta: 'Helpdesk' });
+      }
+    });
+    reData.deposits.forEach(d => {
+      if ((d.status || '').toLowerCase() === 'disputed') {
+        alerts.push({ severity: 'critical', text: `Disputed deposit — ${d.tenant}`, meta: 'Escrow' });
+      }
+    });
+    reData.leases.forEach(l => {
+      if (l.expiry) {
+        const days = Math.ceil((new Date(l.expiry) - new Date()) / (1000 * 60 * 60 * 24));
+        if (days >= 0 && days <= 60) {
+          alerts.push({ severity: 'warning', text: `Lease for ${l.tenant} expires in ${days} days`, meta: 'Lease register' });
         }
+      }
+    });
 
-        // Gallery navigation
-        window.slideGallery = function(propertyId, slideIndex) {
-            const container = document.getElementById(`galleryContainer-${propertyId}`);
-            if (container) {
-                container.style.transform = `translateX(-${slideIndex * 100}%)`;
-                // Update dots
-                const dots = container.parentElement.querySelectorAll('.gallery-dot');
-                dots.forEach((dot, idx) => {
-                    if (idx === slideIndex) dot.classList.add('active');
-                    else dot.classList.remove('active');
-                });
-            }
-        };
+    const alertBlock = $('#overviewAlerts');
+    if (!alerts.length) {
+      alertBlock.innerHTML = `<div class="empty-block"><i class="fas fa-circle-check"></i>No active alerts. All systems within specification.</div>`;
+    } else {
+      alertBlock.innerHTML = alerts.map(a => `
+        <div class="waterfall-tier" style="border-left-color:${a.severity === 'critical' ? 'var(--danger)' : 'var(--warning)'};">
+          <div class="info">
+            <strong>${a.text}</strong>
+            <span>${a.meta}</span>
+          </div>
+          <span class="badge badge-${a.severity === 'critical' ? 'danger' : 'warning'}">${a.severity}</span>
+        </div>
+      `).join('');
+    }
+  }
 
-        // Category filtering
-        document.querySelectorAll('.category-pill').forEach(pill => {
-            pill.addEventListener('click', function() {
-                document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
-                this.classList.add('active');
-                currentCategory = this.dataset.category;
-                renderProperties();
-            });
-        });
+  /* ---------- BUILDING OPTIONS ---------- */
+  function renderBuildingOptions() {
+    const sel = $('#stackingBuilding');
+    const buildings = [...new Set(reData.floors.map(f => f.building).filter(Boolean))];
+    const current = sel.value;
+    sel.innerHTML = `<option value="">— Select Building —</option>` +
+      buildings.map(b => `<option value="${b}">${b}</option>`).join('');
+    if (buildings.includes(current)) sel.value = current;
+    else if (buildings.length) sel.value = buildings[0];
+  }
 
-        // Module clicks
-        document.querySelectorAll('.feature-card').forEach(card => {
-            card.addEventListener('click', function() {
-                const module = this.dataset.module;
-                showModuleDetails(module);
-            });
-        });
+  /* ---------- STACKING ---------- */
+  function renderStacking() {
+    const plan = $('#stackPlan');
+    const sel = $('#stackingBuilding');
+    const building = sel?.value || '';
+    const floors = building
+      ? reData.floors.filter(f => f.building === building)
+      : reData.floors;
 
-        function showModuleDetails(module) {
-            const data = moduleData[module];
-            const titles = {
-                registry: 'Property & Unit Registry',
-                tenant: 'Tenant & Lease Management',
-                rent: 'Rent Invoicing & Collections',
-                sales: 'Sales & Commission',
-                maintenance: 'Maintenance Requests',
-                legal: 'Legal & Compliance'
-            };
+    if (!floors.length) {
+      plan.innerHTML = `
+        <div class="stack-empty">
+          <i class="fas fa-building"></i>
+          No floors registered yet — add a floor to begin stacking plan.
+        </div>`;
+      return;
+    }
 
-            const modal = document.getElementById('genericModal');
-            const content = document.getElementById('modalContent');
-            
-            let details = '';
-            if (module === 'registry') {
-                details = `
-                    <div class="document-list">
-                        <div class="document-item"><span>Total Properties</span> <strong>${data.properties}</strong></div>
-                        <div class="document-item"><span>Total Documents</span> <strong>${data.documents}</strong></div>
-                        <div class="document-item"><span>Last Updated</span> <strong>${data.lastUpdated}</strong></div>
-                    </div>
-                    <button class="btn-save" onclick="addDocument()">Upload New Document</button>
-                `;
-            } else if (module === 'tenant') {
-                details = `
-                    <div class="document-list">
-                        <div class="document-item"><span>Active Tenants</span> <strong>${data.tenants}</strong></div>
-                        <div class="document-item"><span>Active Leases</span> <strong>${data.activeLeases}</strong></div>
-                        <div class="document-item"><span>Renewals Due</span> <strong>${data.renewals}</strong></div>
-                    </div>
-                    <button class="btn-save" onclick="addTenant()">Add Tenant</button>
-                `;
-            }
+    // Sort by floor number descending (top floor first)
+    const sorted = [...floors].sort((a, b) => (parseInt(b.floorNo) || 0) - (parseInt(a.floorNo) || 0));
 
-            content.innerHTML = `
-                <h3>${titles[module]}</h3>
-                ${details}
-                <div class="modal-actions">
-                    <button class="btn-cancel" onclick="closeModal()">Close</button>
-                </div>
-            `;
-            modal.classList.add('active');
+    plan.innerHTML = sorted.map(f => {
+      const status = (f.status || 'vacant').toLowerCase();
+      const cls = status.includes('occup') ? 'floor-occupied'
+                : status.includes('renego') ? 'floor-renego'
+                : status.includes('maint') ? 'floor-maint'
+                : 'floor-vacant';
+      return `
+        <div class="floor-tile ${cls}" onclick="notify('Floor ${f.floorNo} · ${f.tenant || 'Vacant'} · ${f.sqft || 0} sq ft', 'success')">
+          <div class="floor-id">Floor ${f.floorNo}</div>
+          <div class="floor-tenant">${f.tenant || 'Vacant'}</div>
+          <div class="floor-meta">
+            <span>${f.sqft || 0} sq ft</span>
+            <span>${f.status || 'Vacant'}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  window.renderStacking = renderStacking;
+
+  /* ---------- AREAS ---------- */
+  function renderAreas() {
+    const body = $('#areasBody');
+    if (!reData.areas.length) {
+      body.innerHTML = emptyRow(7, 'No buildings registered yet — add the first building to begin.', 'fa-ruler-combined');
+      return;
+    }
+    body.innerHTML = reData.areas.map(a => {
+      const gross = parseFloat(a.gross) || 0;
+      const net = parseFloat(a.net) || 0;
+      const eff = gross ? ((net / gross) * 100).toFixed(1) : '—';
+      const caf = net ? ((gross / net - 1) * 100).toFixed(1) : '—';
+      return `
+        <tr>
+          <td><strong>${a.buildingId}</strong></td>
+          <td>${a.name}</td>
+          <td>${fmtNum(gross)}</td>
+          <td>${fmtNum(net)}</td>
+          <td>${eff}%</td>
+          <td>${caf}%</td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('area', ${a.id})" title="Delete"></i>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  /* ---------- LEASES ---------- */
+  function renderLeases() {
+    const body = $('#leasesBody');
+    if (!reData.leases.length) {
+      body.innerHTML = emptyRow(8, 'No leases registered yet.', 'fa-file-signature');
+      return;
+    }
+    body.innerHTML = reData.leases.map(l => `
+      <tr>
+        <td><strong>${l.tenant}</strong></td>
+        <td>${l.building || '—'}</td>
+        <td>${l.suite || '—'}</td>
+        <td>${l.expiry || '—'}</td>
+        <td>${l.escalation || '—'}</td>
+        <td>${fmtMoney(parseFloat(l.baseRent) || 0, true)}</td>
+        <td>
+          <label class="toggle" onclick="event.stopPropagation();">
+            <input type="checkbox" ${l.renewalOption === 'Yes' ? 'checked' : ''}
+                   onchange="toggleRenewal(${l.id}, this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('lease', ${l.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+  function toggleRenewal(id, checked) {
+    const lease = reData.leases.find(l => l.id === id);
+    if (!lease) return;
+    lease.renewalOption = checked ? 'Yes' : 'No';
+    saveData();
+    notify(`Renewal option ${checked ? 'enabled' : 'disabled'} for ${lease.tenant}.`, 'success');
+  }
+  window.toggleRenewal = toggleRenewal;
+
+  /* ---------- TURNOVER ---------- */
+  function renderTurnover() {
+    const body = $('#turnoverBody');
+    if (!reData.turnover.length) {
+      body.innerHTML = emptyRow(7, 'No turnover rent entries yet.', 'fa-percent');
+      return;
+    }
+    body.innerHTML = reData.turnover.map(t => {
+      const sales = parseFloat(t.baseSales) || 0;
+      const bp = parseFloat(t.breakPoint) || 0;
+      const pct = parseFloat(t.turnoverPct) || 0;
+      const variable = sales > bp ? ((sales - bp) * (pct / 100)) : 0;
+      return `
+        <tr>
+          <td><strong>${t.tenant}</strong></td>
+          <td>${t.month || '—'}</td>
+          <td>${fmtMoney(sales, true)}</td>
+          <td>${fmtMoney(bp, true)}</td>
+          <td>${pct}%</td>
+          <td style="font-weight:600; color:${variable > 0 ? 'var(--success)' : 'var(--text-muted)'};">${fmtMoney(variable, true)}</td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('turnover', ${t.id})" title="Delete"></i>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  /* ---------- DEPOSITS ---------- */
+  function renderDeposits() {
+    const body = $('#depositsBody');
+    if (!reData.deposits.length) {
+      body.innerHTML = emptyRow(7, 'No deposits recorded yet.', 'fa-vault');
+      return;
+    }
+    body.innerHTML = reData.deposits.map(d => `
+      <tr>
+        <td><strong>${d.tenant}</strong></td>
+        <td>${d.building || '—'}</td>
+        <td>${fmtMoney(parseFloat(d.amount) || 0)}</td>
+        <td>${d.currency || 'USD'}</td>
+        <td>${d.depositDate || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(d.status)}">${d.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('deposit', ${d.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* ---------- CAM ---------- */
+  function renderCam() {
+    const body = $('#camBody');
+    if (!reData.cam.length) {
+      body.innerHTML = emptyRow(8, 'No CAM budget lines yet.', 'fa-calculator');
+      return;
+    }
+    body.innerHTML = reData.cam.map(c => {
+      const budget = parseFloat(c.budgeted) || 0;
+      const actual = parseFloat(c.actual) || 0;
+      const proRata = parseFloat(c.proRata) || 0;
+      const allocated = budget * (proRata / 100);
+      const variance = actual - budget;
+      return `
+        <tr>
+          <td><strong>${c.category}</strong></td>
+          <td>${c.building || '—'}</td>
+          <td>${fmtMoney(budget, true)}</td>
+          <td>${fmtMoney(actual, true)}</td>
+          <td>${proRata}%</td>
+          <td>${fmtMoney(allocated, true)}</td>
+          <td style="font-weight:600; color:${variance > 0 ? 'var(--danger)' : 'var(--success)'};">${fmtMoney(variance, true)}</td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('cam', ${c.id})" title="Delete"></i>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  /* ---------- WORK ORDERS ---------- */
+  function renderWorkOrders() {
+    const grid = $('#woGrid');
+    if (!reData.workorders.length) {
+      grid.innerHTML = `<div class="empty-block" style="grid-column:1/-1;"><i class="fas fa-screwdriver-wrench"></i>No work orders yet — create one to begin dispatching.</div>`;
+      return;
+    }
+    grid.innerHTML = reData.workorders.map(w => {
+      const priority = (w.priority || 'medium').toLowerCase();
+      return `
+        <div class="wo-card ${priority}">
+          <div class="asset">${w.asset || 'ASSET'}</div>
+          <div class="title">${w.title}</div>
+          <div style="font-size:0.75rem; color:var(--text-muted);">${w.description || ''}</div>
+          <div class="footer">
+            <span>${w.assignedTo || 'Unassigned'}</span>
+            <span class="badge badge-${badgeForStatus(w.status)}">${w.status || 'Open'}</span>
+          </div>
+          <div style="text-align:right; margin-top:0.5rem;">
+            <i class="fas fa-check action-icon" onclick="resolveWo(${w.id})" title="Resolve"></i>
+            <i class="fas fa-trash action-icon" onclick="openDelete('workorder', ${w.id})" title="Delete"></i>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  function resolveWo(id) {
+    const wo = reData.workorders.find(w => w.id === id);
+    if (!wo) return;
+    wo.status = 'Resolved';
+    saveData();
+    renderAll();
+    notify(`Work order "${wo.title}" resolved.`, 'success');
+  }
+  window.resolveWo = resolveWo;
+
+  /* ---------- BROKERS ---------- */
+  function renderBrokers() {
+    const body = $('#brokersBody');
+    if (!reData.brokers.length) {
+      body.innerHTML = emptyRow(8, 'No broker leads yet.', 'fa-handshake');
+      return;
+    }
+    body.innerHTML = reData.brokers.map(b => {
+      const dealValue = parseFloat(b.dealValue) || 0;
+      const commissionPct = parseFloat(b.commissionPct) || 0;
+      const commissionDue = dealValue * (commissionPct / 100);
+      return `
+        <tr>
+          <td><strong>${b.broker}</strong></td>
+          <td>${b.prospect || '—'}</td>
+          <td>${fmtNum(parseFloat(b.sqft) || 0)}</td>
+          <td>${fmtMoney(dealValue, true)}</td>
+          <td>${commissionPct}%</td>
+          <td style="font-weight:600; color:var(--success);">${fmtMoney(commissionDue, true)}</td>
+          <td><span class="badge badge-${badgeForStatus(b.status)}">${b.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-check action-icon" onclick="approveBrokerPayout(${b.id})" title="Approve Payout"></i>
+            <i class="fas fa-trash action-icon" onclick="openDelete('broker', ${b.id})" title="Delete"></i>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+  function approveBrokerPayout(id) {
+    const b = reData.brokers.find(x => x.id === id);
+    if (!b) return;
+    b.status = 'Approved';
+    saveData();
+    renderBrokers();
+    notify(`Broker payout approved for ${b.broker}.`, 'success');
+  }
+  window.approveBrokerPayout = approveBrokerPayout;
+
+  /* ---------- PORTAL ---------- */
+  function renderPortal() {
+    const body = $('#portalBody');
+    if (!reData.portal.length) {
+      body.innerHTML = emptyRow(7, 'No tenant portal activity yet.', 'fa-user-circle');
+      return;
+    }
+    body.innerHTML = reData.portal.map(p => `
+      <tr>
+        <td><strong>${p.tenant}</strong></td>
+        <td>${p.building || '—'}</td>
+        <td>${p.lastLogin || '—'}</td>
+        <td>${p.loginCount || 0}</td>
+        <td>${fmtMoney(parseFloat(p.openBalance) || 0)}</td>
+        <td><span class="badge badge-${badgeForStatus(p.eSign)}">${p.eSign || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('portal', ${p.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* ---------- WATERFALL ---------- */
+  function renderWaterfall() {
+    const cont = $('#waterfallList');
+    if (!reData.waterfall.length) {
+      cont.innerHTML = `<div class="empty-block"><i class="fas fa-layer-group"></i>No waterfall tiers configured yet.</div>`;
+      return;
+    }
+    cont.innerHTML = reData.waterfall.map(w => `
+      <div class="waterfall-tier">
+        <div class="info">
+          <strong>${w.tierName}</strong>
+          <span>${w.description || ''} ${w.splitPct ? ' · Split ' + w.splitPct + '%' : ''}</span>
+        </div>
+        <div class="amount">${fmtMoney(parseFloat(w.balance) || 0, true)}</div>
+        <i class="fas fa-trash action-icon" onclick="openDelete('waterfall', ${w.id})" title="Delete"></i>
+      </div>
+    `).join('');
+  }
+
+  /* ---------- VALUATION ---------- */
+  function renderValuation() {
+    const body = $('#valuationBody');
+    if (!reData.valuation.length) {
+      body.innerHTML = emptyRow(6, 'No valuation records yet.', 'fa-chart-area');
+      return;
+    }
+    body.innerHTML = reData.valuation.map(v => {
+      const noi = parseFloat(v.noi) || 0;
+      const capRate = parseFloat(v.capRate) || 0;
+      const marketValue = capRate ? noi / (capRate / 100) : 0;
+      return `
+        <tr>
+          <td><strong>${v.property}</strong></td>
+          <td>${fmtMoney(noi, true)}</td>
+          <td>${capRate}%</td>
+          <td style="font-weight:600; color:var(--success);">${fmtMoney(marketValue, true)}</td>
+          <td>${v.valuationDate || '—'}</td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('valuation', ${v.id})" title="Delete"></i>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  /* ---------- ADD MODAL ROUTER ---------- */
+  function openAddModal(type) {
+    type = type || inferTypeFromTab(activeTab);
+    currentEditType = type;
+    switch (type) {
+      case 'floor':     return openAddFloor();
+      case 'area':      return openAddArea();
+      case 'lease':     return openAddLease();
+      case 'turnover':  return openAddTurnover();
+      case 'deposit':   return openAddDeposit();
+      case 'cam':       return openAddCam();
+      case 'workorder': return openAddWorkOrder();
+      case 'broker':    return openAddBroker();
+      case 'portal':    return openAddPortal();
+      case 'waterfall': return openAddWaterfall();
+      case 'valuation': return openAddValuation();
+      default:          return notify('Select a section first.', 'warning');
+    }
+  }
+  window.openAddModal = openAddModal;
+
+  function inferTypeFromTab(tab) {
+    return ({
+      overview:   'area',
+      stacking:   'floor',
+      areas:      'area',
+      leases:     'lease',
+      turnover:   'turnover',
+      deposits:   'deposit',
+      cam:        'cam',
+      workorders: 'workorder',
+      brokers:    'broker',
+      portal:     'portal',
+      waterfall:  'waterfall',
+      valuation:  'valuation'
+    })[tab] || 'area';
+  }
+
+  function openAddFloor() {
+    openModal('Add Floor', [
+      { name:'building', label:'Building', placeholder:'Metropolitan Tower', required:true },
+      { name:'floorNo', label:'Floor Number', type:'number', placeholder:'12', required:true },
+      { name:'tenant', label:'Tenant', placeholder:'ABC Corp' },
+      { name:'sqft', label:'Floor Area (sq ft)', type:'number', placeholder:'12500' },
+      { name:'status', label:'Status', type:'select', options:['Occupied','Vacant','Renegotiation','Maintenance'] }
+    ], (data) => {
+      reData.floors.push({
+        id: reData.nextIds.floor++,
+        building: data.building,
+        floorNo: parseInt(data.floorNo, 10) || 0,
+        tenant: data.tenant || '',
+        sqft: parseFloat(data.sqft) || 0,
+        status: data.status || 'Vacant'
+      });
+      saveData();
+    });
+  }
+
+  function openAddArea() {
+    openModal('Add Building', [
+      { name:'buildingId', label:'Building ID', placeholder:'BLD-001', required:true },
+      { name:'name', label:'Building Name', placeholder:'Metropolitan Tower', required:true },
+      { name:'gross', label:'Gross Area (sq ft)', type:'number', placeholder:'452000' },
+      { name:'net', label:'Net Rentable Area (sq ft)', type:'number', placeholder:'385000' }
+    ], (data) => {
+      reData.areas.push({
+        id: reData.nextIds.area++,
+        buildingId: data.buildingId,
+        name: data.name,
+        gross: parseFloat(data.gross) || 0,
+        net: parseFloat(data.net) || 0
+      });
+      saveData();
+    });
+  }
+
+  function openAddLease() {
+    openModal('New Lease', [
+      { name:'tenant', label:'Tenant Name', placeholder:'ABC Corp', required:true },
+      { name:'building', label:'Building', placeholder:'Metropolitan Tower' },
+      { name:'suite', label:'Suite', placeholder:'1204' },
+      { name:'expiry', label:'Expiry Date', type:'date' },
+      { name:'escalation', label:'Escalation', placeholder:'CPI + 2.5%' },
+      { name:'baseRent', label:'Base Rent (USD)', type:'number', placeholder:'125000' },
+      { name:'renewalOption', label:'Renewal Option', type:'select', options:['Yes','No'] }
+    ], (data) => {
+      reData.leases.push({
+        id: reData.nextIds.lease++,
+        tenant: data.tenant,
+        building: data.building || '',
+        suite: data.suite || '',
+        expiry: data.expiry || '',
+        escalation: data.escalation || '',
+        baseRent: parseFloat(data.baseRent) || 0,
+        renewalOption: data.renewalOption || 'No'
+      });
+      saveData();
+    });
+  }
+
+  function openAddTurnover() {
+    openModal('Add Tenant Sales', [
+      { name:'tenant', label:'Tenant', placeholder:'Retail Store A', required:true },
+      { name:'month', label:'Month', placeholder:'Sep 2026' },
+      { name:'baseSales', label:'Base Sales (USD)', type:'number', placeholder:'850000' },
+      { name:'breakPoint', label:'Break-Point (USD)', type:'number', placeholder:'600000' },
+      { name:'turnoverPct', label:'Turnover %', type:'number', placeholder:'6' }
+    ], (data) => {
+      reData.turnover.push({
+        id: reData.nextIds.turnover++,
+        tenant: data.tenant,
+        month: data.month || '',
+        baseSales: parseFloat(data.baseSales) || 0,
+        breakPoint: parseFloat(data.breakPoint) || 0,
+        turnoverPct: parseFloat(data.turnoverPct) || 0
+      });
+      saveData();
+    });
+  }
+
+  function openAddDeposit() {
+    openModal('Add Deposit', [
+      { name:'tenant', label:'Tenant', placeholder:'ABC Corp', required:true },
+      { name:'building', label:'Building', placeholder:'Metropolitan Tower' },
+      { name:'amount', label:'Amount', type:'number', placeholder:'25000' },
+      { name:'currency', label:'Currency', type:'select', options:['USD','EUR','GBP','TZS','KES'] },
+      { name:'depositDate', label:'Deposit Date', type:'date' },
+      { name:'status', label:'Status', type:'select', options:['Held','Disputed','Refunding','Refunded'] }
+    ], (data) => {
+      reData.deposits.push({
+        id: reData.nextIds.deposit++,
+        tenant: data.tenant,
+        building: data.building || '',
+        amount: parseFloat(data.amount) || 0,
+        currency: data.currency || 'USD',
+        depositDate: data.depositDate || '',
+        status: data.status || 'Held'
+      });
+      saveData();
+    });
+  }
+
+  function openAddCam() {
+    openModal('Add CAM Line', [
+      { name:'category', label:'Category', type:'select', options:['Utilities','Security','Landscaping','Cleaning','Repairs','Insurance','Management','Other'] },
+      { name:'building', label:'Building', placeholder:'Metropolitan Tower' },
+      { name:'budgeted', label:'Budgeted Amount', type:'number', placeholder:'124000' },
+      { name:'actual', label:'Actual Spend', type:'number', placeholder:'118000' },
+      { name:'proRata', label:'Pro-Rata %', type:'number', placeholder:'85' }
+    ], (data) => {
+      reData.cam.push({
+        id: reData.nextIds.cam++,
+        category: data.category || 'Other',
+        building: data.building || '',
+        budgeted: parseFloat(data.budgeted) || 0,
+        actual: parseFloat(data.actual) || 0,
+        proRata: parseFloat(data.proRata) || 0
+      });
+      saveData();
+    });
+  }
+
+  function openAddWorkOrder() {
+    openModal('New Work Order', [
+      { name:'asset', label:'Asset', placeholder:'HVAC Floor 4', required:true },
+      { name:'title', label:'Title', placeholder:'HVAC not cooling', required:true },
+      { name:'description', label:'Description', placeholder:'Tenant reports warm air on floor 4' },
+      { name:'assignedTo', label:'Assigned To', placeholder:'Technician A' },
+      { name:'priority', label:'Priority', type:'select', options:['Low','Medium','High','Critical'] },
+      { name:'status', label:'Status', type:'select', options:['Open','In Progress','Resolved'] }
+    ], (data) => {
+      reData.workorders.push({
+        id: reData.nextIds.workorder++,
+        asset: data.asset, title: data.title,
+        description: data.description || '',
+        assignedTo: data.assignedTo || '',
+        priority: data.priority || 'Medium',
+        status: data.status || 'Open'
+      });
+      saveData();
+    });
+  }
+
+  function openAddBroker() {
+    openModal('Add Broker Lead', [
+      { name:'broker', label:'Broker Name', placeholder:'JLL Capital', required:true },
+      { name:'prospect', label:'Prospect', placeholder:'Tech Corp' },
+      { name:'sqft', label:'Sq Ft Requested', type:'number', placeholder:'45000' },
+      { name:'dealValue', label:'Deal Value (USD)', type:'number', placeholder:'4500000' },
+      { name:'commissionPct', label:'Commission %', type:'number', placeholder:'4' },
+      { name:'status', label:'Status', type:'select', options:['Pending','Approved','Rejected'] }
+    ], (data) => {
+      reData.brokers.push({
+        id: reData.nextIds.broker++,
+        broker: data.broker,
+        prospect: data.prospect || '',
+        sqft: parseFloat(data.sqft) || 0,
+        dealValue: parseFloat(data.dealValue) || 0,
+        commissionPct: parseFloat(data.commissionPct) || 0,
+        status: data.status || 'Pending'
+      });
+      saveData();
+    });
+  }
+
+  function openAddPortal() {
+    openModal('Add Tenant to Portal', [
+      { name:'tenant', label:'Tenant', placeholder:'ABC Corp', required:true },
+      { name:'building', label:'Building', placeholder:'Metropolitan Tower' },
+      { name:'lastLogin', label:'Last Login', type:'date' },
+      { name:'loginCount', label:'Login Count (30d)', type:'number', placeholder:'28' },
+      { name:'openBalance', label:'Open Balance (USD)', type:'number', placeholder:'0' },
+      { name:'eSign', label:'E-Sign Status', type:'select', options:['Signed','Pending','Not Sent'] }
+    ], (data) => {
+      reData.portal.push({
+        id: reData.nextIds.portal++,
+        tenant: data.tenant,
+        building: data.building || '',
+        lastLogin: data.lastLogin || '',
+        loginCount: parseInt(data.loginCount, 10) || 0,
+        openBalance: parseFloat(data.openBalance) || 0,
+        eSign: data.eSign || 'Not Sent'
+      });
+      saveData();
+    });
+  }
+
+  function openAddWaterfall() {
+    openModal('Add Waterfall Tier', [
+      { name:'tierName', label:'Tier Name', placeholder:'Preferred Return 8%', required:true },
+      { name:'description', label:'Description', placeholder:'8% preferred to LP' },
+      { name:'splitPct', label:'Split %', type:'number', placeholder:'20' },
+      { name:'balance', label:'Current Balance (USD)', type:'number', placeholder:'1250000' }
+    ], (data) => {
+      reData.waterfall.push({
+        id: reData.nextIds.waterfall++,
+        tierName: data.tierName,
+        description: data.description || '',
+        splitPct: parseFloat(data.splitPct) || 0,
+        balance: parseFloat(data.balance) || 0
+      });
+      saveData();
+    });
+  }
+
+  function openAddValuation() {
+    openModal('Add Valuation', [
+      { name:'property', label:'Property', placeholder:'Metropolitan Tower', required:true },
+      { name:'noi', label:'NOI (USD)', type:'number', placeholder:'4200000' },
+      { name:'capRate', label:'Cap Rate (%)', type:'number', placeholder:'6.2' },
+      { name:'valuationDate', label:'Valuation Date', type:'date' }
+    ], (data) => {
+      reData.valuation.push({
+        id: reData.nextIds.valuation++,
+        property: data.property,
+        noi: parseFloat(data.noi) || 0,
+        capRate: parseFloat(data.capRate) || 0,
+        valuationDate: data.valuationDate || ''
+      });
+      saveData();
+    });
+  }
+
+  /* ---------- DELETE ---------- */
+  function openDelete(type, id) {
+    if (!confirm('Delete this record?')) return;
+    const map = {
+      floor: 'floors', area: 'areas', lease: 'leases', turnover: 'turnover',
+      deposit: 'deposits', cam: 'cam', workorder: 'workorders',
+      broker: 'brokers', portal: 'portal', waterfall: 'waterfall', valuation: 'valuation'
+    };
+    const key = map[type];
+    if (key && reData[key]) {
+      reData[key] = reData[key].filter(x => String(x.id) !== String(id));
+      saveData();
+      renderAll();
+      notify('Deleted.', 'success');
+    }
+  }
+  window.openDelete = openDelete;
+
+  /* ---------- EXPORT ---------- */
+  function exportTable(type) {
+    const map = {
+      floors: 'floors', areas: 'areas', leases: 'leases', turnover: 'turnover',
+      deposits: 'deposits', cam: 'cam', workorders: 'workorders',
+      brokers: 'brokers', portal: 'portal', waterfall: 'waterfall', valuation: 'valuation'
+    };
+    const key = map[type] || type;
+    const rows = reData[key];
+    if (!rows || !rows.length) { notify('No data to export.', 'warning'); return; }
+    const headers = Object.keys(rows[0]);
+    const csv = [headers.join(',')]
+      .concat(rows.map(r => headers.map(h => JSON.stringify(r[h] ?? '')).join(',')))
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${key}_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    notify('Exported successfully.', 'success');
+  }
+  window.exportTable = exportTable;
+
+  function exportCurrentTab() {
+    const map = {
+      stacking: 'floors', areas: 'areas', leases: 'leases', turnover: 'turnover',
+      deposits: 'deposits', cam: 'cam', workorders: 'workorders',
+      brokers: 'brokers', portal: 'portal', waterfall: 'waterfall', valuation: 'valuation'
+    };
+    const key = map[activeTab];
+    if (key) exportTable(key);
+    else notify('Nothing to export from this section.', 'warning');
+  }
+  window.exportCurrentTab = exportCurrentTab;
+
+  /* ---------- CHARTS ---------- */
+  function showEmpty(canvasId, emptyId, has) {
+    const c = document.getElementById(canvasId);
+    const e = document.getElementById(emptyId);
+    if (c) c.style.display = has ? 'block' : 'none';
+    if (e) e.style.display = has ? 'none' : 'flex';
+  }
+
+  function refreshCharts() {
+    Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} });
+    charts = {};
+
+    const commonOpts = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
+    };
+
+    // NOI chart from valuation register
+    const noiHas = reData.valuation.length > 0;
+    showEmpty('ovNoiChart', 'ovNoiChartEmpty', noiHas);
+    if (noiHas) {
+      charts.noi = new Chart(document.getElementById('ovNoiChart'), {
+        type: 'bar',
+        data: {
+          labels: reData.valuation.map(v => v.property),
+          datasets: [{
+            label: 'NOI (USD)',
+            data: reData.valuation.map(v => parseFloat(v.noi) || 0),
+            backgroundColor: '#d97706',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          ...commonOpts,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { callback: v => '$' + (v/1e6).toFixed(1) + 'M' } }, x: { grid: { display: false } } }
         }
+      });
+    }
 
-        // Property CRUD
-        window.editProperty = function(id) {
-            const prop = properties.find(p => p.id === id);
-            if (!prop) return;
-            
-            const modal = document.getElementById('genericModal');
-            const content = document.getElementById('modalContent');
-            content.innerHTML = `
-                <h3>Edit Property</h3>
-                <input type="text" id="editName" value="${prop.name}" placeholder="Property Name">
-                <input type="text" id="editLocation" value="${prop.location}" placeholder="Location">
-                <input type="number" id="editPrice" value="${prop.price}" placeholder="Price">
-                <select id="editStatus">
-                    <option value="available" ${prop.status === 'available' ? 'selected' : ''}>Available</option>
-                    <option value="rented" ${prop.status === 'rented' ? 'selected' : ''}>Rented</option>
-                    <option value="for sale" ${prop.status === 'for sale' ? 'selected' : ''}>For Sale</option>
-                </select>
-                <textarea id="editDocs" placeholder="Documents (comma separated)">${prop.documents.join(', ')}</textarea>
-                <div class="modal-actions">
-                    <button class="btn-save" onclick="updateProperty(${id})">Update</button>
-                    <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-                </div>
-            `;
-            modal.classList.add('active');
-        };
+    // Lease status chart
+    const leaseHas = reData.leases.length > 0;
+    showEmpty('ovLeaseChart', 'ovLeaseChartEmpty', leaseHas);
+    if (leaseHas) {
+      const byRenewal = { Yes: 0, No: 0 };
+      reData.leases.forEach(l => {
+        const k = l.renewalOption || 'No';
+        byRenewal[k] = (byRenewal[k] || 0) + 1;
+      });
+      charts.lease = new Chart(document.getElementById('ovLeaseChart'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Renewal Option', 'No Renewal Option'],
+          datasets: [{
+            data: [byRenewal.Yes || 0, byRenewal.No || 0],
+            backgroundColor: ['#10b981', '#94a3b8']
+          }]
+        },
+        options: commonOpts
+      });
+    }
 
-        window.updateProperty = function(id) {
-            const prop = properties.find(p => p.id === id);
-            if (prop) {
-                prop.name = document.getElementById('editName').value;
-                prop.location = document.getElementById('editLocation').value;
-                prop.price = Number(document.getElementById('editPrice').value);
-                prop.status = document.getElementById('editStatus').value;
-                prop.documents = document.getElementById('editDocs').value.split(',').map(s => s.trim());
-            }
-            renderProperties();
-            closeModal();
-        };
+    // CAM category chart
+    const camHas = reData.cam.length > 0;
+    showEmpty('ovCamChart', 'ovCamChartEmpty', camHas);
+    if (camHas) {
+      const byCat = {};
+      reData.cam.forEach(c => {
+        const k = c.category || 'Other';
+        byCat[k] = (byCat[k] || 0) + (parseFloat(c.budgeted) || 0);
+      });
+      charts.cam = new Chart(document.getElementById('ovCamChart'), {
+        type: 'line',
+        data: {
+          labels: Object.keys(byCat),
+          datasets: [{
+            label: 'CAM Budget (USD)',
+            data: Object.values(byCat),
+            borderColor: '#d97706',
+            backgroundColor: 'rgba(217, 119, 6, 0.08)',
+            tension: 0.35,
+            fill: true,
+            pointBackgroundColor: '#d97706',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          ...commonOpts,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } }, x: { grid: { display: false } } }
+        }
+      });
+    }
+  }
 
-        window.deleteProperty = function(id) {
-            if (confirm('Delete this property?')) {
-                properties = properties.filter(p => p.id !== id);
-                renderProperties();
-            }
-        };
+  /* ---------- KEYBOARD ---------- */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+    }
+  });
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('modal')) e.target.classList.remove('active');
+  });
 
-        window.viewDocument = function(docName, propertyId) {
-            alert(`Opening document: ${docName}\nProperty ID: ${propertyId}\n\nIn production, this would open the actual document.`);
-        };
-
-        window.addDocument = function() {
-            alert('Upload document interface - would open file picker in production');
-            closeModal();
-        };
-
-        window.addTenant = function() {
-            alert('Add tenant form - would open tenant creation in production');
-            closeModal();
-        };
-
-        window.showAddPropertyModal = function() {
-            const modal = document.getElementById('genericModal');
-            const content = document.getElementById('modalContent');
-            content.innerHTML = `
-                <h3>Add New Property</h3>
-                <input type="text" id="newName" placeholder="Property Name">
-                <input type="text" id="newLocation" placeholder="Location">
-                <select id="newCategory">
-                    <option value="residential">Residential</option>
-                    <option value="commercial">Commercial</option>
-                    <option value="land">Land</option>
-                    <option value="rentals">Rentals</option>
-                    <option value="sales">Sales</option>
-                    <option value="shared">Shared Spaces</option>
-                </select>
-                <input type="number" id="newPrice" placeholder="Price">
-                <select id="newStatus">
-                    <option value="available">Available</option>
-                    <option value="rented">Rented</option>
-                    <option value="for sale">For Sale</option>
-                </select>
-                <div class="modal-actions">
-                    <button class="btn-save" onclick="saveNewProperty()">Save</button>
-                    <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-                </div>
-            `;
-            modal.classList.add('active');
-        };
-
-        window.saveNewProperty = function() {
-            const newId = Math.max(...properties.map(p => p.id)) + 1;
-            properties.push({
-                id: newId,
-                name: document.getElementById('newName').value,
-                location: document.getElementById('newLocation').value,
-                category: document.getElementById('newCategory').value,
-                type: document.getElementById('newCategory').value,
-                price: Number(document.getElementById('newPrice').value),
-                priceType: 'mo',
-                status: document.getElementById('newStatus').value,
-                images: ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=500'],
-                documents: ['New_Deed.pdf', 'New_Inspection.pdf'],
-                tenants: []
-            });
-            renderProperties();
-            closeModal();
-        };
-
-        window.closeModal = function() {
-            document.getElementById('genericModal').classList.remove('active');
-        };
-
-        // Initialize
-        renderProperties();
-    </script>
+  /* ---------- BOOT ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNav();
+    setupMobileMenu();
+    renderAll();
+    updateAddButtonLabel();
+  });
+  </script>
 </body>
 </html>
