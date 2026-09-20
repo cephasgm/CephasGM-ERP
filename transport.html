@@ -1,655 +1,1906 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transport & Logistics · CephasGM ERP</title>
-    <!-- Core libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Font Awesome 6 (free) for richer icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #64748b;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --background: #f1f5f9;
-            --surface: #ffffff;
-            --text: #0f172a;
-            --text-light: #475569;
-            --border: #e2e8f0;
-            --sidebar-width: 280px;
-        }
+  <!-- PWA Meta -->
+  <meta name="theme-color" content="#1a4c7a" id="theme-color-meta" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CephasGM ERP" />
 
-        body {
-            background: var(--background);
-            color: var(--text);
-        }
+  <title>Transport &amp; Logistics — CephasGM ERP</title>
 
-        .dashboard {
-            display: grid;
-            grid-template-columns: var(--sidebar-width) 1fr;
-            min-height: 100vh;
-        }
+  <meta name="description" content="CephasGM ERP Transport &amp; Logistics Module — Fleet, shipments, international shipping, and live tracking" />
+  <meta name="author" content="Cephas Gideon Mkama" />
+  <meta property="og:title" content="Transport &amp; Logistics — CephasGM ERP" />
+  <meta property="og:description" content="Complete transport and logistics management for CephasGM ERP" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cephasgm.github.io/CephasGM-ERP/transport.html" />
 
-        /* ===== SIDEBAR (unchanged structure, only active state) ===== */
-        .sidebar {
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            padding: 2rem 1rem;
-            position: fixed;
-            width: var(--sidebar-width);
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 10;
-        }
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-            padding: 0 1rem;
-            text-decoration: none;
-            color: inherit;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 1.25rem;
-        }
+  <style>
+    /* ============ DESIGN TOKENS ============ */
+    :root {
+      --bg:            #f4f6fa;
+      --surface:       #ffffff;
+      --surface-alt:   #fafbfd;
+      --border:        #e6e9f0;
+      --border-strong: #d3d9e5;
 
-        .nav-section { margin-bottom: 2rem; }
-        .nav-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--text-light);
-            margin-bottom: 1rem;
-            padding: 0 1rem;
-            letter-spacing: 0.5px;
-        }
+      --text:          #0a1e3c;
+      --text-2:        #2c3e50;
+      --text-muted:    #5e6f8d;
+      --text-subtle:   #94a3b8;
 
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            color: var(--text-light);
-            text-decoration: none;
-            transition: all 0.2s;
-            margin-bottom: 0.25rem;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-            font-size: 0.95rem;
-        }
+      --primary:       #1a4c7a;
+      --primary-600:   #0e3a5c;
+      --primary-soft:  #e8f0fa;
+      --accent:        #2563eb;
+      --accent-hover:  #1d4ed8;
+      --accent-soft:   #eff4ff;
 
-        .nav-item:hover, .nav-item.active {
-            background: var(--primary);
-            color: white;
-        }
+      --success:       #0f7b5a;
+      --warning:       #d97706;
+      --danger:        #c0392b;
+      --gold:          #b8860b;
 
-        .nav-icon { width: 24px; text-align: center; }
+      --radius-lg:     16px;
+      --radius:        12px;
+      --radius-sm:     8px;
+      --radius-pill:   999px;
 
-        .main-content {
-            grid-column: 2;
-            padding: 2rem;
-            margin-left: var(--sidebar-width);
-        }
+      --shadow-sm:     0 1px 2px rgba(10, 30, 60, 0.04);
+      --shadow:        0 2px 10px rgba(10, 30, 60, 0.06);
+      --shadow-lg:     0 12px 32px rgba(10, 30, 60, 0.10);
 
-        /* header / stats */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        .header h1 { font-size: 2rem; font-weight: 700; }
-        .badge {
-            background: var(--surface);
-            padding: 0.5rem 1rem;
-            border-radius: 40px;
-            border: 1px solid var(--border);
-            color: var(--text-light);
-        }
+      --max-width:     1440px;
+      --sidebar-w:     264px;
+    }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .stat-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-        }
-        .stat-number { font-size: 2.2rem; font-weight: 700; color: var(--primary); }
-        .stat-label { color: var(--text-light); font-size: 0.9rem; }
+    /* ============ RESET ============ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      position: relative;
+    }
 
-        /* card & table styles */
-        .card {
-            background: var(--surface);
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-        }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.25rem;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-        }
-        .card-title { font-size: 1.3rem; font-weight: 600; }
+    /* ============ PAGE BACKGROUND (ERP collage) ============ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        url('https://www.cio.com/wp-content/uploads/2025/03/272362-0-27498000-1741330535-enterprise_resource_planning-ERP.jpg?quality=50&strip=all&w=1024'),
+        url('https://img.magnific.com/free-vector/gradient-erp-illustration_23-2149379179.jpg'),
+        url('https://www.aimcom.com/wp-content/uploads/2026/01/erp-systems-integrating-business-operations-and-supply-chain-processes-1.png'),
+        url('https://img.magnific.com/free-vector/hand-drawn-flat-design-erp-illustration_23-2149383351.jpg?semt=ais_hybrid&w=740&q=80');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-blend-mode: overlay, soft-light, luminosity, multiply;
+      opacity: 0.07;
+      z-index: -1;
+      pointer-events: none;
+      filter: saturate(0.65) contrast(1.05);
+    }
 
-        /* enhanced fleet table */
-        .table-responsive {
-            overflow-x: auto;
-            border-radius: 12px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-        th {
-            text-align: left;
-            padding: 1rem 0.75rem;
-            background: #f8fafc;
-            font-weight: 600;
-            color: var(--text-light);
-            border-bottom: 2px solid var(--border);
-        }
-        td {
-            padding: 0.9rem 0.75rem;
-            border-bottom: 1px solid var(--border);
-            vertical-align: middle;
-        }
-        tr:last-child td { border-bottom: none; }
-        .vehicle-status, .shipment-status {
-            display: inline-block;
-            padding: 0.2rem 0.8rem;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-align: center;
-        }
-        .status-active { background: #dcfce7; color: #166534; }
-        .status-maintenance { background: #fef3c7; color: #92400e; }
-        .status-idle { background: #e5e7eb; color: #374151; }
-        .status-in-transit { background: #dbeafe; color: #1e40af; }
-        .status-delivered { background: #dcfce7; color: #166534; }
-        .status-delayed { background: #fee2e2; color: #991b1b; }
-        .status-customs { background: #f3e8ff; color: #7c3aed; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    input, select, textarea { font-family: inherit; }
+    img { max-width: 100%; display: block; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
 
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            border: 1px solid transparent;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: white;
-            border-color: var(--border);
-        }
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            border: none;
-        }
-        .btn-primary:hover { background: var(--primary-dark); }
-        .btn-sm { padding: 0.3rem 0.8rem; font-size: 0.8rem; }
-        .btn-outline { background: transparent; border: 1px solid var(--border); }
-        .btn-outline:hover { background: #f8fafc; }
+    /* ============ APP WRAPPER ============ */
+    .app {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 1.25rem 2rem 3rem;
+    }
 
-        .map-container {
-            height: 350px;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            margin-bottom: 2rem;
-        }
-        #liveTrackingMap { height: 100%; width: 100%; }
+    /* ============ TOP BAR ============ */
+    .top-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.95rem 1.35rem;
+      display: flex;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .brand-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, var(--primary) 0%, #2c5a8a 55%, #3d6fa0 100%);
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      box-shadow: 0 4px 14px rgba(26, 76, 122, 0.28);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .brand-tab:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(26, 76, 122, 0.35);
+    }
+    .brand-tab i { font-size: 0.82rem; opacity: 0.9; }
 
-        /* logistics cards grid (3) */
-        .logistics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-        .logistics-card {
-            background: var(--surface);
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            padding: 1.25rem;
-        }
-        .shipment-list { list-style: none; }
-        .shipment-item {
-            padding: 0.8rem 0;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: background 0.1s;
-        }
-        .shipment-item:hover { background: #f8fafc; border-radius: 8px; padding: 0.8rem; }
-        .shipment-id { font-weight: 600; color: var(--primary); }
-        .shipment-route { font-size: 0.8rem; color: var(--text-light); }
+    /* ============ LAYOUT ============ */
+    .tnl-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
 
-        /* module cards */
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-        .module-card {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 1.5rem;
-            border: 1px solid var(--border);
-            transition: 0.2s;
-            cursor: pointer;
-        }
-        .module-card:hover { transform: translateY(-2px); border-color: var(--primary); }
-        .module-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    /* ============ SIDEBAR ============ */
+    .tnl-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: sticky;
+      top: 1rem;
+      max-height: calc(100vh - 2rem);
+      overflow-y: auto;
+      padding: 0.75rem 0.6rem 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .tnl-sidebar::-webkit-scrollbar { width: 6px; }
+    .tnl-sidebar::-webkit-scrollbar-thumb {
+      background: var(--border-strong); border-radius: 6px;
+    }
 
-        /* modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal.active { display: flex; }
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 700px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-        .close-modal {
-            float: right;
-            font-size: 1.8rem;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; font-weight: 500; margin-bottom: 0.3rem; }
-        .form-control {
-            width: 100%;
-            padding: 0.7rem;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-        }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .nav-section { margin-bottom: 0.5rem; }
+    .nav-section-title {
+      padding: 0.75rem 0.75rem 0.4rem;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-subtle);
+      font-weight: 700;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.84rem;
+      transition: background 0.12s, color 0.12s;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 100%;
+      text-align: left;
+    }
+    .nav-link i {
+      width: 16px; text-align: center;
+      font-size: 0.82rem; color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .nav-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .nav-link:hover i { color: var(--accent); }
+    .nav-link.active {
+      background: var(--accent-soft); color: var(--accent); font-weight: 600;
+    }
+    .nav-link.active i { color: var(--accent); }
 
-        .footer {
-            text-align: center;
-            color: var(--text-light);
-            padding: 2rem 0 0;
-            border-top: 1px solid var(--border);
-            margin-top: 3rem;
-        }
-    </style>
+    /* ============ MAIN ============ */
+    .tnl-main { min-width: 0; }
+
+    .tnl-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .tnl-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text);
+    }
+    .tnl-title i { color: var(--primary); font-size: 1.05rem; }
+    .tnl-subtitle {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .tnl-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+
+    /* ============ BUTTONS ============ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover); border-color: var(--accent-hover);
+    }
+    .btn-success {
+      background: var(--success); color: #fff; border-color: var(--success);
+    }
+    .btn-success:hover { background: #0b6349; border-color: #0b6349; }
+    .btn-secondary {
+      background: var(--surface); color: var(--text); border-color: var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--border-strong); }
+    .btn-danger {
+      background: var(--danger); color: #fff; border-color: var(--danger);
+    }
+    .btn-danger:hover { background: #a13024; border-color: #a13024; }
+    .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.72rem; }
+
+    /* ============ TAB CONTENT ============ */
+    .tab-content { display: none; }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============ CARDS ============ */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.15rem;
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-title i { color: var(--primary); font-size: 0.85rem; }
+
+    /* ============ STATS GRID ============ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.25rem;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    }
+    .stat-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .stat-title {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    .stat-icon {
+      width: 28px; height: 28px;
+      display: grid; place-items: center;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+    .stat-change {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ============ CHARTS ============ */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      height: 300px;
+      position: relative;
+    }
+    .chart-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--text-subtle);
+      font-size: 0.83rem;
+    }
+    .chart-empty i { font-size: 1.5rem; opacity: 0.5; }
+
+    /* ============ MAP ============ */
+    .map-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    #liveTrackingMap {
+      height: 380px;
+      width: 100%;
+    }
+    .map-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--text-subtle);
+      background: var(--surface-alt);
+      font-size: 0.85rem;
+      z-index: 500;
+    }
+    .map-empty i { font-size: 1.75rem; opacity: 0.5; }
+
+    /* ============ TABLES ============ */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 1.5rem;
+    }
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding: 1.1rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-toolbar h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .table-toolbar-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    .data-table th {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover { background: var(--surface-alt); }
+    .data-table .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-subtle);
+    }
+    .data-table .empty-state i {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 0.55rem;
+      opacity: 0.5;
+    }
+
+    .table-actions { display: flex; gap: 0.35rem; }
+    .action-icon {
+      cursor: pointer;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      transition: background 0.12s, color 0.12s;
+    }
+    .action-icon:hover { background: var(--accent-soft); color: var(--accent); }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .badge-success { background: #dcfce7; color: #166534; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger  { background: #fee2e2; color: #991b1b; }
+    .badge-info    { background: var(--accent-soft); color: var(--accent); }
+    .badge-purple  { background: #f3e8ff; color: #6b21a8; }
+    .badge-gray    { background: #f1f5f9; color: #475569; }
+
+    /* ============ SHIPMENT GRID ============ */
+    .shipment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .shipment-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.35rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .shipment-card h4 {
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .shipment-card h4 i { color: var(--primary); font-size: 0.82rem; }
+
+    .shipment-list { display: flex; flex-direction: column; gap: 0.35rem; }
+    .shipment-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem 0.7rem;
+      border-radius: var(--radius-sm);
+      transition: background 0.12s;
+      cursor: pointer;
+    }
+    .shipment-item:hover { background: var(--surface-alt); }
+    .shipment-item .info { min-width: 0; flex: 1; }
+    .shipment-id {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      display: block;
+    }
+    .shipment-route {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: block;
+      margin-top: 0.1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .shipment-empty {
+      text-align: center;
+      padding: 1.5rem 0.5rem;
+      color: var(--text-subtle);
+      font-size: 0.78rem;
+    }
+
+    /* ============ MODULE GRID ============ */
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+    .module-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.2rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+      cursor: pointer;
+    }
+    .module-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .module-icon {
+      width: 38px; height: 38px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: grid; place-items: center;
+      font-size: 0.95rem;
+    }
+    .module-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+      margin-bottom: 0.2rem;
+      color: var(--text);
+    }
+    .module-description {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+
+    /* ============ FORMS ============ */
+    .form-group { margin-bottom: 1.15rem; }
+    .form-label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: var(--text-2);
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.85rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+
+    /* ============ MODAL ============ */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      padding: 1rem;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 720px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalSlideIn 0.25s ease;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      padding: 1.15rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      width: 34px; height: 34px;
+      display: grid; place-items: center;
+      border-radius: var(--radius-sm);
+      transition: background 0.12s, color 0.12s;
+    }
+    .modal-close:hover { background: var(--accent-soft); color: var(--accent); }
+    .modal-body { padding: 1.35rem; }
+    .modal-footer {
+      padding: 1rem 1.35rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.55rem;
+    }
+
+    /* ============ NOTIFICATION ============ */
+    .notification {
+      position: fixed;
+      top: 20px; right: 20px;
+      padding: 0.85rem 1.25rem;
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      font-size: 0.83rem;
+      font-weight: 500;
+      animation: slideIn 0.25s ease;
+      max-width: 400px;
+    }
+    .notification.success { background: var(--success); }
+    .notification.error   { background: var(--danger); }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ============ FOOTER ============ */
+    .app-footer {
+      margin-top: 2.5rem;
+      padding: 1.4rem 0 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .app-footer strong { color: var(--text-2); font-weight: 600; }
+
+    /* ============ MOBILE ============ */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem; left: 1rem;
+      background: var(--primary); color: #fff;
+      border-radius: var(--radius-sm);
+      width: 42px; height: 42px;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: var(--shadow);
+    }
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.5);
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+    .sidebar-overlay.active { display: block; }
+
+    @media (max-width: 960px) {
+      .app { padding: 1rem; padding-top: 4rem; }
+      .tnl-layout { grid-template-columns: 1fr; }
+      .tnl-sidebar {
+        position: fixed;
+        top: 0; left: 0;
+        width: var(--sidebar-w);
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        border: none;
+        border-right: 1px solid var(--border);
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        z-index: 1000;
+      }
+      .tnl-sidebar.active { transform: translateX(0); }
+      .mobile-menu-toggle { display: flex; }
+    }
+    @media (max-width: 640px) {
+      .stats-grid, .charts-grid, .shipment-grid, .module-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .tnl-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
 </head>
 <body>
-<div class="dashboard">
-    <!-- SIDEBAR (identical to original, only active class) -->
-    <nav class="sidebar">
-        <a href="index.html" class="logo">
-            <div class="logo-icon">CG</div>
-            <div><div style="font-weight: 700;">CephasGM</div><div style="font-size: 0.8rem;">ERP System</div></div>
-        </a>
-        <div class="nav-section">
-            <div class="nav-title">Supply Chain</div>
-            <a href="transport.html" class="nav-item active"><span class="nav-icon">🚚</span>Transport & Logistics</a>
-            <a href="procurement.html" class="nav-item"><span class="nav-icon">🛒</span>Procurement</a>
-            <a href="inventory.html" class="nav-item"><span class="nav-icon">📦</span>Inventory</a>
-        </div>
-        <div class="nav-section">
-            <div class="nav-title">International</div>
-            <a href="import-export.html" class="nav-item"><span class="nav-icon">🌍</span>Import/Export</a>
-            <a href="customs.html" class="nav-item"><span class="nav-icon">🛃</span>Customs Compliance</a>
-            <a href="shipping.html" class="nav-item"><span class="nav-icon">🚢</span>International Shipping</a>
-        </div>
-        <div class="nav-section">
-            <div class="nav-title">Operations</div>
-            <a href="index.html" class="nav-item"><span class="nav-icon">📊</span>Dashboard</a>
-            <a href="sales.html" class="nav-item"><span class="nav-icon">💰</span>Sales</a>
-            <a href="finance.html" class="nav-item"><span class="nav-icon">💳</span>Finance</a>
-        </div>
-    </nav>
+  <a href="#main-content" class="sr-only">Skip to main content</a>
 
-    <main class="main-content">
-        <!-- header with live indicator -->
-        <div class="header">
-            <h1>Transport & Logistics</h1>
-            <div class="badge"><i class="fas fa-sync-alt fa-spin" style="margin-right: 0.3rem;"></i> live · realtime enabled</div>
-        </div>
+  <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu" aria-expanded="false">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-        <!-- stats (dynamic values from js) -->
-        <div class="stats-grid" id="stats-container"></div>
+  <div class="app">
+    <!-- TOP BAR -->
+    <header class="top-bar">
+      <a href="index.html" class="brand-tab" aria-label="CephasGM ERP — return to homepage">
+        <i class="fas fa-bolt" aria-hidden="true"></i>
+        CephasGM ERP
+      </a>
+    </header>
 
-        <!-- CHARTS (same look, but now interactive) -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-title">📈 Performance & cost</span>
-                <div>
-                    <select id="chartRange" class="btn" style="width: auto;">
-                        <option>Last 7 days</option><option>Last 30 days</option><option>Last quarter</option>
-                    </select>
-                </div>
+    <div class="tnl-layout">
+      <!-- SIDEBAR -->
+      <aside class="tnl-sidebar" id="tnlSidebar" aria-label="Transport navigation">
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <div class="nav-section-title">Overview</div>
+            <button class="nav-link active" data-tab="dashboard">
+              <i class="fas fa-chart-line"></i><span>Dashboard</span>
+            </button>
+            <button class="nav-link" data-tab="tracking">
+              <i class="fas fa-map-location-dot"></i><span>Live Tracking</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Fleet</div>
+            <button class="nav-link" data-tab="vehicles">
+              <i class="fas fa-truck"></i><span>Vehicles</span>
+            </button>
+            <button class="nav-link" data-tab="drivers">
+              <i class="fas fa-id-card"></i><span>Drivers</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Shipments</div>
+            <button class="nav-link" data-tab="shipments">
+              <i class="fas fa-box"></i><span>All Shipments</span>
+            </button>
+            <button class="nav-link" data-tab="domestic">
+              <i class="fas fa-truck-fast"></i><span>Domestic</span>
+            </button>
+            <button class="nav-link" data-tab="international">
+              <i class="fas fa-ship"></i><span>International</span>
+            </button>
+            <button class="nav-link" data-tab="customs">
+              <i class="fas fa-file-shield"></i><span>Customs &amp; Compliance</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Other Modules</div>
+            <a href="procurement.html" class="nav-link">
+              <i class="fas fa-cart-shopping"></i><span>Procurement</span>
+            </a>
+            <a href="inventory.html" class="nav-link">
+              <i class="fas fa-boxes-stacked"></i><span>Inventory</span>
+            </a>
+            <a href="finance.html" class="nav-link">
+              <i class="fas fa-chart-pie"></i><span>Finance</span>
+            </a>
+            <a href="sales.html" class="nav-link">
+              <i class="fas fa-tags"></i><span>Sales</span>
+            </a>
+            <a href="admin.html" class="nav-link">
+              <i class="fas fa-sliders"></i><span>Admin</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="tnl-main" id="main-content" tabindex="-1">
+        <!-- Header -->
+        <header class="tnl-header">
+          <div>
+            <h1 class="tnl-title" id="pageTitle">
+              <i class="fas fa-truck-fast"></i>
+              Transport &amp; Logistics Dashboard
+            </h1>
+            <p class="tnl-subtitle" id="pageSubtitle">
+              Overview of fleet, shipments, and delivery performance
+            </p>
+          </div>
+          <div class="tnl-actions">
+            <button class="btn btn-secondary" onclick="exportCurrentTab()">
+              <i class="fas fa-download"></i> Export
+            </button>
+            <button class="btn btn-primary" id="addRecordBtn" onclick="openAddModal()">
+              <i class="fas fa-plus"></i> New Shipment
+            </button>
+          </div>
+        </header>
+
+        <!-- ============ DASHBOARD ============ -->
+        <div id="dashboard-tab" class="tab-content active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Active Shipments</span>
+                <span class="stat-icon"><i class="fas fa-box"></i></span>
+              </div>
+              <div class="stat-value" id="activeShipments">—</div>
+              <div class="stat-change">No data yet</div>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                <div><canvas id="shippingChart" height="200"></canvas></div>
-                <div><canvas id="costChart" height="200"></canvas></div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Fleet Vehicles</span>
+                <span class="stat-icon"><i class="fas fa-truck"></i></span>
+              </div>
+              <div class="stat-value" id="fleetCount">—</div>
+              <div class="stat-change">No data yet</div>
             </div>
-        </div>
-
-        <!-- LIVE MAP (fully functional) -->
-        <div class="card map-container" style="padding: 0; overflow: hidden;">
-            <div id="liveTrackingMap" style="height: 100%;"></div>
-        </div>
-
-        <!-- ========== UPGRADED FLEET TABLE (with all new columns) ========= -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-title"><i class="fas fa-truck"></i> Fleet manager — full specs</span>
-                <button class="btn btn-primary btn-sm" onclick="openVehicleModal(null)"><i class="fas fa-plus"></i> Add vehicle</button>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">On-Time Delivery</span>
+                <span class="stat-icon"><i class="fas fa-clock"></i></span>
+              </div>
+              <div class="stat-value" id="onTimeRate">—</div>
+              <div class="stat-change">No data yet</div>
             </div>
-            <div class="table-responsive">
-                <table id="fleetTable">
-                    <thead>
-                        <tr>
-                            <th>VIN</th><th>Plate</th><th>Model</th><th>Type</th><th>Driver</th><th>Status</th>
-                            <th>Odometer</th><th>Service due</th><th>Fuel (L/100km)</th><th>Insurance</th><th>Permits</th><th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="fleetTbody">
-                        <!-- dynamic from window.fleetData -->
-                    </tbody>
-                </table>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">In Transit</span>
+                <span class="stat-icon"><i class="fas fa-route"></i></span>
+              </div>
+              <div class="stat-value" id="inTransitCount">—</div>
+              <div class="stat-change">No data yet</div>
             </div>
+          </div>
+
+          <div class="charts-grid">
+            <div class="chart-container">
+              <canvas id="shippingChart"></canvas>
+              <div class="chart-empty" id="shippingChartEmpty">
+                <i class="fas fa-chart-bar"></i>
+                No shipping data yet
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="costChart"></canvas>
+              <div class="chart-empty" id="costChartEmpty">
+                <i class="fas fa-chart-line"></i>
+                No cost data yet
+              </div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Recent Shipments</h3>
+              <button class="btn btn-secondary btn-sm" onclick="switchTab('shipments')">View All</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Route</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>ETA</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="recentShipmentsBody"></tbody>
+            </table>
+          </div>
         </div>
 
-        <!-- Shipment cards (domestic / international / import-export) with full details modal -->
-        <div class="logistics-grid" id="shipmentCards"></div>
-
-        <!-- Module cards (same as original but now open working modals) -->
-        <div class="module-grid" id="moduleGrid"></div>
-
-        <!-- FOOTER -->
-        <div class="footer">© 2025 CephasGM — fully operational T&L module</div>
-    </main>
-</div>
-
-<!-- ========== MODAL (universal editor) ========= -->
-<div id="universalModal" class="modal">
-    <div class="modal-content">
-        <button class="close-modal" onclick="closeModal()">&times;</button>
-        <h3 id="modalTitle">Edit record</h3>
-        <div id="modalBody"></div>
-        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-            <button class="btn btn-primary" style="flex:1;" onclick="saveModal()">Save changes</button>
-            <button class="btn btn-outline" style="flex:1;" onclick="closeModal()">Cancel</button>
-            <button class="btn btn-outline" style="flex:0 0 auto; background:#fee2e2;" onclick="deleteModal()">Delete</button>
+        <!-- ============ LIVE TRACKING ============ -->
+        <div id="tracking-tab" class="tab-content">
+          <div class="map-container">
+            <div id="liveTrackingMap"></div>
+            <div class="map-empty" id="mapEmpty">
+              <i class="fas fa-map-location-dot"></i>
+              No vehicle locations yet — add a vehicle with coordinates to see it here.
+            </div>
+          </div>
         </div>
+
+        <!-- ============ VEHICLES ============ -->
+        <div id="vehicles-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Fleet Vehicles</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('vehicles')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('vehicle')">
+                  <i class="fas fa-plus"></i> Add Vehicle
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>VIN</th>
+                  <th>Plate</th>
+                  <th>Model</th>
+                  <th>Type</th>
+                  <th>Driver</th>
+                  <th>Odometer</th>
+                  <th>Service Due</th>
+                  <th>Insurance</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="vehiclesBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ DRIVERS ============ -->
+        <div id="drivers-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Drivers</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('drivers')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('driver')">
+                  <i class="fas fa-plus"></i> Add Driver
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>License #</th>
+                  <th>License Expiry</th>
+                  <th>Phone</th>
+                  <th>Assigned Vehicle</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="driversBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ ALL SHIPMENTS ============ -->
+        <div id="shipments-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>All Shipments</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('shipments')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('shipment')">
+                  <i class="fas fa-plus"></i> New Shipment
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Shipment ID</th>
+                  <th>Type</th>
+                  <th>Route</th>
+                  <th>Carrier</th>
+                  <th>Weight</th>
+                  <th>ETD</th>
+                  <th>ETA</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="shipmentsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ DOMESTIC ============ -->
+        <div id="domestic-tab" class="tab-content">
+          <div class="shipment-grid" id="domesticGrid"></div>
+        </div>
+
+        <!-- ============ INTERNATIONAL ============ -->
+        <div id="international-tab" class="tab-content">
+          <div class="shipment-grid" id="internationalGrid"></div>
+        </div>
+
+        <!-- ============ CUSTOMS ============ -->
+        <div id="customs-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Customs &amp; Compliance</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('customs')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Shipment</th>
+                  <th>Route</th>
+                  <th>HS Code</th>
+                  <th>Value</th>
+                  <th>License</th>
+                  <th>Customs Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="customsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
     </div>
-</div>
 
-<script>
-    (function() {
-        // ========== ENHANCED DATA STRUCTURE (covers 100+ fields) =========
-        window.fleetData = [
-            { id:1, vin:'1HGCM82633A123456', plate:'T123ABC', model:'2022', type:'Heavy Truck', driver:'John Mwita', status:'active', odometer:145230, serviceDue:'2025-06-15', fuelCons:32.5, insurance:'INS-9982/2025', permitExp:'2025-12-31', lat:-6.7924, lng:39.2083, fuelLevel:78, nextService:'5000 km', tirePressure:'good', telematics:'TK-4432' },
-            { id:2, vin:'5XYZU3LBXCG123456', plate:'T456DEF', model:'2023', type:'Delivery Van', driver:'Sarah Kim', status:'active', odometer:89200, serviceDue:'2025-05-01', fuelCons:11.2, insurance:'INS-8821/2025', permitExp:'2025-10-15', lat:-6.1620, lng:35.7516, fuelLevel:45 },
-            { id:3, vin:'3FA6P0H71KR234567', plate:'T789GHI', model:'2021', type:'Refrigerated Truck', driver:'Mike Johnson', status:'maintenance', odometer:210500, serviceDue:'2025-04-20', fuelCons:38.0, insurance:'INS-7710/2024', permitExp:'2025-09-01', lat:-2.5164, lng:32.9176, fuelLevel:100 }
-        ];
+    <!-- FOOTER -->
+    <footer class="app-footer">
+      Copyright © 2025 <strong>Cephas GM</strong> | Innovating for Tomorrow
+    </footer>
+  </div>
 
-        window.shipments = [
-            { id:'TRK-7824', route:'Dar → Arusha', status:'in-transit', type:'Domestic', cust:'Tanesco', weight:12500, volume:45, incoterm:'DAP', etd:'2025-03-10', eta:'2025-03-12', pod:'pending' },
-            { id:'TRK-7819', route:'Mwanza → Dodoma', status:'delivered', type:'Domestic', cust:'Azam', weight:8900, volume:32, incoterm:'FCA', etd:'2025-03-07', eta:'2025-03-09', pod:'uploaded' },
-            { id:'INT-4582', route:'Dar → Rotterdam', status:'customs', type:'International', carrier:'Maersk', container:'MSKU1234567', bl:'MAEU8821', pol:'Dar', pod:'Rotterdam', hs:'940360', customsValue:28500 },
-            { id:'IMP-2365', route:'China → Tanzania', status:'customs', type:'Import', carrier:'MSC', hs:'847130', license:'IMP-2025-442' }
-        ];
+  <!-- ============ MODAL ============ -->
+  <div class="modal" id="editModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">New Record</h2>
+        <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+      </div>
+      <form id="editForm" onsubmit="saveItem(event)">
+        <div class="modal-body">
+          <div id="formFields"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-        // Helper to update UI
-        function refreshUI() {
-            renderStats();
-            renderFleetTable();
-            renderShipmentCards();
+  <div class="modal" id="deleteModal" role="dialog" aria-modal="true">
+    <div class="modal-content" style="max-width:420px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirm Delete</h2>
+        <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-muted);font-size:0.88rem;">Are you sure you want to delete this record? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  /* =========================================================
+     CephasGM ERP — Transport & Logistics Module v4.0
+     Empty-state on first load. Data persisted to localStorage.
+     ========================================================= */
+
+  const TAB_META = {
+    dashboard:     ['Transport & Logistics Dashboard', 'Overview of fleet, shipments, and delivery performance'],
+    tracking:      ['Live Tracking',                    'Real-time vehicle and shipment positions'],
+    vehicles:      ['Fleet Vehicles',                   'Manage your vehicle fleet'],
+    drivers:       ['Drivers',                          'Driver roster and license tracking'],
+    shipments:     ['All Shipments',                    'Every shipment across all types'],
+    domestic:      ['Domestic Shipments',               'In-country deliveries'],
+    international: ['International Shipments',          'Cross-border and overseas shipping'],
+    customs:       ['Customs & Compliance',             'Import/export declarations and status']
+  };
+
+  /* ---------- STATE ---------- */
+  let tnlData = loadData();
+  let activeTab = 'dashboard';
+  let charts = {};
+  let map = null;
+  let currentEditType = null;
+  let deleteType = null;
+  let deleteId = null;
+
+  function loadData() {
+    const saved = localStorage.getItem('cephasgm_transport_data');
+    if (saved) return JSON.parse(saved);
+    return {
+      vehicles: [],
+      drivers: [],
+      shipments: [],
+      nextIds: { vehicle: 1, driver: 1, shipment: 1 }
+    };
+  }
+  function saveData() {
+    localStorage.setItem('cephasgm_transport_data', JSON.stringify(tnlData));
+  }
+
+  /* ---------- HELPERS ---------- */
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+
+  function emptyRow(cols, message, icon = 'fa-inbox') {
+    return `<tr><td colspan="${cols}" class="empty-state"><i class="fas ${icon}"></i>${message}</td></tr>`;
+  }
+  function notify(msg, type = 'info') {
+    const n = document.createElement('div');
+    n.className = `notification ${type}`;
+    n.textContent = msg;
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 3200);
+  }
+  function badgeForStatus(status) {
+    const s = (status || '').toLowerCase();
+    if (s.includes('delivered') || s.includes('active') || s.includes('cleared') || s.includes('complete')) return 'success';
+    if (s.includes('transit') || s.includes('progress') || s.includes('pending')) return 'info';
+    if (s.includes('maintenance') || s.includes('customs') || s.includes('delayed') || s.includes('idle')) return 'warning';
+    if (s.includes('failed') || s.includes('held') || s.includes('cancelled')) return 'danger';
+    return 'gray';
+  }
+
+  /* ---------- BOOT ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNav();
+    setupMobileMenu();
+    setupAddButton();
+    renderAll();
+    initCharts();
+    initMap();
+  });
+
+  function setupNav() {
+    $$('.nav-link[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+  }
+  function setupMobileMenu() {
+    const toggle = $('#mobileMenuToggle');
+    const sidebar = $('#tnlSidebar');
+    const overlay = $('#sidebarOverlay');
+    toggle.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('active');
+      overlay.classList.toggle('active', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  }
+  function setupAddButton() {
+    const btn = $('#addRecordBtn');
+    if (btn) {
+      btn.onclick = () => openAddModal();
+      updateAddButtonLabel();
+    }
+  }
+  function updateAddButtonLabel() {
+    const btn = $('#addRecordBtn');
+    if (!btn) return;
+    const type = inferTypeFromTab(activeTab);
+    const labels = {
+      vehicle:  'New Vehicle',
+      driver:   'New Driver',
+      shipment: 'New Shipment'
+    };
+    btn.innerHTML = `<i class="fas fa-plus"></i> ${labels[type] || 'New Shipment'}`;
+  }
+
+  function switchTab(tab) {
+    activeTab = tab;
+    $$('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.tab === tab));
+    $$('.tab-content').forEach(c => c.classList.toggle('active', c.id === `${tab}-tab`));
+    const meta = TAB_META[tab] || TAB_META.dashboard;
+    $('#pageTitle').innerHTML = `<i class="fas fa-truck-fast"></i> ${meta[0]}`;
+    $('#pageSubtitle').textContent = meta[1];
+    updateAddButtonLabel();
+    const sidebar = $('#tnlSidebar');
+    if (sidebar.classList.contains('active')) {
+      sidebar.classList.remove('active');
+      $('#sidebarOverlay').classList.remove('active');
+      $('#mobileMenuToggle').setAttribute('aria-expanded', 'false');
+    }
+    if (tab === 'tracking' && map) {
+      setTimeout(() => map.invalidateSize(), 100);
+    }
+  }
+  window.switchTab = switchTab;
+
+  /* ---------- RENDER ALL ---------- */
+  function renderAll() {
+    renderDashboard();
+    renderVehicles();
+    renderDrivers();
+    renderShipments();
+    renderDomestic();
+    renderInternational();
+    renderCustoms();
+    refreshCharts();
+    updateMapMarkers();
+  }
+
+  /* ---------- DASHBOARD ---------- */
+  function renderDashboard() {
+    const shipments = tnlData.shipments;
+    const vehicles = tnlData.vehicles;
+    const has = shipments.length > 0 || vehicles.length > 0;
+
+    const active = shipments.filter(s => {
+      const st = (s.status || '').toLowerCase();
+      return st.includes('transit') || st.includes('progress') || st.includes('pending');
+    }).length;
+    const inTransit = shipments.filter(s => (s.status || '').toLowerCase().includes('transit')).length;
+    const delivered = shipments.filter(s => (s.status || '').toLowerCase().includes('delivered')).length;
+    const onTime = shipments.length ? Math.round((delivered / shipments.length) * 100) : 0;
+
+    $('#activeShipments').textContent = has ? active : '—';
+    $('#fleetCount').textContent = has && vehicles.length ? vehicles.length : '—';
+    $('#onTimeRate').textContent = has && shipments.length ? onTime + '%' : '—';
+    $('#inTransitCount').textContent = has && shipments.length ? inTransit : '—';
+
+    const body = $('#recentShipmentsBody');
+    const recent = [...shipments].slice(-5).reverse();
+    if (!recent.length) {
+      body.innerHTML = emptyRow(6, 'No shipments yet — click "New Shipment" to add one.', 'fa-box');
+    } else {
+      body.innerHTML = recent.map(s => `
+        <tr>
+          <td>${s.shipmentId}</td>
+          <td>${s.route || '—'}</td>
+          <td><span class="badge badge-info">${s.type || '—'}</span></td>
+          <td><span class="badge badge-${badgeForStatus(s.status)}">${s.status || '—'}</span></td>
+          <td>${s.eta || '—'}</td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('shipment', ${s.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+  }
+
+  /* ---------- VEHICLES ---------- */
+  function renderVehicles() {
+    const body = $('#vehiclesBody');
+    if (!tnlData.vehicles.length) {
+      body.innerHTML = emptyRow(10, 'No vehicles yet — add one to start building your fleet.', 'fa-truck');
+      return;
+    }
+    body.innerHTML = tnlData.vehicles.map(v => `
+      <tr>
+        <td>${v.vin || '—'}</td>
+        <td>${v.plate || '—'}</td>
+        <td>${v.model || '—'}</td>
+        <td>${v.type || '—'}</td>
+        <td>${v.driver || '—'}</td>
+        <td>${v.odometer ? v.odometer.toLocaleString() + ' km' : '—'}</td>
+        <td>${v.serviceDue || '—'}</td>
+        <td>${v.insurance || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(v.status)}">${v.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('vehicle', ${v.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- DRIVERS ---------- */
+  function renderDrivers() {
+    const body = $('#driversBody');
+    if (!tnlData.drivers.length) {
+      body.innerHTML = emptyRow(7, 'No drivers yet — add a driver to assign vehicles.', 'fa-id-card');
+      return;
+    }
+    body.innerHTML = tnlData.drivers.map(d => `
+      <tr>
+        <td>${d.name}</td>
+        <td>${d.licenseNumber || '—'}</td>
+        <td>${d.licenseExpiry || '—'}</td>
+        <td>${d.phone || '—'}</td>
+        <td>${d.assignedVehicle || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(d.status)}">${d.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('driver', ${d.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- SHIPMENTS ---------- */
+  function renderShipments() {
+    const body = $('#shipmentsBody');
+    if (!tnlData.shipments.length) {
+      body.innerHTML = emptyRow(9, 'No shipments yet — create one to start tracking deliveries.', 'fa-box');
+      return;
+    }
+    body.innerHTML = tnlData.shipments.map(s => `
+      <tr>
+        <td>${s.shipmentId}</td>
+        <td><span class="badge badge-info">${s.type || '—'}</span></td>
+        <td>${s.route || '—'}</td>
+        <td>${s.carrier || '—'}</td>
+        <td>${s.weight ? s.weight + ' kg' : '—'}</td>
+        <td>${s.etd || '—'}</td>
+        <td>${s.eta || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(s.status)}">${s.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('shipment', ${s.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- DOMESTIC / INTERNATIONAL ---------- */
+  function renderDomestic() {
+    const grid = $('#domesticGrid');
+    const domestic = tnlData.shipments.filter(s => (s.type || '').toLowerCase() === 'domestic');
+    if (!domestic.length) {
+      grid.innerHTML = `<div class="shipment-card">
+        <h4><i class="fas fa-truck-fast"></i> Domestic Shipments</h4>
+        <div class="shipment-empty">No domestic shipments yet.</div>
+      </div>`;
+      return;
+    }
+    grid.innerHTML = `<div class="shipment-card">
+      <h4><i class="fas fa-truck-fast"></i> Domestic Shipments</h4>
+      <div class="shipment-list">
+        ${domestic.map(s => `
+          <div class="shipment-item">
+            <div class="info">
+              <span class="shipment-id">${s.shipmentId}</span>
+              <span class="shipment-route">${s.route || '—'}</span>
+            </div>
+            <span class="badge badge-${badgeForStatus(s.status)}">${s.status || '—'}</span>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  function renderInternational() {
+    const grid = $('#internationalGrid');
+    const intl = tnlData.shipments.filter(s => {
+      const t = (s.type || '').toLowerCase();
+      return t === 'international' || t === 'import' || t === 'export';
+    });
+    if (!intl.length) {
+      grid.innerHTML = `<div class="shipment-card">
+        <h4><i class="fas fa-ship"></i> International Shipments</h4>
+        <div class="shipment-empty">No international shipments yet.</div>
+      </div>`;
+      return;
+    }
+    grid.innerHTML = `<div class="shipment-card">
+      <h4><i class="fas fa-ship"></i> International Shipments</h4>
+      <div class="shipment-list">
+        ${intl.map(s => `
+          <div class="shipment-item">
+            <div class="info">
+              <span class="shipment-id">${s.shipmentId}</span>
+              <span class="shipment-route">${s.route || '—'}</span>
+            </div>
+            <span class="badge badge-${badgeForStatus(s.status)}">${s.status || '—'}</span>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  /* ---------- CUSTOMS ---------- */
+  function renderCustoms() {
+    const body = $('#customsBody');
+    const items = tnlData.shipments.filter(s => s.hsCode || (s.type || '').toLowerCase() !== 'domestic');
+    if (!items.length) {
+      body.innerHTML = emptyRow(7, 'No customs records yet — international shipments appear here.', 'fa-file-shield');
+      return;
+    }
+    body.innerHTML = items.map(s => `
+      <tr>
+        <td>${s.shipmentId}</td>
+        <td>${s.route || '—'}</td>
+        <td>${s.hsCode || '—'}</td>
+        <td>${s.customsValue ? '$' + s.customsValue.toLocaleString() : '—'}</td>
+        <td>${s.license || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(s.customsStatus || s.status)}">${s.customsStatus || s.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('shipment', ${s.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- CHARTS ---------- */
+  function initCharts() {
+    refreshCharts();
+  }
+
+  function refreshCharts() {
+    const hasData = tnlData.shipments.length > 0;
+
+    const showEmpty = (canvasId, emptyId) => {
+      const c = document.getElementById(canvasId);
+      const e = document.getElementById(emptyId);
+      if (c) c.style.display = hasData ? 'block' : 'none';
+      if (e) e.style.display = hasData ? 'none' : 'flex';
+    };
+
+    ['shippingChart', 'costChart'].forEach(id => showEmpty(id, id + 'Empty'));
+
+    Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} });
+    charts = {};
+
+    if (!hasData) return;
+
+    const shipCtx = document.getElementById('shippingChart')?.getContext('2d');
+    if (shipCtx) {
+      const byStatus = {};
+      tnlData.shipments.forEach(s => {
+        const k = s.status || 'Unknown';
+        byStatus[k] = (byStatus[k] || 0) + 1;
+      });
+      charts.shipping = new Chart(shipCtx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(byStatus),
+          datasets: [{
+            label: 'Shipments',
+            data: Object.values(byStatus),
+            backgroundColor: '#2563eb',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+            x: { grid: { display: false } }
+          }
         }
+      });
+    }
 
-        // stats (dynamic)
-        function renderStats() {
-            const active = fleetData.filter(v => v.status==='active').length;
-            const totalVehicles = fleetData.length;
-            const cost = 8700000; // mock but could be sum
-            const ontime = 94;
-            document.getElementById('stats-container').innerHTML = `
-                <div class="stat-card"><div class="stat-number">${shipments.length}</div><div class="stat-label">Active Shipments</div></div>
-                <div class="stat-card"><div class="stat-number">TZS ${(cost/1e6).toFixed(1)}M</div><div class="stat-label">Monthly Logistics Cost</div></div>
-                <div class="stat-card"><div class="stat-number">${ontime}%</div><div class="stat-label">On-Time Delivery</div></div>
-                <div class="stat-card"><div class="stat-number">${totalVehicles}</div><div class="stat-label">Fleet Vehicles</div></div>
-            `;
+    const costCtx = document.getElementById('costChart')?.getContext('2d');
+    if (costCtx) {
+      const byType = {};
+      tnlData.shipments.forEach(s => {
+        const t = s.type || 'Other';
+        byType[t] = (byType[t] || 0) + (parseFloat(s.cost) || 0);
+      });
+      charts.cost = new Chart(costCtx, {
+        type: 'line',
+        data: {
+          labels: Object.keys(byType),
+          datasets: [{
+            label: 'Cost',
+            data: Object.values(byType),
+            borderColor: '#0f7b5a',
+            backgroundColor: 'rgba(15, 123, 90, 0.08)',
+            tension: 0.35,
+            fill: true,
+            pointBackgroundColor: '#0f7b5a',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+            x: { grid: { display: false } }
+          }
         }
+      });
+    }
+  }
 
-        // render fleet table with all columns
-        function renderFleetTable() {
-            const tbody = document.getElementById('fleetTbody');
-            tbody.innerHTML = fleetData.map(v => `<tr>
-                <td>${v.vin}</td><td>${v.plate}</td><td>${v.model}</td><td>${v.type}</td><td>${v.driver}</td>
-                <td><span class="vehicle-status status-${v.status}">${v.status}</span></td>
-                <td>${v.odometer} km</td><td>${v.serviceDue}</td><td>${v.fuelCons}</td>
-                <td>${v.insurance}</td><td>${v.permitExp}</td>
-                <td><button class="btn btn-sm" onclick="openVehicleModal(${v.id})"><i class="fas fa-edit"></i></button>
-                <button class="btn btn-sm" onclick="trackVehicle(${v.id})"><i class="fas fa-map-marker-alt"></i></button></td>
-            </tr>`).join('');
-        }
+  /* ---------- MAP ---------- */
+  function initMap() {
+    const container = document.getElementById('liveTrackingMap');
+    if (!container) return;
 
-        // render shipment cards (domestic, int, import) with all fields modal
-        function renderShipmentCards() {
-            const dom = shipments.filter(s => s.type==='Domestic').slice(0,4);
-            const intl = shipments.filter(s => s.type==='International').slice(0,4);
-            const imp = shipments.filter(s => s.type==='Import'||s.type==='Export').slice(0,4);
-            document.getElementById('shipmentCards').innerHTML = `
-                <div class="logistics-card"><div class="card-header"><span class="card-title">🚛 Domestic</span></div>
-                <ul class="shipment-list">${dom.map(s=>`<li class="shipment-item" onclick="openShipmentModal('${s.id}')"><span><span class="shipment-id">${s.id}</span><br><span class="shipment-route">${s.route}</span></span><span class="shipment-status status-${s.status}">${s.status}</span></li>`).join('')}</ul></div>
-                <div class="logistics-card"><div class="card-header"><span class="card-title">🚢 International</span></div>
-                <ul class="shipment-list">${intl.map(s=>`<li class="shipment-item" onclick="openShipmentModal('${s.id}')"><span><span class="shipment-id">${s.id}</span><br><span class="shipment-route">${s.route}</span></span><span class="shipment-status status-${s.status}">${s.status}</span></li>`).join('')}</ul></div>
-                <div class="logistics-card"><div class="card-header"><span class="card-title">📦 Import/Export</span></div>
-                <ul class="shipment-list">${imp.map(s=>`<li class="shipment-item" onclick="openShipmentModal('${s.id}')"><span><span class="shipment-id">${s.id}</span><br><span class="shipment-route">${s.route}</span></span><span class="shipment-status status-${s.status}">${s.status}</span></li>`).join('')}</ul></div>
-            `;
-        }
+    map = L.map('liveTrackingMap', {
+      center: [-6.3690, 34.8888],
+      zoom: 6,
+      scrollWheelZoom: false
+    });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap, CartoDB',
+      maxZoom: 19
+    }).addTo(map);
 
-        // ========== MODAL logic (edit, save, delete) =========
-        let currentModalType = null; // 'vehicle' or 'shipment'
-        let currentId = null;
-        const modalEl = document.getElementById('universalModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalBody = document.getElementById('modalBody');
+    updateMapMarkers();
+  }
 
-        window.openVehicleModal = (id) => {
-            currentModalType = 'vehicle';
-            if (id === null) { // new vehicle
-                currentId = null;
-                modalTitle.innerText = 'Add new vehicle';
-                modalBody.innerHTML = generateVehicleForm(null);
-            } else {
-                const v = fleetData.find(f => f.id == id);
-                if (!v) return;
-                currentId = id;
-                modalTitle.innerText = `Edit vehicle ${v.plate}`;
-                modalBody.innerHTML = generateVehicleForm(v);
-            }
-            modalEl.classList.add('active');
-        };
+  function updateMapMarkers() {
+    if (!map) return;
+    const empty = document.getElementById('mapEmpty');
+    const withCoords = tnlData.vehicles.filter(v => v.lat && v.lng);
 
-        window.openShipmentModal = (shipId) => {
-            currentModalType = 'shipment';
-            const s = shipments.find(sh => sh.id === shipId);
-            if (!s) return;
-            currentId = shipId;
-            modalTitle.innerText = `Shipment ${shipId}`;
-            modalBody.innerHTML = generateShipmentForm(s);
-            modalEl.classList.add('active');
-        };
+    if (!withCoords.length) {
+      if (empty) empty.style.display = 'flex';
+      return;
+    }
+    if (empty) empty.style.display = 'none';
 
-        function generateVehicleForm(v) {
-            return `<div class="grid-2">
-                <div class="form-group"><label>VIN</label><input class="form-control" id="vin" value="${v ? v.vin : ''}"></div>
-                <div class="form-group"><label>Plate</label><input class="form-control" id="plate" value="${v ? v.plate : ''}"></div>
-                <div class="form-group"><label>Model year</label><input class="form-control" id="model" value="${v ? v.model : ''}"></div>
-                <div class="form-group"><label>Type</label><input class="form-control" id="type" value="${v ? v.type : ''}"></div>
-                <div class="form-group"><label>Driver</label><input class="form-control" id="driver" value="${v ? v.driver : ''}"></div>
-                <div class="form-group"><label>Status</label><select class="form-control" id="status"><option ${v && v.status=='active'?'selected':''}>active</option><option ${v && v.status=='maintenance'?'selected':''}>maintenance</option><option ${v && v.status=='idle'?'selected':''}>idle</option></select></div>
-                <div class="form-group"><label>Odometer (km)</label><input type="number" class="form-control" id="odometer" value="${v ? v.odometer : ''}"></div>
-                <div class="form-group"><label>Service due</label><input class="form-control" id="serviceDue" type="date" value="${v ? v.serviceDue : ''}"></div>
-                <div class="form-group"><label>Fuel cons (L/100km)</label><input class="form-control" id="fuelCons" value="${v ? v.fuelCons : ''}"></div>
-                <div class="form-group"><label>Insurance</label><input class="form-control" id="insurance" value="${v ? v.insurance : ''}"></div>
-                <div class="form-group"><label>Permit expiry</label><input class="form-control" id="permitExp" type="date" value="${v ? v.permitExp : ''}"></div>
-                <div class="form-group"><label>Telematics ID</label><input class="form-control" id="telematics" value="${v ? (v.telematics||'') : ''}"></div>
-            </div>`;
-        }
+    // Clear old markers
+    map.eachLayer(layer => {
+      if (layer instanceof L.Marker) map.removeLayer(layer);
+    });
 
-        function generateShipmentForm(s) {
-            return `<div class="grid-2">
-                <div class="form-group"><label>Shipment ID</label><input class="form-control" id="sid" value="${s.id}" readonly></div>
-                <div class="form-group"><label>Route</label><input class="form-control" id="route" value="${s.route}"></div>
-                <div class="form-group"><label>Status</label><select class="form-control" id="sStatus"><option ${s.status=='in-transit'?'selected':''}>in-transit</option><option ${s.status=='delivered'?'selected':''}>delivered</option><option ${s.status=='customs'?'selected':''}>customs</option><option ${s.status=='delayed'?'selected':''}>delayed</option></select></div>
-                <div class="form-group"><label>Customer</label><input class="form-control" id="cust" value="${s.cust||''}"></div>
-                <div class="form-group"><label>Weight (kg)</label><input class="form-control" id="weight" value="${s.weight||''}"></div>
-                <div class="form-group"><label>Volume (cbm)</label><input class="form-control" id="volume" value="${s.volume||''}"></div>
-                <div class="form-group"><label>Incoterm</label><input class="form-control" id="incoterm" value="${s.incoterm||''}"></div>
-                <div class="form-group"><label>ETD</label><input class="form-control" id="etd" type="date" value="${s.etd||''}"></div>
-                <div class="form-group"><label>ETA</label><input class="form-control" id="eta" type="date" value="${s.eta||''}"></div>
-                <div class="form-group"><label>Carrier</label><input class="form-control" id="carrier" value="${s.carrier||''}"></div>
-                <div class="form-group"><label>Container</label><input class="form-control" id="container" value="${s.container||''}"></div>
-                <div class="form-group"><label>BL/AWB</label><input class="form-control" id="bl" value="${s.bl||''}"></div>
-                <div class="form-group"><label>HS Code</label><input class="form-control" id="hs" value="${s.hs||''}"></div>
-            </div>`;
-        }
+    withCoords.forEach(v => {
+      L.marker([v.lat, v.lng])
+        .addTo(map)
+        .bindPopup(`<strong>${v.plate || v.vin || 'Vehicle'}</strong><br>${v.driver || ''}<br>Status: ${v.status || '—'}`);
+    });
 
-        window.saveModal = () => {
-            if (currentModalType === 'vehicle') {
-                const vin = document.getElementById('vin')?.value;
-                if (!vin) { alert('VIN required'); return; }
-                if (currentId === null) { // add
-                    const newId = Date.now();
-                    fleetData.push({ id:newId, vin, plate:document.getElementById('plate').value, model:document.getElementById('model').value, type:document.getElementById('type').value, driver:document.getElementById('driver').value, status:document.getElementById('status').value, odometer:document.getElementById('odometer').value, serviceDue:document.getElementById('serviceDue').value, fuelCons:document.getElementById('fuelCons').value, insurance:document.getElementById('insurance').value, permitExp:document.getElementById('permitExp').value, telematics:document.getElementById('telematics').value });
-                } else {
-                    const idx = fleetData.findIndex(f=>f.id==currentId);
-                    if (idx>=0) {
-                        fleetData[idx] = { ...fleetData[idx], vin, plate:document.getElementById('plate').value, model:document.getElementById('model').value, type:document.getElementById('type').value, driver:document.getElementById('driver').value, status:document.getElementById('status').value, odometer:document.getElementById('odometer').value, serviceDue:document.getElementById('serviceDue').value, fuelCons:document.getElementById('fuelCons').value, insurance:document.getElementById('insurance').value, permitExp:document.getElementById('permitExp').value, telematics:document.getElementById('telematics').value };
-                    }
-                }
-            } else if (currentModalType === 'shipment' && currentId) {
-                const s = shipments.find(sh => sh.id === currentId);
-                if (s) {
-                    s.route = document.getElementById('route')?.value || s.route;
-                    s.status = document.getElementById('sStatus')?.value || s.status;
-                    s.cust = document.getElementById('cust')?.value;
-                    s.weight = document.getElementById('weight')?.value;
-                    s.volume = document.getElementById('volume')?.value;
-                    s.incoterm = document.getElementById('incoterm')?.value;
-                    s.etd = document.getElementById('etd')?.value;
-                    s.eta = document.getElementById('eta')?.value;
-                    s.carrier = document.getElementById('carrier')?.value;
-                    s.container = document.getElementById('container')?.value;
-                    s.bl = document.getElementById('bl')?.value;
-                    s.hs = document.getElementById('hs')?.value;
-                }
-            }
-            refreshUI();
-            closeModal();
-        };
+    // Fit to markers
+    const group = L.featureGroup(withCoords.map(v => L.marker([v.lat, v.lng])));
+    if (withCoords.length === 1) {
+      map.setView([withCoords[0].lat, withCoords[0].lng], 10);
+    } else {
+      map.fitBounds(group.getBounds().pad(0.2));
+    }
+  }
 
-        window.deleteModal = () => {
-            if (!confirm('Delete record?')) return;
-            if (currentModalType === 'vehicle' && currentId) {
-                fleetData = fleetData.filter(v => v.id != currentId);
-            } else if (currentModalType === 'shipment' && currentId) {
-                shipments = shipments.filter(sh => sh.id !== currentId);
-            }
-            refreshUI();
-            closeModal();
-        };
+  /* ---------- ADD MODAL ---------- */
+  function openAddModal(type) {
+    type = type || inferTypeFromTab(activeTab);
+    currentEditType = type;
+    $('#modalTitle').textContent = `New ${capitalize(type)}`;
+    $('#formFields').innerHTML = formFor(type);
+    $('#editModal').classList.add('active');
+  }
+  window.openAddModal = openAddModal;
 
-        window.closeModal = () => {
-            modalEl.classList.remove('active');
-            currentModalType = null; currentId = null;
-        };
+  function inferTypeFromTab(tab) {
+    return ({
+      dashboard:     'shipment',
+      tracking:      'vehicle',
+      vehicles:      'vehicle',
+      drivers:       'driver',
+      shipments:     'shipment',
+      domestic:      'shipment',
+      international: 'shipment',
+      customs:       'shipment'
+    })[tab] || 'shipment';
+  }
+  function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-        // map, charts, tracking
-        let map;
-        window.initializeMap = () => {
-            if (map) map.remove();
-            map = L.map('liveTrackingMap').setView([-6.3690, 34.8888], 6);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '©OpenStreetMap, CartoDB' }).addTo(map);
-            fleetData.forEach(v => {
-                if (v.lat && v.lng) L.marker([v.lat, v.lng]).addTo(map).bindPopup(`${v.plate} (${v.driver})<br>Status: ${v.status}`);
-            });
-        };
+  function formFor(type) {
+    if (type === 'vehicle') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">VIN</label><input type="text" class="form-control" name="vin" placeholder="VIN or internal ID"></div>
+        <div class="form-group"><label class="form-label">Plate</label><input type="text" class="form-control" name="plate"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Model</label><input type="text" class="form-control" name="model"></div>
+        <div class="form-group"><label class="form-label">Type</label>
+          <select class="form-control" name="type">
+            <option>Heavy Truck</option><option>Delivery Van</option>
+            <option>Refrigerated Truck</option><option>Pickup</option><option>Trailer</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Driver</label><input type="text" class="form-control" name="driver"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Active</option><option>Idle</option><option>Maintenance</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Odometer (km)</label><input type="number" class="form-control" name="odometer" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Service Due</label><input type="date" class="form-control" name="serviceDue"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Insurance Policy #</label><input type="text" class="form-control" name="insurance"></div>
+        <div class="form-group"><label class="form-label">Permit Expiry</label><input type="date" class="form-control" name="permitExp"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Latitude</label><input type="number" class="form-control" name="lat" step="0.000001" placeholder="e.g. -6.7924"></div>
+        <div class="form-group"><label class="form-label">Longitude</label><input type="number" class="form-control" name="lng" step="0.000001" placeholder="e.g. 39.2083"></div>
+      </div>`;
 
-        window.trackVehicle = (id) => {
-            const v = fleetData.find(f=>f.id==id);
-            if (v && v.lat && v.lng) map.setView([v.lat, v.lng], 12);
-            alert(`Tracking ${v.plate} — live telematics would open`);
-        };
+    if (type === 'driver') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Name</label><input type="text" class="form-control" name="name" required></div>
+        <div class="form-group"><label class="form-label">License Number</label><input type="text" class="form-control" name="licenseNumber"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">License Expiry</label><input type="date" class="form-control" name="licenseExpiry"></div>
+        <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-control" name="phone"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Assigned Vehicle</label><input type="text" class="form-control" name="assignedVehicle" placeholder="e.g. T123ABC"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Active</option><option>On Leave</option><option>Inactive</option>
+          </select>
+        </div>
+      </div>`;
 
-        // initial charts (dummy but interactive via update)
-        window.updateCharts = () => { /* would refresh */ };
+    if (type === 'shipment') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Shipment ID</label><input type="text" class="form-control" name="shipmentId" placeholder="e.g. TRK-0001" required></div>
+        <div class="form-group"><label class="form-label">Type</label>
+          <select class="form-control" name="type">
+            <option>Domestic</option><option>International</option><option>Import</option><option>Export</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Route</label><input type="text" class="form-control" name="route" placeholder="e.g. Dar → Arusha" required></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Carrier</label><input type="text" class="form-control" name="carrier"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Pending</option><option>In Transit</option><option>Customs</option>
+            <option>Delivered</option><option>Delayed</option><option>Cancelled</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Weight (kg)</label><input type="number" class="form-control" name="weight" step="0.01" min="0"></div>
+        <div class="form-group"><label class="form-label">Volume (cbm)</label><input type="number" class="form-control" name="volume" step="0.01" min="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">ETD</label><input type="date" class="form-control" name="etd"></div>
+        <div class="form-group"><label class="form-label">ETA</label><input type="date" class="form-control" name="eta"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">HS Code</label><input type="text" class="form-control" name="hsCode" placeholder="e.g. 8471.30"></div>
+        <div class="form-group"><label class="form-label">Customs Value (USD)</label><input type="number" class="form-control" name="customsValue" step="0.01" min="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">License #</label><input type="text" class="form-control" name="license"></div>
+        <div class="form-group"><label class="form-label">Customs Status</label>
+          <select class="form-control" name="customsStatus">
+            <option value="">—</option>
+            <option>Pending</option><option>Cleared</option><option>Held</option><option>Inspection</option>
+          </select>
+        </div>
+      </div>`;
 
-        // on load
-        window.addEventListener('load', function() {
-            refreshUI();
-            initializeMap();
-            // Charts
-            new Chart(document.getElementById('shippingChart'), { type:'bar', data:{ labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], datasets:[{ label:'On-time', data:[45,52,48,55,58,50,42], backgroundColor:'#10b981' },{ label:'Delayed', data:[5,3,7,2,1,4,8], backgroundColor:'#f59e0b' }] } });
-            new Chart(document.getElementById('costChart'), { type:'line', data:{ labels:['Jan','Feb','Mar','Apr','May','Jun'], datasets:[{ label:'Cost (TZS M)', data:[8.5,9.2,7.8,8.1,7.6,8.7], borderColor:'#2563eb' }] } });
-        });
-    })();
-</script>
+    return '<p style="color:var(--text-muted);font-size:0.85rem;">No form available for this record type.</p>';
+  }
+
+  function saveItem(e) {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const type = currentEditType;
+    if (!type) return;
+    const data = Object.fromEntries(f.entries());
+    addRecord(type, data);
+    closeModal('editModal');
+    renderAll();
+    if (type === 'vehicle') updateMapMarkers();
+    notify('Saved successfully', 'success');
+  }
+  window.saveItem = saveItem;
+
+  function addRecord(type, data) {
+    if (type === 'vehicle') {
+      tnlData.vehicles.push({
+        id: tnlData.nextIds.vehicle++,
+        vin: data.vin || '', plate: data.plate || '',
+        model: data.model || '', type: data.type || 'Heavy Truck',
+        driver: data.driver || '', status: data.status || 'Active',
+        odometer: parseFloat(data.odometer) || 0,
+        serviceDue: data.serviceDue || '',
+        insurance: data.insurance || '',
+        permitExp: data.permitExp || '',
+        lat: parseFloat(data.lat) || null,
+        lng: parseFloat(data.lng) || null
+      });
+    }
+    else if (type === 'driver') {
+      tnlData.drivers.push({
+        id: tnlData.nextIds.driver++,
+        name: data.name,
+        licenseNumber: data.licenseNumber || '',
+        licenseExpiry: data.licenseExpiry || '',
+        phone: data.phone || '',
+        assignedVehicle: data.assignedVehicle || '',
+        status: data.status || 'Active'
+      });
+    }
+    else if (type === 'shipment') {
+      tnlData.shipments.push({
+        id: tnlData.nextIds.shipment++,
+        shipmentId: data.shipmentId || `SHP-${Date.now()}`,
+        type: data.type || 'Domestic',
+        route: data.route,
+        carrier: data.carrier || '',
+        status: data.status || 'Pending',
+        weight: parseFloat(data.weight) || 0,
+        volume: parseFloat(data.volume) || 0,
+        etd: data.etd || '',
+        eta: data.eta || '',
+        hsCode: data.hsCode || '',
+        customsValue: parseFloat(data.customsValue) || 0,
+        license: data.license || '',
+        customsStatus: data.customsStatus || ''
+      });
+    }
+    saveData();
+  }
+
+  /* ---------- DELETE ---------- */
+  function openDelete(type, id) {
+    deleteType = type;
+    deleteId = id;
+    $('#deleteModal').classList.add('active');
+  }
+  window.openDelete = openDelete;
+
+  function confirmDelete() {
+    if (!deleteType || deleteId == null) return;
+    const map = { vehicle: 'vehicles', driver: 'drivers', shipment: 'shipments' };
+    const key = map[deleteType];
+    if (key && tnlData[key]) {
+      tnlData[key] = tnlData[key].filter(x => String(x.id) !== String(deleteId));
+      saveData();
+      renderAll();
+      if (key === 'vehicles') updateMapMarkers();
+      notify('Deleted', 'success');
+    }
+    closeModal('deleteModal');
+  }
+  window.confirmDelete = confirmDelete;
+
+  /* ---------- MODAL HELPERS ---------- */
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+  window.closeModal = closeModal;
+
+  /* ---------- EXPORT ---------- */
+  function exportTable(type) {
+    const map = {
+      vehicles: 'vehicles', drivers: 'drivers',
+      shipments: 'shipments', customs: 'shipments'
+    };
+    const key = map[type] || type;
+    const rows = tnlData[key];
+    if (!rows || !rows.length) { notify('No data to export', 'info'); return; }
+    const headers = Object.keys(rows[0]);
+    const csv = [headers.join(',')]
+      .concat(rows.map(r => headers.map(h => JSON.stringify(r[h] ?? '')).join(',')))
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${key}_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    notify('Exported successfully', 'success');
+  }
+  window.exportTable = exportTable;
+
+  function exportCurrentTab() {
+    const map = {
+      vehicles: 'vehicles', drivers: 'drivers',
+      shipments: 'shipments', domestic: 'shipments',
+      international: 'shipments', customs: 'shipments'
+    };
+    const key = map[activeTab];
+    if (key) exportTable(key);
+    else notify('Nothing to export from this section', 'info');
+  }
+  window.exportCurrentTab = exportCurrentTab;
+
+  /* ---------- KEYBOARD ---------- */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+    }
+  });
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('modal')) e.target.classList.remove('active');
+  });
+  </script>
 </body>
 </html>
-
