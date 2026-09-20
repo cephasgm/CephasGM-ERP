@@ -1,374 +1,1996 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Integrated Quality & Performance Suite · CephasGM ERP</title>
-  <!-- PWA manifest -->
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#0a2c3d">
-  <!-- Professional dependencies: Power BI SDK, flatpickr calendar -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/powerbi-client/2.22.0/powerbi.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- PWA Meta -->
+  <meta name="theme-color" content="#1a4c7a" id="theme-color-meta" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CephasGM ERP" />
+
+  <title>Quality &amp; Innovation — CephasGM ERP</title>
+
+  <meta name="description" content="CephasGM ERP Quality &amp; Innovation — Quality assurance, R&amp;D, document management, and business continuity" />
+  <meta name="author" content="Cephas Gideon Mkama" />
+  <meta property="og:title" content="Quality &amp; Innovation — CephasGM ERP" />
+  <meta property="og:description" content="Quality, R&amp;D, documents, and business continuity" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cephasgm.github.io/CephasGM-ERP/quality.html" />
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-    body { background: #f5f7fa; color: #1e2b3a; display: flex; flex-direction: column; min-height: 100vh; }
-    
-    /* Professional top bar – clean, no distractions */
-    .top-bar { background: #0c2e41; color: white; padding: 0 2rem; height: 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d4a13e; }
-    .logo-area { display: flex; align-items: center; gap: 1.2rem; }
-    .logo { background: #d4a13e; color: #0c2e41; font-weight: 700; padding: 0.3rem 0.9rem; border-radius: 4px; font-size: 1.2rem; letter-spacing: 0.5px; }
-    .suite-name { font-weight: 400; font-size: 0.95rem; opacity: 0.9; }
-    .top-bar-right { display: flex; align-items: center; gap: 2rem; }
-    .timestamp { font-size: 0.85rem; color: #b0c4d9; }
-    
-    /* Navigation */
-    .main-nav { background: white; padding: 0 2rem; height: 48px; display: flex; align-items: center; gap: 2rem; border-bottom: 1px solid #e2e8f0; }
-    .main-nav a { color: #2c3e50; text-decoration: none; font-size: 0.9rem; font-weight: 500; padding: 0 0.25rem; height: 48px; display: flex; align-items: center; border-bottom: 2px solid transparent; }
-    .main-nav a:hover { border-bottom-color: #d4a13e; }
-    .main-nav a.home-link { margin-right: auto; font-weight: 400; color: #4a5f73; }
-    
-    /* Container */
-    .container { max-width: 1600px; margin: 0 auto; padding: 2rem; width: 100%; flex: 1; }
-    
-    /* Universal date filter – clean, professional */
-    .global-filter { background: white; border-radius: 8px; padding: 1rem 1.5rem; margin-bottom: 2rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #e9edf3; }
-    .filter-controls { display: flex; gap: 1rem; align-items: center; }
-    .date-range-input { display: flex; gap: 0.5rem; align-items: center; background: #f8fafd; padding: 0.3rem 1rem; border-radius: 6px; border: 1px solid #dde3ea; }
-    .flatpickr-input { background: transparent; border: none; padding: 0.4rem; width: 120px; font-size: 0.9rem; cursor: pointer; }
-    .btn-outline { background: transparent; border: 1px solid #cbd5e1; padding: 0.4rem 1.2rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; }
-    .btn-outline:hover { background: #f1f5f9; }
-    .btn-primary { background: #0c2e41; color: white; border: none; padding: 0.4rem 1.5rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; }
-    .btn-primary:hover { background: #154b66; }
-    
-    /* KPI row */
-    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin-bottom: 2rem; }
-    .kpi-card { background: white; border-radius: 10px; padding: 1.2rem; border: 1px solid #eef2f6; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-    .kpi-label { font-size: 0.75rem; text-transform: uppercase; color: #617388; letter-spacing: 0.3px; margin-bottom: 0.3rem; }
-    .kpi-value { font-size: 1.8rem; font-weight: 600; color: #0c2e41; line-height: 1.2; }
-    .kpi-trend { font-size: 0.75rem; color: #2e7d32; background: #e8f3e8; padding: 0.2rem 0.5rem; border-radius: 4px; margin-left: 0.5rem; display: inline-block; }
-    
-    /* Module grid */
-    .module-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; }
-    .card { background: white; border-radius: 12px; padding: 1.5rem; border: 1px solid #eef2f6; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
-    .card-header h3 { font-size: 1rem; font-weight: 600; color: #1f3a4c; text-transform: uppercase; letter-spacing: 0.3px; }
-    .action-group { display: flex; gap: 0.4rem; }
-    .icon-btn { background: #f0f4fa; border: none; padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.75rem; cursor: pointer; color: #1f3a4c; display: inline-flex; align-items: center; gap: 0.2rem; }
-    .icon-btn:hover { background: #e3eaf2; }
-    
-    /* Tables */
-    .table-container { max-height: 240px; overflow-y: auto; border: 1px solid #eef2f6; border-radius: 6px; margin: 1rem 0; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-    th { background: #f8fafc; padding: 0.6rem 0.5rem; text-align: left; font-weight: 500; color: #3e566b; position: sticky; top: 0; border-bottom: 1px solid #dde3ea; }
-    td { padding: 0.6rem 0.5rem; border-bottom: 1px solid #f0f3f8; }
-    .badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 500; }
-    .badge-critical { background: #fee9e9; color: #b71c1c; }
-    .badge-major { background: #fff2d6; color: #b45b0a; }
-    .badge-minor { background: #e8f3e8; color: #1e5e1e; }
-    
-    /* Power BI container */
-    .pbi-container { background: #f8fafd; border-radius: 6px; padding: 0.8rem; margin: 1rem 0 0.5rem; border: 1px solid #e2e8f0; font-size: 0.8rem; color: #2c3e50; display: flex; align-items: center; justify-content: space-between; }
-    
-    /* Executive dashboard full width */
-    .full-width { grid-column: 1 / -1; }
-    .exec-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
-    .footer { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid #dde3ea; display: flex; justify-content: space-between; font-size: 0.8rem; color: #617388; }
-    .footer a { color: #1f3a4c; text-decoration: none; margin-right: 1.5rem; }
-    .footer a:hover { color: #d4a13e; }
-    
-    /* Modal - professional */
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); align-items: center; justify-content: center; z-index: 1000; }
-    .modal-content { background: white; border-radius: 8px; padding: 2rem; min-width: 450px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-    .modal-actions { margin-top: 1.5rem; display: flex; gap: 0.8rem; justify-content: flex-end; }
-    input, select, textarea { width: 100%; padding: 0.6rem; margin: 0.4rem 0; border: 1px solid #d0dbe8; border-radius: 4px; font-size: 0.9rem; }
-    
-    @media (max-width: 1200px) { .module-grid { grid-template-columns: 1fr; } .kpi-grid { grid-template-columns: repeat(2,1fr); } }
+    /* ============ DESIGN TOKENS ============ */
+    :root {
+      --bg:            #f4f6fa;
+      --surface:       #ffffff;
+      --surface-alt:   #fafbfd;
+      --border:        #e6e9f0;
+      --border-strong: #d3d9e5;
+
+      --text:          #0a1e3c;
+      --text-2:        #2c3e50;
+      --text-muted:    #5e6f8d;
+      --text-subtle:   #94a3b8;
+
+      --primary:       #1a4c7a;
+      --primary-600:   #0e3a5c;
+      --primary-soft:  #e8f0fa;
+      --accent:        #2563eb;
+      --accent-hover:  #1d4ed8;
+      --accent-soft:   #eff4ff;
+
+      --success:       #0f7b5a;
+      --warning:       #d97706;
+      --danger:        #c0392b;
+      --gold:          #b8860b;
+
+      --radius-lg:     16px;
+      --radius:        12px;
+      --radius-sm:     8px;
+      --radius-pill:   999px;
+
+      --shadow-sm:     0 1px 2px rgba(10, 30, 60, 0.04);
+      --shadow:        0 2px 10px rgba(10, 30, 60, 0.06);
+      --shadow-lg:     0 12px 32px rgba(10, 30, 60, 0.10);
+
+      --max-width:     1440px;
+      --sidebar-w:     264px;
+    }
+
+    /* ============ RESET ============ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ============ PAGE BACKGROUND (ERP collage) ============ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        url('https://www.cio.com/wp-content/uploads/2025/03/272362-0-27498000-1741330535-enterprise_resource_planning-ERP.jpg?quality=50&strip=all&w=1024'),
+        url('https://img.magnific.com/free-vector/gradient-erp-illustration_23-2149379179.jpg'),
+        url('https://www.aimcom.com/wp-content/uploads/2026/01/erp-systems-integrating-business-operations-and-supply-chain-processes-1.png'),
+        url('https://img.magnific.com/free-vector/hand-drawn-flat-design-erp-illustration_23-2149383351.jpg?semt=ais_hybrid&w=740&q=80');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-blend-mode: overlay, soft-light, luminosity, multiply;
+      opacity: 0.07;
+      z-index: -1;
+      pointer-events: none;
+      filter: saturate(0.65) contrast(1.05);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    input, select, textarea { font-family: inherit; }
+    img { max-width: 100%; display: block; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ============ APP WRAPPER ============ */
+    .app {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 1.25rem 2rem 3rem;
+    }
+
+    /* ============ TOP BAR ============ */
+    .top-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.95rem 1.35rem;
+      display: flex;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .brand-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, var(--primary) 0%, #2c5a8a 55%, #3d6fa0 100%);
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      box-shadow: 0 4px 14px rgba(26, 76, 122, 0.28);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .brand-tab:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(26, 76, 122, 0.35);
+    }
+    .brand-tab i { font-size: 0.82rem; opacity: 0.9; }
+
+    /* ============ LAYOUT ============ */
+    .qlty-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============ SIDEBAR ============ */
+    .qlty-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: sticky;
+      top: 1rem;
+      max-height: calc(100vh - 2rem);
+      overflow-y: auto;
+      padding: 0.75rem 0.6rem 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .qlty-sidebar::-webkit-scrollbar { width: 6px; }
+    .qlty-sidebar::-webkit-scrollbar-thumb {
+      background: var(--border-strong); border-radius: 6px;
+    }
+
+    .nav-section { margin-bottom: 0.5rem; }
+    .nav-section-title {
+      padding: 0.75rem 0.75rem 0.4rem;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-subtle);
+      font-weight: 700;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.84rem;
+      transition: background 0.12s, color 0.12s;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 100%;
+      text-align: left;
+    }
+    .nav-link i {
+      width: 16px; text-align: center;
+      font-size: 0.82rem; color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .nav-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .nav-link:hover i { color: var(--accent); }
+    .nav-link.active {
+      background: var(--accent-soft); color: var(--accent); font-weight: 600;
+    }
+    .nav-link.active i { color: var(--accent); }
+
+    /* ============ MAIN ============ */
+    .qlty-main { min-width: 0; }
+
+    .qlty-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .qlty-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text);
+    }
+    .qlty-title i { color: var(--primary); font-size: 1.05rem; }
+    .qlty-subtitle {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .qlty-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+
+    /* ============ BUTTONS ============ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover); border-color: var(--accent-hover);
+    }
+    .btn-success {
+      background: var(--success); color: #fff; border-color: var(--success);
+    }
+    .btn-success:hover { background: #0b6349; border-color: #0b6349; }
+    .btn-secondary {
+      background: var(--surface); color: var(--text); border-color: var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--border-strong); }
+    .btn-danger {
+      background: var(--danger); color: #fff; border-color: var(--danger);
+    }
+    .btn-danger:hover { background: #a13024; border-color: #a13024; }
+    .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.72rem; }
+
+    /* ============ TAB CONTENT ============ */
+    .tab-content { display: none; }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============ CARDS ============ */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.15rem;
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-title i { color: var(--primary); font-size: 0.85rem; }
+
+    /* ============ STATS GRID ============ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.25rem;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    }
+    .stat-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .stat-title {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    .stat-icon {
+      width: 28px; height: 28px;
+      display: grid; place-items: center;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+    .stat-change {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ============ CHARTS ============ */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      height: 300px;
+      position: relative;
+    }
+    .chart-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--text-subtle);
+      font-size: 0.83rem;
+    }
+    .chart-empty i { font-size: 1.5rem; opacity: 0.5; }
+
+    /* ============ TABLES ============ */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 1.5rem;
+    }
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding: 1.1rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-toolbar h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .table-toolbar-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    .data-table th {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover { background: var(--surface-alt); }
+    .data-table .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-subtle);
+    }
+    .data-table .empty-state i {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 0.55rem;
+      opacity: 0.5;
+    }
+
+    .table-actions { display: flex; gap: 0.35rem; }
+    .action-icon {
+      cursor: pointer;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      transition: background 0.12s, color 0.12s;
+    }
+    .action-icon:hover { background: var(--accent-soft); color: var(--accent); }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .badge-success { background: #dcfce7; color: #166534; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger  { background: #fee2e2; color: #991b1b; }
+    .badge-info    { background: var(--accent-soft); color: var(--accent); }
+    .badge-gray    { background: #f1f5f9; color: #475569; }
+
+    /* ============ SEARCH BAR ============ */
+    .search-row {
+      margin-bottom: 1rem;
+    }
+    .search-input-wrap {
+      position: relative;
+      max-width: 340px;
+    }
+    .search-input-wrap i {
+      position: absolute;
+      left: 12px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-subtle);
+      font-size: 0.8rem;
+      pointer-events: none;
+    }
+    .search-input-wrap input {
+      width: 100%;
+      padding: 0.55rem 0.85rem 0.55rem 2.2rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.83rem;
+      outline: none;
+    }
+    .search-input-wrap input:focus { border-color: var(--accent); }
+
+    /* ============ FORMS ============ */
+    .form-group { margin-bottom: 1.15rem; }
+    .form-label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: var(--text-2);
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.85rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+
+    /* ============ MODAL ============ */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      padding: 1rem;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 720px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalSlideIn 0.25s ease;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      padding: 1.15rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      width: 34px; height: 34px;
+      display: grid; place-items: center;
+      border-radius: var(--radius-sm);
+      transition: background 0.12s, color 0.12s;
+    }
+    .modal-close:hover { background: var(--accent-soft); color: var(--accent); }
+    .modal-body { padding: 1.35rem; }
+    .modal-footer {
+      padding: 1rem 1.35rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.55rem;
+    }
+
+    /* ============ NOTIFICATION ============ */
+    .notification {
+      position: fixed;
+      top: 20px; right: 20px;
+      padding: 0.85rem 1.25rem;
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      font-size: 0.83rem;
+      font-weight: 500;
+      animation: slideIn 0.25s ease;
+      max-width: 400px;
+    }
+    .notification.success { background: var(--success); }
+    .notification.error   { background: var(--danger); }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ============ FOOTER ============ */
+    .app-footer {
+      margin-top: 2.5rem;
+      padding: 1.4rem 0 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .app-footer strong { color: var(--text-2); font-weight: 600; }
+
+    /* ============ MOBILE ============ */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem; left: 1rem;
+      background: var(--primary); color: #fff;
+      border-radius: var(--radius-sm);
+      width: 42px; height: 42px;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: var(--shadow);
+    }
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.5);
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+    .sidebar-overlay.active { display: block; }
+
+    @media (max-width: 960px) {
+      .app { padding: 1rem; padding-top: 4rem; }
+      .qlty-layout { grid-template-columns: 1fr; }
+      .qlty-sidebar {
+        position: fixed;
+        top: 0; left: 0;
+        width: var(--sidebar-w);
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        border: none;
+        border-right: 1px solid var(--border);
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        z-index: 1000;
+      }
+      .qlty-sidebar.active { transform: translateX(0); }
+      .mobile-menu-toggle { display: flex; }
+    }
+    @media (max-width: 640px) {
+      .stats-grid, .charts-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .qlty-header { flex-direction: column; align-items: flex-start; }
+    }
   </style>
 </head>
 <body>
-  <!-- Professional header – no personal names, only institutional -->
-  <div class="top-bar">
-    <div class="logo-area">
-      <span class="logo">CG</span>
-      <span class="suite-name">Integrated Quality & Performance Suite</span>
+  <a href="#main-content" class="sr-only">Skip to main content</a>
+
+  <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu" aria-expanded="false">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="app">
+    <!-- TOP BAR -->
+    <header class="top-bar">
+      <a href="index.html" class="brand-tab" aria-label="CephasGM ERP — return to homepage">
+        <i class="fas fa-bolt" aria-hidden="true"></i>
+        CephasGM ERP
+      </a>
+    </header>
+
+    <div class="qlty-layout">
+      <!-- SIDEBAR -->
+      <aside class="qlty-sidebar" id="qltySidebar" aria-label="Quality navigation">
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <div class="nav-section-title">Overview</div>
+            <button class="nav-link active" data-tab="dashboard">
+              <i class="fas fa-chart-line"></i><span>Dashboard</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Quality</div>
+            <button class="nav-link" data-tab="ncr">
+              <i class="fas fa-triangle-exclamation"></i><span>Non-Conformances</span>
+            </button>
+            <button class="nav-link" data-tab="audits">
+              <i class="fas fa-clipboard-check"></i><span>Audits</span>
+            </button>
+            <button class="nav-link" data-tab="findings">
+              <i class="fas fa-magnifying-glass"></i><span>Findings</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Innovation</div>
+            <button class="nav-link" data-tab="rd">
+              <i class="fas fa-flask"></i><span>R&amp;D Projects</span>
+            </button>
+            <button class="nav-link" data-tab="patents">
+              <i class="fas fa-certificate"></i><span>Patents</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Documents</div>
+            <button class="nav-link" data-tab="dms">
+              <i class="fas fa-folder-open"></i><span>Documents</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Continuity</div>
+            <button class="nav-link" data-tab="bcdr">
+              <i class="fas fa-shield-heart"></i><span>Risks &amp; Recovery</span>
+            </button>
+            <button class="nav-link" data-tab="drills">
+              <i class="fas fa-vial-circle-check"></i><span>Drills</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Other Modules</div>
+            <a href="manufacturing.html" class="nav-link">
+              <i class="fas fa-industry"></i><span>Manufacturing</span>
+            </a>
+            <a href="asset-operations.html" class="nav-link">
+              <i class="fas fa-screwdriver-wrench"></i><span>Assets</span>
+            </a>
+            <a href="safety.html" class="nav-link">
+              <i class="fas fa-shield-heart"></i><span>Safety</span>
+            </a>
+            <a href="legal.html" class="nav-link">
+              <i class="fas fa-scale-balanced"></i><span>Legal</span>
+            </a>
+            <a href="admin.html" class="nav-link">
+              <i class="fas fa-sliders"></i><span>Admin</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="qlty-main" id="main-content" tabindex="-1">
+        <!-- Header -->
+        <header class="qlty-header">
+          <div>
+            <h1 class="qlty-title" id="pageTitle">
+              <i class="fas fa-medal"></i>
+              Quality &amp; Innovation Dashboard
+            </h1>
+            <p class="qlty-subtitle" id="pageSubtitle">
+              Overview of quality, R&amp;D, documents, and business continuity
+            </p>
+          </div>
+          <div class="qlty-actions">
+            <button class="btn btn-secondary" onclick="exportCurrentTab()">
+              <i class="fas fa-download"></i> Export
+            </button>
+            <button class="btn btn-primary" id="addRecordBtn" onclick="openAddModal()">
+              <i class="fas fa-plus"></i> New Record
+            </button>
+          </div>
+        </header>
+
+        <!-- ============ DASHBOARD ============ -->
+        <div id="dashboard-tab" class="tab-content active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Non-Conformance Rate</span>
+                <span class="stat-icon"><i class="fas fa-triangle-exclamation"></i></span>
+              </div>
+              <div class="stat-value" id="ncrRate">—</div>
+              <div class="stat-change">No data yet</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">R&amp;D Success Rate</span>
+                <span class="stat-icon"><i class="fas fa-flask"></i></span>
+              </div>
+              <div class="stat-value" id="rdSuccess">—</div>
+              <div class="stat-change">No data yet</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Documents Expiring</span>
+                <span class="stat-icon"><i class="fas fa-file-circle-exclamation"></i></span>
+              </div>
+              <div class="stat-value" id="docsExpiring">—</div>
+              <div class="stat-change">No data yet</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">BC/DR Readiness</span>
+                <span class="stat-icon"><i class="fas fa-shield-heart"></i></span>
+              </div>
+              <div class="stat-value" id="bcdrReadiness">—</div>
+              <div class="stat-change">No data yet</div>
+            </div>
+          </div>
+
+          <div class="charts-grid">
+            <div class="chart-container">
+              <canvas id="ncrSeverityChart"></canvas>
+              <div class="chart-empty" id="ncrSeverityChartEmpty">
+                <i class="fas fa-chart-bar"></i>
+                No NCR data yet
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="rdPhaseChart"></canvas>
+              <div class="chart-empty" id="rdPhaseChartEmpty">
+                <i class="fas fa-chart-pie"></i>
+                No R&amp;D data yet
+              </div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Recent Non-Conformances</h3>
+              <button class="btn btn-secondary btn-sm" onclick="switchTab('ncr')">View All</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Source</th>
+                  <th>Severity</th>
+                  <th>Disposition</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="recentNcrBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ NCR ============ -->
+        <div id="ncr-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Non-Conformance Reports</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('ncr')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('ncr')">
+                  <i class="fas fa-plus"></i> New NCR
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Source</th>
+                  <th>Severity</th>
+                  <th>Disposition</th>
+                  <th>Owner</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="ncrBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ AUDITS ============ -->
+        <div id="audits-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Audits</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('audits')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('audit')">
+                  <i class="fas fa-plus"></i> Schedule Audit
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Audit ID</th>
+                  <th>Type</th>
+                  <th>Scope</th>
+                  <th>Scheduled</th>
+                  <th>Lead</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="auditsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ FINDINGS ============ -->
+        <div id="findings-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Audit Findings</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('findings')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('finding')">
+                  <i class="fas fa-plus"></i> New Finding
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Finding</th>
+                  <th>Audit</th>
+                  <th>Severity</th>
+                  <th>Due</th>
+                  <th>Owner</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="findingsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ R&D ============ -->
+        <div id="rd-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>R&amp;D Projects</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('rd')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('rd')">
+                  <i class="fas fa-plus"></i> New Project
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Project</th>
+                  <th>Phase</th>
+                  <th>Budget</th>
+                  <th>Lead</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="rdBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ PATENTS ============ -->
+        <div id="patents-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Patents</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('patents')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('patent')">
+                  <i class="fas fa-plus"></i> Add Patent
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Patent #</th>
+                  <th>Title</th>
+                  <th>Project</th>
+                  <th>Filed</th>
+                  <th>Granted</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="patentsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ DMS ============ -->
+        <div id="dms-tab" class="tab-content">
+          <div class="search-row">
+            <div class="search-input-wrap">
+              <i class="fas fa-magnifying-glass"></i>
+              <input type="text" id="dmsSearch" placeholder="Search documents…" onkeyup="filterDms()" />
+            </div>
+          </div>
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Document Management</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('dms')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('dms')">
+                  <i class="fas fa-plus"></i> Upload Document
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Document</th>
+                  <th>Version</th>
+                  <th>Owner</th>
+                  <th>Expiry</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="dmsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ BC/DR ============ -->
+        <div id="bcdr-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Business Continuity Risks</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('bcdr')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('bcdr')">
+                  <i class="fas fa-plus"></i> Add Risk
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Risk</th>
+                  <th>RTO</th>
+                  <th>RPO</th>
+                  <th>Owner</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="bcdrBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ DRILLS ============ -->
+        <div id="drills-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Continuity Drills</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('drills')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('drill')">
+                  <i class="fas fa-plus"></i> Log Drill
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Drill</th>
+                  <th>Risk Tested</th>
+                  <th>Date</th>
+                  <th>Duration</th>
+                  <th>Result</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="drillsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
     </div>
-    <div class="top-bar-right">
-      <span class="timestamp">2026-02-21 · 06:30 UTC</span>
-    </div>
+
+    <!-- FOOTER -->
+    <footer class="app-footer">
+      Copyright © 2025 <strong>Cephas GM</strong> | Innovating for Tomorrow
+    </footer>
   </div>
 
-  <!-- Navigation with home link -->
-  <div class="main-nav">
-    <a href="https://cephasgm.github.io/CephasGM-ERP/index.html" class="home-link">← Global Command Center</a>
-    <a href="#">Quality</a>
-    <a href="#">R&D</a>
-    <a href="#">DMS</a>
-    <a href="#">BC/DR</a>
-    <a href="#">Executive</a>
-  </div>
-
-  <div class="container">
-    <!-- Universal date filter (applies to all modules) -->
-    <div class="global-filter">
-      <div class="filter-controls">
-        <span style="font-weight:500; color:#1f3a4c;">Date range</span>
-        <div class="date-range-input">
-          <input type="text" id="startDate" class="flatpickr-input" placeholder="Start" value="2026-02-01">
-          <span>—</span>
-          <input type="text" id="endDate" class="flatpickr-input" placeholder="End" value="2026-02-21">
-        </div>
-        <button class="btn-outline" id="applyDateBtn">Apply to all views</button>
-      </div>
-      <div>
-        <span style="color:#617388; font-size:0.85rem;">Last updated: live</span>
-      </div>
-    </div>
-
-    <!-- KPI row (reflecting selected period) -->
-    <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">Non-conformance rate</div><div class="kpi-value">2.1% <span class="kpi-trend">-0.3%</span></div><div style="font-size:0.75rem;">vs previous period</div></div>
-      <div class="kpi-card"><div class="kpi-label">R&D stage gate success</div><div class="kpi-value">67% <span class="kpi-trend">+5%</span></div></div>
-      <div class="kpi-card"><div class="kpi-label">Documents expiring</div><div class="kpi-value">12 <span class="kpi-trend">-2</span></div></div>
-      <div class="kpi-card"><div class="kpi-label">BC/DR readiness</div><div class="kpi-value">94% <span class="kpi-trend">+1%</span></div></div>
-    </div>
-
-    <!-- Module grid: Quality, R&D, DMS, BC/DR with full CRUD + Power BI -->
-    <div class="module-grid">
-      <!-- QUALITY ASSURANCE MODULE -->
-      <div class="card">
-        <div class="card-header">
-          <h3>🔍 Quality Assurance</h3>
-          <div class="action-group">
-            <button class="icon-btn" onclick="showModal('ncrModal')">+ New</button>
-            <button class="icon-btn" onclick="exportTable('ncrTable')">Export</button>
-            <button class="icon-btn" onclick="importData('ncr')">Import</button>
-            <button class="icon-btn" onclick="saveModule('qa')">Save</button>
-          </div>
-        </div>
-        <div class="table-container">
-          <table id="ncrTable">
-            <thead><tr><th>ID</th><th>Source</th><th>Severity</th><th>Disposition</th><th>Status</th><th></th></tr></thead>
-            <tbody>
-              <tr><td>NCR-2411</td><td>Inspection</td><td><span class="badge badge-critical">Critical</span></td><td>Rework</td><td>Open</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
-              <tr><td>NCR-2412</td><td>Customer</td><td><span class="badge badge-major">Major</span></td><td>Use-As-Is</td><td>In progress</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
-              <tr><td>NCR-2413</td><td>Inspection</td><td><span class="badge badge-minor">Minor</span></td><td>Scrap</td><td>Closed</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="pbi-container">
-          <span>📊 Power BI: Defect Pareto · Audit scores</span>
-          <button class="icon-btn" onclick="refreshPowerBI('qa')">⟳</button>
-        </div>
-        <div style="display:flex; gap:1rem; font-size:0.75rem; margin-top:0.5rem;">
-          <span>Audits scheduled: 4</span>
-          <span>Findings open: 7</span>
-        </div>
-      </div>
-
-      <!-- R&D MODULE -->
-      <div class="card">
-        <div class="card-header">
-          <h3>🔬 Research & Development</h3>
-          <div class="action-group">
-            <button class="icon-btn" onclick="showModal('rdModal')">+ New</button>
-            <button class="icon-btn" onclick="exportTable('rdTable')">Export</button>
-            <button class="icon-btn" onclick="importData('rd')">Import</button>
-            <button class="icon-btn" onclick="saveModule('rd')">Save</button>
-          </div>
-        </div>
-        <div class="table-container">
-          <table id="rdTable">
-            <thead><tr><th>Project</th><th>Phase</th><th>Patent</th><th>Grant value</th><th></th></tr></thead>
-            <tbody>
-              <tr><td>Project Nova</td><td>Phase 3</td><td>US11234567</td><td>$1.2M</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
-              <tr><td>Quantum Coatings</td><td>Prototype</td><td>Pending</td><td>$0.8M</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="pbi-container">
-          <span>📊 Power BI: R&D funnel · Grants $4.2M</span>
-          <button class="icon-btn" onclick="refreshPowerBI('rd')">⟳</button>
-        </div>
-      </div>
-
-      <!-- DOCUMENT MANAGEMENT SYSTEM -->
-      <div class="card">
-        <div class="card-header">
-          <h3>📁 Document Management</h3>
-          <div class="action-group">
-            <button class="icon-btn" onclick="showModal('dmsModal')">+ Upload</button>
-            <button class="icon-btn" onclick="exportTable('dmsTable')">Export</button>
-            <button class="icon-btn" onclick="importData('dms')">Import</button>
-            <button class="icon-btn" onclick="saveModule('dms')">Save</button>
-          </div>
-        </div>
-        <div style="margin-bottom:0.8rem;"><input type="text" placeholder="Full-text search..." id="dmsSearch" onkeyup="searchDMS()" style="width:100%;"></div>
-        <div class="table-container">
-          <table id="dmsTable">
-            <thead><tr><th>Document</th><th>Version</th><th>Expiry</th><th>Status</th><th></th></tr></thead>
-            <tbody>
-              <tr><td>SOP-QA-2212</td><td>v3</td><td>2026-04-15</td><td>Active</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
-              <tr><td>ISO9001_cert</td><td>v2</td><td style="color:#b71c1c;">2026-03-15</td><td>Expiring</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="pbi-container">
-          <span>📊 Power BI: Document expiry forecast</span>
-        </div>
-      </div>
-
-      <!-- BUSINESS CONTINUITY & DISASTER RECOVERY -->
-      <div class="card">
-        <div class="card-header">
-          <h3>⚡ Business Continuity</h3>
-          <div class="action-group">
-            <button class="icon-btn" onclick="showModal('bcdrModal')">+ Add</button>
-            <button class="icon-btn" onclick="exportTable('bcdrTable')">Export</button>
-            <button class="icon-btn" onclick="importData('bcdr')">Import</button>
-            <button class="icon-btn" onclick="saveModule('bcdr')">Save</button>
-          </div>
-        </div>
-        <div class="table-container">
-          <table id="bcdrTable">
-            <thead><tr><th>Risk</th><th>RTO</th><th>RPO</th><th>Last drill</th><th></th></tr></thead>
-            <tbody>
-              <tr><td>Cyber</td><td>2h</td><td>15min</td><td>2026-02-20</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
-              <tr><td>Supply chain</td><td>6h</td><td>1h</td><td>2026-02-10</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div style="display:flex; gap:1rem; font-size:0.75rem; margin:0.5rem 0;">
-          <span>Emergency contacts: 34</span><span>Backup success: 99.8%</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- EXECUTIVE DASHBOARD (full width) with Power BI -->
-    <div class="card full-width" style="margin-top:0.5rem;">
-      <div class="card-header">
-        <h3>📈 Executive Dashboard · Consolidated view</h3>
-        <div class="action-group">
-          <button class="icon-btn" onclick="refreshPowerBI('exec')">⟳ Refresh Power BI</button>
-          <button class="icon-btn" onclick="exportDashboard()">📄 Export</button>
-        </div>
-      </div>
-      <!-- Power BI embedded simulation -->
-      <div style="background:#f8fafc; border-radius:6px; padding:1.5rem; border:1px solid #e2e8f0; margin:0.5rem 0;">
-        <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:1rem;">
-          <div><span style="font-weight:500;">Revenue vs target</span><br><span style="font-size:1.4rem;">$247.8M</span> / $240M (+3.2%)</div>
-          <div><span style="font-weight:500;">Regional perf.</span><br>Africa 112% · EU 98%</div>
-          <div><span style="font-weight:500;">Risk heat map</span><br><span class="badge badge-critical">● Operational</span> <span class="badge badge-major">● Compliance</span></div>
-        </div>
-        <div style="margin-top:1rem; color:#617388; font-size:0.8rem;">⚡ Power BI Executive Dashboard (interactive) — click to drill through</div>
-      </div>
-      <div class="exec-metrics">
-        <div>Strategic initiatives: 8/12 on track</div>
-        <div>DSO: 43.2d ▼2.1d</div>
-        <div>ESG score: 86 ▲4</div>
-      </div>
-    </div>
-
-    <!-- Footer with global links -->
-    <div class="footer">
-      <div>
-        <a href="#">Quality</a><a href="#">R&D</a><a href="#">DMS</a><a href="#">BC/DR</a><a href="#">Executive</a>
-      </div>
-      <div>
-        <a href="https://cephasgm.github.io/CephasGM-ERP/index.html">← Back to Global Command Center</a> | PWA enabled · v2.8
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal for New NCR (example - others would be similar) -->
-  <div id="ncrModal" class="modal">
+  <!-- ============ MODAL ============ -->
+  <div class="modal" id="editModal" role="dialog" aria-modal="true">
     <div class="modal-content">
-      <h3 style="margin-bottom:1rem;">New Non-Conformance Report</h3>
-      <input id="ncrNewId" placeholder="NCR ID" value="NCR-">
-      <select id="ncrNewSource"><option>Inspection</option><option>Customer</option><option>Supplier</option></select>
-      <select id="ncrNewSeverity"><option>Critical</option><option>Major</option><option>Minor</option></select>
-      <input id="ncrNewDisp" placeholder="Disposition">
-      <div class="modal-actions">
-        <button class="btn-primary" onclick="addNCR()">Create</button>
-        <button class="btn-outline" onclick="hideModal('ncrModal')">Cancel</button>
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">New Record</h2>
+        <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+      </div>
+      <form id="editForm" onsubmit="saveItem(event)">
+        <div class="modal-body">
+          <div id="formFields"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="deleteModal" role="dialog" aria-modal="true">
+    <div class="modal-content" style="max-width:420px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirm Delete</h2>
+        <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-muted);font-size:0.88rem;">Are you sure you want to delete this record? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Flatpickr initialization
-    flatpickr("#startDate", { defaultDate: "2026-02-01", dateFormat: "Y-m-d" });
-    flatpickr("#endDate", { defaultDate: "2026-02-21", dateFormat: "Y-m-d" });
-    
-    document.getElementById('applyDateBtn').addEventListener('click', function() {
-      const start = document.getElementById('startDate').value;
-      const end = document.getElementById('endDate').value;
-      // In production: refresh all Power BI reports and table data based on new range
-      alert(`Date range applied: ${start} to ${end}. All modules updated.`);
+  /* =========================================================
+     CephasGM ERP — Quality & Innovation Module v4.0
+     Empty-state on first load. Data persisted to localStorage.
+     ========================================================= */
+
+  const TAB_META = {
+    dashboard: ['Quality & Innovation Dashboard', 'Overview of quality, R&D, documents, and business continuity'],
+    ncr:       ['Non-Conformance Reports',        'Quality issues tracked through disposition'],
+    audits:    ['Audits',                         'Internal and external audit schedule'],
+    findings:  ['Audit Findings',                 'Findings and corrective actions'],
+    rd:        ['R&D Projects',                   'Research and development pipeline'],
+    patents:   ['Patents',                        'Intellectual property portfolio'],
+    dms:       ['Document Management',            'Controlled documents and version history'],
+    bcdr:      ['Business Continuity Risks',      'BC/DR risk register'],
+    drills:    ['Continuity Drills',              'Continuity exercise log']
+  };
+
+  /* ---------- STATE ---------- */
+  let qData = loadData();
+  let activeTab = 'dashboard';
+  let charts = {};
+  let currentEditType = null;
+  let deleteType = null;
+  let deleteId = null;
+
+  function loadData() {
+    const saved = localStorage.getItem('cephasgm_quality_data');
+    if (saved) return JSON.parse(saved);
+    return {
+      ncr: [],
+      audits: [],
+      findings: [],
+      rd: [],
+      patents: [],
+      dms: [],
+      bcdr: [],
+      drills: [],
+      nextIds: { ncr: 1, audit: 1, finding: 1, rd: 1, patent: 1, dms: 1, bcdr: 1, drill: 1 }
+    };
+  }
+  function saveData() {
+    localStorage.setItem('cephasgm_quality_data', JSON.stringify(qData));
+  }
+
+  /* ---------- HELPERS ---------- */
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+
+  function emptyRow(cols, message, icon = 'fa-inbox') {
+    return `<tr><td colspan="${cols}" class="empty-state"><i class="fas ${icon}"></i>${message}</td></tr>`;
+  }
+  function notify(msg, type = 'info') {
+    const n = document.createElement('div');
+    n.className = `notification ${type}`;
+    n.textContent = msg;
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 3200);
+  }
+  function badgeForStatus(status) {
+    const s = (status || '').toLowerCase();
+    if (s.includes('closed') || s.includes('approved') || s.includes('complete') || s.includes('active') || s.includes('granted') || s.includes('passed')) return 'success';
+    if (s.includes('open') || s.includes('progress') || s.includes('pending') || s.includes('scheduled')) return 'warning';
+    if (s.includes('rejected') || s.includes('failed') || s.includes('overdue') || s.includes('expired') || s.includes('critical')) return 'danger';
+    if (s.includes('expiring')) return 'warning';
+    return 'gray';
+  }
+  function badgeForSeverity(sev) {
+    const s = (sev || '').toLowerCase();
+    if (s.includes('critical')) return 'danger';
+    if (s.includes('major') || s.includes('high')) return 'warning';
+    if (s.includes('minor') || s.includes('low')) return 'success';
+    return 'info';
+  }
+
+  /* ---------- BOOT ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNav();
+    setupMobileMenu();
+    setupAddButton();
+    renderAll();
+    initCharts();
+  });
+
+  function setupNav() {
+    $$('.nav-link[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
     });
+  }
+  function setupMobileMenu() {
+    const toggle = $('#mobileMenuToggle');
+    const sidebar = $('#qltySidebar');
+    const overlay = $('#sidebarOverlay');
+    toggle.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('active');
+      overlay.classList.toggle('active', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  }
+  function setupAddButton() {
+    const btn = $('#addRecordBtn');
+    if (btn) {
+      btn.onclick = () => openAddModal();
+      updateAddButtonLabel();
+    }
+  }
+  function updateAddButtonLabel() {
+    const btn = $('#addRecordBtn');
+    if (!btn) return;
+    const type = inferTypeFromTab(activeTab);
+    const labels = {
+      ncr:     'New NCR',
+      audit:   'Schedule Audit',
+      finding: 'New Finding',
+      rd:      'New Project',
+      patent:  'Add Patent',
+      dms:     'Upload Document',
+      bcdr:    'Add Risk',
+      drill:   'Log Drill'
+    };
+    btn.innerHTML = `<i class="fas fa-plus"></i> ${labels[type] || 'New Record'}`;
+  }
 
-    // Modal controls
-    function showModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function hideModal(id) { document.getElementById(id).style.display = 'none'; }
+  function switchTab(tab) {
+    activeTab = tab;
+    $$('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.tab === tab));
+    $$('.tab-content').forEach(c => c.classList.toggle('active', c.id === `${tab}-tab`));
+    const meta = TAB_META[tab] || TAB_META.dashboard;
+    $('#pageTitle').innerHTML = `<i class="fas fa-medal"></i> ${meta[0]}`;
+    $('#pageSubtitle').textContent = meta[1];
+    updateAddButtonLabel();
+    const sidebar = $('#qltySidebar');
+    if (sidebar.classList.contains('active')) {
+      sidebar.classList.remove('active');
+      $('#sidebarOverlay').classList.remove('active');
+      $('#mobileMenuToggle').setAttribute('aria-expanded', 'false');
+    }
+  }
+  window.switchTab = switchTab;
 
-    // CRUD operations
-    function deleteRow(btn) { if(confirm('Confirm deletion?')) btn.closest('tr').remove(); }
-    function editRow(btn) { 
-      let row = btn.closest('tr');
-      let cells = row.querySelectorAll('td');
-      for(let i=0; i<cells.length-1; i++) {
-        let val = cells[i].innerText;
-        let input = document.createElement('input');
-        input.value = val;
-        input.style.width = '80px';
-        cells[i].innerHTML = '';
-        cells[i].appendChild(input);
+  /* ---------- RENDER ALL ---------- */
+  function renderAll() {
+    renderDashboard();
+    renderNcr();
+    renderAudits();
+    renderFindings();
+    renderRd();
+    renderPatents();
+    renderDms();
+    renderBcdr();
+    renderDrills();
+    refreshCharts();
+  }
+
+  /* ---------- DASHBOARD ---------- */
+  function renderDashboard() {
+    const ncr = qData.ncr;
+    const rd = qData.rd;
+    const dms = qData.dms;
+    const bcdr = qData.bcdr;
+
+    const criticalCount = ncr.filter(n => (n.severity || '').toLowerCase() === 'critical').length;
+    const ncrRate = ncr.length ? ((criticalCount / ncr.length) * 100).toFixed(1) : null;
+
+    const completed = rd.filter(r => (r.status || '').toLowerCase() === 'completed').length;
+    const rdSuccess = rd.length ? Math.round((completed / rd.length) * 100) : null;
+
+    const today = new Date();
+    const soon = new Date(today.getTime() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const docsExpiring = dms.filter(d => d.expiry && d.expiry <= soon).length;
+
+    const tested = bcdr.filter(b => (b.status || '').toLowerCase().includes('tested')).length;
+    const readiness = bcdr.length ? Math.round((tested / bcdr.length) * 100) : null;
+
+    $('#ncrRate').textContent = ncrRate !== null ? ncrRate + '%' : '—';
+    $('#rdSuccess').textContent = rdSuccess !== null ? rdSuccess + '%' : '—';
+    $('#docsExpiring').textContent = dms.length ? docsExpiring : '—';
+    $('#bcdrReadiness').textContent = readiness !== null ? readiness + '%' : '—';
+
+    const body = $('#recentNcrBody');
+    const recent = [...ncr].slice(-5).reverse();
+    if (!recent.length) {
+      body.innerHTML = emptyRow(6, 'No non-conformances logged yet — quality is looking good.', 'fa-triangle-exclamation');
+    } else {
+      body.innerHTML = recent.map(n => `
+        <tr>
+          <td>${n.ncrId}</td>
+          <td>${n.source || '—'}</td>
+          <td><span class="badge badge-${badgeForSeverity(n.severity)}">${n.severity || '—'}</span></td>
+          <td>${n.disposition || '—'}</td>
+          <td><span class="badge badge-${badgeForStatus(n.status)}">${n.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('ncr', ${n.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+  }
+
+  /* ---------- NCR ---------- */
+  function renderNcr() {
+    const body = $('#ncrBody');
+    if (!qData.ncr.length) {
+      body.innerHTML = emptyRow(7, 'No non-conformances yet — raise one when a quality issue occurs.', 'fa-triangle-exclamation');
+      return;
+    }
+    body.innerHTML = qData.ncr.map(n => `
+      <tr>
+        <td>${n.ncrId}</td>
+        <td>${n.source || '—'}</td>
+        <td><span class="badge badge-${badgeForSeverity(n.severity)}">${n.severity || '—'}</span></td>
+        <td>${n.disposition || '—'}</td>
+        <td>${n.owner || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(n.status)}">${n.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('ncr', ${n.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- AUDITS ---------- */
+  function renderAudits() {
+    const body = $('#auditsBody');
+    if (!qData.audits.length) {
+      body.innerHTML = emptyRow(7, 'No audits scheduled yet.', 'fa-clipboard-check');
+      return;
+    }
+    body.innerHTML = qData.audits.map(a => `
+      <tr>
+        <td>${a.auditId}</td>
+        <td>${a.type || '—'}</td>
+        <td>${a.scope || '—'}</td>
+        <td>${a.scheduledDate || '—'}</td>
+        <td>${a.lead || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(a.status)}">${a.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('audit', ${a.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- FINDINGS ---------- */
+  function renderFindings() {
+    const body = $('#findingsBody');
+    if (!qData.findings.length) {
+      body.innerHTML = emptyRow(7, 'No findings recorded yet.', 'fa-magnifying-glass');
+      return;
+    }
+    body.innerHTML = qData.findings.map(f => `
+      <tr>
+        <td>${f.title}</td>
+        <td>${f.audit || '—'}</td>
+        <td><span class="badge badge-${badgeForSeverity(f.severity)}">${f.severity || '—'}</span></td>
+        <td>${f.dueDate || '—'}</td>
+        <td>${f.owner || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(f.status)}">${f.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('finding', ${f.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- R&D ---------- */
+  function renderRd() {
+    const body = $('#rdBody');
+    if (!qData.rd.length) {
+      body.innerHTML = emptyRow(6, 'No R&D projects yet — start a project to track innovation.', 'fa-flask');
+      return;
+    }
+    body.innerHTML = qData.rd.map(r => `
+      <tr>
+        <td>${r.name}</td>
+        <td>${r.phase || '—'}</td>
+        <td>${r.budget ? '$' + Number(r.budget).toLocaleString() : '—'}</td>
+        <td>${r.lead || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(r.status)}">${r.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('rd', ${r.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- PATENTS ---------- */
+  function renderPatents() {
+    const body = $('#patentsBody');
+    if (!qData.patents.length) {
+      body.innerHTML = emptyRow(7, 'No patents registered yet.', 'fa-certificate');
+      return;
+    }
+    body.innerHTML = qData.patents.map(p => `
+      <tr>
+        <td>${p.patentNumber}</td>
+        <td>${p.title}</td>
+        <td>${p.project || '—'}</td>
+        <td>${p.filedDate || '—'}</td>
+        <td>${p.grantedDate || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(p.status)}">${p.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('patent', ${p.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- DMS ---------- */
+  function renderDms() {
+    const body = $('#dmsBody');
+    if (!qData.dms.length) {
+      body.innerHTML = emptyRow(6, 'No documents yet — upload controlled documents to begin.', 'fa-folder-open');
+      return;
+    }
+    body.innerHTML = qData.dms.map(d => {
+      let status = d.status || 'Active';
+      if (d.expiry) {
+        const today = new Date();
+        const expiry = new Date(d.expiry);
+        const days = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
+        if (days < 0) status = 'Expired';
+        else if (days < 60) status = 'Expiring';
       }
-      btn.innerText = '✓';
-      btn.onclick = function() { saveEditRow(row); };
-    }
+      return `
+        <tr>
+          <td>${d.name}</td>
+          <td>${d.version || '—'}</td>
+          <td>${d.owner || '—'}</td>
+          <td>${d.expiry || '—'}</td>
+          <td><span class="badge badge-${badgeForStatus(status)}">${status}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('dms', ${d.id})" title="Delete"></i>
+          </td>
+        </tr>`;
+    }).join('');
+  }
 
-    function saveEditRow(row) {
-      // collect values and replace with text
-    }
+  function filterDms() {
+    const q = ($('#dmsSearch')?.value || '').toLowerCase();
+    const rows = $$('#dmsBody tr');
+    rows.forEach(r => {
+      r.style.display = q && !r.textContent.toLowerCase().includes(q) ? 'none' : '';
+    });
+  }
+  window.filterDms = filterDms;
 
-    function addNCR() {
-      let id = document.getElementById('ncrNewId').value;
-      let src = document.getElementById('ncrNewSource').value;
-      let sev = document.getElementById('ncrNewSeverity').value;
-      let disp = document.getElementById('ncrNewDisp').value;
-      let tbody = document.querySelector('#ncrTable tbody');
-      let row = tbody.insertRow();
-      let sevClass = sev=='Critical'?'badge-critical':(sev=='Major'?'badge-major':'badge-minor');
-      row.innerHTML = `<td>${id}</td><td>${src}</td><td><span class="badge ${sevClass}">${sev}</span></td><td>${disp}</td><td>Open</td><td><button class="icon-btn" onclick="editRow(this)">✎</button><button class="icon-btn" onclick="deleteRow(this)">🗑</button></td>`;
-      hideModal('ncrModal');
+  /* ---------- BC/DR ---------- */
+  function renderBcdr() {
+    const body = $('#bcdrBody');
+    if (!qData.bcdr.length) {
+      body.innerHTML = emptyRow(6, 'No continuity risks registered yet.', 'fa-shield-heart');
+      return;
     }
+    body.innerHTML = qData.bcdr.map(b => `
+      <tr>
+        <td>${b.risk}</td>
+        <td>${b.rto || '—'}</td>
+        <td>${b.rpo || '—'}</td>
+        <td>${b.owner || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(b.status)}">${b.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('bcdr', ${b.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
 
-    // Export CSV
-    function exportTable(tableId) {
-      let csv = [];
-      let rows = document.querySelectorAll(`#${tableId} tr`);
-      for (let row of rows) {
-        let cols = row.querySelectorAll('td, th');
-        let rowArr = [];
-        for (let col of cols) rowArr.push(col.innerText);
-        csv.push(rowArr.join(','));
+  /* ---------- DRILLS ---------- */
+  function renderDrills() {
+    const body = $('#drillsBody');
+    if (!qData.drills.length) {
+      body.innerHTML = emptyRow(6, 'No continuity drills logged yet.', 'fa-vial-circle-check');
+      return;
+    }
+    body.innerHTML = qData.drills.map(d => `
+      <tr>
+        <td>${d.name}</td>
+        <td>${d.risk || '—'}</td>
+        <td>${d.date || '—'}</td>
+        <td>${d.duration || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(d.result)}">${d.result || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('drill', ${d.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- CHARTS ---------- */
+  function initCharts() {
+    refreshCharts();
+  }
+
+  function refreshCharts() {
+    const hasNcr = qData.ncr.length > 0;
+    const hasRd = qData.rd.length > 0;
+
+    const showEmpty = (canvasId, emptyId, has) => {
+      const c = document.getElementById(canvasId);
+      const e = document.getElementById(emptyId);
+      if (c) c.style.display = has ? 'block' : 'none';
+      if (e) e.style.display = has ? 'none' : 'flex';
+    };
+
+    showEmpty('ncrSeverityChart', 'ncrSeverityChartEmpty', hasNcr);
+    showEmpty('rdPhaseChart', 'rdPhaseChartEmpty', hasRd);
+
+    Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} });
+    charts = {};
+
+    if (hasNcr) {
+      const ctx = document.getElementById('ncrSeverityChart')?.getContext('2d');
+      if (ctx) {
+        const bySeverity = {};
+        qData.ncr.forEach(n => {
+          const k = n.severity || 'Other';
+          bySeverity[k] = (bySeverity[k] || 0) + 1;
+        });
+        charts.ncr = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: Object.keys(bySeverity),
+            datasets: [{
+              label: 'NCRs',
+              data: Object.values(bySeverity),
+              backgroundColor: '#2563eb',
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
       }
-      let blob = new Blob([csv.join('\n')], {type: 'text/csv'});
-      let a = document.createElement('a');
-      a.href = URL.createObjectURL(blob); a.download = tableId+'.csv'; a.click();
     }
 
-    function importData(module) { alert(`Import ${module} data: file upload dialog`); }
-    function saveModule(module) { alert(`Changes saved to ${module} (API call)`); }
-    function refreshPowerBI(module) { alert(`Refreshing Power BI ${module} report`); }
-    function exportDashboard() { alert('Exporting executive dashboard as PDF'); }
-    function searchDMS() {
-      let input = document.getElementById('dmsSearch').value.toLowerCase();
-      let rows = document.querySelectorAll('#dmsTable tbody tr');
-      rows.forEach(r => { r.style.display = r.innerText.toLowerCase().includes(input) ? '' : 'none'; });
+    if (hasRd) {
+      const ctx = document.getElementById('rdPhaseChart')?.getContext('2d');
+      if (ctx) {
+        const byPhase = {};
+        qData.rd.forEach(r => {
+          const k = r.phase || 'Other';
+          byPhase[k] = (byPhase[k] || 0) + 1;
+        });
+        charts.rd = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: Object.keys(byPhase),
+            datasets: [{
+              data: Object.values(byPhase),
+              backgroundColor: ['#2563eb','#0f7b5a','#d97706','#8b5cf6','#ec4899']
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } }
+          }
+        });
+      }
     }
+  }
+
+  /* ---------- ADD MODAL ---------- */
+  function openAddModal(type) {
+    type = type || inferTypeFromTab(activeTab);
+    currentEditType = type;
+    $('#modalTitle').textContent = `New ${capitalize(type)}`;
+    $('#formFields').innerHTML = formFor(type);
+    $('#editModal').classList.add('active');
+  }
+  window.openAddModal = openAddModal;
+
+  function inferTypeFromTab(tab) {
+    return ({
+      dashboard: 'ncr',
+      ncr:       'ncr',
+      audits:    'audit',
+      findings:  'finding',
+      rd:        'rd',
+      patents:   'patent',
+      dms:       'dms',
+      bcdr:      'bcdr',
+      drills:    'drill'
+    })[tab] || 'ncr';
+  }
+  function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  function formFor(type) {
+    if (type === 'ncr') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">NCR ID</label><input type="text" class="form-control" name="ncrId" placeholder="NCR-001" required></div>
+        <div class="form-group"><label class="form-label">Source</label>
+          <select class="form-control" name="source">
+            <option>Inspection</option><option>Customer</option><option>Supplier</option><option>Internal</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Severity</label>
+          <select class="form-control" name="severity">
+            <option>Minor</option><option>Major</option><option>Critical</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Disposition</label>
+          <select class="form-control" name="disposition">
+            <option>Rework</option><option>Use-As-Is</option><option>Scrap</option><option>Return to Supplier</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Owner</label><input type="text" class="form-control" name="owner"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Open</option><option>In Progress</option><option>Closed</option>
+          </select>
+        </div>
+      </div>`;
+
+    if (type === 'audit') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Audit ID</label><input type="text" class="form-control" name="auditId" placeholder="AUD-001" required></div>
+        <div class="form-group"><label class="form-label">Type</label>
+          <select class="form-control" name="type">
+            <option>Internal</option><option>External</option><option>Supplier</option><option>Certification</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Scope</label><input type="text" class="form-control" name="scope"></div>
+        <div class="form-group"><label class="form-label">Scheduled</label><input type="date" class="form-control" name="scheduledDate"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Lead</label><input type="text" class="form-control" name="lead"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Scheduled</option><option>In Progress</option><option>Complete</option>
+          </select>
+        </div>
+      </div>`;
+
+    if (type === 'finding') return `
+      <div class="form-group"><label class="form-label">Finding Title</label><input type="text" class="form-control" name="title" required></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Audit</label><input type="text" class="form-control" name="audit"></div>
+        <div class="form-group"><label class="form-label">Severity</label>
+          <select class="form-control" name="severity"><option>Minor</option><option>Major</option><option>Critical</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Due Date</label><input type="date" class="form-control" name="dueDate"></div>
+        <div class="form-group"><label class="form-label">Owner</label><input type="text" class="form-control" name="owner"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status"><option>Open</option><option>In Progress</option><option>Closed</option></select>
+      </div>`;
+
+    if (type === 'rd') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Project Name</label><input type="text" class="form-control" name="name" required></div>
+        <div class="form-group"><label class="form-label">Phase</label>
+          <select class="form-control" name="phase">
+            <option>Concept</option><option>Prototype</option><option>Pilot</option><option>Launch</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Budget (USD)</label><input type="number" class="form-control" name="budget" step="1000" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Lead</label><input type="text" class="form-control" name="lead"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status">
+          <option>Active</option><option>On Hold</option><option>Completed</option><option>Cancelled</option>
+        </select>
+      </div>`;
+
+    if (type === 'patent') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Patent Number</label><input type="text" class="form-control" name="patentNumber" required></div>
+        <div class="form-group"><label class="form-label">Title</label><input type="text" class="form-control" name="title" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Project</label><input type="text" class="form-control" name="project"></div>
+        <div class="form-group"><label class="form-label">Filed Date</label><input type="date" class="form-control" name="filedDate"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Granted Date</label><input type="date" class="form-control" name="grantedDate"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status"><option>Pending</option><option>Granted</option><option>Rejected</option><option>Expired</option></select>
+        </div>
+      </div>`;
+
+    if (type === 'dms') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Document Name</label><input type="text" class="form-control" name="name" required></div>
+        <div class="form-group"><label class="form-label">Version</label><input type="text" class="form-control" name="version" placeholder="e.g. v1"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Owner</label><input type="text" class="form-control" name="owner"></div>
+        <div class="form-group"><label class="form-label">Expiry Date</label><input type="date" class="form-control" name="expiry"></div>
+      </div>`;
+
+    if (type === 'bcdr') return `
+      <div class="form-group"><label class="form-label">Risk</label><input type="text" class="form-control" name="risk" placeholder="e.g. Cyber, Supply chain" required></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">RTO</label><input type="text" class="form-control" name="rto" placeholder="e.g. 2h"></div>
+        <div class="form-group"><label class="form-label">RPO</label><input type="text" class="form-control" name="rpo" placeholder="e.g. 15min"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Owner</label><input type="text" class="form-control" name="owner"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status"><option>Identified</option><option>Mitigating</option><option>Tested</option><option>Accepted</option></select>
+        </div>
+      </div>`;
+
+    if (type === 'drill') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Drill Name</label><input type="text" class="form-control" name="name" required></div>
+        <div class="form-group"><label class="form-label">Risk Tested</label><input type="text" class="form-control" name="risk"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-control" name="date"></div>
+        <div class="form-group"><label class="form-label">Duration</label><input type="text" class="form-control" name="duration" placeholder="e.g. 2h 30m"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Result</label>
+        <select class="form-control" name="result"><option>Passed</option><option>Partial</option><option>Failed</option></select>
+      </div>`;
+
+    return '<p style="color:var(--text-muted);font-size:0.85rem;">No form available for this record type.</p>';
+  }
+
+  function saveItem(e) {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const type = currentEditType;
+    if (!type) return;
+    const data = Object.fromEntries(f.entries());
+    addRecord(type, data);
+    closeModal('editModal');
+    renderAll();
+    notify('Saved successfully', 'success');
+  }
+  window.saveItem = saveItem;
+
+  function addRecord(type, data) {
+    if (type === 'ncr') {
+      qData.ncr.push({
+        id: qData.nextIds.ncr++,
+        ncrId: data.ncrId || `NCR-${String(qData.ncr.length + 1).padStart(3, '0')}`,
+        source: data.source || 'Inspection',
+        severity: data.severity || 'Minor',
+        disposition: data.disposition || '',
+        owner: data.owner || '',
+        status: data.status || 'Open'
+      });
+    }
+    else if (type === 'audit') {
+      qData.audits.push({
+        id: qData.nextIds.audit++,
+        auditId: data.auditId || `AUD-${String(qData.audits.length + 1).padStart(3, '0')}`,
+        type: data.type || 'Internal',
+        scope: data.scope || '',
+        scheduledDate: data.scheduledDate || '',
+        lead: data.lead || '',
+        status: data.status || 'Scheduled'
+      });
+    }
+    else if (type === 'finding') {
+      qData.findings.push({
+        id: qData.nextIds.finding++,
+        title: data.title, audit: data.audit || '',
+        severity: data.severity || 'Minor',
+        dueDate: data.dueDate || '',
+        owner: data.owner || '',
+        status: data.status || 'Open'
+      });
+    }
+    else if (type === 'rd') {
+      qData.rd.push({
+        id: qData.nextIds.rd++,
+        name: data.name, phase: data.phase || 'Concept',
+        budget: parseFloat(data.budget) || 0,
+        lead: data.lead || '',
+        status: data.status || 'Active'
+      });
+    }
+    else if (type === 'patent') {
+      qData.patents.push({
+        id: qData.nextIds.patent++,
+        patentNumber: data.patentNumber, title: data.title,
+        project: data.project || '',
+        filedDate: data.filedDate || '',
+        grantedDate: data.grantedDate || '',
+        status: data.status || 'Pending'
+      });
+    }
+    else if (type === 'dms') {
+      qData.dms.push({
+        id: qData.nextIds.dms++,
+        name: data.name, version: data.version || 'v1',
+        owner: data.owner || '',
+        expiry: data.expiry || '',
+        status: 'Active'
+      });
+    }
+    else if (type === 'bcdr') {
+      qData.bcdr.push({
+        id: qData.nextIds.bcdr++,
+        risk: data.risk, rto: data.rto || '', rpo: data.rpo || '',
+        owner: data.owner || '',
+        status: data.status || 'Identified'
+      });
+    }
+    else if (type === 'drill') {
+      qData.drills.push({
+        id: qData.nextIds.drill++,
+        name: data.name, risk: data.risk || '',
+        date: data.date || '',
+        duration: data.duration || '',
+        result: data.result || 'Passed'
+      });
+    }
+    saveData();
+  }
+
+  /* ---------- DELETE ---------- */
+  function openDelete(type, id) {
+    deleteType = type;
+    deleteId = id;
+    $('#deleteModal').classList.add('active');
+  }
+  window.openDelete = openDelete;
+
+  function confirmDelete() {
+    if (!deleteType || deleteId == null) return;
+    const map = {
+      ncr: 'ncr', audit: 'audits', finding: 'findings',
+      rd: 'rd', patent: 'patents', dms: 'dms',
+      bcdr: 'bcdr', drill: 'drills'
+    };
+    const key = map[deleteType];
+    if (key && qData[key]) {
+      qData[key] = qData[key].filter(x => String(x.id) !== String(deleteId));
+      saveData();
+      renderAll();
+      notify('Deleted', 'success');
+    }
+    closeModal('deleteModal');
+  }
+  window.confirmDelete = confirmDelete;
+
+  /* ---------- MODAL HELPERS ---------- */
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+  window.closeModal = closeModal;
+
+  /* ---------- EXPORT ---------- */
+  function exportTable(type) {
+    const map = {
+      ncr: 'ncr', audits: 'audits', findings: 'findings',
+      rd: 'rd', patents: 'patents', dms: 'dms',
+      bcdr: 'bcdr', drills: 'drills'
+    };
+    const key = map[type] || type;
+    const rows = qData[key];
+    if (!rows || !rows.length) { notify('No data to export', 'info'); return; }
+    const headers = Object.keys(rows[0]);
+    const csv = [headers.join(',')]
+      .concat(rows.map(r => headers.map(h => JSON.stringify(r[h] ?? '')).join(',')))
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${key}_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    notify('Exported successfully', 'success');
+  }
+  window.exportTable = exportTable;
+
+  function exportCurrentTab() {
+    const map = {
+      ncr: 'ncr', audits: 'audits', findings: 'findings',
+      rd: 'rd', patents: 'patents', dms: 'dms',
+      bcdr: 'bcdr', drills: 'drills'
+    };
+    const key = map[activeTab];
+    if (key) exportTable(key);
+    else notify('Nothing to export from this section', 'info');
+  }
+  window.exportCurrentTab = exportCurrentTab;
+
+  /* ---------- KEYBOARD ---------- */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+    }
+  });
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('modal')) e.target.classList.remove('active');
+  });
   </script>
 </body>
 </html>
