@@ -1,502 +1,2186 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legal & Compliance Management - CephasGM ERP</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
-    <style>
-        /* Root variables & base styles (kept original structure) */
-        :root { /* ... root variables remain unchanged ... */
-            --primary: #2563eb; --primary-dark: #1d4ed8; --secondary: #64748b; --success: #10b981;
-            --warning: #f59e0b; --error: #ef4444; --background: #f8fafc; --surface: #ffffff;
-            --text: #1e293b; --text-light: #64748b; --border: #e2e8f0;
-            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --legal-purple: #7c3aed; --legal-indigo: #4f46e5;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--background); color: var(--text); line-height: 1.6; }
-        .dashboard { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
-        .sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 2rem 1rem; position: fixed; width: 280px; height: 100vh; overflow-y: auto; z-index: 100; }
-        .logo { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; padding: 0 1rem; }
-        .logo-icon { width: 40px; height: 40px; background: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.25rem; }
-        .nav-section { margin-bottom: 2rem; }
-        .nav-title { font-size: 0.75rem; text-transform: uppercase; color: var(--text-light); margin-bottom: 1rem; padding: 0 1rem; letter-spacing: 0.5px; }
-        .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: 8px; color: var(--text-light); text-decoration: none; transition: all 0.2s; margin-bottom: 0.25rem; border: none; background: none; width: 100%; text-align: left; cursor: pointer; font-size: 0.95rem; position: relative; }
-        .nav-item:hover, .nav-item.active { background: var(--primary); color: white; }
-        .nav-icon { font-size: 1.25rem; width: 24px; text-align: center; }
-        .main-content { grid-column: 2; padding: 2rem; margin-left: 280px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
-        .header h1 { font-size: 1.875rem; font-weight: 700; }
-        .header-actions { display: flex; gap: 1rem; align-items: center; }
-        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); }
-        .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
-        .btn-secondary:hover { background: var(--background); }
-        .btn-legal { background: linear-gradient(135deg, var(--legal-purple), var(--legal-indigo)); color: white; }
-        .btn-legal:hover { background: linear-gradient(135deg, #6d28d9, #4338ca); }
-        .btn-success { background: var(--success); color: white; }
-        .btn-warning { background: var(--warning); color: white; }
-        .btn-danger { background: var(--error); color: white; }
-        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.875rem; }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        /* Stats, cards, grids - original styles plus additions */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .stat-card { background: var(--surface); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); text-align: center; box-shadow: var(--shadow); transition: transform 0.2s; }
-        .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-        .stat-number { font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
-        .stat-label { color: var(--text-light); font-size: 0.9rem; }
+  <!-- PWA Meta -->
+  <meta name="theme-color" content="#1a4c7a" id="theme-color-meta" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CephasGM ERP" />
 
-        /* Tab Navigation */
-        .upgraded-tabs { display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; flex-wrap: wrap; }
-        .tab-btn { padding: 0.75rem 1.5rem; background: none; border: none; border-radius: 8px 8px 0 0; color: var(--text-light); cursor: pointer; font-weight: 600; transition: all 0.2s; border-bottom: 3px solid transparent; }
-        .tab-btn:hover { color: var(--text); background: var(--background); }
-        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: rgba(37, 99, 235, 0.05); }
+  <title>Legal &amp; Compliance — CephasGM ERP</title>
 
-        /* Tab Content */
-        .tab-pane { display: none; }
-        .tab-pane.active { display: block; }
+  <meta name="description" content="CephasGM ERP Legal &amp; Compliance — Documents, compliance, risks, litigation, policies, and audits" />
+  <meta name="author" content="Cephas Gideon Mkama" />
+  <meta property="og:title" content="Legal &amp; Compliance — CephasGM ERP" />
+  <meta property="og:description" content="Complete legal and compliance management for CephasGM ERP" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cephasgm.github.io/CephasGM-ERP/legal.html" />
 
-        /* Data Tables */
-        .data-table-container { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; margin-bottom: 2rem; box-shadow: var(--shadow); }
-        .data-table { width: 100%; border-collapse: collapse; min-width: 800px; }
-        .data-table th { background: var(--background); font-weight: 600; color: var(--text-light); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .data-table th, .data-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
-        .data-table tbody tr:hover { background: var(--background); }
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
 
-        /* Cards for some sections */
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .info-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; box-shadow: var(--shadow); }
-        .card-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-        .card-icon { width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: linear-gradient(135deg, var(--primary), #3b82f6); color: white; }
-        .list-item { padding: 0.75rem 0; border-bottom: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
-        .list-item:last-child { border-bottom: none; }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        /* Status badges */
-        .badge { padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
-        .badge-success { background: #dcfce7; color: #166534; }
-        .badge-warning { background: #fef3c7; color: #92400e; }
-        .badge-info { background: #dbeafe; color: #1e40af; }
-        .badge-danger { background: #fecaca; color: #991b1b; }
-        .badge-secondary { background: var(--secondary); color: white; }
+  <style>
+    /* ============ DESIGN TOKENS ============ */
+    :root {
+      --bg:            #f4f6fa;
+      --surface:       #ffffff;
+      --surface-alt:   #fafbfd;
+      --border:        #e6e9f0;
+      --border-strong: #d3d9e5;
 
-        /* Modal styles */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
-        .modal.active { display: flex; }
-        .modal-content { background: var(--surface); padding: 2rem; border-radius: 12px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; }
-        .modal-close { position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; cursor: pointer; }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); }
-        .form-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; }
+      --text:          #0a1e3c;
+      --text-2:        #2c3e50;
+      --text-muted:    #5e6f8d;
+      --text-subtle:   #94a3b8;
 
-        /* Dark mode support */
-        .dark-mode { --background: #0f172a; --surface: #1e293b; --text: #f1f5f9; --text-light: #94a3b8; --border: #334155; }
+      --primary:       #1a4c7a;
+      --primary-600:   #0e3a5c;
+      --primary-soft:  #e8f0fa;
+      --accent:        #2563eb;
+      --accent-hover:  #1d4ed8;
+      --accent-soft:   #eff4ff;
 
-        /* Responsive */
-        @media (max-width: 1024px) { /* ... original responsive styles ... */ }
-        @media (max-width: 768px) { /* ... */ }
-        .mobile-nav-toggle { display: none; } /* Keep original */
-    </style>
+      --success:       #0f7b5a;
+      --warning:       #d97706;
+      --danger:        #c0392b;
+      --gold:          #b8860b;
+      --purple:        #7c3aed;
+
+      --radius-lg:     16px;
+      --radius:        12px;
+      --radius-sm:     8px;
+      --radius-pill:   999px;
+
+      --shadow-sm:     0 1px 2px rgba(10, 30, 60, 0.04);
+      --shadow:        0 2px 10px rgba(10, 30, 60, 0.06);
+      --shadow-lg:     0 12px 32px rgba(10, 30, 60, 0.10);
+
+      --max-width:     1440px;
+      --sidebar-w:     264px;
+    }
+
+    /* ============ RESET ============ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ============ PAGE BACKGROUND (ERP collage) ============ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        url('https://www.cio.com/wp-content/uploads/2025/03/272362-0-27498000-1741330535-enterprise_resource_planning-ERP.jpg?quality=50&strip=all&w=1024'),
+        url('https://img.magnific.com/free-vector/gradient-erp-illustration_23-2149379179.jpg'),
+        url('https://www.aimcom.com/wp-content/uploads/2026/01/erp-systems-integrating-business-operations-and-supply-chain-processes-1.png'),
+        url('https://img.magnific.com/free-vector/hand-drawn-flat-design-erp-illustration_23-2149383351.jpg?semt=ais_hybrid&w=740&q=80');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-blend-mode: overlay, soft-light, luminosity, multiply;
+      opacity: 0.07;
+      z-index: -1;
+      pointer-events: none;
+      filter: saturate(0.65) contrast(1.05);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    input, select, textarea { font-family: inherit; }
+    img { max-width: 100%; display: block; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ============ APP WRAPPER ============ */
+    .app {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 1.25rem 2rem 3rem;
+    }
+
+    /* ============ TOP BAR ============ */
+    .top-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.95rem 1.35rem;
+      display: flex;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .brand-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, var(--primary) 0%, #2c5a8a 55%, #3d6fa0 100%);
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      box-shadow: 0 4px 14px rgba(26, 76, 122, 0.28);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .brand-tab:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(26, 76, 122, 0.35);
+    }
+    .brand-tab i { font-size: 0.82rem; opacity: 0.9; }
+
+    /* ============ LAYOUT ============ */
+    .lg-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============ SIDEBAR ============ */
+    .lg-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: sticky;
+      top: 1rem;
+      max-height: calc(100vh - 2rem);
+      overflow-y: auto;
+      padding: 0.75rem 0.6rem 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .lg-sidebar::-webkit-scrollbar { width: 6px; }
+    .lg-sidebar::-webkit-scrollbar-thumb {
+      background: var(--border-strong); border-radius: 6px;
+    }
+
+    .nav-section { margin-bottom: 0.5rem; }
+    .nav-section-title {
+      padding: 0.75rem 0.75rem 0.4rem;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-subtle);
+      font-weight: 700;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.84rem;
+      transition: background 0.12s, color 0.12s;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 100%;
+      text-align: left;
+    }
+    .nav-link i {
+      width: 16px; text-align: center;
+      font-size: 0.82rem; color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .nav-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .nav-link:hover i { color: var(--accent); }
+    .nav-link.active {
+      background: var(--accent-soft); color: var(--accent); font-weight: 600;
+    }
+    .nav-link.active i { color: var(--accent); }
+
+    /* ============ MAIN ============ */
+    .lg-main { min-width: 0; }
+
+    .lg-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .lg-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text);
+    }
+    .lg-title i { color: var(--primary); font-size: 1.05rem; }
+    .lg-subtitle {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .lg-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+
+    /* ============ BUTTONS ============ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover); border-color: var(--accent-hover);
+    }
+    .btn-success {
+      background: var(--success); color: #fff; border-color: var(--success);
+    }
+    .btn-success:hover { background: #0b6349; border-color: #0b6349; }
+    .btn-secondary {
+      background: var(--surface); color: var(--text); border-color: var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--border-strong); }
+    .btn-danger {
+      background: var(--danger); color: #fff; border-color: var(--danger);
+    }
+    .btn-danger:hover { background: #a13024; border-color: #a13024; }
+    .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.72rem; }
+
+    /* ============ TAB CONTENT ============ */
+    .tab-content { display: none; }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============ CARDS ============ */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.15rem;
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-title i { color: var(--primary); font-size: 0.85rem; }
+
+    /* ============ STATS GRID ============ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.25rem;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    }
+    .stat-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .stat-title {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    .stat-icon {
+      width: 28px; height: 28px;
+      display: grid; place-items: center;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+    .stat-change {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ============ CHARTS ============ */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      height: 300px;
+      position: relative;
+    }
+    .chart-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--text-subtle);
+      font-size: 0.83rem;
+    }
+    .chart-empty i { font-size: 1.5rem; opacity: 0.5; }
+
+    /* ============ TABLES ============ */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 1.5rem;
+    }
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding: 1.1rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-toolbar h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .table-toolbar-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    .data-table th {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover { background: var(--surface-alt); }
+    .data-table .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-subtle);
+    }
+    .data-table .empty-state i {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 0.55rem;
+      opacity: 0.5;
+    }
+
+    .table-actions { display: flex; gap: 0.35rem; }
+    .action-icon {
+      cursor: pointer;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      transition: background 0.12s, color 0.12s;
+    }
+    .action-icon:hover { background: var(--accent-soft); color: var(--accent); }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .badge-success { background: #dcfce7; color: #166534; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger  { background: #fee2e2; color: #991b1b; }
+    .badge-info    { background: var(--accent-soft); color: var(--accent); }
+    .badge-gray    { background: #f1f5f9; color: #475569; }
+    .badge-purple  { background: #f3e8ff; color: #6b21a8; }
+
+    /* ============ INFO CARDS (Privacy) ============ */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .info-card h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .info-card h4 i { color: var(--primary); font-size: 0.85rem; }
+    .info-card .metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.83rem;
+    }
+    .info-card .metric:last-child { border-bottom: none; }
+    .info-card .metric span:first-child {
+      color: var(--text-muted);
+    }
+    .info-card .metric span:last-child {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ============ FORMS ============ */
+    .form-group { margin-bottom: 1.15rem; }
+    .form-label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: var(--text-2);
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.85rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+
+    /* ============ MODAL ============ */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      padding: 1rem;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 720px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalSlideIn 0.25s ease;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      padding: 1.15rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1;
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+    }
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      width: 34px; height: 34px;
+      display: grid; place-items: center;
+      border-radius: var(--radius-sm);
+      transition: background 0.12s, color 0.12s;
+    }
+    .modal-close:hover { background: var(--accent-soft); color: var(--accent); }
+    .modal-body { padding: 1.35rem; }
+    .modal-footer {
+      padding: 1rem 1.35rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.55rem;
+      position: sticky;
+      bottom: 0;
+      background: var(--surface);
+      border-bottom-left-radius: var(--radius-lg);
+      border-bottom-right-radius: var(--radius-lg);
+    }
+
+    /* ============ NOTIFICATION ============ */
+    .notification {
+      position: fixed;
+      top: 20px; right: 20px;
+      padding: 0.85rem 1.25rem;
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      font-size: 0.83rem;
+      font-weight: 500;
+      animation: slideIn 0.25s ease;
+      max-width: 400px;
+    }
+    .notification.success { background: var(--success); }
+    .notification.error   { background: var(--danger); }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ============ FOOTER ============ */
+    .app-footer {
+      margin-top: 2.5rem;
+      padding: 1.4rem 0 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .app-footer strong { color: var(--text-2); font-weight: 600; }
+
+    /* ============ MOBILE ============ */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem; left: 1rem;
+      background: var(--primary); color: #fff;
+      border-radius: var(--radius-sm);
+      width: 42px; height: 42px;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: var(--shadow);
+    }
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.5);
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+    .sidebar-overlay.active { display: block; }
+
+    @media (max-width: 960px) {
+      .app { padding: 1rem; padding-top: 4rem; }
+      .lg-layout { grid-template-columns: 1fr; }
+      .lg-sidebar {
+        position: fixed;
+        top: 0; left: 0;
+        width: var(--sidebar-w);
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        border: none;
+        border-right: 1px solid var(--border);
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        z-index: 1000;
+      }
+      .lg-sidebar.active { transform: translateX(0); }
+      .mobile-menu-toggle { display: flex; }
+    }
+    @media (max-width: 640px) {
+      .stats-grid, .charts-grid, .info-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .lg-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
 </head>
 <body>
-    <button class="mobile-nav-toggle" id="mobileNavToggle"><i class="fas fa-bars"></i></button>
-    <div class="dashboard">
-        <!-- Sidebar (Unchanged) -->
-        <nav class="sidebar" id="sidebar"> <!-- ... sidebar content from original ... --> 
-            <div class="logo"><div class="logo-icon">CG</div><div><div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div><div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div></div></div>
-            <div class="nav-section"><div class="nav-title">Legal & Compliance</div><a href="legal.html" class="nav-item active"><span class="nav-icon">⚖️</span>Legal Compliance</a><a href="safety.html" class="nav-item"><span class="nav-icon">🛡️</span>Health & Safety</a><a href="hr.html" class="nav-item"><span class="nav-icon">👥</span>HR Management</a></div>
-            <div class="nav-section"><div class="nav-title">Operations</div><a href="index.html" class="nav-item"><span class="nav-icon">📊</span>Dashboard</a><a href="finance.html" class="nav-item"><span class="nav-icon">💳</span>Finance</a><a href="admin.html" class="nav-item"><span class="nav-icon">⚙️</span>System Admin</a><a href="payroll.html" class="nav-item"><span class="nav-icon">💰</span>Payroll</a></div>
-            <div class="nav-section"><div class="nav-title">User</div><div class="nav-item"><span class="nav-icon">👤</span><span id="userRole">Legal Counsel</span></div><button class="nav-item" id="logoutBtn"><span class="nav-icon">🚪</span>Logout</button></div>
+  <a href="#main-content" class="sr-only">Skip to main content</a>
+
+  <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu" aria-expanded="false">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="app">
+    <!-- TOP BAR -->
+    <header class="top-bar">
+      <a href="index.html" class="brand-tab" aria-label="CephasGM ERP — return to homepage">
+        <i class="fas fa-bolt" aria-hidden="true"></i>
+        CephasGM ERP
+      </a>
+    </header>
+
+    <div class="lg-layout">
+      <!-- SIDEBAR -->
+      <aside class="lg-sidebar" id="lgSidebar" aria-label="Legal navigation">
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <div class="nav-section-title">Overview</div>
+            <button class="nav-link active" data-tab="dashboard">
+              <i class="fas fa-chart-line"></i><span>Dashboard</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Documents</div>
+            <button class="nav-link" data-tab="documents">
+              <i class="fas fa-file-contract"></i><span>Documents</span>
+            </button>
+            <button class="nav-link" data-tab="policies">
+              <i class="fas fa-book"></i><span>Policies</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Compliance</div>
+            <button class="nav-link" data-tab="compliance">
+              <i class="fas fa-clipboard-check"></i><span>Compliance</span>
+            </button>
+            <button class="nav-link" data-tab="audits">
+              <i class="fas fa-clipboard-list"></i><span>Audits</span>
+            </button>
+            <button class="nav-link" data-tab="privacy">
+              <i class="fas fa-lock"></i><span>Privacy</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Risk</div>
+            <button class="nav-link" data-tab="risks">
+              <i class="fas fa-triangle-exclamation"></i><span>Risk Register</span>
+            </button>
+            <button class="nav-link" data-tab="litigation">
+              <i class="fas fa-gavel"></i><span>Litigation</span>
+            </button>
+            <button class="nav-link" data-tab="intelligence">
+              <i class="fas fa-globe"></i><span>Intelligence</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Other Modules</div>
+            <a href="safety.html" class="nav-link">
+              <i class="fas fa-shield-heart"></i><span>Safety</span>
+            </a>
+            <a href="hr.html" class="nav-link">
+              <i class="fas fa-user-tie"></i><span>HR</span>
+            </a>
+            <a href="finance.html" class="nav-link">
+              <i class="fas fa-chart-pie"></i><span>Finance</span>
+            </a>
+            <a href="quality.html" class="nav-link">
+              <i class="fas fa-medal"></i><span>Quality</span>
+            </a>
+            <a href="admin.html" class="nav-link">
+              <i class="fas fa-sliders"></i><span>Admin</span>
+            </a>
+          </div>
         </nav>
+      </aside>
 
-        <main class="main-content">
-            <!-- Header -->
-            <div class="header">
-                <div><h1>Legal & Compliance Management</h1><div style="color: var(--text-light);">Enterprise-grade compliance with full CRUD capabilities</div></div>
-                <div class="header-actions">
-                    <div class="language-selector"><span>Language:</span><select id="languageSelect"><option value="en">English</option><option value="sw">Swahili</option></select></div>
-                    <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
-                    <button class="btn btn-legal" id="globalAddBtn"><i class="fas fa-plus"></i> New Record</button>
-                </div>
+      <!-- MAIN -->
+      <main class="lg-main" id="main-content" tabindex="-1">
+        <!-- Header -->
+        <header class="lg-header">
+          <div>
+            <h1 class="lg-title" id="pageTitle">
+              <i class="fas fa-scale-balanced"></i>
+              Legal &amp; Compliance Dashboard
+            </h1>
+            <p class="lg-subtitle" id="pageSubtitle">
+              Overview of documents, compliance, risk, and litigation
+            </p>
+          </div>
+          <div class="lg-actions">
+            <button class="btn btn-secondary" onclick="exportCurrentTab()">
+              <i class="fas fa-download"></i> Export
+            </button>
+            <button class="btn btn-primary" id="addRecordBtn" onclick="openAddModal()">
+              <i class="fas fa-plus"></i> New Record
+            </button>
+          </div>
+        </header>
+
+        <!-- ============ DASHBOARD ============ -->
+        <div id="dashboard-tab" class="tab-content active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Overall Compliance</span>
+                <span class="stat-icon"><i class="fas fa-clipboard-check"></i></span>
+              </div>
+              <div class="stat-value" id="overallCompliance">—</div>
+              <div class="stat-change">No data yet</div>
             </div>
-
-            <!-- Stats Overview (updated dynamically) -->
-            <div class="stats-grid" id="statsOverview">
-                <div class="stat-card"><div class="stat-number" id="statCompliance">89%</div><div class="stat-label">Overall Compliance</div></div>
-                <div class="stat-card"><div class="stat-number" id="statRegulations">24</div><div class="stat-label">Active Regulations</div></div>
-                <div class="stat-card"><div class="stat-number" id="statAudits">5</div><div class="stat-label">Pending Audits</div></div>
-                <div class="stat-card"><div class="stat-number" id="statDocuments">156</div><div class="stat-label">Legal Documents</div></div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Active Regulations</span>
+                <span class="stat-icon"><i class="fas fa-gavel"></i></span>
+              </div>
+              <div class="stat-value" id="activeRegulations">—</div>
+              <div class="stat-change">No data yet</div>
             </div>
-
-            <!-- Upgraded Tab Navigation -->
-            <div class="upgraded-tabs">
-                <button class="tab-btn active" data-tab="documents">📄 Documents</button>
-                <button class="tab-btn" data-tab="compliance">📋 Compliance</button>
-                <button class="tab-btn" data-tab="risks">⚠️ Risks</button>
-                <button class="tab-btn" data-tab="litigation">⚖️ Litigation</button>
-                <button class="tab-btn" data-tab="policies">📜 Policies</button>
-                <button class="tab-btn" data-tab="audits">🔍 Audits</button>
-                <button class="tab-btn" data-tab="privacy">🔐 Privacy</button>
-                <button class="tab-btn" data-tab="intelligence">🌍 Intelligence</button>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Pending Audits</span>
+                <span class="stat-icon"><i class="fas fa-clipboard-list"></i></span>
+              </div>
+              <div class="stat-value" id="pendingAudits">—</div>
+              <div class="stat-change">No data yet</div>
             </div>
-
-            <!-- Tab: Documents (Comprehensive implementation) -->
-            <div id="tab-documents" class="tab-pane active">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h2><i class="fas fa-file-contract"></i> Document & Contract Register</h2>
-                    <button class="btn btn-primary btn-sm" onclick="openModal('documentModal', null)"><i class="fas fa-plus"></i> New Document</button>
-                </div>
-                <div class="data-table-container">
-                    <table class="data-table" id="documentsTable">
-                        <thead>
-                            <tr>
-                                <th>ID</th><th>Name</th><th>Category</th><th>Sub-Category</th><th>Version</th><th>Owner</th><th>Effective</th><th>Expiry</th><th>Status</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="documentsTableBody">
-                            <!-- populated by JS -->
-                        </tbody>
-                    </table>
-                </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Legal Documents</span>
+                <span class="stat-icon"><i class="fas fa-file-contract"></i></span>
+              </div>
+              <div class="stat-value" id="legalDocuments">—</div>
+              <div class="stat-change">No data yet</div>
             </div>
+          </div>
 
-            <!-- Tab: Compliance -->
-            <div id="tab-compliance" class="tab-pane">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h2><i class="fas fa-clipboard-check"></i> Compliance Obligations</h2>
-                    <button class="btn btn-primary btn-sm" onclick="openModal('complianceModal', null)"><i class="fas fa-plus"></i> Add Regulation</button>
-                </div>
-                <div class="data-table-container">
-                    <table class="data-table" id="complianceTable">
-                        <thead><tr><th>ID</th><th>Regulation</th><th>Jurisdiction</th><th>Authority</th><th>Owner</th><th>Status</th><th>Last Check</th><th>Next Check</th><th>Score</th><th>Actions</th></tr></thead>
-                        <tbody id="complianceTableBody"></tbody>
-                    </table>
-                </div>
+          <div class="charts-grid">
+            <div class="chart-container">
+              <canvas id="complianceChart"></canvas>
+              <div class="chart-empty" id="complianceChartEmpty">
+                <i class="fas fa-chart-pie"></i>
+                No compliance data yet
+              </div>
             </div>
-
-            <!-- Tab: Risks -->
-            <div id="tab-risks" class="tab-pane">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h2><i class="fas fa-exclamation-triangle"></i> Legal Risk Register</h2>
-                    <button class="btn btn-primary btn-sm" onclick="openModal('riskModal', null)"><i class="fas fa-plus"></i> New Risk</button>
-                </div>
-                <div class="data-table-container">
-                    <table class="data-table" id="risksTable">
-                        <thead><tr><th>ID</th><th>Category</th><th>Description</th><th>Owner</th><th>Probability</th><th>Impact</th><th>Inherent</th><th>Residual</th><th>Trend</th><th>Actions</th></tr></thead>
-                        <tbody id="risksTableBody"></tbody>
-                    </table>
-                </div>
+            <div class="chart-container">
+              <canvas id="riskChart"></canvas>
+              <div class="chart-empty" id="riskChartEmpty">
+                <i class="fas fa-chart-bar"></i>
+                No risk data yet
+              </div>
             </div>
+          </div>
 
-            <!-- Tab: Litigation -->
-            <div id="tab-litigation" class="tab-pane">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h2><i class="fas fa-gavel"></i> Litigation Cases</h2>
-                    <button class="btn btn-primary btn-sm" onclick="openModal('litigationModal', null)"><i class="fas fa-plus"></i> New Case</button>
-                </div>
-                <div class="data-table-container">
-                    <table class="data-table" id="litigationTable">
-                        <thead><tr><th>ID</th><th>Case Name</th><th>Type</th><th>Court/Jurisdiction</th><th>Status</th><th>Claim Amount</th><th>Fees Incurred</th><th>Next Date</th><th>Actions</th></tr></thead>
-                        <tbody id="litigationTableBody"></tbody>
-                    </table>
-                </div>
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Recent Documents</h3>
+              <button class="btn btn-secondary btn-sm" onclick="switchTab('documents')">View All</button>
             </div>
-
-            <!-- Tab: Policies -->
-            <div id="tab-policies" class="tab-pane">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h2><i class="fas fa-book"></i> Policy Management</h2>
-                    <button class="btn btn-primary btn-sm" onclick="openModal('policyModal', null)"><i class="fas fa-plus"></i> New Policy</button>
-                </div>
-                <div class="data-table-container">
-                    <table class="data-table" id="policiesTable">
-                        <thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Owner</th><th>Version</th><th>Effective</th><th>Review Date</th><th>Acknowledged %</th><th>Actions</th></tr></thead>
-                        <tbody id="policiesTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Tab: Audits -->
-            <div id="tab-audits" class="tab-pane">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h2><i class="fas fa-clipboard-list"></i> Audit Management</h2>
-                    <button class="btn btn-primary btn-sm" onclick="openModal('auditModal', null)"><i class="fas fa-plus"></i> Schedule Audit</button>
-                </div>
-                <div class="data-table-container">
-                    <table class="data-table" id="auditsTable">
-                        <thead><tr><th>ID</th><th>Type</th><th>Scope</th><th>Auditor</th><th>Start Date</th><th>End Date</th><th>Status</th><th>Findings</th><th>Actions</th></tr></thead>
-                        <tbody id="auditsTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Tab: Privacy -->
-            <div id="tab-privacy" class="tab-pane">
-                <div class="grid-3">
-                    <div class="info-card"><div class="card-header"><div class="card-icon">📊</div><div>Data Processing Register</div></div><div id="privacySummary">Loading...</div></div>
-                    <div class="info-card"><div class="card-header"><div class="card-icon">🔓</div><div>Data Breach Log</div></div><div id="breachSummary">Loading...</div></div>
-                    <div class="info-card"><div class="card-header"><div class="card-icon">📨</div><div>DSAR Tracker</div></div><div id="dsarSummary">Loading...</div></div>
-                </div>
-                <button class="btn btn-secondary" onclick="alert('Privacy details modal - fully editable in full version')">Manage Privacy Register</button>
-            </div>
-
-            <!-- Tab: Intelligence -->
-            <div id="tab-intelligence" class="tab-pane">
-                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                    <button class="btn btn-sm btn-primary" onclick="simulateRegulatoryAlert()"><i class="fas fa-sync-alt"></i> Check for Updates</button>
-                </div>
-                <div class="data-table-container">
-                    <table class="data-table" id="intelTable">
-                        <thead><tr><th>Source</th><th>Change Summary</th><th>Impact</th><th>Action Required</th><th>Owner</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead>
-                        <tbody id="intelTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="footer">Copyright © 2025 CephasGM ERP - Fully Upgraded Legal Module</div>
-        </main>
-    </div>
-
-    <!-- MODALS (Simplified representation - one comprehensive modal for Document as example) -->
-    <div id="documentModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('documentModal')">&times;</span>
-            <h3><i class="fas fa-file-signature"></i> <span id="documentModalTitle">Add Document</span></h3>
-            <form id="documentForm" onsubmit="event.preventDefault(); saveDocument();">
-                <input type="hidden" id="docId">
-                <div class="form-group"><label>Document Name*</label><input type="text" id="docName" required></div>
-                <div class="form-group"><label>Category</label><select id="docCategory"><option>Contract</option><option>Policy</option><option>Manual</option><option>Certificate</option><option>License</option></select></div>
-                <div class="form-group"><label>Sub-Category</label><input type="text" id="docSubCategory" placeholder="e.g., Employment Contract"></div>
-                <div class="form-group"><label>Version</label><input type="text" id="docVersion" value="1.0"></div>
-                <div class="form-group"><label>Owner</label><input type="text" id="docOwner" value="Legal Dept"></div>
-                <div class="form-group"><label>Effective Date</label><input type="date" id="docEffective"></div>
-                <div class="form-group"><label>Expiry/Review Date</label><input type="date" id="docExpiry"></div>
-                <div class="form-group"><label>Status</label><select id="docStatus"><option value="Current">Current</option><option value="Under Review">Under Review</option><option value="Expired">Expired</option></select></div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('documentModal')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Document</button>
-                </div>
-            </form>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Owner</th>
+                  <th>Expiry</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="recentDocumentsBody"></tbody>
+            </table>
+          </div>
         </div>
+
+        <!-- ============ DOCUMENTS ============ -->
+        <div id="documents-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Document &amp; Contract Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('documents')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('document')">
+                  <i class="fas fa-plus"></i> New Document
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Sub-Category</th>
+                  <th>Version</th>
+                  <th>Owner</th>
+                  <th>Effective</th>
+                  <th>Expiry</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="documentsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ COMPLIANCE ============ -->
+        <div id="compliance-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Compliance Obligations</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('compliance')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('compliance')">
+                  <i class="fas fa-plus"></i> Add Regulation
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Regulation</th>
+                  <th>Jurisdiction</th>
+                  <th>Authority</th>
+                  <th>Owner</th>
+                  <th>Status</th>
+                  <th>Last Check</th>
+                  <th>Next Check</th>
+                  <th>Score</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="complianceBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ RISKS ============ -->
+        <div id="risks-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Legal Risk Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('risks')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('risk')">
+                  <i class="fas fa-plus"></i> New Risk
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Category</th>
+                  <th>Description</th>
+                  <th>Owner</th>
+                  <th>Probability</th>
+                  <th>Impact</th>
+                  <th>Inherent</th>
+                  <th>Residual</th>
+                  <th>Trend</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="risksBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ LITIGATION ============ -->
+        <div id="litigation-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Litigation Cases</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('litigation')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('litigation')">
+                  <i class="fas fa-plus"></i> New Case
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Case Name</th>
+                  <th>Type</th>
+                  <th>Court / Jurisdiction</th>
+                  <th>Status</th>
+                  <th>Claim Amount</th>
+                  <th>Fees Incurred</th>
+                  <th>Next Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="litigationBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ POLICIES ============ -->
+        <div id="policies-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Policy Management</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('policies')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('policy')">
+                  <i class="fas fa-plus"></i> New Policy
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Owner</th>
+                  <th>Version</th>
+                  <th>Effective</th>
+                  <th>Review Date</th>
+                  <th>Acknowledged %</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="policiesBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ AUDITS ============ -->
+        <div id="audits-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Audit Management</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('audits')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('audit')">
+                  <i class="fas fa-plus"></i> Schedule Audit
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Type</th>
+                  <th>Scope</th>
+                  <th>Auditor</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Status</th>
+                  <th>Findings</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="auditsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ PRIVACY ============ -->
+        <div id="privacy-tab" class="tab-content">
+          <div class="info-grid">
+            <div class="info-card">
+              <h4><i class="fas fa-database"></i> Data Processing Register</h4>
+              <div class="metric">
+                <span>Processing Activities</span>
+                <span id="processingActivities">0</span>
+              </div>
+              <div class="metric">
+                <span>DPIAs Completed</span>
+                <span id="dpiasCompleted">0</span>
+              </div>
+              <div class="metric">
+                <span>Lawful Basis Set</span>
+                <span id="lawfulBasis">0%</span>
+              </div>
+            </div>
+            <div class="info-card">
+              <h4><i class="fas fa-triangle-exclamation"></i> Data Breach Log</h4>
+              <div class="metric">
+                <span>Breaches (YTD)</span>
+                <span id="breachesYtd">0</span>
+              </div>
+              <div class="metric">
+                <span>Open Investigations</span>
+                <span id="openInvestigations">0</span>
+              </div>
+              <div class="metric">
+                <span>Notified to Regulator</span>
+                <span id="regulatorNotified">0</span>
+              </div>
+            </div>
+            <div class="info-card">
+              <h4><i class="fas fa-envelope-open-text"></i> DSAR Tracker</h4>
+              <div class="metric">
+                <span>Total DSARs</span>
+                <span id="totalDsars">0</span>
+              </div>
+              <div class="metric">
+                <span>Open</span>
+                <span id="openDsars">0</span>
+              </div>
+              <div class="metric">
+                <span>Avg Response (days)</span>
+                <span id="avgResponseDays">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Privacy Records</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('privacy')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('privacy')">
+                  <i class="fas fa-plus"></i> Add Record
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Subject</th>
+                  <th>Jurisdiction</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="privacyBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ INTELLIGENCE ============ -->
+        <div id="intelligence-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Regulatory Intelligence</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('intelligence')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('intelligence')">
+                  <i class="fas fa-plus"></i> Add Update
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Source</th>
+                  <th>Change Summary</th>
+                  <th>Impact</th>
+                  <th>Action Required</th>
+                  <th>Owner</th>
+                  <th>Due</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="intelligenceBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
     </div>
-    <!-- Additional modals (complianceModal, riskModal, litigationModal, policyModal, auditModal) would be structured similarly but omitted for brevity. They exist in the full implementation logic. -->
 
-    <script>
-        (function() {
-            // ---------- MASTER DATA STORES (simulating database) ----------
-            let documents = JSON.parse(localStorage.getItem('legal_documents')) || [
-                { id: 'DOC-001', name: 'Employment Contract Template', category: 'Contract', subCategory: 'Employment', version: '2.1', owner: 'HR', effective: '2025-01-15', expiry: '2026-01-15', status: 'Current' },
-                { id: 'DOC-002', name: 'Data Protection Policy', category: 'Policy', subCategory: 'Privacy', version: '3.0', owner: 'DPO', effective: '2024-06-20', expiry: '2025-03-15', status: 'Under Review' },
-                { id: 'DOC-003', name: 'Supplier Agreement', category: 'Contract', subCategory: 'Procurement', version: '1.5', owner: 'Procurement', effective: '2025-02-01', expiry: '2026-02-01', status: 'Current' },
-                { id: 'DOC-004', name: 'Health & Safety Manual', category: 'Manual', subCategory: 'HSE', version: '4.2', owner: 'HSE', effective: '2023-11-10', expiry: '2024-12-01', status: 'Update Required' },
-            ];
-            let compliances = JSON.parse(localStorage.getItem('legal_compliances')) || [
-                { id: 'REG-001', name: 'ISO 9001:2015', jurisdiction: 'Global', authority: 'ISO', owner: 'QM', status: 'Compliant', lastCheck: '2025-02-10', nextCheck: '2025-08-10', score: 95 },
-                { id: 'REG-002', name: 'GDPR', jurisdiction: 'EU', authority: 'European Commission', owner: 'DPO', status: 'Compliant', lastCheck: '2025-01-05', nextCheck: '2025-07-05', score: 92 },
-                { id: 'REG-003', name: 'Employment & Labor Relations Act', jurisdiction: 'Tanzania', authority: 'MoL', owner: 'HR', status: 'Compliant', lastCheck: '2025-02-20', nextCheck: '2025-08-20', score: 88 },
-                { id: 'REG-004', name: 'Data Protection Act 2022', jurisdiction: 'Tanzania', authority: 'PCCB', owner: 'DPO', status: 'Under Review', lastCheck: '2024-12-01', nextCheck: '2025-03-01', score: 70 },
-            ];
-            let risks = JSON.parse(localStorage.getItem('legal_risks')) || [
-                { id: 'RISK-001', category: 'Regulatory', description: 'Non-compliance with new data protection amendments', owner: 'DPO', probability: 30, impact: 4, inherent: 120, residual: 60, trend: 'Stable' },
-                { id: 'RISK-002', category: 'Contractual', description: 'Supplier contract ambiguity on liability', owner: 'Legal', probability: 20, impact: 3, inherent: 60, residual: 30, trend: 'Decreasing' },
-            ];
-            let litigations = JSON.parse(localStorage.getItem('legal_litigations')) || [
-                { id: 'LIT-001', caseName: 'Smith vs CephasGM', type: 'Employment Dispute', court: 'High Court', status: 'Discovery', claimAmount: 50000, feesIncurred: 12000, nextDate: '2025-04-15' },
-            ];
-            let policies = JSON.parse(localStorage.getItem('legal_policies')) || [
-                { id: 'POL-001', title: 'Code of Conduct', category: 'Ethics', owner: 'Legal', version: '4.0', effective: '2025-01-01', reviewDate: '2026-01-01', ackPercent: 85 },
-            ];
-            let audits = JSON.parse(localStorage.getItem('legal_audits')) || [
-                { id: 'AUD-001', type: 'Internal', scope: 'Data Protection', auditor: 'Internal Audit', startDate: '2025-03-01', endDate: '2025-03-05', status: 'Scheduled', findings: 0 },
-            ];
-            let intel = JSON.parse(localStorage.getItem('legal_intel')) || [
-                { source: 'EU Gazette', summary: 'New ESG reporting directive', impact: 'High', action: 'Update sustainability policy', owner: 'Compliance', due: '2025-06-01', status: 'Pending' },
-            ];
+    <!-- FOOTER -->
+    <footer class="app-footer">
+      Copyright © 2025 <strong>Cephas GM</strong> | Innovating for Tomorrow
+    </footer>
+  </div>
 
-            // Helper to update all tables and stats
-            function refreshAllTabs() {
-                // Update stats counts
-                document.getElementById('statCompliance').innerText = Math.round((compliances.filter(c => c.status==='Compliant').length / (compliances.length||1))*100) + '%';
-                document.getElementById('statRegulations').innerText = compliances.length;
-                document.getElementById('statAudits').innerText = audits.filter(a => a.status === 'Scheduled' || a.status === 'In Progress').length;
-                document.getElementById('statDocuments').innerText = documents.length;
+  <!-- ============ MODAL ============ -->
+  <div class="modal" id="editModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">New Record</h2>
+        <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+      </div>
+      <form id="editForm" onsubmit="saveItem(event)">
+        <div class="modal-body">
+          <div id="formFields"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-                // Render each table
-                renderDocuments();
-                renderCompliance();
-                renderRisks();
-                renderLitigation();
-                renderPolicies();
-                renderAudits();
-                renderIntel();
-                // Privacy summary (static for demo)
-                document.getElementById('privacySummary').innerHTML = `<p>Processing Activities: 12</p><p>DPIAs: 3</p>`;
-                document.getElementById('breachSummary').innerHTML = `<p>Breaches logged: 0</p>`;
-                document.getElementById('dsarSummary').innerHTML = `<p>Open DSARs: 2</p>`;
+  <div class="modal" id="deleteModal" role="dialog" aria-modal="true">
+    <div class="modal-content" style="max-width:420px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirm Delete</h2>
+        <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-muted);font-size:0.88rem;">Are you sure you want to delete this record? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  /* =========================================================
+     CephasGM ERP — Legal & Compliance Module v4.0
+     Empty-state on first load. Data persisted to localStorage.
+     ========================================================= */
+
+  const TAB_META = {
+    dashboard:    ['Legal & Compliance Dashboard', 'Overview of documents, compliance, risk, and litigation'],
+    documents:    ['Documents',                    'Contracts, certificates, licenses, and manuals'],
+    compliance:   ['Compliance',                   'Regulatory obligations and compliance status'],
+    risks:        ['Risk Register',                'Legal and regulatory risk tracking'],
+    litigation:   ['Litigation',                   'Active and closed legal cases'],
+    policies:     ['Policies',                     'Internal policies and acknowledgements'],
+    audits:       ['Audits',                       'Internal and external audits'],
+    privacy:      ['Privacy',                      'GDPR/privacy register, breaches, and DSARs'],
+    intelligence: ['Regulatory Intelligence',      'Live updates on regulatory changes']
+  };
+
+  /* ---------- STATE ---------- */
+  let lgData = loadData();
+  let activeTab = 'dashboard';
+  let charts = {};
+  let currentEditType = null;
+  let deleteType = null;
+  let deleteId = null;
+
+  function loadData() {
+    const saved = localStorage.getItem('cephasgm_legal_data');
+    if (saved) return JSON.parse(saved);
+    return {
+      documents: [],
+      compliance: [],
+      risks: [],
+      litigation: [],
+      policies: [],
+      audits: [],
+      privacy: [],
+      intelligence: [],
+      nextIds: {
+        document: 1, compliance: 1, risk: 1, litigation: 1,
+        policy: 1, audit: 1, privacy: 1, intelligence: 1
+      }
+    };
+  }
+  function saveData() {
+    localStorage.setItem('cephasgm_legal_data', JSON.stringify(lgData));
+  }
+
+  /* ---------- HELPERS ---------- */
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+
+  function fmtCurrency(amount) {
+    if (amount == null || isNaN(amount)) return '—';
+    const abs = Math.abs(amount);
+    if (abs >= 1e9) return '$' + (amount / 1e9).toFixed(2) + 'B';
+    if (abs >= 1e6) return '$' + (amount / 1e6).toFixed(2) + 'M';
+    if (abs >= 1e3) return '$' + (amount / 1e3).toFixed(1) + 'K';
+    return '$' + Math.round(amount).toLocaleString();
+  }
+  function emptyRow(cols, message, icon = 'fa-inbox') {
+    return `<tr><td colspan="${cols}" class="empty-state"><i class="fas ${icon}"></i>${message}</td></tr>`;
+  }
+  function notify(msg, type = 'info') {
+    const n = document.createElement('div');
+    n.className = `notification ${type}`;
+    n.textContent = msg;
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 3200);
+  }
+  function badgeForStatus(status) {
+    const s = (status || '').toLowerCase();
+    if (s.includes('current') || s.includes('compliant') || s.includes('closed') || s.includes('passed') || s.includes('completed') || s.includes('resolved') || s.includes('active')) return 'success';
+    if (s.includes('review') || s.includes('pending') || s.includes('progress') || s.includes('scheduled') || s.includes('discovery') || s.includes('settlement')) return 'warning';
+    if (s.includes('expired') || s.includes('breached') || s.includes('non-compliant') || s.includes('failed') || s.includes('overdue')) return 'danger';
+    return 'gray';
+  }
+  function badgeForImpact(impact) {
+    const i = (impact || '').toLowerCase();
+    if (i.includes('high') || i.includes('critical')) return 'danger';
+    if (i.includes('medium')) return 'warning';
+    if (i.includes('low')) return 'success';
+    return 'info';
+  }
+
+  /* ---------- BOOT ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNav();
+    setupMobileMenu();
+    setupAddButton();
+    renderAll();
+    initCharts();
+  });
+
+  function setupNav() {
+    $$('.nav-link[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+  }
+  function setupMobileMenu() {
+    const toggle = $('#mobileMenuToggle');
+    const sidebar = $('#lgSidebar');
+    const overlay = $('#sidebarOverlay');
+    toggle.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('active');
+      overlay.classList.toggle('active', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  }
+  function setupAddButton() {
+    const btn = $('#addRecordBtn');
+    if (btn) {
+      btn.onclick = () => openAddModal();
+      updateAddButtonLabel();
+    }
+  }
+  function updateAddButtonLabel() {
+    const btn = $('#addRecordBtn');
+    if (!btn) return;
+    const type = inferTypeFromTab(activeTab);
+    const labels = {
+      document:     'New Document',
+      compliance:   'Add Regulation',
+      risk:         'New Risk',
+      litigation:   'New Case',
+      policy:       'New Policy',
+      audit:        'Schedule Audit',
+      privacy:      'Add Privacy Record',
+      intelligence: 'Add Update'
+    };
+    btn.innerHTML = `<i class="fas fa-plus"></i> ${labels[type] || 'New Record'}`;
+  }
+
+  function switchTab(tab) {
+    activeTab = tab;
+    $$('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.tab === tab));
+    $$('.tab-content').forEach(c => c.classList.toggle('active', c.id === `${tab}-tab`));
+    const meta = TAB_META[tab] || TAB_META.dashboard;
+    $('#pageTitle').innerHTML = `<i class="fas fa-scale-balanced"></i> ${meta[0]}`;
+    $('#pageSubtitle').textContent = meta[1];
+    updateAddButtonLabel();
+    const sidebar = $('#lgSidebar');
+    if (sidebar.classList.contains('active')) {
+      sidebar.classList.remove('active');
+      $('#sidebarOverlay').classList.remove('active');
+      $('#mobileMenuToggle').setAttribute('aria-expanded', 'false');
+    }
+  }
+  window.switchTab = switchTab;
+
+  /* ---------- RENDER ALL ---------- */
+  function renderAll() {
+    renderDashboard();
+    renderDocuments();
+    renderCompliance();
+    renderRisks();
+    renderLitigation();
+    renderPolicies();
+    renderAudits();
+    renderPrivacy();
+    renderIntelligence();
+    refreshCharts();
+  }
+
+  /* ---------- DASHBOARD ---------- */
+  function renderDashboard() {
+    const docs = lgData.documents;
+    const compliance = lgData.compliance;
+    const audits = lgData.audits;
+
+    const compliantCount = compliance.filter(c => (c.status || '').toLowerCase() === 'compliant').length;
+    const complianceRate = compliance.length ? Math.round((compliantCount / compliance.length) * 100) : null;
+    const pendingAudits = audits.filter(a => {
+      const s = (a.status || '').toLowerCase();
+      return s === 'scheduled' || s === 'in progress';
+    }).length;
+
+    $('#overallCompliance').textContent = complianceRate !== null ? complianceRate + '%' : '—';
+    $('#activeRegulations').textContent = compliance.length || '—';
+    $('#pendingAudits').textContent = audits.length ? pendingAudits : '—';
+    $('#legalDocuments').textContent = docs.length || '—';
+
+    const body = $('#recentDocumentsBody');
+    const recent = [...docs].slice(-5).reverse();
+    if (!recent.length) {
+      body.innerHTML = emptyRow(7, 'No legal documents yet — click "New Document" to add one.', 'fa-file-contract');
+    } else {
+      body.innerHTML = recent.map(d => `
+        <tr>
+          <td>${d.docId}</td>
+          <td>${d.name}</td>
+          <td>${d.category || '—'}</td>
+          <td>${d.owner || '—'}</td>
+          <td>${d.expiry || '—'}</td>
+          <td><span class="badge badge-${badgeForStatus(d.status)}">${d.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('document', ${d.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+  }
+
+  /* ---------- DOCUMENTS ---------- */
+  function renderDocuments() {
+    const body = $('#documentsBody');
+    if (!lgData.documents.length) {
+      body.innerHTML = emptyRow(10, 'No documents yet — register contracts, licenses, and certificates.', 'fa-file-contract');
+      return;
+    }
+    body.innerHTML = lgData.documents.map(d => `
+      <tr>
+        <td>${d.docId}</td>
+        <td>${d.name}</td>
+        <td>${d.category || '—'}</td>
+        <td>${d.subCategory || '—'}</td>
+        <td>${d.version || '1.0'}</td>
+        <td>${d.owner || '—'}</td>
+        <td>${d.effective || '—'}</td>
+        <td>${d.expiry || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(d.status)}">${d.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('document', ${d.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- COMPLIANCE ---------- */
+  function renderCompliance() {
+    const body = $('#complianceBody');
+    if (!lgData.compliance.length) {
+      body.innerHTML = emptyRow(10, 'No regulations tracked yet — add your first compliance obligation.', 'fa-clipboard-check');
+      return;
+    }
+    body.innerHTML = lgData.compliance.map(c => `
+      <tr>
+        <td>${c.regId}</td>
+        <td>${c.name}</td>
+        <td>${c.jurisdiction || '—'}</td>
+        <td>${c.authority || '—'}</td>
+        <td>${c.owner || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(c.status)}">${c.status || '—'}</span></td>
+        <td>${c.lastCheck || '—'}</td>
+        <td>${c.nextCheck || '—'}</td>
+        <td>${c.score || 0}%</td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('compliance', ${c.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- RISKS ---------- */
+  function renderRisks() {
+    const body = $('#risksBody');
+    if (!lgData.risks.length) {
+      body.innerHTML = emptyRow(10, 'No risks logged yet — add a legal risk to begin tracking.', 'fa-triangle-exclamation');
+      return;
+    }
+    body.innerHTML = lgData.risks.map(r => `
+      <tr>
+        <td>${r.riskId}</td>
+        <td>${r.category || '—'}</td>
+        <td>${r.description || '—'}</td>
+        <td>${r.owner || '—'}</td>
+        <td>${r.probability || 0}%</td>
+        <td>${r.impact || 0}</td>
+        <td>${r.inherent || 0}</td>
+        <td>${r.residual || 0}</td>
+        <td><span class="badge badge-${badgeForStatus(r.trend)}">${r.trend || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('risk', ${r.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- LITIGATION ---------- */
+  function renderLitigation() {
+    const body = $('#litigationBody');
+    if (!lgData.litigation.length) {
+      body.innerHTML = emptyRow(9, 'No litigation cases yet — add a case to begin tracking.', 'fa-gavel');
+      return;
+    }
+    body.innerHTML = lgData.litigation.map(l => `
+      <tr>
+        <td>${l.litId}</td>
+        <td>${l.caseName}</td>
+        <td>${l.type || '—'}</td>
+        <td>${l.court || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(l.status)}">${l.status || '—'}</span></td>
+        <td>${fmtCurrency(l.claimAmount)}</td>
+        <td>${fmtCurrency(l.feesIncurred)}</td>
+        <td>${l.nextDate || '—'}</td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('litigation', ${l.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- POLICIES ---------- */
+  function renderPolicies() {
+    const body = $('#policiesBody');
+    if (!lgData.policies.length) {
+      body.innerHTML = emptyRow(9, 'No policies defined yet — add a policy to track acknowledgements.', 'fa-book');
+      return;
+    }
+    body.innerHTML = lgData.policies.map(p => `
+      <tr>
+        <td>${p.policyId}</td>
+        <td>${p.title}</td>
+        <td>${p.category || '—'}</td>
+        <td>${p.owner || '—'}</td>
+        <td>${p.version || '1.0'}</td>
+        <td>${p.effective || '—'}</td>
+        <td>${p.reviewDate || '—'}</td>
+        <td>${p.ackPercent || 0}%</td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('policy', ${p.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- AUDITS ---------- */
+  function renderAudits() {
+    const body = $('#auditsBody');
+    if (!lgData.audits.length) {
+      body.innerHTML = emptyRow(9, 'No audits scheduled yet.', 'fa-clipboard-list');
+      return;
+    }
+    body.innerHTML = lgData.audits.map(a => `
+      <tr>
+        <td>${a.auditId}</td>
+        <td>${a.type || '—'}</td>
+        <td>${a.scope || '—'}</td>
+        <td>${a.auditor || '—'}</td>
+        <td>${a.startDate || '—'}</td>
+        <td>${a.endDate || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(a.status)}">${a.status || '—'}</span></td>
+        <td>${a.findings || 0}</td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('audit', ${a.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- PRIVACY ---------- */
+  function renderPrivacy() {
+    const records = lgData.privacy;
+    const has = records.length > 0;
+
+    const processing = records.filter(r => (r.type || '').toLowerCase() === 'processing').length;
+    const dpia = records.filter(r => (r.type || '').toLowerCase() === 'dpia').length;
+    const breaches = records.filter(r => (r.type || '').toLowerCase() === 'breach').length;
+    const dsars = records.filter(r => (r.type || '').toLowerCase() === 'dsar');
+    const openDsars = dsars.filter(d => (d.status || '').toLowerCase() !== 'closed').length;
+
+    $('#processingActivities').textContent = has ? processing : '0';
+    $('#dpiasCompleted').textContent = has ? dpia : '0';
+    $('#lawfulBasis').textContent = has && processing ? Math.round((dpia / processing) * 100) + '%' : '0%';
+    $('#breachesYtd').textContent = has ? breaches : '0';
+    $('#openInvestigations').textContent = has ? breaches : '0';
+    $('#regulatorNotified').textContent = has ? breaches : '0';
+    $('#totalDsars').textContent = has ? dsars.length : '0';
+    $('#openDsars').textContent = has ? openDsars : '0';
+    $('#avgResponseDays').textContent = '—';
+
+    const body = $('#privacyBody');
+    if (!has) {
+      body.innerHTML = emptyRow(6, 'No privacy records yet — register processing activities, DPIAs, and DSARs.', 'fa-lock');
+      return;
+    }
+    body.innerHTML = records.map(r => `
+      <tr>
+        <td>${r.type || '—'}</td>
+        <td>${r.subject || '—'}</td>
+        <td>${r.jurisdiction || '—'}</td>
+        <td>${r.date || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(r.status)}">${r.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('privacy', ${r.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- INTELLIGENCE ---------- */
+  function renderIntelligence() {
+    const body = $('#intelligenceBody');
+    if (!lgData.intelligence.length) {
+      body.innerHTML = emptyRow(8, 'No regulatory updates logged yet.', 'fa-globe');
+      return;
+    }
+    body.innerHTML = lgData.intelligence.map(i => `
+      <tr>
+        <td>${i.source}</td>
+        <td>${i.summary}</td>
+        <td><span class="badge badge-${badgeForImpact(i.impact)}">${i.impact || '—'}</span></td>
+        <td>${i.action || '—'}</td>
+        <td>${i.owner || '—'}</td>
+        <td>${i.due || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(i.status)}">${i.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('intelligence', ${i.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- CHARTS ---------- */
+  function initCharts() {
+    refreshCharts();
+  }
+
+  function refreshCharts() {
+    const hasCompliance = lgData.compliance.length > 0;
+    const hasRisks = lgData.risks.length > 0;
+
+    const showEmpty = (canvasId, emptyId, has) => {
+      const c = document.getElementById(canvasId);
+      const e = document.getElementById(emptyId);
+      if (c) c.style.display = has ? 'block' : 'none';
+      if (e) e.style.display = has ? 'none' : 'flex';
+    };
+
+    showEmpty('complianceChart', 'complianceChartEmpty', hasCompliance);
+    showEmpty('riskChart', 'riskChartEmpty', hasRisks);
+
+    Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} });
+    charts = {};
+
+    if (hasCompliance) {
+      const ctx = document.getElementById('complianceChart')?.getContext('2d');
+      if (ctx) {
+        const byStatus = {};
+        lgData.compliance.forEach(c => {
+          const k = c.status || 'Unknown';
+          byStatus[k] = (byStatus[k] || 0) + 1;
+        });
+        charts.compliance = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: Object.keys(byStatus),
+            datasets: [{
+              data: Object.values(byStatus),
+              backgroundColor: ['#0f7b5a','#d97706','#c0392b','#2563eb','#8b5cf6']
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } }
+          }
+        });
+      }
+    }
+
+    if (hasRisks) {
+      const ctx = document.getElementById('riskChart')?.getContext('2d');
+      if (ctx) {
+        const byCategory = {};
+        lgData.risks.forEach(r => {
+          const k = r.category || 'Other';
+          byCategory[k] = (byCategory[k] || 0) + 1;
+        });
+        charts.risks = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: Object.keys(byCategory),
+            datasets: [{
+              label: 'Risks',
+              data: Object.values(byCategory),
+              backgroundColor: '#2563eb',
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+              x: { grid: { display: false } }
             }
+          }
+        });
+      }
+    }
+  }
 
-            // Render functions
-            function renderDocuments() {
-                let tbody = document.getElementById('documentsTableBody');
-                tbody.innerHTML = '';
-                documents.forEach(doc => {
-                    let row = `<tr>
-                        <td>${doc.id}</td><td>${doc.name}</td><td>${doc.category}</td><td>${doc.subCategory || ''}</td>
-                        <td>${doc.version}</td><td>${doc.owner}</td><td>${doc.effective || ''}</td><td>${doc.expiry || ''}</td>
-                        <td><span class="badge ${doc.status === 'Current' ? 'badge-success' : (doc.status === 'Under Review' ? 'badge-info' : 'badge-warning')}">${doc.status}</span></td>
-                        <td><button class="btn-sm btn-secondary" onclick="editDocument('${doc.id}')"><i class="fas fa-edit"></i></button> <button class="btn-sm btn-danger" onclick="deleteDocument('${doc.id}')"><i class="fas fa-trash"></i></button></td>
-                    </tr>`;
-                    tbody.innerHTML += row;
-                });
-            }
-            function renderCompliance() {
-                let tbody = document.getElementById('complianceTableBody');
-                tbody.innerHTML = '';
-                compliances.forEach(c => {
-                    let statusClass = c.status === 'Compliant' ? 'badge-success' : (c.status === 'Under Review' ? 'badge-info' : 'badge-warning');
-                    tbody.innerHTML += `<tr><td>${c.id}</td><td>${c.name}</td><td>${c.jurisdiction}</td><td>${c.authority}</td><td>${c.owner}</td><td><span class="badge ${statusClass}">${c.status}</span></td><td>${c.lastCheck}</td><td>${c.nextCheck}</td><td>${c.score}%</td><td><button class="btn-sm btn-secondary" onclick="editCompliance('${c.id}')"><i class="fas fa-edit"></i></button> <button class="btn-sm btn-danger" onclick="deleteCompliance('${c.id}')"><i class="fas fa-trash"></i></button></td></tr>`;
-                });
-            }
-            function renderRisks() {
-                let tbody = document.getElementById('risksTableBody');
-                tbody.innerHTML = '';
-                risks.forEach(r => {
-                    tbody.innerHTML += `<tr><td>${r.id}</td><td>${r.category}</td><td>${r.description.substring(0,30)}...</td><td>${r.owner}</td><td>${r.probability}%</td><td>${r.impact}</td><td>${r.inherent}</td><td>${r.residual}</td><td>${r.trend}</td><td><button class="btn-sm btn-secondary" onclick="editRisk('${r.id}')"><i class="fas fa-edit"></i></button> <button class="btn-sm btn-danger" onclick="deleteRisk('${r.id}')"><i class="fas fa-trash"></i></button></td></tr>`;
-                });
-            }
-            function renderLitigation() {
-                let tbody = document.getElementById('litigationTableBody');
-                tbody.innerHTML = '';
-                litigations.forEach(l => {
-                    tbody.innerHTML += `<tr><td>${l.id}</td><td>${l.caseName}</td><td>${l.type}</td><td>${l.court}</td><td>${l.status}</td><td>$${l.claimAmount}</td><td>$${l.feesIncurred}</td><td>${l.nextDate}</td><td><button class="btn-sm btn-secondary" onclick="editLitigation('${l.id}')"><i class="fas fa-edit"></i></button> <button class="btn-sm btn-danger" onclick="deleteLitigation('${l.id}')"><i class="fas fa-trash"></i></button></td></tr>`;
-                });
-            }
-            function renderPolicies() {
-                let tbody = document.getElementById('policiesTableBody');
-                tbody.innerHTML = '';
-                policies.forEach(p => {
-                    tbody.innerHTML += `<tr><td>${p.id}</td><td>${p.title}</td><td>${p.category}</td><td>${p.owner}</td><td>${p.version}</td><td>${p.effective}</td><td>${p.reviewDate}</td><td>${p.ackPercent}%</td><td><button class="btn-sm btn-secondary" onclick="editPolicy('${p.id}')"><i class="fas fa-edit"></i></button> <button class="btn-sm btn-danger" onclick="deletePolicy('${p.id}')"><i class="fas fa-trash"></i></button></td></tr>`;
-                });
-            }
-            function renderAudits() {
-                let tbody = document.getElementById('auditsTableBody');
-                tbody.innerHTML = '';
-                audits.forEach(a => {
-                    tbody.innerHTML += `<tr><td>${a.id}</td><td>${a.type}</td><td>${a.scope}</td><td>${a.auditor}</td><td>${a.startDate}</td><td>${a.endDate}</td><td>${a.status}</td><td>${a.findings}</td><td><button class="btn-sm btn-secondary" onclick="editAudit('${a.id}')"><i class="fas fa-edit"></i></button> <button class="btn-sm btn-danger" onclick="deleteAudit('${a.id}')"><i class="fas fa-trash"></i></button></td></tr>`;
-                });
-            }
-            function renderIntel() {
-                let tbody = document.getElementById('intelTableBody');
-                tbody.innerHTML = '';
-                intel.forEach(i => {
-                    tbody.innerHTML += `<tr><td>${i.source}</td><td>${i.summary}</td><td>${i.impact}</td><td>${i.action}</td><td>${i.owner}</td><td>${i.due}</td><td>${i.status}</td><td><button class="btn-sm btn-secondary" onclick="editIntel('${i.id}')"><i class="fas fa-edit"></i></button> <button class="btn-sm btn-danger" onclick="deleteIntel('${i.id}')"><i class="fas fa-trash"></i></button></td></tr>`;
-                });
-            }
+  /* ---------- ADD MODAL ---------- */
+  function openAddModal(type) {
+    type = type || inferTypeFromTab(activeTab);
+    currentEditType = type;
+    const titles = {
+      document:     'New Document',
+      compliance:   'Add Compliance Regulation',
+      risk:         'New Legal Risk',
+      litigation:   'New Litigation Case',
+      policy:       'New Policy',
+      audit:        'Schedule Audit',
+      privacy:      'Add Privacy Record',
+      intelligence: 'Add Regulatory Update'
+    };
+    $('#modalTitle').textContent = titles[type] || 'New Record';
+    $('#formFields').innerHTML = formFor(type);
+    $('#editModal').classList.add('active');
+  }
+  window.openAddModal = openAddModal;
 
-            // CRUD operations for Documents (example). Similar functions exist for others.
-            window.editDocument = (id) => { let item = documents.find(d => d.id === id); if(item) openModal('documentModal', item); };
-            window.deleteDocument = (id) => { if(confirm('Delete document?')) { documents = documents.filter(d => d.id !== id); localStorage.setItem('legal_documents', JSON.stringify(documents)); refreshAllTabs(); } };
-            window.saveDocument = () => {
-                let id = document.getElementById('docId').value;
-                let doc = {
-                    id: id || 'DOC-' + Math.floor(Math.random()*1000).toString().padStart(3,'0'),
-                    name: document.getElementById('docName').value,
-                    category: document.getElementById('docCategory').value,
-                    subCategory: document.getElementById('docSubCategory').value,
-                    version: document.getElementById('docVersion').value,
-                    owner: document.getElementById('docOwner').value,
-                    effective: document.getElementById('docEffective').value,
-                    expiry: document.getElementById('docExpiry').value,
-                    status: document.getElementById('docStatus').value,
-                };
-                if (id) { // update
-                    let index = documents.findIndex(d => d.id === id);
-                    if (index !== -1) documents[index] = doc;
-                } else { // add
-                    documents.push(doc);
-                }
-                localStorage.setItem('legal_documents', JSON.stringify(documents));
-                closeModal('documentModal');
-                refreshAllTabs();
-            };
+  function inferTypeFromTab(tab) {
+    return ({
+      dashboard:    'document',
+      documents:    'document',
+      compliance:   'compliance',
+      risks:        'risk',
+      litigation:   'litigation',
+      policies:     'policy',
+      audits:       'audit',
+      privacy:      'privacy',
+      intelligence: 'intelligence'
+    })[tab] || 'document';
+  }
 
-            // Modal handling
-            window.openModal = (modalId, data) => {
-                document.getElementById(modalId).classList.add('active');
-                if (modalId === 'documentModal' && data) {
-                    document.getElementById('documentModalTitle').innerText = 'Edit Document';
-                    document.getElementById('docId').value = data.id || '';
-                    document.getElementById('docName').value = data.name || '';
-                    document.getElementById('docCategory').value = data.category || 'Contract';
-                    document.getElementById('docSubCategory').value = data.subCategory || '';
-                    document.getElementById('docVersion').value = data.version || '1.0';
-                    document.getElementById('docOwner').value = data.owner || '';
-                    document.getElementById('docEffective').value = data.effective || '';
-                    document.getElementById('docExpiry').value = data.expiry || '';
-                    document.getElementById('docStatus').value = data.status || 'Current';
-                } else if (modalId === 'documentModal' && !data) {
-                    document.getElementById('documentModalTitle').innerText = 'Add Document';
-                    document.getElementById('documentForm').reset();
-                    document.getElementById('docId').value = '';
-                }
-            };
-            window.closeModal = (modalId) => { document.getElementById(modalId).classList.remove('active'); };
+  function formFor(type) {
+    if (type === 'document') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Document ID</label><input type="text" class="form-control" name="docId" placeholder="Auto-generated"></div>
+        <div class="form-group"><label class="form-label">Document Name</label><input type="text" class="form-control" name="name" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Category</label>
+          <select class="form-control" name="category">
+            <option>Contract</option><option>Policy</option><option>Manual</option>
+            <option>Certificate</option><option>License</option><option>Agreement</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Sub-Category</label><input type="text" class="form-control" name="subCategory" placeholder="e.g. Employment"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Version</label><input type="text" class="form-control" name="version" value="1.0"></div>
+        <div class="form-group"><label class="form-label">Owner</label><input type="text" class="form-control" name="owner"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-control" name="effective"></div>
+        <div class="form-group"><label class="form-label">Expiry / Review Date</label><input type="date" class="form-control" name="expiry"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status">
+          <option>Current</option><option>Under Review</option><option>Expired</option><option>Archived</option>
+        </select>
+      </div>`;
 
-            // Tab switching
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-                    document.getElementById('tab-' + this.dataset.tab).classList.add('active');
-                });
-            });
+    if (type === 'compliance') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Regulation ID</label><input type="text" class="form-control" name="regId" placeholder="Auto-generated"></div>
+        <div class="form-group"><label class="form-label">Regulation Name</label><input type="text" class="form-control" name="name" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Jurisdiction</label><input type="text" class="form-control" name="jurisdiction" placeholder="e.g. Tanzania, EU"></div>
+        <div class="form-group"><label class="form-label">Authority</label><input type="text" class="form-control" name="authority" placeholder="e.g. PCCB"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Owner</label><input type="text" class="form-control" name="owner"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Compliant</option><option>Under Review</option><option>Non-Compliant</option><option>Exempt</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Last Check</label><input type="date" class="form-control" name="lastCheck"></div>
+        <div class="form-group"><label class="form-label">Next Check</label><input type="date" class="form-control" name="nextCheck"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Score (%)</label><input type="number" class="form-control" name="score" min="0" max="100" value="0"></div>`;
 
-            // Dark mode, language, logout (original)
-            document.getElementById('darkModeToggle').addEventListener('click', function() {
-                document.body.classList.toggle('dark-mode');
-                this.querySelector('i').classList.toggle('fa-moon'); this.querySelector('i').classList.toggle('fa-sun');
-            });
-            document.getElementById('languageSelect').addEventListener('change', function(e) { alert('Language switched to ' + (e.target.value === 'en' ? 'English' : 'Swahili') + ' (UI text would update in full implementation)'); });
-            document.getElementById('logoutBtn').addEventListener('click', () => { if(confirm('Logout?')) alert('Logging out...'); });
+    if (type === 'risk') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Risk ID</label><input type="text" class="form-control" name="riskId" placeholder="Auto-generated"></div>
+        <div class="form-group"><label class="form-label">Category</label>
+          <select class="form-control" name="category">
+            <option>Regulatory</option><option>Contractual</option><option>Employment</option>
+            <option>IP</option><option>Data Privacy</option><option>Reputational</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-control" name="description" rows="3" required></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Owner</label><input type="text" class="form-control" name="owner"></div>
+        <div class="form-group"><label class="form-label">Trend</label>
+          <select class="form-control" name="trend"><option>Stable</option><option>Increasing</option><option>Decreasing</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Probability (%)</label><input type="number" class="form-control" name="probability" min="0" max="100" value="0"></div>
+        <div class="form-group"><label class="form-label">Impact (1-5)</label><input type="number" class="form-control" name="impact" min="1" max="5" value="1"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Inherent Risk Score</label><input type="number" class="form-control" name="inherent" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Residual Risk Score</label><input type="number" class="form-control" name="residual" min="0" value="0"></div>
+      </div>`;
 
-            // Global add button (opens document modal by default)
-            document.getElementById('globalAddBtn').addEventListener('click', () => openModal('documentModal', null));
+    if (type === 'litigation') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Case ID</label><input type="text" class="form-control" name="litId" placeholder="Auto-generated"></div>
+        <div class="form-group"><label class="form-label">Case Name</label><input type="text" class="form-control" name="caseName" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Type</label>
+          <select class="form-control" name="type">
+            <option>Employment Dispute</option><option>Contract Dispute</option>
+            <option>IP Infringement</option><option>Regulatory</option><option>Civil</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Court / Jurisdiction</label><input type="text" class="form-control" name="court"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Discovery</option><option>Settlement</option><option>Trial</option><option>Closed</option><option>Appeal</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Next Date</label><input type="date" class="form-control" name="nextDate"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Claim Amount</label><input type="number" class="form-control" name="claimAmount" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Fees Incurred</label><input type="number" class="form-control" name="feesIncurred" step="0.01" min="0" value="0"></div>
+      </div>`;
 
-            // Simulate regulatory alert
-            window.simulateRegulatoryAlert = () => {
-                let newIntel = { source: 'Live Update', summary: 'New amendment to Labor Law', impact: 'Medium', action: 'Review contracts', owner: 'HR', due: '2025-05-01', status: 'Pending', id: 'INT-'+Math.floor(Math.random()*1000) };
-                intel.push(newIntel);
-                localStorage.setItem('legal_intel', JSON.stringify(intel));
-                refreshAllTabs();
-                alert('Regulatory intelligence updated.');
-            };
+    if (type === 'policy') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Policy ID</label><input type="text" class="form-control" name="policyId" placeholder="Auto-generated"></div>
+        <div class="form-group"><label class="form-label">Title</label><input type="text" class="form-control" name="title" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Category</label>
+          <select class="form-control" name="category">
+            <option>Ethics</option><option>HR</option><option>Data Privacy</option>
+            <option>Security</option><option>Health &amp; Safety</option><option>Finance</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Owner</label><input type="text" class="form-control" name="owner"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Version</label><input type="text" class="form-control" name="version" value="1.0"></div>
+        <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-control" name="effective"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Review Date</label><input type="date" class="form-control" name="reviewDate"></div>
+        <div class="form-group"><label class="form-label">Acknowledged (%)</label><input type="number" class="form-control" name="ackPercent" min="0" max="100" value="0"></div>
+      </div>`;
 
-            // Placeholder edit/delete for other entities (to avoid errors)
-            window.editCompliance = (id) => alert('Edit compliance ' + id + ' (full CRUD implemented in code)');
-            window.deleteCompliance = (id) => { compliances = compliances.filter(c => c.id !== id); localStorage.setItem('legal_compliances', JSON.stringify(compliances)); refreshAllTabs(); };
-            window.editRisk = (id) => alert('Edit risk ' + id);
-            window.deleteRisk = (id) => { risks = risks.filter(r => r.id !== id); localStorage.setItem('legal_risks', JSON.stringify(risks)); refreshAllTabs(); };
-            window.editLitigation = (id) => alert('Edit litigation ' + id);
-            window.deleteLitigation = (id) => { litigations = litigations.filter(l => l.id !== id); localStorage.setItem('legal_litigations', JSON.stringify(litigations)); refreshAllTabs(); };
-            window.editPolicy = (id) => alert('Edit policy ' + id);
-            window.deletePolicy = (id) => { policies = policies.filter(p => p.id !== id); localStorage.setItem('legal_policies', JSON.stringify(policies)); refreshAllTabs(); };
-            window.editAudit = (id) => alert('Edit audit ' + id);
-            window.deleteAudit = (id) => { audits = audits.filter(a => a.id !== id); localStorage.setItem('legal_audits', JSON.stringify(audits)); refreshAllTabs(); };
-            window.editIntel = (id) => alert('Edit intel ' + id);
-            window.deleteIntel = (id) => { intel = intel.filter(i => i.id !== id); localStorage.setItem('legal_intel', JSON.stringify(intel)); refreshAllTabs(); };
+    if (type === 'audit') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Audit ID</label><input type="text" class="form-control" name="auditId" placeholder="Auto-generated"></div>
+        <div class="form-group"><label class="form-label">Type</label>
+          <select class="form-control" name="type">
+            <option>Internal</option><option>External</option><option>Regulatory</option><option>Supplier</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Scope</label><input type="text" class="form-control" name="scope" placeholder="e.g. Data Protection"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Auditor</label><input type="text" class="form-control" name="auditor"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Scheduled</option><option>In Progress</option><option>Completed</option><option>Cancelled</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Start Date</label><input type="date" class="form-control" name="startDate"></div>
+        <div class="form-group"><label class="form-label">End Date</label><input type="date" class="form-control" name="endDate"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Findings Count</label><input type="number" class="form-control" name="findings" min="0" value="0"></div>`;
 
-            // Initialize
-            refreshAllTabs();
+    if (type === 'privacy') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Type</label>
+          <select class="form-control" name="type">
+            <option>Processing</option><option>DPIA</option><option>Breach</option><option>DSAR</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Subject</label><input type="text" class="form-control" name="subject"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Jurisdiction</label><input type="text" class="form-control" name="jurisdiction" placeholder="e.g. EU, Tanzania"></div>
+        <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-control" name="date"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status">
+          <option>Open</option><option>In Progress</option><option>Closed</option><option>Escalated</option>
+        </select>
+      </div>`;
 
-            // Service worker (original)
-            if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js').catch(console.log); }
-        })();
-    </script>
+    if (type === 'intelligence') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Source</label><input type="text" class="form-control" name="source" placeholder="e.g. EU Gazette" required></div>
+        <div class="form-group"><label class="form-label">Impact</label>
+          <select class="form-control" name="impact">
+            <option>Low</option><option>Medium</option><option>High</option><option>Critical</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Change Summary</label><textarea class="form-control" name="summary" rows="3" required></textarea></div>
+      <div class="form-group"><label class="form-label">Action Required</label><input type="text" class="form-control" name="action"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Owner</label><input type="text" class="form-control" name="owner"></div>
+        <div class="form-group"><label class="form-label">Due Date</label><input type="date" class="form-control" name="due"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status">
+          <option>Pending</option><option>In Progress</option><option>Resolved</option><option>Dismissed</option>
+        </select>
+      </div>`;
+
+    return '<p style="color:var(--text-muted);font-size:0.85rem;">No form available for this record type.</p>';
+  }
+
+  function saveItem(e) {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const type = currentEditType;
+    if (!type) return;
+    const data = Object.fromEntries(f.entries());
+    addRecord(type, data);
+    closeModal('editModal');
+    renderAll();
+    notify('Saved successfully', 'success');
+  }
+  window.saveItem = saveItem;
+
+  function addRecord(type, data) {
+    if (type === 'document') {
+      lgData.documents.push({
+        id: lgData.nextIds.document++,
+        docId: data.docId || `DOC-${String(lgData.documents.length + 1).padStart(3, '0')}`,
+        name: data.name, category: data.category || 'Contract',
+        subCategory: data.subCategory || '',
+        version: data.version || '1.0',
+        owner: data.owner || '',
+        effective: data.effective || '',
+        expiry: data.expiry || '',
+        status: data.status || 'Current'
+      });
+    }
+    else if (type === 'compliance') {
+      lgData.compliance.push({
+        id: lgData.nextIds.compliance++,
+        regId: data.regId || `REG-${String(lgData.compliance.length + 1).padStart(3, '0')}`,
+        name: data.name, jurisdiction: data.jurisdiction || '',
+        authority: data.authority || '', owner: data.owner || '',
+        status: data.status || 'Under Review',
+        lastCheck: data.lastCheck || '',
+        nextCheck: data.nextCheck || '',
+        score: parseFloat(data.score) || 0
+      });
+    }
+    else if (type === 'risk') {
+      lgData.risks.push({
+        id: lgData.nextIds.risk++,
+        riskId: data.riskId || `RISK-${String(lgData.risks.length + 1).padStart(3, '0')}`,
+        category: data.category || 'Regulatory',
+        description: data.description || '',
+        owner: data.owner || '',
+        trend: data.trend || 'Stable',
+        probability: parseFloat(data.probability) || 0,
+        impact: parseFloat(data.impact) || 1,
+        inherent: parseFloat(data.inherent) || 0,
+        residual: parseFloat(data.residual) || 0
+      });
+    }
+    else if (type === 'litigation') {
+      lgData.litigation.push({
+        id: lgData.nextIds.litigation++,
+        litId: data.litId || `LIT-${String(lgData.litigation.length + 1).padStart(3, '0')}`,
+        caseName: data.caseName, type: data.type || 'Contract Dispute',
+        court: data.court || '', status: data.status || 'Discovery',
+        nextDate: data.nextDate || '',
+        claimAmount: parseFloat(data.claimAmount) || 0,
+        feesIncurred: parseFloat(data.feesIncurred) || 0
+      });
+    }
+    else if (type === 'policy') {
+      lgData.policies.push({
+        id: lgData.nextIds.policy++,
+        policyId: data.policyId || `POL-${String(lgData.policies.length + 1).padStart(3, '0')}`,
+        title: data.title, category: data.category || 'Ethics',
+        owner: data.owner || '', version: data.version || '1.0',
+        effective: data.effective || '',
+        reviewDate: data.reviewDate || '',
+        ackPercent: parseFloat(data.ackPercent) || 0
+      });
+    }
+    else if (type === 'audit') {
+      lgData.audits.push({
+        id: lgData.nextIds.audit++,
+        auditId: data.auditId || `AUD-${String(lgData.audits.length + 1).padStart(3, '0')}`,
+        type: data.type || 'Internal',
+        scope: data.scope || '',
+        auditor: data.auditor || '',
+        status: data.status || 'Scheduled',
+        startDate: data.startDate || '',
+        endDate: data.endDate || '',
+        findings: parseInt(data.findings, 10) || 0
+      });
+    }
+    else if (type === 'privacy') {
+      lgData.privacy.push({
+        id: lgData.nextIds.privacy++,
+        type: data.type || 'Processing',
+        subject: data.subject || '',
+        jurisdiction: data.jurisdiction || '',
+        date: data.date || '',
+        status: data.status || 'Open'
+      });
+    }
+    else if (type === 'intelligence') {
+      lgData.intelligence.push({
+        id: lgData.nextIds.intelligence++,
+        source: data.source, summary: data.summary,
+        impact: data.impact || 'Medium',
+        action: data.action || '',
+        owner: data.owner || '',
+        due: data.due || '',
+        status: data.status || 'Pending'
+      });
+    }
+    saveData();
+  }
+
+  /* ---------- DELETE ---------- */
+  function openDelete(type, id) {
+    deleteType = type;
+    deleteId = id;
+    $('#deleteModal').classList.add('active');
+  }
+  window.openDelete = openDelete;
+
+  function confirmDelete() {
+    if (!deleteType || deleteId == null) return;
+    const map = {
+      document: 'documents', compliance: 'compliance',
+      risk: 'risks', litigation: 'litigation',
+      policy: 'policies', audit: 'audits',
+      privacy: 'privacy', intelligence: 'intelligence'
+    };
+    const key = map[deleteType];
+    if (key && lgData[key]) {
+      lgData[key] = lgData[key].filter(x => String(x.id) !== String(deleteId));
+      saveData();
+      renderAll();
+      notify('Deleted', 'success');
+    }
+    closeModal('deleteModal');
+  }
+  window.confirmDelete = confirmDelete;
+
+  /* ---------- MODAL HELPERS ---------- */
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+  window.closeModal = closeModal;
+
+  /* ---------- EXPORT ---------- */
+  function exportTable(type) {
+    const map = {
+      documents: 'documents', compliance: 'compliance',
+      risks: 'risks', litigation: 'litigation',
+      policies: 'policies', audits: 'audits',
+      privacy: 'privacy', intelligence: 'intelligence'
+    };
+    const key = map[type] || type;
+    const rows = lgData[key];
+    if (!rows || !rows.length) { notify('No data to export', 'info'); return; }
+    const headers = Object.keys(rows[0]);
+    const csv = [headers.join(',')]
+      .concat(rows.map(r => headers.map(h => JSON.stringify(r[h] ?? '')).join(',')))
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${key}_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    notify('Exported successfully', 'success');
+  }
+  window.exportTable = exportTable;
+
+  function exportCurrentTab() {
+    const map = {
+      documents: 'documents', compliance: 'compliance',
+      risks: 'risks', litigation: 'litigation',
+      policies: 'policies', audits: 'audits',
+      privacy: 'privacy', intelligence: 'intelligence'
+    };
+    const key = map[activeTab];
+    if (key) exportTable(key);
+    else notify('Nothing to export from this section', 'info');
+  }
+  window.exportCurrentTab = exportCurrentTab;
+
+  /* ---------- KEYBOARD ---------- */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+    }
+  });
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('modal')) e.target.classList.remove('active');
+  });
+  </script>
 </body>
 </html>
