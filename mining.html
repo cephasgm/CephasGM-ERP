@@ -1,967 +1,3116 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mining Operations | CephasGM ERP</title>
-    <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        /* ----- PROFESSIONAL DARK THEME ----- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        body {
-            background: #0c0f14;
-            color: #e8ecf2;
-            line-height: 1.5;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+  <!-- PWA Meta -->
+  <meta name="theme-color" content="#1a4c7a" id="theme-color-meta" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CephasGM ERP" />
 
-        /* ----- CLEAN NAVBAR (ONLY HOME) ----- */
-        .navbar {
-            background: #161a22;
-            border-bottom: 2px solid #c8a23b;
-            padding: 0.8rem 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
+  <title>Mining Operations — CephasGM ERP</title>
 
-        .nav-brand {
-            font-size: 1.6rem;
-            font-weight: 600;
-            color: #c8a23b;
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
-        }
+  <meta name="description" content="CephasGM ERP Mining — Geology, operations, processing, logistics, sales, assets, and corporate" />
+  <meta name="author" content="Cephas Gideon Mkama" />
+  <meta property="og:title" content="Mining Operations — CephasGM ERP" />
+  <meta property="og:description" content="Complete mining ERP for all commodities and operations" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cephasgm.github.io/CephasGM-ERP/mining.html" />
 
-        .nav-brand i {
-            font-size: 1.8rem;
-        }
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        .nav-links a {
-            color: #b5bcc9;
-            text-decoration: none;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.4rem 0;
-            border-bottom: 2px solid transparent;
-            transition: 0.2s;
-        }
+  <style>
+    /* ============ DESIGN TOKENS ============ */
+    :root {
+      --bg:            #f4f6fa;
+      --surface:       #ffffff;
+      --surface-alt:   #fafbfd;
+      --border:        #e6e9f0;
+      --border-strong: #d3d9e5;
 
-        .nav-links a:hover {
-            color: #c8a23b;
-            border-bottom-color: #c8a23b;
-        }
+      --text:          #0a1e3c;
+      --text-2:        #2c3e50;
+      --text-muted:    #5e6f8d;
+      --text-subtle:   #94a3b8;
 
-        /* ----- MAIN CONTAINER ----- */
-        .container {
-            max-width: 1600px;
-            margin: 2rem auto;
-            padding: 0 2.5rem;
-            flex: 1;
-            width: 100%;
-        }
+      --primary:       #1a4c7a;
+      --primary-600:   #0e3a5c;
+      --primary-soft:  #e8f0fa;
+      --accent:        #2563eb;
+      --accent-hover:  #1d4ed8;
+      --accent-soft:   #eff4ff;
 
-        /* ----- HEADER ----- */
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2.2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
+      --success:       #0f7b5a;
+      --warning:       #d97706;
+      --danger:        #c0392b;
+      --gold:          #b8860b;
+      --copper:        #b87333;
+      --iron:          #6b7280;
 
-        .page-header h1 {
-            font-size: 2.1rem;
-            font-weight: 500;
-            background: linear-gradient(135deg, #f0e3c4, #c8a23b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            border-left: 6px solid #c8a23b;
-            padding-left: 1.3rem;
-        }
+      --radius-lg:     16px;
+      --radius:        12px;
+      --radius-sm:     8px;
+      --radius-pill:   999px;
 
-        .btn-primary {
-            background: #c8a23b;
-            border: none;
-            color: #0c0f14;
-            font-weight: 600;
-            padding: 0.7rem 1.8rem;
-            border-radius: 40px;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            transition: 0.15s;
-            border: 1px solid #c8a23b;
-            box-shadow: 0 4px 14px rgba(200,162,59,0.25);
-        }
+      --shadow-sm:     0 1px 2px rgba(10, 30, 60, 0.04);
+      --shadow:        0 2px 10px rgba(10, 30, 60, 0.06);
+      --shadow-lg:     0 12px 32px rgba(10, 30, 60, 0.10);
 
-        .btn-primary:hover {
-            background: #ddb347;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(200,162,59,0.35);
-        }
+      --max-width:     1440px;
+      --sidebar-w:     264px;
+    }
 
-        .btn-sm {
-            background: #262e38;
-            border: 1px solid #3f4855;
-            color: #c8a23b;
-            padding: 0.3rem 1.1rem;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.15s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
+    /* ============ RESET ============ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      position: relative;
+    }
 
-        .btn-sm:hover {
-            background: #323d4a;
-            border-color: #c8a23b;
-            color: #e8ecf2;
-        }
+    /* ============ PAGE BACKGROUND (ERP collage) ============ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        url('https://www.cio.com/wp-content/uploads/2025/03/272362-0-27498000-1741330535-enterprise_resource_planning-ERP.jpg?quality=50&strip=all&w=1024'),
+        url('https://img.magnific.com/free-vector/gradient-erp-illustration_23-2149379179.jpg'),
+        url('https://www.aimcom.com/wp-content/uploads/2026/01/erp-systems-integrating-business-operations-and-supply-chain-processes-1.png'),
+        url('https://img.magnific.com/free-vector/hand-drawn-flat-design-erp-illustration_23-2149383351.jpg?semt=ais_hybrid&w=740&q=80');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-blend-mode: overlay, soft-light, luminosity, multiply;
+      opacity: 0.07;
+      z-index: -1;
+      pointer-events: none;
+      filter: saturate(0.65) contrast(1.05);
+    }
 
-        /* ----- SECTOR TABS (FULLY FUNCTIONAL) ----- */
-        .sector-tabs {
-            display: flex;
-            gap: 0.4rem;
-            margin-bottom: 2.5rem;
-            flex-wrap: wrap;
-            background: #161a22;
-            padding: 0.6rem 1rem;
-            border-radius: 60px;
-            border: 1px solid #2c333e;
-        }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    input, select, textarea { font-family: inherit; }
+    img { max-width: 100%; display: block; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
 
-        .sector-tab {
-            padding: 0.6rem 1.5rem;
-            border-radius: 40px;
-            background: transparent;
-            color: #a8b1bf;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid transparent;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+    /* ============ APP WRAPPER ============ */
+    .app {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 1.25rem 2rem 3rem;
+    }
 
-        .sector-tab i {
-            color: #c8a23b;
-            opacity: 0.8;
-            font-size: 0.9rem;
-        }
+    /* ============ TOP BAR ============ */
+    .top-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.95rem 1.35rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .brand-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, var(--primary) 0%, #2c5a8a 55%, #3d6fa0 100%);
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      box-shadow: 0 4px 14px rgba(26, 76, 122, 0.28);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .brand-tab:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(26, 76, 122, 0.35);
+    }
+    .brand-tab i { font-size: 0.82rem; opacity: 0.9; }
 
-        .sector-tab.active {
-            background: #c8a23b;
-            color: #0c0f14;
-            border-color: #c8a23b;
-        }
+    .site-selector {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 0.35rem 0.5rem 0.35rem 1rem;
+      margin-left: auto;
+    }
+    .site-selector label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-muted);
+    }
+    .site-selector select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 0.45rem 2rem 0.45rem 0.85rem;
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235e6f8d' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+    }
+    .site-selector select:focus { border-color: var(--accent); }
 
-        .sector-tab.active i {
-            color: #0c0f14;
-            opacity: 1;
-        }
+    /* ============ LAYOUT ============ */
+    .mine-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
 
-        .sector-tab:hover:not(.active) {
-            background: #262e38;
-            border-color: #4a5462;
-            color: #ffffff;
-        }
+    /* ============ SIDEBAR ============ */
+    .mine-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: sticky;
+      top: 1rem;
+      max-height: calc(100vh - 2rem);
+      overflow-y: auto;
+      padding: 0.75rem 0.6rem 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .mine-sidebar::-webkit-scrollbar { width: 6px; }
+    .mine-sidebar::-webkit-scrollbar-thumb {
+      background: var(--border-strong); border-radius: 6px;
+    }
 
-        /* ----- STATS CARDS ----- */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.8rem;
-            margin-bottom: 2.5rem;
-        }
+    .nav-section { margin-bottom: 0.5rem; }
+    .nav-section-title {
+      padding: 0.75rem 0.75rem 0.4rem;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-subtle);
+      font-weight: 700;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.84rem;
+      transition: background 0.12s, color 0.12s;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 100%;
+      text-align: left;
+    }
+    .nav-link i {
+      width: 16px; text-align: center;
+      font-size: 0.82rem; color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .nav-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .nav-link:hover i { color: var(--accent); }
+    .nav-link.active {
+      background: var(--accent-soft); color: var(--accent); font-weight: 600;
+    }
+    .nav-link.active i { color: var(--accent); }
 
-        .stat-card {
-            background: #161a22;
-            padding: 1.5rem 1.8rem;
-            border-radius: 26px;
-            border-left: 6px solid #c8a23b;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.6);
-            transition: 0.2s;
-            border-right: 1px solid #2c333e;
-            border-top: 1px solid #2c333e;
-            border-bottom: 1px solid #2c333e;
-            cursor: pointer;
-        }
+    .sidebar-summary {
+      margin: 0.5rem 0.6rem 0.25rem;
+      padding: 0.85rem 0.85rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-600));
+      border-radius: var(--radius);
+      color: #fff;
+    }
+    .sidebar-summary .label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .sidebar-summary .value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin: 0.15rem 0 0.15rem;
+    }
+    .sidebar-summary .sub {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.75);
+    }
 
-        .stat-card:hover {
-            background: #1c212b;
-            border-left-width: 8px;
-        }
+    /* ============ MAIN ============ */
+    .mine-main { min-width: 0; }
 
-        .stat-label {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            color: #929fb1;
-            margin-bottom: 0.4rem;
-        }
+    .mine-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .mine-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text);
+    }
+    .mine-title i { color: var(--primary); font-size: 1.05rem; }
+    .mine-subtitle {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .mine-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
 
-        .stat-value {
-            font-size: 2.4rem;
-            font-weight: 700;
-            color: #ffffff;
-            line-height: 1.2;
-        }
+    /* ============ BUTTONS ============ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover); border-color: var(--accent-hover);
+    }
+    .btn-success {
+      background: var(--success); color: #fff; border-color: var(--success);
+    }
+    .btn-success:hover { background: #0b6349; border-color: #0b6349; }
+    .btn-secondary {
+      background: var(--surface); color: var(--text); border-color: var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--border-strong); }
+    .btn-danger {
+      background: var(--danger); color: #fff; border-color: var(--danger);
+    }
+    .btn-danger:hover { background: #a13024; border-color: #a13024; }
+    .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.72rem; }
 
-        .stat-detail {
-            font-size: 0.9rem;
-            color: #c8a23b;
-            margin-top: 0.4rem;
-        }
+    /* ============ TAB CONTENT ============ */
+    .tab-content { display: none; }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        /* ----- LIFECYCLE (FULL CLICK FUNCTIONALITY) ----- */
-        .mine-lifecycle {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 2rem 0 2.5rem 0;
-            padding: 0.9rem 2rem;
-            background: #161a22;
-            border-radius: 60px;
-            border: 1px solid #2c333e;
-            flex-wrap: wrap;
-            gap: 0.8rem 1rem;
-        }
+    /* ============ CARDS ============ */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.15rem;
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-title i { color: var(--primary); font-size: 0.85rem; }
 
-        .lifecycle-stage {
-            padding: 0.5rem 1.3rem;
-            border-radius: 40px;
-            color: #a8b1bf;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            transition: 0.15s;
-            border: 1px solid transparent;
-        }
+    /* ============ STATS GRID ============ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.25rem;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+      opacity: 0.8;
+    }
+    .stat-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .stat-title {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    .stat-icon {
+      width: 28px; height: 28px;
+      display: grid; place-items: center;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+    .stat-change {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
 
-        .lifecycle-stage i {
-            color: #c8a23b;
-            font-size: 0.9rem;
-        }
+    /* ============ CHARTS ============ */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      height: 300px;
+      position: relative;
+    }
+    .chart-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--text-subtle);
+      font-size: 0.83rem;
+    }
+    .chart-empty i { font-size: 1.5rem; opacity: 0.5; }
 
-        .lifecycle-stage.active {
-            background: #c8a23b25;
-            color: #c8a23b;
-            border-color: #c8a23b80;
-            font-weight: 600;
-        }
+    /* ============ BLOCK MODEL VIEWER ============ */
+    .block-model {
+      background: linear-gradient(135deg, #1a2434, #0f1e30);
+      border-radius: var(--radius);
+      height: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    .block-model::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(45deg, rgba(200,162,59,0.15) 25%, transparent 25%, transparent 75%, rgba(200,162,59,0.15) 75%),
+        linear-gradient(45deg, rgba(200,162,59,0.15) 25%, transparent 25%, transparent 75%, rgba(200,162,59,0.15) 75%);
+      background-size: 40px 40px;
+      background-position: 0 0, 20px 20px;
+      opacity: 0.35;
+    }
+    .block-model .bm-icon {
+      font-size: 2.5rem;
+      color: #c8a23b;
+      margin-bottom: 0.85rem;
+      position: relative;
+      z-index: 1;
+    }
+    .block-model h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      position: relative;
+      z-index: 1;
+    }
+    .block-model p {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.7);
+      position: relative;
+      z-index: 1;
+      margin-bottom: 1rem;
+    }
+    .block-model .chips {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+    .block-model .chip {
+      padding: 0.3rem 0.7rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-pill);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.85);
+    }
 
-        .lifecycle-stage.completed {
-            color: #4cb092;
-        }
+    /* ============ TABLES ============ */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 1.5rem;
+    }
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding: 1.1rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-toolbar h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .table-toolbar-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
 
-        .lifecycle-arrow {
-            color: #495261;
-            font-size: 0.9rem;
-        }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    .data-table th {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover { background: var(--surface-alt); }
+    .data-table .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-subtle);
+    }
+    .data-table .empty-state i {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 0.55rem;
+      opacity: 0.5;
+    }
 
-        /* ----- WORLD MAP WITH REAL GEOLOGICAL DATA ----- */
-        .world-map {
-            background: #161a22;
-            padding: 2rem;
-            border-radius: 30px;
-            margin-bottom: 2.5rem;
-            border: 1px solid #2c333e;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 260px;
-            background-image: radial-gradient(circle at 30% 50%, #c8a23b15 0%, transparent 45%);
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: inset 0 0 40px #00000060;
-            position: relative;
-        }
+    .table-actions { display: flex; gap: 0.35rem; }
+    .action-icon {
+      cursor: pointer;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      transition: background 0.12s, color 0.12s;
+    }
+    .action-icon:hover { background: var(--accent-soft); color: var(--accent); }
 
-        .map-top {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-            margin-bottom: 1.2rem;
-        }
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .badge-success { background: #dcfce7; color: #166534; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger  { background: #fee2e2; color: #991b1b; }
+    .badge-info    { background: var(--accent-soft); color: var(--accent); }
+    .badge-gray    { background: #f1f5f9; color: #475569; }
+    .badge-gold    { background: #fbf5e2; color: var(--gold); }
+    .badge-copper  { background: #fcefe3; color: var(--copper); }
 
-        .map-top i {
-            font-size: 2.8rem;
-            color: #c8a23b;
-        }
+    /* ============ PROCESS FLOW ============ */
+    .process-flow {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .process-step {
+      flex: 1;
+      min-width: 140px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      text-align: center;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .process-step:hover {
+      border-color: var(--accent);
+      box-shadow: var(--shadow);
+    }
+    .process-step .step-icon {
+      width: 36px; height: 36px;
+      margin: 0 auto 0.5rem;
+      display: grid; place-items: center;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 10px;
+      font-size: 0.9rem;
+    }
+    .process-step .step-name {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+    .process-step .step-metric {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .process-arrow {
+      color: var(--text-subtle);
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
 
-        .map-title {
-            font-size: 1.4rem;
-            font-weight: 500;
-            color: #c8a23b;
-        }
+    /* ============ FORMS ============ */
+    .form-group { margin-bottom: 1.15rem; }
+    .form-label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: var(--text-2);
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.85rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    .form-section {
+      margin: 1.5rem 0 0.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+    .form-section:first-of-type {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
 
-        .geological-insight {
-            background: #1e2530;
-            padding: 1rem 2rem;
-            border-radius: 60px;
-            border: 1px solid #c8a23b40;
-            color: #d0d9e8;
-            font-size: 1.1rem;
-            max-width: 700px;
-            text-align: center;
-            margin-top: 0.5rem;
-        }
+    /* ============ MODAL ============ */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      padding: 1rem;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 720px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalSlideIn 0.25s ease;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      padding: 1.15rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1;
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+    }
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      width: 34px; height: 34px;
+      display: grid; place-items: center;
+      border-radius: var(--radius-sm);
+      transition: background 0.12s, color 0.12s;
+    }
+    .modal-close:hover { background: var(--accent-soft); color: var(--accent); }
+    .modal-body { padding: 1.35rem; }
+    .modal-footer {
+      padding: 1rem 1.35rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.55rem;
+      position: sticky;
+      bottom: 0;
+      background: var(--surface);
+      border-bottom-left-radius: var(--radius-lg);
+      border-bottom-right-radius: var(--radius-lg);
+    }
 
-        .geological-insight span {
-            color: #c8a23b;
-            font-weight: 600;
-        }
+    /* ============ NOTIFICATION ============ */
+    .notification {
+      position: fixed;
+      top: 20px; right: 20px;
+      padding: 0.85rem 1.25rem;
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      font-size: 0.83rem;
+      font-weight: 500;
+      animation: slideIn 0.25s ease;
+      max-width: 400px;
+    }
+    .notification.success { background: var(--success); }
+    .notification.error   { background: var(--danger); }
+    .notification.warning { background: var(--warning); }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
 
-        /* ----- CONTENT GRID ----- */
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1.6fr 1fr;
-            gap: 2rem;
-            align-items: start;
-        }
+    /* ============ FOOTER ============ */
+    .app-footer {
+      margin-top: 2.5rem;
+      padding: 1.4rem 0 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .app-footer strong { color: var(--text-2); font-weight: 600; }
 
-        @media (max-width: 1100px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+    /* ============ MOBILE ============ */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem; left: 1rem;
+      background: var(--primary); color: #fff;
+      border-radius: var(--radius-sm);
+      width: 42px; height: 42px;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: var(--shadow);
+    }
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.5);
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+    .sidebar-overlay.active { display: block; }
 
-        /* ----- CARDS ----- */
-        .card {
-            background: #161a22;
-            border-radius: 30px;
-            padding: 1.8rem;
-            margin-bottom: 2rem;
-            border: 1px solid #2c333e;
-            box-shadow: 0 15px 25px -10px #000000b0;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.7rem;
-            border-bottom: 2px solid #2c333e;
-        }
-
-        .card-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #c8a23b;
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
-        }
-
-        .card-title i {
-            font-size: 1.4rem;
-        }
-
-        /* ----- TABLES ----- */
-        .table-container {
-            overflow-x: auto;
-            border-radius: 20px;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-
-        .table th {
-            text-align: left;
-            padding: 1rem 0.8rem 0.8rem 0.8rem;
-            color: #c8a23b;
-            font-weight: 600;
-            border-bottom: 2px solid #c8a23b40;
-            white-space: nowrap;
-        }
-
-        .table td {
-            padding: 0.9rem 0.8rem;
-            border-bottom: 1px solid #2c333e;
-            color: #d3dae6;
-        }
-
-        .table tbody tr:hover {
-            background: #1e2530;
-        }
-
-        .mineral-badge {
-            background: #c8a23b20;
-            color: #c8a23b;
-            padding: 0.2rem 1.1rem;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: inline-block;
-            border: 1px solid #c8a23b40;
-        }
-
-        .status-badge {
-            background: #1d4e3d;
-            color: #a3e0b5;
-            padding: 0.2rem 1rem;
-            border-radius: 40px;
-            font-size: 0.8rem;
-        }
-
-        .action-cell {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .inline-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-        }
-
-        .inline-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.7rem 0;
-            border-bottom: 1px dashed #2f3845;
-        }
-
-        /* ----- MODAL (CLEAN) ----- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(5px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .modal-card {
-            background: #1e2530;
-            border-radius: 40px;
-            padding: 2.2rem;
-            max-width: 520px;
-            width: 90%;
-            border: 2px solid #c8a23b;
-            box-shadow: 0 30px 50px #000000cc;
-        }
-
-        .modal-card h3 {
-            font-size: 1.7rem;
-            color: #c8a23b;
-            margin-bottom: 1.8rem;
-            border-left: 5px solid #c8a23b;
-            padding-left: 1rem;
-        }
-
-        .modal-close {
-            float: right;
-            font-size: 2rem;
-            cursor: pointer;
-            color: #a8b1bf;
-            transition: 0.2s;
-        }
-        .modal-close:hover { color: #c8a23b; }
-
-        .modal-field {
-            margin-bottom: 1.2rem;
-        }
-        .modal-field label {
-            display: block;
-            color: #b5bcc9;
-            margin-bottom: 0.3rem;
-            font-size: 0.9rem;
-        }
-        .modal-field input {
-            width: 100%;
-            background: #0c0f14;
-            border: 1px solid #404d5c;
-            padding: 0.8rem 1rem;
-            border-radius: 20px;
-            color: #ffffff;
-            font-size: 1rem;
-        }
-        .modal-field input:focus {
-            border-color: #c8a23b;
-            outline: none;
-        }
-
-        .footer {
-            background: #161a22;
-            border-top: 1px solid #2c333e;
-            padding: 2rem 2.5rem;
-            margin-top: 3rem;
-            text-align: center;
-            color: #929fb1;
-            font-size: 0.95rem;
-        }
-        .footer a {
-            color: #c8a23b;
-            text-decoration: none;
-        }
-
-        .text-gold { color: #c8a23b; }
-        .flex { display: flex; gap: 1rem; align-items: center; }
-    </style>
+    @media (max-width: 960px) {
+      .app { padding: 1rem; padding-top: 4rem; }
+      .mine-layout { grid-template-columns: 1fr; }
+      .mine-sidebar {
+        position: fixed;
+        top: 0; left: 0;
+        width: var(--sidebar-w);
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        border: none;
+        border-right: 1px solid var(--border);
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        z-index: 1000;
+      }
+      .mine-sidebar.active { transform: translateX(0); }
+      .mobile-menu-toggle { display: flex; }
+    }
+    @media (max-width: 640px) {
+      .stats-grid, .charts-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .mine-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
 </head>
 <body>
-    <!-- CLEAN NAVBAR - ONLY HOME LINK -->
-    <div class="navbar">
-        <div class="nav-brand">
-            <i class="fas fa-layer-group"></i> CephasGM | Mining ERP
-        </div>
-        <div class="nav-links">
-            <a href="https://cephasgm.github.io/CephasGM-ERP/index.html"><i class="fas fa-home"></i> Home</a>
-        </div>
-    </div>
+  <a href="#main-content" class="sr-only">Skip to main content</a>
 
-    <div class="container">
-        <!-- HEADER -->
-        <div class="page-header">
-            <h1><i class="fas fa-hard-hat" style="color: #c8a23b; margin-right: 1rem;"></i>Mining lifecycle command</h1>
-            <button class="btn-primary" id="newMineBtn"><i class="fas fa-plus-circle"></i> Launch new project</button>
-        </div>
+  <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu" aria-expanded="false">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-        <!-- SECTOR TABS (FULLY FUNCTIONAL - DISPLAY DATA ON CLICK) -->
-        <div class="sector-tabs" id="sectorTabs">
-            <div class="sector-tab active" data-filter="all"><i class="fas fa-chart-pie"></i> Overview</div>
-            <div class="sector-tab" data-filter="exploration"><i class="fas fa-search"></i> Exploration</div>
-            <div class="sector-tab" data-filter="planning"><i class="fas fa-clipboard-list"></i> Planning</div>
-            <div class="sector-tab" data-filter="development"><i class="fas fa-hard-hat"></i> Development</div>
-            <div class="sector-tab" data-filter="extraction"><i class="fas fa-hammer"></i> Extraction</div>
-            <div class="sector-tab" data-filter="processing"><i class="fas fa-industry"></i> Processing</div>
-            <div class="sector-tab" data-filter="distribution"><i class="fas fa-train"></i> Distribution</div>
-            <div class="sector-tab" data-filter="reclamation"><i class="fas fa-seedling"></i> Reclamation</div>
-        </div>
+  <div class="app">
+    <!-- TOP BAR -->
+    <header class="top-bar">
+      <a href="index.html" class="brand-tab" aria-label="CephasGM ERP — return to homepage">
+        <i class="fas fa-bolt" aria-hidden="true"></i>
+        CephasGM ERP
+      </a>
+      <div class="site-selector">
+        <label for="siteSelect"><i class="fas fa-mountain"></i> Site</label>
+        <select id="siteSelect" aria-label="Select mining site">
+          <option value="all">All Sites</option>
+          <option value="SITE A">MINERAL A</option>
+          <option value="SITE B">MINERAL B</option>
+          <option value="SITE C">MINERAL C</option>
+        </select>
+      </div>
+    </header>
 
-        <!-- STATS CARDS -->
-        <div class="stats-grid">
-            <div class="stat-card" onclick="editStatCard(0)"><div class="stat-label"><i class="fas fa-map-pin"></i> Active mines</div><div class="stat-value" id="statMines">47</div><div class="stat-detail">14 countries</div></div>
-            <div class="stat-card" onclick="editStatCard(1)"><div class="stat-label"><i class="fas fa-truck-loading"></i> Monthly prod.</div><div class="stat-value" id="statProd">2.62M MT</div><div class="stat-detail">Iron 1.3M · Cu 91K</div></div>
-            <div class="stat-card" onclick="editStatCard(2)"><div class="stat-label"><i class="fas fa-cubes"></i> Proven reserves</div><div class="stat-value" id="statReserves">131M MT</div><div class="stat-detail">$46B est.</div></div>
-            <div class="stat-card" onclick="editStatCard(3)"><div class="stat-label"><i class="fas fa-globe-asia"></i> Exploration sites</div><div class="stat-value" id="statExpl">31</div><div class="stat-detail">4 new discoveries</div></div>
-        </div>
+    <div class="mine-layout">
+      <!-- SIDEBAR -->
+      <aside class="mine-sidebar" id="mineSidebar" aria-label="Mining navigation">
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <div class="nav-section-title">Overview</div>
+            <button class="nav-link active" data-tab="dashboard">
+              <i class="fas fa-chart-pie"></i><span>Master Overview</span>
+            </button>
+            <button class="nav-link" data-tab="analytics">
+              <i class="fas fa-chart-line"></i><span>Analytics</span>
+            </button>
+          </div>
 
-        <!-- LIFECYCLE (FULLY CLICKABLE WITH DATA DISPLAY) -->
-        <div class="mine-lifecycle" id="lifecycleContainer">
-            <span class="lifecycle-stage active" data-stage="exploration"><i class="fas fa-search"></i> Exploration</span> <span class="lifecycle-arrow"><i class="fas fa-chevron-right"></i></span>
-            <span class="lifecycle-stage" data-stage="planning"><i class="fas fa-clipboard-list"></i> Planning</span> <span class="lifecycle-arrow"><i class="fas fa-chevron-right"></i></span>
-            <span class="lifecycle-stage" data-stage="development"><i class="fas fa-hard-hat"></i> Development</span> <span class="lifecycle-arrow"><i class="fas fa-chevron-right"></i></span>
-            <span class="lifecycle-stage" data-stage="extraction"><i class="fas fa-hammer"></i> Extraction</span> <span class="lifecycle-arrow"><i class="fas fa-chevron-right"></i></span>
-            <span class="lifecycle-stage" data-stage="processing"><i class="fas fa-industry"></i> Processing</span> <span class="lifecycle-arrow"><i class="fas fa-chevron-right"></i></span>
-            <span class="lifecycle-stage" data-stage="distribution"><i class="fas fa-shipping-fast"></i> Distribution</span> <span class="lifecycle-arrow"><i class="fas fa-chevron-right"></i></span>
-            <span class="lifecycle-stage" data-stage="reclamation"><i class="fas fa-seedling"></i> Reclamation</span>
-        </div>
+          <div class="nav-section">
+            <div class="nav-section-title">Geology</div>
+            <button class="nav-link" data-tab="geology">
+              <i class="fas fa-layer-group"></i><span>Exploration &amp; Block Model</span>
+            </button>
+            <button class="nav-link" data-tab="tenements">
+              <i class="fas fa-file-signature"></i><span>Tenements &amp; Leases</span>
+            </button>
+          </div>
 
-        <!-- WORLD MAP WITH REAL GEOLOGICAL INSIGHTS (FIXED) -->
-        <div class="world-map" id="worldMap">
-            <div class="map-top">
-                <i class="fas fa-map"></i>
-                <span class="map-title">Geological Intelligence · real-time data</span>
+          <div class="nav-section">
+            <div class="nav-section-title">Operations</div>
+            <button class="nav-link" data-tab="openpit">
+              <i class="fas fa-mountain"></i><span>Open-Pit</span>
+            </button>
+            <button class="nav-link" data-tab="underground">
+              <i class="fas fa-route"></i><span>Underground</span>
+            </button>
+            <button class="nav-link" data-tab="processing">
+              <i class="fas fa-industry"></i><span>Processing Plant</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Logistics &amp; Sales</div>
+            <button class="nav-link" data-tab="bulk">
+              <i class="fas fa-train"></i><span>Bulk Commodity</span>
+            </button>
+            <button class="nav-link" data-tab="sales">
+              <i class="fas fa-coins"></i><span>Metals Sales</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Assets &amp; Corporate</div>
+            <button class="nav-link" data-tab="eam">
+              <i class="fas fa-truck-monster"></i><span>Fleet &amp; EAM</span>
+            </button>
+            <button class="nav-link" data-tab="corporate">
+              <i class="fas fa-landmark"></i><span>Finance, HR &amp; HSEC</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Other Modules</div>
+            <a href="inventory.html" class="nav-link">
+              <i class="fas fa-boxes-stacked"></i><span>Inventory</span>
+            </a>
+            <a href="procurement.html" class="nav-link">
+              <i class="fas fa-cart-shopping"></i><span>Procurement</span>
+            </a>
+            <a href="transport.html" class="nav-link">
+              <i class="fas fa-truck"></i><span>Transport</span>
+            </a>
+            <a href="safety.html" class="nav-link">
+              <i class="fas fa-shield-heart"></i><span>Safety &amp; HSE</span>
+            </a>
+            <a href="admin.html" class="nav-link">
+              <i class="fas fa-sliders"></i><span>Admin</span>
+            </a>
+          </div>
+        </nav>
+
+        <div class="sidebar-summary" id="sidebarSummary">
+          <div class="label">Monthly Production</div>
+          <div class="value" id="summaryValue">—</div>
+          <div class="sub" id="summarySub">No data yet</div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="mine-main" id="main-content" tabindex="-1">
+        <!-- Header -->
+        <header class="mine-header">
+          <div>
+            <h1 class="mine-title" id="pageTitle">
+              <i class="fas fa-hard-hat"></i>
+              <span id="pageTitleText">Global Master Overview</span>
+            </h1>
+            <p class="mine-subtitle" id="pageSubtitle">
+              Cross-functional KPIs across all mining operations
+            </p>
+          </div>
+          <div class="mine-actions">
+            <button class="btn btn-secondary" onclick="exportCurrentTab()">
+              <i class="fas fa-download"></i> Export
+            </button>
+            <button class="btn btn-primary" id="addRecordBtn" onclick="openAddModal()">
+              <i class="fas fa-plus"></i>
+              <span id="addBtnLabel">New Record</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- ============ MASTER OVERVIEW ============ -->
+        <div id="dashboard-tab" class="tab-content active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Total Tonnes Mined (MTD)</span>
+                <span class="stat-icon"><i class="fas fa-weight-hanging"></i></span>
+              </div>
+              <div class="stat-value" id="ovTonnes">—</div>
+              <div class="stat-change">Across all active sites</div>
             </div>
-            <div class="geological-insight" id="geoInsight">
-                <i class="fas fa-bolt" style="color:#c8a23b;"></i> <span>Andean copper belt:</span> 2.3M MT inferred resources · grade 1.4% Cu
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Mill Recovery</span>
+                <span class="stat-icon"><i class="fas fa-percent"></i></span>
+              </div>
+              <div class="stat-value" id="ovRecovery">—</div>
+              <div class="stat-change">Weighted average</div>
             </div>
-            <div style="margin-top: 0.8rem; font-size: 0.9rem; color: #929fb1;" id="geoSecondary">
-                West Africa: new gold discovery · 2.1M oz indicated
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Fleet Availability</span>
+                <span class="stat-icon"><i class="fas fa-truck-moving"></i></span>
+              </div>
+              <div class="stat-value" id="ovFleet">—</div>
+              <div class="stat-change">Haul trucks &amp; drills</div>
             </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Safety Incidents (MTD)</span>
+                <span class="stat-icon"><i class="fas fa-shield-heart"></i></span>
+              </div>
+              <div class="stat-value" id="ovIncidents">—</div>
+              <div class="stat-change">Lost time &amp; recordable</div>
+            </div>
+          </div>
+
+          <div class="charts-grid">
+            <div class="chart-container">
+              <canvas id="ovTrendChart"></canvas>
+              <div class="chart-empty" id="ovTrendChartEmpty">
+                <i class="fas fa-chart-line"></i>
+                No production data yet
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="ovCommodityChart"></canvas>
+              <div class="chart-empty" id="ovCommodityChartEmpty">
+                <i class="fas fa-chart-pie"></i>
+                No commodity data yet
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-diagram-project"></i> Operational Snapshot</div>
+            </div>
+            <div class="process-flow">
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-layer-group"></i></div>
+                <div class="step-name">Exploration</div>
+                <div class="step-metric" id="ovExpl">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-mountain"></i></div>
+                <div class="step-name">Extraction</div>
+                <div class="step-metric" id="ovExtract">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-industry"></i></div>
+                <div class="step-name">Processing</div>
+                <div class="step-metric" id="ovProcess">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-train"></i></div>
+                <div class="step-name">Logistics</div>
+                <div class="step-metric" id="ovLogistics">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-coins"></i></div>
+                <div class="step-name">Sales</div>
+                <div class="step-metric" id="ovSales">—</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- MAIN CONTENT GRID -->
-        <div class="content-grid">
-            <!-- LEFT COLUMN -->
-            <div>
-                <!-- ACTIVE MINES CARD -->
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title"><i class="fas fa-hard-hat"></i> Active mining operations</span>
-                        <button class="btn-sm" id="addMineBtn"><i class="fas fa-plus"></i> Add mine</button>
-                    </div>
-                    <div class="table-container">
-                        <table class="table" id="minesTable">
-                            <thead><tr><th>Mine</th><th>Country</th><th>Mineral</th><th>Method</th><th>Monthly (MT)</th><th>Grade</th><th>Depth</th><th>Status</th><th></th></tr></thead>
-                            <tbody id="minesTbody"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- PROCESSING PLANTS -->
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title"><i class="fas fa-industry"></i> Processing & refining</span>
-                        <button class="btn-sm" id="addPlantBtn"><i class="fas fa-plus"></i> Add plant</button>
-                    </div>
-                    <div class="table-container">
-                        <table class="table" id="plantTable">
-                            <thead><tr><th>Plant</th><th>Type</th><th>Input</th><th>Output</th><th>Capacity</th><th>Utilization</th><th>Recovery</th><th></th></tr></thead>
-                            <tbody id="plantTbody"></tbody>
-                        </table>
-                    </div>
-                </div>
+        <!-- ============ ANALYTICS ============ -->
+        <div id="analytics-tab" class="tab-content">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Total Records</span></div>
+              <div class="stat-value" id="anTotal">—</div>
+              <div class="stat-change">Across all mining modules</div>
             </div>
-
-            <!-- RIGHT COLUMN -->
-            <div>
-                <!-- EXPLORATION CARD -->
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title"><i class="fas fa-search"></i> Active exploration</span>
-                        <button class="btn-sm" id="addExplBtn"><i class="fas fa-plus"></i> Add</button>
-                    </div>
-                    <div class="inline-list" id="explorationList"></div>
-                </div>
-
-                <!-- SAFETY CARD -->
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title"><i class="fas fa-shield-virus"></i> Safety & compliance</span>
-                        <button class="btn-sm" id="editSafetyBtn"><i class="fas fa-pencil-alt"></i> Edit</button>
-                    </div>
-                    <div id="safetyContent">
-                        <div class="inline-item"><span><i class="fas fa-check-circle" style="color:#4cb092;"></i> LTIFR:</span> <span class="text-gold" id="ltifrVal">0.38</span> (below target)</div>
-                        <div class="inline-item"><span><i class="fas fa-exclamation-triangle" style="color:#ffaa33;"></i> Incidents (month):</span> <span class="text-gold" id="incidentVal">2</span></div>
-                        <div class="inline-item"><span><i class="fas fa-clipboard-check" style="color:#6a9fb5;"></i> Audits scheduled:</span> <span class="text-gold" id="auditVal">14</span></div>
-                    </div>
-                    <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                        <span class="mineral-badge"><i class="fas fa-certificate"></i> ISO 45001</span>
-                        <span class="mineral-badge"><i class="fas fa-globe"></i> ICMM</span>
-                    </div>
-                </div>
-
-                <!-- COMMODITY PRICES -->
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title"><i class="fas fa-chart-line"></i> Real-time commodities</span>
-                        <button class="btn-sm" id="refreshPrices"><i class="fas fa-sync-alt"></i> Refresh</button>
-                    </div>
-                    <div class="inline-list">
-                        <div class="inline-item"><span><i class="fas fa-coins" style="color:#c8a23b;"></i> Gold</span> <span><span id="goldVal">$2,185</span>/oz <span class="text-gold" id="goldPct">↑1.5%</span></span></div>
-                        <div class="inline-item"><span><i class="fas fa-circle" style="color:#b87333;"></i> Copper</span> <span><span id="copperVal">$9,020</span>/MT <span class="text-gold" id="copperPct">↓0.3%</span></span></div>
-                        <div class="inline-item"><span><i class="fas fa-square" style="color:#a0522d;"></i> Iron ore</span> <span><span id="ironVal">$121</span>/MT <span class="text-gold" id="ironPct">↑2.4%</span></span></div>
-                    </div>
-                </div>
-
-                <!-- QUICK NAVIGATION CARD (CLEAN) -->
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title"><i class="fas fa-compass"></i> Quick navigation</span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 0.6rem;">
-                        <a href="https://cephasgm.github.io/CephasGM-ERP/index.html" style="color:#c8a23b; text-decoration:none;"><i class="fas fa-arrow-left"></i> Back to Home</a>
-                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top:0.5rem;">
-                            <a href="https://cephasgm.github.io/CephasGM-ERP/inventory.html" class="mineral-badge">Inventory</a>
-                            <a href="https://cephasgm.github.io/CephasGM-ERP/procurement.html" class="mineral-badge">Procurement</a>
-                            <a href="https://cephasgm.github.io/CephasGM-ERP/transport.html" class="mineral-badge">Transport</a>
-                            <a href="https://cephasgm.github.io/CephasGM-ERP/finance.html" class="mineral-badge">Finance</a>
-                            <a href="https://cephasgm.github.io/CephasGM-ERP/hr.html" class="mineral-badge">HR</a>
-                        </div>
-                    </div>
-                </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Active Sites</span></div>
+              <div class="stat-value" id="anSites">—</div>
+              <div class="stat-change">Sites with production</div>
             </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Avg Grade</span></div>
+              <div class="stat-value" id="anGrade">—</div>
+              <div class="stat-change">Weighted Cu equivalent</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Safety Index</span></div>
+              <div class="stat-value" id="anSafety">—</div>
+              <div class="stat-change">Composite score</div>
+            </div>
+          </div>
         </div>
+
+        <!-- ============ GEOLOGY & BLOCK MODEL ============ -->
+        <div id="geology-tab" class="tab-content">
+          <div class="block-model">
+            <div class="bm-icon"><i class="fas fa-cubes"></i></div>
+            <h4>3D Block Model Viewer</h4>
+            <p>Interactive geological model — Cu/Au/Fe grade overlays</p>
+            <div class="chips">
+              <span class="chip">Cu %</span>
+              <span class="chip">Au g/t</span>
+              <span class="chip">Fe %</span>
+              <span class="chip">Density</span>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Exploration Programs</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('exploration')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('exploration')">
+                  <i class="fas fa-plus"></i> Add Program
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Program</th>
+                  <th>Commodity</th>
+                  <th>Location</th>
+                  <th>Meters Drilled</th>
+                  <th>Grade Indicator</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="explorationBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ TENEMENTS ============ -->
+        <div id="tenements-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Tenement &amp; Lease Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('tenements')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('tenement')">
+                  <i class="fas fa-plus"></i> Add Tenement
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Lease ID</th>
+                  <th>Type</th>
+                  <th>Jurisdiction</th>
+                  <th>Expiry Date</th>
+                  <th>Min. Expenditure</th>
+                  <th>Spent to Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tenementsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ OPEN-PIT ============ -->
+        <div id="openpit-tab" class="tab-content">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Active Drill Patterns</span></div>
+              <div class="stat-value" id="opDrills">—</div>
+              <div class="stat-change">Ready for blast</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Fleet Trucks Active</span></div>
+              <div class="stat-value" id="opTrucks">—</div>
+              <div class="stat-change">Hauling, queuing, loading</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Avg Cycle Time</span></div>
+              <div class="stat-value" id="opCycle">—</div>
+              <div class="stat-change">Minutes per haul cycle</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Powder Factor</span></div>
+              <div class="stat-value" id="opPowder">—</div>
+              <div class="stat-change">kg/m³ average</div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Drill &amp; Blast Patterns</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('drills')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('drill')">
+                  <i class="fas fa-plus"></i> Log Blast Pattern
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Pattern ID</th>
+                  <th>Bench</th>
+                  <th>Holes</th>
+                  <th>Powder Factor</th>
+                  <th>Volume (m³)</th>
+                  <th>Planned Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="drillsBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Load &amp; Haul Fleet Telemetry</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('haulage')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('haulage')">
+                  <i class="fas fa-plus"></i> Add Truck
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Truck ID</th>
+                  <th>Model</th>
+                  <th>Operator</th>
+                  <th>Status</th>
+                  <th>Cycle Time</th>
+                  <th>Payload (t)</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="haulageBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ UNDERGROUND ============ -->
+        <div id="underground-tab" class="tab-content">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Daily Advance</span></div>
+              <div class="stat-value" id="ugAdvance">—</div>
+              <div class="stat-change">Meters vs target</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Personnel Underground</span></div>
+              <div class="stat-value" id="ugPersonnel">—</div>
+              <div class="stat-change">RFID tracked</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Ventilation Status</span></div>
+              <div class="stat-value" id="ugVent">—</div>
+              <div class="stat-change">Primary fan capacity</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Gas Alerts</span></div>
+              <div class="stat-value" id="ugGas">—</div>
+              <div class="stat-change">Active warnings</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-wind"></i> Ventilation &amp; Gas Telemetry</div>
+            </div>
+            <div class="stats-grid" style="margin-bottom:0;">
+              <div class="stat-card">
+                <div class="stat-header"><span class="stat-title">O₂</span></div>
+                <div class="stat-value" id="gasO2">—</div>
+                <div class="stat-change">% by volume</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-header"><span class="stat-title">CO</span></div>
+                <div class="stat-value" id="gasCO">—</div>
+                <div class="stat-change">ppm</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-header"><span class="stat-title">CH₄</span></div>
+                <div class="stat-value" id="gasCH4">—</div>
+                <div class="stat-change">% by volume</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-header"><span class="stat-title">NO₂</span></div>
+                <div class="stat-value" id="gasNO2">—</div>
+                <div class="stat-change">ppm</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Development &amp; Advance Tracking</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('development')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('development')">
+                  <i class="fas fa-plus"></i> Add Entry
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Heading</th>
+                  <th>Level</th>
+                  <th>Target (m)</th>
+                  <th>Actual (m)</th>
+                  <th>Variance</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="developmentBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>RFID Personnel Tracking</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('rfid')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('rfid')">
+                  <i class="fas fa-plus"></i> Add Checkpoint
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Zone</th>
+                  <th>Type</th>
+                  <th>Personnel Count</th>
+                  <th>Capacity</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="rfidBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ PROCESSING ============ -->
+        <div id="processing-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-industry"></i> Processing Flow</div>
+            </div>
+            <div class="process-flow">
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-cube"></i></div>
+                <div class="step-name">Crusher</div>
+                <div class="step-metric" id="procCrusher">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-circle-notch"></i></div>
+                <div class="step-name">SAG Mill</div>
+                <div class="step-metric" id="procSag">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-water"></i></div>
+                <div class="step-name">Flotation</div>
+                <div class="step-metric" id="procFloat">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-filter"></i></div>
+                <div class="step-name">Concentrate</div>
+                <div class="step-metric" id="procConc">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Metallurgical Mass Balance</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('metallurgy')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('metallurgy')">
+                  <i class="fas fa-plus"></i> Add Record
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Dry Ore (t)</th>
+                  <th>Head Grade</th>
+                  <th>Recovery %</th>
+                  <th>Concentrate (t)</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="metallurgyBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ BULK COMMODITY ============ -->
+        <div id="bulk-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Stockyard Blending Engine</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('stockpiles')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('stockpile')">
+                  <i class="fas fa-plus"></i> Add Stockpile
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Stockpile ID</th>
+                  <th>Commodity</th>
+                  <th>Tonnage (t)</th>
+                  <th>Ash %</th>
+                  <th>Sulfur %</th>
+                  <th>Iron Grade</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="stockpilesBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Rail &amp; Port Demurrage Risk</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('railport')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('railport')">
+                  <i class="fas fa-plus"></i> Add Shipment
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Train / Vessel ID</th>
+                  <th>Manifest Weight</th>
+                  <th>Berth Status</th>
+                  <th>Laytime Left</th>
+                  <th>Demurrage Risk</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="railportBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ METALS SALES ============ -->
+        <div id="sales-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Vault &amp; Concentrate Inventory</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('vault')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('vault')">
+                  <i class="fas fa-plus"></i> Add Entry
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Lot ID</th>
+                  <th>Type</th>
+                  <th>Weight</th>
+                  <th>Purity / Grade</th>
+                  <th>Custody</th>
+                  <th>Location</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="vaultBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Off-Take Contract Pricing</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('offtake')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('offtake')">
+                  <i class="fas fa-plus"></i> Add Contract
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Contract</th>
+                  <th>Counterparty</th>
+                  <th>Payable Metal</th>
+                  <th>Treatment Charge (TC)</th>
+                  <th>Refining Charge (RC)</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="offtakeBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ FLEET & EAM ============ -->
+        <div id="eam-tab" class="tab-content">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Haul Trucks</span></div>
+              <div class="stat-value" id="eamTrucks">—</div>
+              <div class="stat-change">CAT / Komatsu fleet</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Drill Rigs</span></div>
+              <div class="stat-value" id="eamDrills">—</div>
+              <div class="stat-change">Sandvik / Atlas Copco</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">MTBF</span></div>
+              <div class="stat-value" id="eamMtbf">—</div>
+              <div class="stat-change">Mean time between failures</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Rotables Looping</span></div>
+              <div class="stat-value" id="eamRotables">—</div>
+              <div class="stat-change">Components in rebuild cycle</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-arrows-rotate"></i> Warehouse Rotables Loop</div>
+            </div>
+            <div class="process-flow">
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-warehouse"></i></div>
+                <div class="step-name">Warehouse</div>
+                <div class="step-metric" id="loopWarehouse">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-truck-monster"></i></div>
+                <div class="step-name">Machine</div>
+                <div class="step-metric" id="loopMachine">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-screwdriver-wrench"></i></div>
+                <div class="step-name">Rebuild Shop</div>
+                <div class="step-metric" id="loopRebuild">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-recycle"></i></div>
+                <div class="step-name">Returned</div>
+                <div class="step-metric" id="loopReturned">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Fleet Maintenance Status</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('fleet')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('fleet')">
+                  <i class="fas fa-plus"></i> Add Asset
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Asset ID</th>
+                  <th>Type</th>
+                  <th>Model</th>
+                  <th>Hours</th>
+                  <th>Last Service</th>
+                  <th>Next Service</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="fleetBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ CORPORATE ============ -->
+        <div id="corporate-tab" class="tab-content">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">JV Cash Calls Open</span></div>
+              <div class="stat-value" id="corpCash">—</div>
+              <div class="stat-change">Pending approvals</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">ARO Provision</span></div>
+              <div class="stat-value" id="corpAro">—</div>
+              <div class="stat-change">Asset retirement obligation</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Rehab Progress</span></div>
+              <div class="stat-value" id="corpRehab">—</div>
+              <div class="stat-change">Land seeding target</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">FIFO Roster</span></div>
+              <div class="stat-value" id="corpRoster">—</div>
+              <div class="stat-change">Workers on shift</div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Joint Venture Cash Calls</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('cashcalls')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('cashcall')">
+                  <i class="fas fa-plus"></i> Add Cash Call
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Call ID</th>
+                  <th>JV Partner</th>
+                  <th>Amount</th>
+                  <th>Due Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="cashcallsBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Progressive Rehabilitation</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('rehab')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('rehab')">
+                  <i class="fas fa-plus"></i> Add Entry
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Site</th>
+                  <th>Hectares Target</th>
+                  <th>Hectares Completed</th>
+                  <th>Progress</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="rehabBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>FIFO Roster &amp; Shift Fatigue</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('roster')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('roster')">
+                  <i class="fas fa-plus"></i> Add Roster
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Crew</th>
+                  <th>Rotation</th>
+                  <th>Days On</th>
+                  <th>Fatigue Score</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="rosterBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
     </div>
 
     <!-- FOOTER -->
-    <div class="footer">
-        <i class="fas fa-copyright"></i> 2026 CephasGM Group · v3.14.2 · Build 2026.02.21 · PROD
-    </div>
+    <footer class="app-footer">
+      Copyright © 2025 <strong>Cephas GM</strong> | Innovating for Tomorrow
+    </footer>
+  </div>
 
-    <!-- MODAL -->
-    <div id="genericModal" class="modal-overlay">
-        <div class="modal-card">
-            <span class="modal-close" id="closeModalBtn">&times;</span>
-            <h3 id="modalTitle">Edit record</h3>
-            <div id="modalBody" class="modal-fields"></div>
-            <div style="display: flex; justify-content: flex-end; gap:1rem; margin-top:2rem;">
-                <button class="btn-sm" id="modalCancelBtn">Cancel</button>
-                <button class="btn-primary" id="modalSaveBtn">Save</button>
-            </div>
+  <!-- ============ MODAL ============ -->
+  <div class="modal" id="editModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">New Record</h2>
+        <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+      </div>
+      <form id="editForm" onsubmit="saveItem(event)">
+        <div class="modal-body">
+          <div id="formFields"></div>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <script>
-        (function() {
-            // ----- DATA STORES -----
-            let minesData = [
-                { mine:'Escondida', country:'Chile', mineral:'Copper', method:'Open pit', output:'105000', grade:'1.2%', depth:'645', status:'Active' },
-                { mine:'Grasberg', country:'Indonesia', mineral:'Gold/Copper', method:'Underground', output:'65000', grade:'1.5g/t', depth:'1200', status:'Active' },
-                { mine:'Pilbara', country:'Australia', mineral:'Iron ore', method:'Open pit', output:'850000', grade:'62%', depth:'120', status:'Active' }
-            ];
-            let plantsData = [
-                { plant:'Smelter A', type:'Copper smelter', input:'Copper conc.', output:'Cathode 99.99%', capacity:'450K MT', util:'92%', recovery:'96.5%' },
-                { plant:'Refinery B', type:'Gold refinery', input:'Dore bars', output:'999.9 fine', capacity:'200 MT', util:'78%', recovery:'98.2%' }
-            ];
-            let explorations = [
-                { name:'West Africa Gold Belt', meters:'12,450m', badge:'High grade' },
-                { name:'Andes Copper', meters:'Assays pending', badge:'Prospective' }
-            ];
-            let safety = { ltifr: '0.38', incidents: '2', audits: '14' };
+  <div class="modal" id="deleteModal" role="dialog" aria-modal="true">
+    <div class="modal-content" style="max-width:420px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirm Delete</h2>
+        <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-muted);font-size:0.88rem;">Are you sure you want to delete this record? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
 
-            // ----- RENDER FUNCTIONS -----
-            function renderMines() {
-                let html = '';
-                minesData.forEach((m, i) => {
-                    html += `<tr>
-                        <td>${m.mine}</td><td>${m.country}</td><td><span class="mineral-badge">${m.mineral}</span></td>
-                        <td>${m.method}</td><td>${Number(m.output).toLocaleString()}</td><td>${m.grade}</td><td>${m.depth}</td>
-                        <td><span class="status-badge">${m.status}</span></td>
-                        <td class="action-cell">
-                            <button class="btn-sm" onclick="window.editMine(${i})"><i class="fas fa-edit"></i></button>
-                            <button class="btn-sm" onclick="window.deleteMine(${i})"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>`;
-                });
-                document.getElementById('minesTbody').innerHTML = html;
+  <script>
+  /* =========================================================
+     CephasGM ERP — Mining Module v4.0
+     8 structural pillars + Master Overview.
+     Empty-state on first load. Data persisted to localStorage.
+     ========================================================= */
+
+  const TAB_META = {
+    dashboard:   ['Global Master Overview',       'Cross-functional KPIs across all mining operations'],
+    analytics:   ['Mining Analytics',              'Portfolio-level insights and trends'],
+    geology:     ['Geology & Exploration',         'Block models, drilling programs, and resource definition'],
+    tenements:   ['Tenements & Leases',            'Land access, tenure compliance, and expenditure commitments'],
+    openpit:     ['Open-Pit Operations',           'Drill & blast, load & haul, and pit production'],
+    underground: ['Underground Operations',        'Development, ventilation, gas, and personnel tracking'],
+    processing:  ['Processing Plant',              'Metallurgical accounting and plant performance'],
+    bulk:        ['Bulk Commodity Logistics',      'Stockyard blending, rail, and port operations'],
+    sales:       ['Metals Sales',                  'Vault custody, off-take contracts, and pricing'],
+    eam:         ['Fleet & EAM',                   'Haul trucks, drills, and rotables management'],
+    corporate:   ['Finance, HR & HSEC',            'JV cash calls, rehabilitation, and roster fatigue']
+  };
+
+  /* ---------- STATE ---------- */
+  let mineData = loadData();
+  let activeTab = 'dashboard';
+  let charts = {};
+  let currentEditType = null;
+  let deleteType = null;
+  let deleteId = null;
+
+  function loadData() {
+    const saved = localStorage.getItem('cephasgm_mining_data');
+    if (saved) return JSON.parse(saved);
+    return {
+      exploration: [],
+      tenements: [],
+      drills: [],
+      haulage: [],
+      development: [],
+      rfid: [],
+      metallurgy: [],
+      stockpiles: [],
+      railport: [],
+      vault: [],
+      offtake: [],
+      fleet: [],
+      cashcalls: [],
+      rehab: [],
+      roster: [],
+      nextIds: {
+        exploration: 1, tenement: 1, drill: 1, haulage: 1,
+        development: 1, rfid: 1, metallurgy: 1, stockpile: 1,
+        railport: 1, vault: 1, offtake: 1, fleet: 1,
+        cashcall: 1, rehab: 1, roster: 1
+      }
+    };
+  }
+  function saveData() {
+    localStorage.setItem('cephasgm_mining_data', JSON.stringify(mineData));
+  }
+
+  /* ---------- HELPERS ---------- */
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+
+  function fmtCurrency(amount) {
+    if (amount == null || isNaN(amount)) return '—';
+    const abs = Math.abs(amount);
+    if (abs >= 1e9) return '$' + (amount / 1e9).toFixed(2) + 'B';
+    if (abs >= 1e6) return '$' + (amount / 1e6).toFixed(2) + 'M';
+    if (abs >= 1e3) return '$' + (amount / 1e3).toFixed(1) + 'K';
+    return '$' + Math.round(amount).toLocaleString();
+  }
+  function emptyRow(cols, message, icon = 'fa-inbox') {
+    return `<tr><td colspan="${cols}" class="empty-state"><i class="fas ${icon}"></i>${message}</td></tr>`;
+  }
+  function notify(msg, type = 'info') {
+    const n = document.createElement('div');
+    n.className = `notification ${type}`;
+    n.textContent = msg;
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 3200);
+  }
+  function badgeForStatus(status) {
+    const s = (status || '').toLowerCase();
+    if (s.includes('active') || s.includes('operational') || s.includes('completed') || s.includes('approved') || s.includes('on track') || s.includes('hauling') || s.includes('running')) return 'success';
+    if (s.includes('planning') || s.includes('pending') || s.includes('queuing') || s.includes('loading') || s.includes('review') || s.includes('warning') || s.includes('scheduled')) return 'warning';
+    if (s.includes('down') || s.includes('overdue') || s.includes('failed') || s.includes('breached') || s.includes('critical')) return 'danger';
+    return 'gray';
+  }
+
+  /* ---------- BOOT ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNav();
+    setupMobileMenu();
+    setupAddButton();
+    setupSiteSelector();
+    renderAll();
+    initCharts();
+  });
+
+  function setupNav() {
+    $$('.nav-link[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+  }
+  function setupMobileMenu() {
+    const toggle = $('#mobileMenuToggle');
+    const sidebar = $('#mineSidebar');
+    const overlay = $('#sidebarOverlay');
+    toggle.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('active');
+      overlay.classList.toggle('active', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  }
+  function setupAddButton() {
+    const btn = $('#addRecordBtn');
+    if (btn) {
+      btn.onclick = () => openAddModal();
+      updateAddButtonLabel();
+    }
+  }
+  function setupSiteSelector() {
+    const sel = $('#siteSelect');
+    if (!sel) return;
+    sel.addEventListener('change', () => {
+      notify(`Filtered by: ${sel.options[sel.selectedIndex].text}`, 'info');
+    });
+  }
+  function updateAddButtonLabel() {
+    const btn = $('#addRecordBtn');
+    if (!btn) return;
+    const type = inferTypeFromTab(activeTab);
+    const labels = {
+      exploration: 'Add Program',
+      tenement:    'Add Tenement',
+      drill:       'Log Blast Pattern',
+      haulage:     'Add Truck',
+      development: 'Add Entry',
+      rfid:        'Add Checkpoint',
+      metallurgy:  'Add Record',
+      stockpile:   'Add Stockpile',
+      railport:    'Add Shipment',
+      vault:       'Add Vault Entry',
+      offtake:     'Add Contract',
+      fleet:       'Add Asset',
+      cashcall:    'Add Cash Call',
+      rehab:       'Add Rehab Entry',
+      roster:      'Add Roster'
+    };
+    $('#addBtnLabel').textContent = labels[type] || 'New Record';
+  }
+
+  function switchTab(tab) {
+    activeTab = tab;
+    $$('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.tab === tab));
+    $$('.tab-content').forEach(c => c.classList.toggle('active', c.id === `${tab}-tab`));
+    const meta = TAB_META[tab] || TAB_META.dashboard;
+    $('#pageTitleText').textContent = meta[0];
+    $('#pageSubtitle').textContent = meta[1];
+    updateAddButtonLabel();
+    const sidebar = $('#mineSidebar');
+    if (sidebar.classList.contains('active')) {
+      sidebar.classList.remove('active');
+      $('#sidebarOverlay').classList.remove('active');
+      $('#mobileMenuToggle').setAttribute('aria-expanded', 'false');
+    }
+    refreshCharts();
+  }
+  window.switchTab = switchTab;
+
+  /* ---------- RENDER ALL ---------- */
+  function renderAll() {
+    renderOverview();
+    renderAnalytics();
+    renderExploration();
+    renderTenements();
+    renderOpenPit();
+    renderUnderground();
+    renderProcessing();
+    renderBulk();
+    renderSales();
+    renderEam();
+    renderCorporate();
+    refreshCharts();
+  }
+
+  /* ---------- OVERVIEW ---------- */
+  function renderOverview() {
+    const totalRecords = Object.entries(mineData)
+      .filter(([k]) => Array.isArray(mineData[k]))
+      .reduce((sum, [, v]) => sum + v.length, 0);
+
+    // Aggregate from modules
+    const totalTonnage = mineData.stockpiles.reduce((s, i) => s + (parseFloat(i.tonnage) || 0), 0);
+    const recovery = mineData.metallurgy.length
+      ? (mineData.metallurgy.reduce((s, i) => s + (parseFloat(i.recovery) || 0), 0) / mineData.metallurgy.length).toFixed(1)
+      : null;
+    const fleetActive = mineData.fleet.filter(f => (f.status || '').toLowerCase() === 'operational').length;
+    const fleetTotal = mineData.fleet.length;
+    const fleetAvail = fleetTotal ? Math.round((fleetActive / fleetTotal) * 100) : null;
+    const incidents = mineData.roster.filter(r => (r.fatigueScore || 0) > 70).length;
+
+    $('#ovTonnes').textContent = totalTonnage ? totalTonnage.toLocaleString() + ' t' : '—';
+    $('#ovRecovery').textContent = recovery !== null ? recovery + '%' : '—';
+    $('#ovFleet').textContent = fleetAvail !== null ? fleetAvail + '%' : '—';
+    $('#ovIncidents').textContent = mineData.roster.length ? incidents : '—';
+
+    $('#ovExpl').textContent = mineData.exploration.length ? `${mineData.exploration.length} active` : '—';
+    $('#ovExtract').textContent = mineData.haulage.length ? `${mineData.haulage.length} trucks` : '—';
+    $('#ovProcess').textContent = mineData.metallurgy.length ? `${mineData.metallurgy.length} batches` : '—';
+    $('#ovLogistics').textContent = mineData.railport.length ? `${mineData.railport.length} shipments` : '—';
+    $('#ovSales').textContent = mineData.offtake.length ? `${mineData.offtake.length} contracts` : '—';
+
+    // Sidebar summary
+    $('#summaryValue').textContent = totalTonnage ? (totalTonnage / 1e6).toFixed(2) + 'M t' : '—';
+    $('#summarySub').textContent = totalRecords ? `${totalRecords} records across ${Object.entries(mineData).filter(([k, v]) => Array.isArray(v) && v.length > 0).length} modules` : 'No data yet';
+  }
+
+  /* ---------- ANALYTICS ---------- */
+  function renderAnalytics() {
+    const total = Object.entries(mineData)
+      .filter(([k]) => Array.isArray(mineData[k]))
+      .reduce((sum, [, v]) => sum + v.length, 0);
+    const sites = new Set(mineData.tenements.map(t => t.jurisdiction).filter(Boolean)).size;
+
+    $('#anTotal').textContent = total || '—';
+    $('#anSites').textContent = sites || '—';
+    $('#anGrade').textContent = '—';
+    $('#anSafety').textContent = total ? Math.max(0, 100 - mineData.roster.filter(r => (r.fatigueScore || 0) > 70).length * 5) + '%' : '—';
+  }
+
+  /* ---------- GEOLOGY ---------- */
+  function renderExploration() {
+    const body = $('#explorationBody');
+    if (!mineData.exploration.length) {
+      body.innerHTML = emptyRow(7, 'No exploration programs yet — add your first drilling program.', 'fa-layer-group');
+      return;
+    }
+    body.innerHTML = mineData.exploration.map(e => `
+      <tr>
+        <td>${e.program}</td>
+        <td>${e.commodity || '—'}</td>
+        <td>${e.location || '—'}</td>
+        <td>${e.meters || 0} m</td>
+        <td>${e.grade || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(e.status)}">${e.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('exploration', ${e.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- TENEMENTS ---------- */
+  function renderTenements() {
+    const body = $('#tenementsBody');
+    if (!mineData.tenements.length) {
+      body.innerHTML = emptyRow(8, 'No tenements registered yet.', 'fa-file-signature');
+      return;
+    }
+    body.innerHTML = mineData.tenements.map(t => `
+      <tr>
+        <td>${t.leaseId}</td>
+        <td>${t.type || '—'}</td>
+        <td>${t.jurisdiction || '—'}</td>
+        <td>${t.expiryDate || '—'}</td>
+        <td>${fmtCurrency(t.minExpenditure)}</td>
+        <td>${fmtCurrency(t.spentToDate)}</td>
+        <td><span class="badge badge-${badgeForStatus(t.status)}">${t.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('tenement', ${t.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- OPEN-PIT ---------- */
+  function renderOpenPit() {
+    const dBody = $('#drillsBody');
+    if (!mineData.drills.length) {
+      dBody.innerHTML = emptyRow(8, 'No drill & blast patterns logged yet.', 'fa-bomb');
+    } else {
+      dBody.innerHTML = mineData.drills.map(d => `
+        <tr>
+          <td>${d.patternId}</td>
+          <td>${d.bench || '—'}</td>
+          <td>${d.holes || 0}</td>
+          <td>${d.powderFactor || 0} kg/m³</td>
+          <td>${d.volume || 0}</td>
+          <td>${d.plannedDate || '—'}</td>
+          <td><span class="badge badge-${badgeForStatus(d.status)}">${d.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('drill', ${d.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    const hBody = $('#haulageBody');
+    if (!mineData.haulage.length) {
+      hBody.innerHTML = emptyRow(7, 'No haulage trucks registered.', 'fa-truck-monster');
+    } else {
+      hBody.innerHTML = mineData.haulage.map(h => `
+        <tr>
+          <td>${h.truckId}</td>
+          <td>${h.model || '—'}</td>
+          <td>${h.operator || '—'}</td>
+          <td><span class="badge badge-${badgeForStatus(h.status)}">${h.status || '—'}</span></td>
+          <td>${h.cycleTime || 0} min</td>
+          <td>${h.payload || 0} t</td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('haulage', ${h.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    // Stats
+    $('#opDrills').textContent = mineData.drills.length || '—';
+    $('#opTrucks').textContent = mineData.haulage.filter(h => (h.status || '').toLowerCase() !== 'idle').length || '—';
+    const avgCycle = mineData.haulage.length
+      ? (mineData.haulage.reduce((s, h) => s + (parseFloat(h.cycleTime) || 0), 0) / mineData.haulage.length).toFixed(1)
+      : null;
+    $('#opCycle').textContent = avgCycle ? avgCycle + ' min' : '—';
+    const avgPowder = mineData.drills.length
+      ? (mineData.drills.reduce((s, d) => s + (parseFloat(d.powderFactor) || 0), 0) / mineData.drills.length).toFixed(2)
+      : null;
+    $('#opPowder').textContent = avgPowder ? avgPowder + ' kg/m³' : '—';
+  }
+
+  /* ---------- UNDERGROUND ---------- */
+  function renderUnderground() {
+    const dBody = $('#developmentBody');
+    if (!mineData.development.length) {
+      dBody.innerHTML = emptyRow(7, 'No development entries yet.', 'fa-route');
+    } else {
+      dBody.innerHTML = mineData.development.map(d => {
+        const variance = (parseFloat(d.actual) || 0) - (parseFloat(d.target) || 0);
+        return `
+          <tr>
+            <td>${d.heading}</td>
+            <td>${d.level || '—'}</td>
+            <td>${d.target || 0} m</td>
+            <td>${d.actual || 0} m</td>
+            <td><span class="badge badge-${variance >= 0 ? 'success' : 'warning'}">${variance >= 0 ? '+' : ''}${variance} m</span></td>
+            <td><span class="badge badge-${badgeForStatus(d.status)}">${d.status || '—'}</span></td>
+            <td class="table-actions">
+              <i class="fas fa-trash action-icon" onclick="openDelete('development', ${d.id})" title="Delete"></i>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    const rBody = $('#rfidBody');
+    if (!mineData.rfid.length) {
+      rBody.innerHTML = emptyRow(6, 'No RFID checkpoints configured.', 'fa-broadcast-tower');
+    } else {
+      rBody.innerHTML = mineData.rfid.map(r => `
+        <tr>
+          <td>${r.zone}</td>
+          <td>${r.type || '—'}</td>
+          <td>${r.personnel || 0}</td>
+          <td>${r.capacity || 0}</td>
+          <td><span class="badge badge-${badgeForStatus(r.status)}">${r.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('rfid', ${r.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    // Stats
+    const totalAdvance = mineData.development.reduce((s, d) => s + (parseFloat(d.actual) || 0), 0);
+    const totalTarget = mineData.development.reduce((s, d) => s + (parseFloat(d.target) || 0), 0);
+    $('#ugAdvance').textContent = totalAdvance ? `${totalAdvance}m / ${totalTarget}m` : '—';
+    $('#ugPersonnel').textContent = mineData.rfid.reduce((s, r) => s + (parseInt(r.personnel) || 0), 0) || '—';
+    $('#ugVent').textContent = '—';
+    const gasAlerts = mineData.rfid.filter(r => (r.status || '').toLowerCase() === 'warning').length;
+    $('#ugGas').textContent = mineData.rfid.length ? gasAlerts : '—';
+
+    // Gas telemetry placeholders
+    $('#gasO2').textContent = '—';
+    $('#gasCO').textContent = '—';
+    $('#gasCH4').textContent = '—';
+    $('#gasNO2').textContent = '—';
+  }
+
+  /* ---------- PROCESSING ---------- */
+  function renderProcessing() {
+    const body = $('#metallurgyBody');
+    if (!mineData.metallurgy.length) {
+      body.innerHTML = emptyRow(6, 'No metallurgical records yet — add your first batch result.', 'fa-industry');
+    } else {
+      body.innerHTML = mineData.metallurgy.map(m => `
+        <tr>
+          <td>${m.date || '—'}</td>
+          <td>${m.dryOre || 0}</td>
+          <td>${m.headGrade || '—'}</td>
+          <td>${m.recovery || 0}%</td>
+          <td>${m.concentrate || 0}</td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('metallurgy', ${m.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    // Process flow metrics
+    $('#procCrusher').textContent = mineData.metallurgy.length ? `${mineData.metallurgy.length} batches` : '—';
+    $('#procSag').textContent = '—';
+    $('#procFloat').textContent = '—';
+    $('#procConc').textContent = mineData.metallurgy.reduce((s, m) => s + (parseFloat(m.concentrate) || 0), 0) || '—';
+  }
+
+  /* ---------- BULK COMMODITY ---------- */
+  function renderBulk() {
+    const sBody = $('#stockpilesBody');
+    if (!mineData.stockpiles.length) {
+      sBody.innerHTML = emptyRow(8, 'No stockpiles registered yet.', 'fa-cubes-stacked');
+    } else {
+      sBody.innerHTML = mineData.stockpiles.map(s => `
+        <tr>
+          <td>${s.stockpileId}</td>
+          <td>${s.commodity || '—'}</td>
+          <td>${s.tonnage || 0} t</td>
+          <td>${s.ash || '—'}</td>
+          <td>${s.sulfur || '—'}</td>
+          <td>${s.ironGrade || '—'}</td>
+          <td><span class="badge badge-${badgeForStatus(s.status)}">${s.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('stockpile', ${s.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    const rBody = $('#railportBody');
+    if (!mineData.railport.length) {
+      rBody.innerHTML = emptyRow(6, 'No rail or port shipments yet.', 'fa-train');
+    } else {
+      rBody.innerHTML = mineData.railport.map(r => `
+        <tr>
+          <td>${r.shipmentId}</td>
+          <td>${r.manifestWeight || 0} t</td>
+          <td>${r.berthStatus || '—'}</td>
+          <td>${r.laytime || '—'}</td>
+          <td><span class="badge badge-${badgeForStatus(r.demurrageRisk)}">${r.demurrageRisk || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('railport', ${r.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+  }
+
+  /* ---------- SALES ---------- */
+  function renderSales() {
+    const vBody = $('#vaultBody');
+    if (!mineData.vault.length) {
+      vBody.innerHTML = emptyRow(7, 'No vault entries yet — record dore bars or concentrate bags.', 'fa-vault');
+    } else {
+      vBody.innerHTML = mineData.vault.map(v => `
+        <tr>
+          <td>${v.lotId}</td>
+          <td>${v.type || '—'}</td>
+          <td>${v.weight || 0}</td>
+          <td>${v.purity || '—'}</td>
+          <td>${v.custody || '—'}</td>
+          <td>${v.location || '—'}</td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('vault', ${v.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    const oBody = $('#offtakeBody');
+    if (!mineData.offtake.length) {
+      oBody.innerHTML = emptyRow(7, 'No off-take contracts yet.', 'fa-file-signature');
+    } else {
+      oBody.innerHTML = mineData.offtake.map(o => `
+        <tr>
+          <td>${o.contractId}</td>
+          <td>${o.counterparty || '—'}</td>
+          <td>${o.payableMetal || '—'}</td>
+          <td>${o.tc || '—'}</td>
+          <td>${o.rc || '—'}</td>
+          <td><span class="badge badge-${badgeForStatus(o.status)}">${o.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('offtake', ${o.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+  }
+
+  /* ---------- FLEET & EAM ---------- */
+  function renderEam() {
+    const body = $('#fleetBody');
+    if (!mineData.fleet.length) {
+      body.innerHTML = emptyRow(8, 'No fleet assets registered yet.', 'fa-truck-monster');
+    } else {
+      body.innerHTML = mineData.fleet.map(f => `
+        <tr>
+          <td>${f.assetId}</td>
+          <td>${f.type || '—'}</td>
+          <td>${f.model || '—'}</td>
+          <td>${f.hours || 0}</td>
+          <td>${f.lastService || '—'}</td>
+          <td>${f.nextService || '—'}</td>
+          <td><span class="badge badge-${badgeForStatus(f.status)}">${f.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('fleet', ${f.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    $('#eamTrucks').textContent = mineData.fleet.filter(f => (f.type || '').toLowerCase().includes('haul')).length || '—';
+    $('#eamDrills').textContent = mineData.fleet.filter(f => (f.type || '').toLowerCase().includes('drill')).length || '—';
+    $('#eamMtbf').textContent = '—';
+    const inCycle = mineData.fleet.filter(f => (f.status || '').toLowerCase().includes('service') || (f.status || '').toLowerCase().includes('rebuild')).length;
+    $('#eamRotables').textContent = mineData.fleet.length ? inCycle : '—';
+
+    $('#loopWarehouse').textContent = '—';
+    $('#loopMachine').textContent = mineData.fleet.filter(f => (f.status || '').toLowerCase() === 'operational').length || '—';
+    $('#loopRebuild').textContent = inCycle || '—';
+    $('#loopReturned').textContent = '—';
+  }
+
+  /* ---------- CORPORATE ---------- */
+  function renderCorporate() {
+    const cBody = $('#cashcallsBody');
+    if (!mineData.cashcalls.length) {
+      cBody.innerHTML = emptyRow(6, 'No JV cash calls recorded yet.', 'fa-hand-holding-dollar');
+    } else {
+      cBody.innerHTML = mineData.cashcalls.map(c => `
+        <tr>
+          <td>${c.callId}</td>
+          <td>${c.partner || '—'}</td>
+          <td>${fmtCurrency(c.amount)}</td>
+          <td>${c.dueDate || '—'}</td>
+          <td><span class="badge badge-${badgeForStatus(c.status)}">${c.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('cashcall', ${c.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    const rBody = $('#rehabBody');
+    if (!mineData.rehab.length) {
+      rBody.innerHTML = emptyRow(6, 'No rehabilitation records yet.', 'fa-seedling');
+    } else {
+      rBody.innerHTML = mineData.rehab.map(r => {
+        const pct = r.targetHa && r.completedHa ? Math.round((r.completedHa / r.targetHa) * 100) : 0;
+        return `
+          <tr>
+            <td>${r.site}</td>
+            <td>${r.targetHa || 0} ha</td>
+            <td>${r.completedHa || 0} ha</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;min-width:60px;">
+                  <div style="height:100%;width:${Math.min(pct,100)}%;background:${pct>=100?'var(--success)':pct>=50?'var(--warning)':'var(--danger)'};border-radius:3px;"></div>
+                </div>
+                <span style="font-size:0.72rem;font-weight:600;">${pct}%</span>
+              </div>
+            </td>
+            <td><span class="badge badge-${badgeForStatus(r.status)}">${r.status || '—'}</span></td>
+            <td class="table-actions">
+              <i class="fas fa-trash action-icon" onclick="openDelete('rehab', ${r.id})" title="Delete"></i>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    const roBody = $('#rosterBody');
+    if (!mineData.roster.length) {
+      roBody.innerHTML = emptyRow(7, 'No roster entries yet.', 'fa-user-clock');
+    } else {
+      roBody.innerHTML = mineData.roster.map(r => {
+        const score = parseInt(r.fatigueScore) || 0;
+        const status = score > 70 ? 'Warning' : score > 50 ? 'Monitor' : 'Normal';
+        return `
+          <tr>
+            <td>${r.employee}</td>
+            <td>${r.crew || '—'}</td>
+            <td>${r.rotation || '—'}</td>
+            <td>${r.daysOn || 0}</td>
+            <td><span class="badge badge-${score > 70 ? 'danger' : score > 50 ? 'warning' : 'success'}">${score}</span></td>
+            <td><span class="badge badge-${badgeForStatus(status)}">${status}</span></td>
+            <td class="table-actions">
+              <i class="fas fa-trash action-icon" onclick="openDelete('roster', ${r.id})" title="Delete"></i>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    // Stats
+    const openCalls = mineData.cashcalls.filter(c => (c.status || '').toLowerCase() !== 'approved').length;
+    $('#corpCash').textContent = mineData.cashcalls.length ? openCalls : '—';
+    $('#corpAro').textContent = '—';
+    const totalTarget = mineData.rehab.reduce((s, r) => s + (parseFloat(r.targetHa) || 0), 0);
+    const totalCompleted = mineData.rehab.reduce((s, r) => s + (parseFloat(r.completedHa) || 0), 0);
+    const rehabPct = totalTarget ? Math.round((totalCompleted / totalTarget) * 100) : null;
+    $('#corpRehab').textContent = rehabPct !== null ? rehabPct + '%' : '—';
+    const onShift = mineData.roster.filter(r => (r.status || '').toLowerCase() !== 'off').length;
+    $('#corpRoster').textContent = mineData.roster.length ? onShift : '—';
+  }
+
+  /* ---------- CHARTS ---------- */
+  function initCharts() {
+    refreshCharts();
+  }
+
+  function refreshCharts() {
+    const hasProduction = mineData.metallurgy.length > 0;
+    const hasStockpiles = mineData.stockpiles.length > 0;
+
+    const showEmpty = (canvasId, emptyId, has) => {
+      const c = document.getElementById(canvasId);
+      const e = document.getElementById(emptyId);
+      if (c) c.style.display = has ? 'block' : 'none';
+      if (e) e.style.display = has ? 'none' : 'flex';
+    };
+
+    showEmpty('ovTrendChart', 'ovTrendChartEmpty', hasProduction);
+    showEmpty('ovCommodityChart', 'ovCommodityChartEmpty', hasStockpiles);
+
+    Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} });
+    charts = {};
+
+    if (hasProduction) {
+      const ctx = document.getElementById('ovTrendChart')?.getContext('2d');
+      if (ctx) {
+        const byDate = {};
+        mineData.metallurgy.forEach(m => {
+          const d = m.date || '';
+          if (d) byDate[d] = (byDate[d] || 0) + (parseFloat(m.dryOre) || 0);
+        });
+        const labels = Object.keys(byDate).sort();
+        const data = labels.map(l => byDate[l]);
+
+        charts.trend = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Dry Ore (t)',
+              data,
+              borderColor: '#2563eb',
+              backgroundColor: 'rgba(37, 99, 235, 0.1)',
+              tension: 0.35,
+              fill: true,
+              pointBackgroundColor: '#2563eb',
+              pointBorderColor: '#fff',
+              pointBorderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+              x: { grid: { display: false } }
             }
-            function renderPlants() {
-                let html = '';
-                plantsData.forEach((p, i) => {
-                    html += `<tr><td>${p.plant}</td><td>${p.type}</td><td>${p.input}</td><td>${p.output}</td><td>${p.capacity}</td><td>${p.util}</td><td>${p.recovery}</td>
-                        <td class="action-cell"><button class="btn-sm" onclick="window.editPlant(${i})"><i class="fas fa-edit"></i></button>
-                        <button class="btn-sm" onclick="window.deletePlant(${i})"><i class="fas fa-trash"></i></button></td></tr>`;
-                });
-                document.getElementById('plantTbody').innerHTML = html;
-            }
-            function renderExploration() {
-                let html = '';
-                explorations.forEach((e, i) => {
-                    html += `<div class="inline-item"><span><i class="fas fa-drill"></i> ${e.name}</span> <span>${e.meters} <span class="mineral-badge">${e.badge}</span></span>
-                        <span><button class="btn-sm" onclick="window.editExpl(${i})"><i class="fas fa-edit"></i></button>
-                        <button class="btn-sm" onclick="window.deleteExpl(${i})"><i class="fas fa-trash"></i></button></span></div>`;
-                });
-                document.getElementById('explorationList').innerHTML = html;
-            }
-            function updateStats() {
-                document.getElementById('statMines').innerText = minesData.length;
-                let total = minesData.reduce((acc, m) => acc + (parseInt(m.output) || 0), 0);
-                document.getElementById('statProd').innerText = (total/1e6).toFixed(2) + 'M MT';
-                document.getElementById('statExpl').innerText = explorations.length;
-            }
-            function renderSafety() {
-                document.getElementById('ltifrVal').innerText = safety.ltifr;
-                document.getElementById('incidentVal').innerText = safety.incidents;
-                document.getElementById('auditVal').innerText = safety.audits;
-            }
-            renderSafety();
+          }
+        });
+      }
+    }
 
-            // ----- GLOBAL EDIT/DELETE -----
-            window.editMine = (idx) => openModal('mine', idx);
-            window.deleteMine = (idx) => { minesData.splice(idx,1); renderMines(); updateStats(); };
-            window.editPlant = (idx) => openModal('plant', idx);
-            window.deletePlant = (idx) => { plantsData.splice(idx,1); renderPlants(); };
-            window.editExpl = (idx) => openModal('expl', idx);
-            window.deleteExpl = (idx) => { explorations.splice(idx,1); renderExploration(); updateStats(); };
+    if (hasStockpiles) {
+      const ctx = document.getElementById('ovCommodityChart')?.getContext('2d');
+      if (ctx) {
+        const byCommodity = {};
+        mineData.stockpiles.forEach(s => {
+          const k = s.commodity || 'Other';
+          byCommodity[k] = (byCommodity[k] || 0) + (parseFloat(s.tonnage) || 0);
+        });
+        charts.commodity = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: Object.keys(byCommodity),
+            datasets: [{
+              data: Object.values(byCommodity),
+              backgroundColor: ['#2563eb','#0f7b5a','#d97706','#c0392b','#8b5cf6','#ec4899']
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } }
+          }
+        });
+      }
+    }
+  }
 
-            // ----- MODAL SYSTEM -----
-            const modal = document.getElementById('genericModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalBody = document.getElementById('modalBody');
-            const closeBtn = document.getElementById('closeModalBtn');
-            const cancelBtn = document.getElementById('modalCancelBtn');
-            const saveBtn = document.getElementById('modalSaveBtn');
-            let currentEdit = { type: null, idx: null };
+  /* ---------- ADD MODAL ---------- */
+  function openAddModal(type) {
+    type = type || inferTypeFromTab(activeTab);
+    currentEditType = type;
+    const titles = {
+      exploration: 'Add Exploration Program',
+      tenement:    'Add Tenement',
+      drill:       'Log Blast Pattern',
+      haulage:     'Add Haul Truck',
+      development: 'Add Development Entry',
+      rfid:        'Add RFID Zone',
+      metallurgy:  'Add Metallurgical Record',
+      stockpile:   'Add Stockpile',
+      railport:    'Add Rail/Port Shipment',
+      vault:       'Add Vault Entry',
+      offtake:     'Add Off-Take Contract',
+      fleet:       'Add Fleet Asset',
+      cashcall:    'Add JV Cash Call',
+      rehab:       'Add Rehab Entry',
+      roster:      'Add Roster Entry'
+    };
+    $('#modalTitle').textContent = titles[type] || 'New Record';
+    $('#formFields').innerHTML = formFor(type);
+    $('#editModal').classList.add('active');
+  }
+  window.openAddModal = openAddModal;
 
-            window.openModal = function(type, idx) {
-                currentEdit = { type, idx };
-                modalTitle.innerText = 'Edit ' + (type==='mine'?'Mine':type==='plant'?'Plant':'Exploration');
-                let item = type==='mine' ? minesData[idx] : (type==='plant' ? plantsData[idx] : explorations[idx]);
-                let fields = '';
-                if (type==='mine') {
-                    fields = `<div class="modal-field"><label>Mine</label><input id="modal-mine" value="${item.mine}"></div>
-                        <div class="modal-field"><label>Country</label><input id="modal-country" value="${item.country}"></div>
-                        <div class="modal-field"><label>Mineral</label><input id="modal-mineral" value="${item.mineral}"></div>
-                        <div class="modal-field"><label>Method</label><input id="modal-method" value="${item.method}"></div>
-                        <div class="modal-field"><label>Output (MT)</label><input id="modal-output" value="${item.output}"></div>
-                        <div class="modal-field"><label>Grade</label><input id="modal-grade" value="${item.grade}"></div>
-                        <div class="modal-field"><label>Depth</label><input id="modal-depth" value="${item.depth}"></div>`;
-                } else if (type==='plant') {
-                    fields = `<div class="modal-field"><label>Plant</label><input id="modal-plant" value="${item.plant}"></div>
-                        <div class="modal-field"><label>Type</label><input id="modal-planttype" value="${item.type}"></div>
-                        <div class="modal-field"><label>Input</label><input id="modal-input" value="${item.input}"></div>
-                        <div class="modal-field"><label>Output</label><input id="modal-output" value="${item.output}"></div>
-                        <div class="modal-field"><label>Capacity</label><input id="modal-cap" value="${item.capacity}"></div>
-                        <div class="modal-field"><label>Utilization</label><input id="modal-util" value="${item.util}"></div>
-                        <div class="modal-field"><label>Recovery</label><input id="modal-rec" value="${item.recovery}"></div>`;
-                } else if (type==='expl') {
-                    fields = `<div class="modal-field"><label>Name</label><input id="modal-name" value="${item.name}"></div>
-                        <div class="modal-field"><label>Meters</label><input id="modal-meters" value="${item.meters}"></div>
-                        <div class="modal-field"><label>Badge</label><input id="modal-badge" value="${item.badge}"></div>`;
-                }
-                modalBody.innerHTML = fields;
-                modal.style.display = 'flex';
-            };
+  function inferTypeFromTab(tab) {
+    return ({
+      dashboard:   'exploration',
+      analytics:   'exploration',
+      geology:     'exploration',
+      tenements:   'tenement',
+      openpit:     'drill',
+      underground: 'development',
+      processing:  'metallurgy',
+      bulk:        'stockpile',
+      sales:       'vault',
+      eam:         'fleet',
+      corporate:   'cashcall'
+    })[tab] || 'exploration';
+  }
 
-            saveBtn.onclick = function() {
-                if (currentEdit.type==='mine') {
-                    let i = currentEdit.idx;
-                    minesData[i].mine = document.getElementById('modal-mine')?.value || minesData[i].mine;
-                    minesData[i].country = document.getElementById('modal-country')?.value || minesData[i].country;
-                    minesData[i].mineral = document.getElementById('modal-mineral')?.value || minesData[i].mineral;
-                    minesData[i].method = document.getElementById('modal-method')?.value || minesData[i].method;
-                    minesData[i].output = document.getElementById('modal-output')?.value || minesData[i].output;
-                    minesData[i].grade = document.getElementById('modal-grade')?.value || minesData[i].grade;
-                    minesData[i].depth = document.getElementById('modal-depth')?.value || minesData[i].depth;
-                    renderMines(); updateStats();
-                } else if (currentEdit.type==='plant') {
-                    let i = currentEdit.idx;
-                    plantsData[i].plant = document.getElementById('modal-plant')?.value || plantsData[i].plant;
-                    plantsData[i].type = document.getElementById('modal-planttype')?.value || plantsData[i].type;
-                    plantsData[i].input = document.getElementById('modal-input')?.value || plantsData[i].input;
-                    plantsData[i].output = document.getElementById('modal-output')?.value || plantsData[i].output;
-                    plantsData[i].capacity = document.getElementById('modal-cap')?.value || plantsData[i].capacity;
-                    plantsData[i].util = document.getElementById('modal-util')?.value || plantsData[i].util;
-                    plantsData[i].recovery = document.getElementById('modal-rec')?.value || plantsData[i].recovery;
-                    renderPlants();
-                } else if (currentEdit.type==='expl') {
-                    let i = currentEdit.idx;
-                    explorations[i].name = document.getElementById('modal-name')?.value || explorations[i].name;
-                    explorations[i].meters = document.getElementById('modal-meters')?.value || explorations[i].meters;
-                    explorations[i].badge = document.getElementById('modal-badge')?.value || explorations[i].badge;
-                    renderExploration();
-                }
-                modal.style.display = 'none';
-            };
-            const closeModal = () => modal.style.display = 'none';
-            closeBtn.onclick = closeModal; cancelBtn.onclick = closeModal;
-            window.onclick = (e) => { if (e.target === modal) closeModal(); };
+  function formFor(type) {
+    if (type === 'exploration') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Program Name</label><input type="text" class="form-control" name="program" required></div>
+        <div class="form-group"><label class="form-label">Commodity</label>
+          <select class="form-control" name="commodity">
+            <option>Gold</option><option>Copper</option><option>Iron Ore</option>
+            <option>Coal</option><option>Bauxite</option><option>Lithium</option><option>Silver</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Location</label><input type="text" class="form-control" name="location"></div>
+        <div class="form-group"><label class="form-label">Meters Drilled</label><input type="number" class="form-control" name="meters" min="0" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Grade Indicator</label><input type="text" class="form-control" name="grade" placeholder="e.g. 2.4 g/t Au"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Active</option><option>Planning</option><option>Completed</option><option>On Hold</option>
+          </select>
+        </div>
+      </div>`;
 
-            // ----- ADD NEW -----
-            document.getElementById('addMineBtn').onclick = () => { minesData.push({ mine:'New mine', country:'?', mineral:'ore', method:'TBD', output:'0', grade:'0%', depth:'0', status:'Planned' }); renderMines(); updateStats(); };
-            document.getElementById('addPlantBtn').onclick = () => { plantsData.push({ plant:'New plant', type:'Mill', input:'ore', output:'conc', capacity:'0', util:'0%', recovery:'0%' }); renderPlants(); };
-            document.getElementById('addExplBtn').onclick = () => { explorations.push({ name:'New prospect', meters:'0m', badge:'new' }); renderExploration(); updateStats(); };
-            document.getElementById('newMineBtn').onclick = () => { minesData.push({ mine:'Greenfield project', country:'Global', mineral:'exploration', method:'TBD', output:'0', grade:'?', depth:'0', status:'Planning' }); renderMines(); updateStats(); };
+    if (type === 'tenement') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Lease ID</label><input type="text" class="form-control" name="leaseId" required></div>
+        <div class="form-group"><label class="form-label">Type</label>
+          <select class="form-control" name="type">
+            <option>Exploration Licence</option><option>Mining Lease</option>
+            <option>Prospecting Licence</option><option>Retention Licence</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Jurisdiction</label><input type="text" class="form-control" name="jurisdiction" placeholder="e.g. Western Australia"></div>
+        <div class="form-group"><label class="form-label">Expiry Date</label><input type="date" class="form-control" name="expiryDate"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Min. Expenditure</label><input type="number" class="form-control" name="minExpenditure" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Spent to Date</label><input type="number" class="form-control" name="spentToDate" step="0.01" min="0" value="0"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status">
+          <option>Active</option><option>Pending Renewal</option><option>Expired</option><option>Relinquished</option>
+        </select>
+      </div>`;
 
-            // ----- SAFETY EDIT -----
-            document.getElementById('editSafetyBtn').onclick = () => {
-                let newL = prompt('LTIFR', safety.ltifr); if(newL) safety.ltifr = newL;
-                let newI = prompt('Incidents', safety.incidents); if(newI) safety.incidents = newI;
-                let newA = prompt('Audits', safety.audits); if(newA) safety.audits = newA;
-                renderSafety();
-            };
+    if (type === 'drill') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Pattern ID</label><input type="text" class="form-control" name="patternId" placeholder="Auto-generated"></div>
+        <div class="form-group"><label class="form-label">Bench</label><input type="text" class="form-control" name="bench" placeholder="e.g. 1150 RL"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Holes</label><input type="number" class="form-control" name="holes" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Powder Factor (kg/m³)</label><input type="number" class="form-control" name="powderFactor" step="0.01" min="0" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Volume (m³)</label><input type="number" class="form-control" name="volume" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Planned Date</label><input type="date" class="form-control" name="plannedDate"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status">
+          <option>Planned</option><option>Drilled</option><option>Loaded</option><option>Blasted</option>
+        </select>
+      </div>`;
 
-            // ----- COMMODITY REFRESH -----
-            document.getElementById('refreshPrices').onclick = () => {
-                let g = 2185 + Math.floor(Math.random()*40-20); document.getElementById('goldVal').innerText = '$'+g;
-                let c = 9020 + Math.floor(Math.random()*200-100); document.getElementById('copperVal').innerText = '$'+c;
-                let i = 121 + Math.floor(Math.random()*8-4); document.getElementById('ironVal').innerText = '$'+i;
-                document.getElementById('goldPct').innerText = (Math.random()>0.5?'↑':'↓')+(Math.random()*2).toFixed(1)+'%';
-                document.getElementById('copperPct').innerText = (Math.random()>0.5?'↑':'↓')+(Math.random()*2).toFixed(1)+'%';
-                document.getElementById('ironPct').innerText = (Math.random()>0.5?'↑':'↓')+(Math.random()*2).toFixed(1)+'%';
-            };
+    if (type === 'haulage') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Truck ID</label><input type="text" class="form-control" name="truckId" required></div>
+        <div class="form-group"><label class="form-label">Model</label>
+          <select class="form-control" name="model">
+            <option>CAT 797F</option><option>CAT 793F</option><option>Komatsu 980E</option>
+            <option>Komatsu 930E</option><option>Hitachi EH5000</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Operator</label><input type="text" class="form-control" name="operator"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Hauling</option><option>Queuing</option><option>Loading</option><option>Idle</option><option>Down</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Cycle Time (min)</label><input type="number" class="form-control" name="cycleTime" step="0.1" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Payload (t)</label><input type="number" class="form-control" name="payload" step="0.1" min="0" value="0"></div>
+      </div>`;
 
-            // ----- STAT EDIT -----
-            window.editStatCard = (idx) => {
-                let spans = document.querySelectorAll('.stat-value');
-                let newVal = prompt('Edit value:', spans[idx].innerText);
-                if (newVal) spans[idx].innerText = newVal;
-            };
+    if (type === 'development') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Heading</label><input type="text" class="form-control" name="heading" required></div>
+        <div class="form-group"><label class="form-label">Level</label><input type="text" class="form-control" name="level" placeholder="e.g. 1150"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Target (m)</label><input type="number" class="form-control" name="target" step="0.1" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Actual (m)</label><input type="number" class="form-control" name="actual" step="0.1" min="0" value="0"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status">
+          <option>On Track</option><option>Delayed</option><option>Completed</option>
+        </select>
+      </div>`;
 
-            // ----- LIFECYCLE STAGES (FULL FUNCTIONALITY: display stage data) -----
-            document.querySelectorAll('.lifecycle-stage').forEach(el => {
-                el.addEventListener('click', function(e) {
-                    document.querySelectorAll('.lifecycle-stage').forEach(s => s.classList.remove('active'));
-                    this.classList.add('active');
-                    const stage = this.dataset.stage;
-                    // Display relevant insight based on stage
-                    const geoInsight = document.getElementById('geoInsight');
-                    const geoSec = document.getElementById('geoSecondary');
-                    if (stage === 'exploration') {
-                        geoInsight.innerHTML = '<i class="fas fa-bolt" style="color:#c8a23b;"></i> <span>Andean copper belt:</span> 2.3M MT inferred · grade 1.4% Cu';
-                        geoSec.innerText = 'West Africa: new gold discovery · 2.1M oz indicated';
-                    } else if (stage === 'planning') {
-                        geoInsight.innerHTML = '<i class="fas fa-clipboard-list"></i> <span>Feasibility stage:</span> 3 projects in pre-feasibility, CAPEX $2.1B';
-                        geoSec.innerText = 'Permits pending for Pilbara expansion';
-                    } else if (stage === 'development') {
-                        geoInsight.innerHTML = '<i class="fas fa-hard-hat"></i> <span>Development:</span> 2 new shafts sinking, completion Q4 2027';
-                        geoSec.innerText = 'Underground development at Grasberg Deep';
-                    } else if (stage === 'extraction') {
-                        geoInsight.innerHTML = '<i class="fas fa-hammer"></i> <span>Extraction:</span> 12 active stopes, 2.4M MT blasted this month';
-                        geoSec.innerText = 'Average head grade: 1.1% Cu, 0.8g/t Au';
-                    } else if (stage === 'processing') {
-                        geoInsight.innerHTML = '<i class="fas fa-industry"></i> <span>Processing:</span> Mill utilization 91%, SAG throughput 185K tpd';
-                        geoSec.innerText = 'Flotation recovery 94.2%';
-                    } else if (stage === 'distribution') {
-                        geoInsight.innerHTML = '<i class="fas fa-train"></i> <span>Logistics:</span> 2.1M MT shipped this month, 18 vessels en route';
-                        geoSec.innerText = 'Rail availability 98%';
-                    } else if (stage === 'reclamation') {
-                        geoInsight.innerHTML = '<i class="fas fa-seedling"></i> <span>Reclamation:</span> 340 hectares under active rehabilitation';
-                        geoSec.innerText = 'Biodiversity index +12% vs baseline';
-                    }
-                });
-            });
+    if (type === 'rfid') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Zone Name</label><input type="text" class="form-control" name="zone" required></div>
+        <div class="form-group"><label class="form-label">Type</label>
+          <select class="form-control" name="type">
+            <option>Refuge Chamber</option><option>Working Face</option>
+            <option>Access Drift</option><option>Ventilation Shaft</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Personnel Count</label><input type="number" class="form-control" name="personnel" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Capacity</label><input type="number" class="form-control" name="capacity" min="0" value="0"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status">
+          <option>Active</option><option>Warning</option><option>Full</option><option>Idle</option>
+        </select>
+      </div>`;
 
-            // ----- SECTOR TABS (FILTER MINES BY STAGE) -----
-            document.querySelectorAll('.sector-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    document.querySelectorAll('.sector-tab').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    const filter = this.dataset.filter;
-                    // For demo, update map insight based on filter
-                    const geoInsight = document.getElementById('geoInsight');
-                    const geoSec = document.getElementById('geoSecondary');
-                    if (filter === 'all') {
-                        geoInsight.innerHTML = '<i class="fas fa-bolt"></i> <span>Global summary:</span> 47 active mines, 31 exploration projects';
-                        geoSec.innerText = 'Total resources: 131M MT · 4 new discoveries';
-                    } else if (filter === 'exploration') {
-                        geoInsight.innerHTML = '<i class="fas fa-search"></i> <span>Exploration:</span> 31 active programs, 82K m drilling YTD';
-                        geoSec.innerText = 'Top targets: Andina, Tropicana extension';
-                    } else if (filter === 'extraction') {
-                        geoInsight.innerHTML = '<i class="fas fa-hammer"></i> <span>Extraction:</span> 19 mines in production, 2.4M MT monthly';
-                        geoSec.innerText = 'Top producers: Escondida, Pilbara, Grasberg';
-                    } else if (filter === 'processing') {
-                        geoInsight.innerHTML = '<i class="fas fa-industry"></i> <span>Processing:</span> 14 plants active, 87% avg recovery';
-                        geoSec.innerText = 'Smelter A: 92% utilization';
-                    } else {
-                        geoInsight.innerHTML = `<i class="fas fa-map"></i> <span>${filter.charAt(0).toUpperCase()+filter.slice(1)} overview:</span> 12 active sites in this phase`;
-                        geoSec.innerText = 'Click lifecycle stages for detailed insights';
-                    }
-                });
-            });
+    if (type === 'metallurgy') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-control" name="date" required></div>
+        <div class="form-group"><label class="form-label">Dry Ore (t)</label><input type="number" class="form-control" name="dryOre" step="0.01" min="0" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Head Grade</label><input type="text" class="form-control" name="headGrade" placeholder="e.g. 1.2% Cu"></div>
+        <div class="form-group"><label class="form-label">Recovery (%)</label><input type="number" class="form-control" name="recovery" step="0.1" min="0" max="100" value="0"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Concentrate (t)</label><input type="number" class="form-control" name="concentrate" step="0.01" min="0" value="0"></div>`;
 
-            // ----- WORLD MAP CLICK (UPDATE WITH NEW DATA) -----
-            document.getElementById('worldMap').addEventListener('click', () => {
-                document.getElementById('geoInsight').innerHTML = '<i class="fas fa-bolt"></i> <span>Updated:</span> Liassic basin: 4.2M MT lithium equivalent indicated';
-                document.getElementById('geoSecondary').innerText = 'Quebec: new spodumene discovery · 1.6% Li2O';
-            });
+    if (type === 'stockpile') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Stockpile ID</label><input type="text" class="form-control" name="stockpileId" required></div>
+        <div class="form-group"><label class="form-label">Commodity</label>
+          <select class="form-control" name="commodity">
+            <option>Iron Ore</option><option>Coal</option><option>Bauxite</option>
+            <option>Copper Concentrate</option><option>Manganese</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Tonnage (t)</label><input type="number" class="form-control" name="tonnage" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Ash %</label><input type="number" class="form-control" name="ash" step="0.01" min="0" max="100" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Sulfur %</label><input type="number" class="form-control" name="sulfur" step="0.01" min="0" max="100" value="0"></div>
+        <div class="form-group"><label class="form-label">Iron Grade</label><input type="text" class="form-control" name="ironGrade" placeholder="e.g. 62% Fe"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status">
+          <option>Active</option><option>Building</option><option>Reclaiming</option><option>Closed</option>
+        </select>
+      </div>`;
 
-            // ----- INITIAL RENDER -----
-            renderMines(); renderPlants(); renderExploration(); updateStats();
-        })();
-    </script>
+    if (type === 'railport') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Train / Vessel ID</label><input type="text" class="form-control" name="shipmentId" required></div>
+        <div class="form-group"><label class="form-label">Manifest Weight (t)</label><input type="number" class="form-control" name="manifestWeight" step="0.01" min="0" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Berth Status</label>
+          <select class="form-control" name="berthStatus">
+            <option>Loading</option><option>Waiting</option><option>At Sea</option><option>Discharged</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Laytime Left</label><input type="text" class="form-control" name="laytime" placeholder="e.g. 18h"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Demurrage Risk</label>
+        <select class="form-control" name="demurrageRisk">
+          <option>Low</option><option>Medium</option><option>High</option><option>Critical</option>
+        </select>
+      </div>`;
+
+    if (type === 'vault') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Lot ID</label><input type="text" class="form-control" name="lotId" required></div>
+        <div class="form-group"><label class="form-label">Type</label>
+          <select class="form-control" name="type">
+            <option>Gold Dore Bar</option><option>Silver Bar</option>
+            <option>Copper Concentrate Bag</option><option>Zinc Concentrate Bag</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Weight (kg)</label><input type="number" class="form-control" name="weight" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Purity / Grade</label><input type="text" class="form-control" name="purity" placeholder="e.g. 99.5% Au"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Custody</label><input type="text" class="form-control" name="custody" placeholder="Custodian name"></div>
+        <div class="form-group"><label class="form-label">Location</label><input type="text" class="form-control" name="location" placeholder="e.g. Vault A"></div>
+      </div>`;
+
+    if (type === 'offtake') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Contract ID</label><input type="text" class="form-control" name="contractId" required></div>
+        <div class="form-group"><label class="form-label">Counterparty</label><input type="text" class="form-control" name="counterparty"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Payable Metal</label><input type="text" class="form-control" name="payableMetal" placeholder="e.g. 96.5% Cu"></div>
+        <div class="form-group"><label class="form-label">Treatment Charge (TC)</label><input type="number" class="form-control" name="tc" step="0.01" min="0" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Refining Charge (RC)</label><input type="number" class="form-control" name="rc" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Active</option><option>Pending</option><option>Expired</option><option>Closed</option>
+          </select>
+        </div>
+      </div>`;
+
+    if (type === 'fleet') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Asset ID</label><input type="text" class="form-control" name="assetId" required></div>
+        <div class="form-group"><label class="form-label">Type</label>
+          <select class="form-control" name="type">
+            <option>Haul Truck</option><option>Drill Rig</option><option>Loader</option>
+            <option>Excavator</option><option>Dozer</option><option>Grader</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Model</label><input type="text" class="form-control" name="model" placeholder="e.g. CAT 797F"></div>
+        <div class="form-group"><label class="form-label">Engine Hours</label><input type="number" class="form-control" name="hours" min="0" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Last Service</label><input type="date" class="form-control" name="lastService"></div>
+        <div class="form-group"><label class="form-label">Next Service</label><input type="date" class="form-control" name="nextService"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status">
+          <option>Operational</option><option>In Service</option><option>In Rebuild</option><option>Down</option>
+        </select>
+      </div>`;
+
+    if (type === 'cashcall') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Call ID</label><input type="text" class="form-control" name="callId" required></div>
+        <div class="form-group"><label class="form-label">JV Partner</label><input type="text" class="form-control" name="partner"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Amount (USD)</label><input type="number" class="form-control" name="amount" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Due Date</label><input type="date" class="form-control" name="dueDate"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status">
+          <option>Pending</option><option>Approved</option><option>Paid</option><option>Overdue</option>
+        </select>
+      </div>`;
+
+    if (type === 'rehab') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Site</label><input type="text" class="form-control" name="site" required></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>In Progress</option><option>On Track</option><option>Delayed</option><option>Complete</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Target (hectares)</label><input type="number" class="form-control" name="targetHa" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Completed (hectares)</label><input type="number" class="form-control" name="completedHa" step="0.01" min="0" value="0"></div>
+      </div>`;
+
+    if (type === 'roster') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Employee</label><input type="text" class="form-control" name="employee" required></div>
+        <div class="form-group"><label class="form-label">Crew</label><input type="text" class="form-control" name="crew" placeholder="e.g. Crew A"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Rotation</label>
+          <select class="form-control" name="rotation">
+            <option>2:1</option><option>2:2</option><option>4:3</option><option>8:6</option><option>14:7</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Days On</label><input type="number" class="form-control" name="daysOn" min="0" value="0"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Fatigue Score (0-100)</label><input type="number" class="form-control" name="fatigueScore" min="0" max="100" value="0"></div>`;
+
+    return '<p style="color:var(--text-muted);font-size:0.85rem;">No form available for this record type.</p>';
+  }
+
+  function saveItem(e) {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const type = currentEditType;
+    if (!type) return;
+    const data = Object.fromEntries(f.entries());
+    addRecord(type, data);
+    closeModal('editModal');
+    renderAll();
+    notify('Saved successfully', 'success');
+  }
+  window.saveItem = saveItem;
+
+  function addRecord(type, data) {
+    if (type === 'exploration') {
+      mineData.exploration.push({
+        id: mineData.nextIds.exploration++,
+        program: data.program, commodity: data.commodity || '',
+        location: data.location || '',
+        meters: parseInt(data.meters, 10) || 0,
+        grade: data.grade || '',
+        status: data.status || 'Active'
+      });
+    }
+    else if (type === 'tenement') {
+      mineData.tenements.push({
+        id: mineData.nextIds.tenement++,
+        leaseId: data.leaseId, type: data.type || '',
+        jurisdiction: data.jurisdiction || '',
+        expiryDate: data.expiryDate || '',
+        minExpenditure: parseFloat(data.minExpenditure) || 0,
+        spentToDate: parseFloat(data.spentToDate) || 0,
+        status: data.status || 'Active'
+      });
+    }
+    else if (type === 'drill') {
+      mineData.drills.push({
+        id: mineData.nextIds.drill++,
+        patternId: data.patternId || `DB-${String(mineData.drills.length + 1).padStart(4, '0')}`,
+        bench: data.bench || '',
+        holes: parseInt(data.holes, 10) || 0,
+        powderFactor: parseFloat(data.powderFactor) || 0,
+        volume: parseFloat(data.volume) || 0,
+        plannedDate: data.plannedDate || '',
+        status: data.status || 'Planned'
+      });
+    }
+    else if (type === 'haulage') {
+      mineData.haulage.push({
+        id: mineData.nextIds.haulage++,
+        truckId: data.truckId, model: data.model || '',
+        operator: data.operator || '',
+        status: data.status || 'Hauling',
+        cycleTime: parseFloat(data.cycleTime) || 0,
+        payload: parseFloat(data.payload) || 0
+      });
+    }
+    else if (type === 'development') {
+      mineData.development.push({
+        id: mineData.nextIds.development++,
+        heading: data.heading, level: data.level || '',
+        target: parseFloat(data.target) || 0,
+        actual: parseFloat(data.actual) || 0,
+        status: data.status || 'On Track'
+      });
+    }
+    else if (type === 'rfid') {
+      mineData.rfid.push({
+        id: mineData.nextIds.rfid++,
+        zone: data.zone, type: data.type || '',
+        personnel: parseInt(data.personnel, 10) || 0,
+        capacity: parseInt(data.capacity, 10) || 0,
+        status: data.status || 'Active'
+      });
+    }
+    else if (type === 'metallurgy') {
+      mineData.metallurgy.push({
+        id: mineData.nextIds.metallurgy++,
+        date: data.date || '',
+        dryOre: parseFloat(data.dryOre) || 0,
+        headGrade: data.headGrade || '',
+        recovery: parseFloat(data.recovery) || 0,
+        concentrate: parseFloat(data.concentrate) || 0
+      });
+    }
+    else if (type === 'stockpile') {
+      mineData.stockpiles.push({
+        id: mineData.nextIds.stockpile++,
+        stockpileId: data.stockpileId,
+        commodity: data.commodity || '',
+        tonnage: parseFloat(data.tonnage) || 0,
+        ash: parseFloat(data.ash) || 0,
+        sulfur: parseFloat(data.sulfur) || 0,
+        ironGrade: data.ironGrade || '',
+        status: data.status || 'Active'
+      });
+    }
+    else if (type === 'railport') {
+      mineData.railport.push({
+        id: mineData.nextIds.railport++,
+        shipmentId: data.shipmentId,
+        manifestWeight: parseFloat(data.manifestWeight) || 0,
+        berthStatus: data.berthStatus || '',
+        laytime: data.laytime || '',
+        demurrageRisk: data.demurrageRisk || 'Low'
+      });
+    }
+    else if (type === 'vault') {
+      mineData.vault.push({
+        id: mineData.nextIds.vault++,
+        lotId: data.lotId, type: data.type || '',
+        weight: parseFloat(data.weight) || 0,
+        purity: data.purity || '',
+        custody: data.custody || '',
+        location: data.location || ''
+      });
+    }
+    else if (type === 'offtake') {
+      mineData.offtake.push({
+        id: mineData.nextIds.offtake++,
+        contractId: data.contractId, counterparty: data.counterparty || '',
+        payableMetal: data.payableMetal || '',
+        tc: parseFloat(data.tc) || 0,
+        rc: parseFloat(data.rc) || 0,
+        status: data.status || 'Active'
+      });
+    }
+    else if (type === 'fleet') {
+      mineData.fleet.push({
+        id: mineData.nextIds.fleet++,
+        assetId: data.assetId, type: data.type || '',
+        model: data.model || '',
+        hours: parseInt(data.hours, 10) || 0,
+        lastService: data.lastService || '',
+        nextService: data.nextService || '',
+        status: data.status || 'Operational'
+      });
+    }
+    else if (type === 'cashcall') {
+      mineData.cashcalls.push({
+        id: mineData.nextIds.cashcall++,
+        callId: data.callId, partner: data.partner || '',
+        amount: parseFloat(data.amount) || 0,
+        dueDate: data.dueDate || '',
+        status: data.status || 'Pending'
+      });
+    }
+    else if (type === 'rehab') {
+      mineData.rehab.push({
+        id: mineData.nextIds.rehab++,
+        site: data.site,
+        targetHa: parseFloat(data.targetHa) || 0,
+        completedHa: parseFloat(data.completedHa) || 0,
+        status: data.status || 'In Progress'
+      });
+    }
+    else if (type === 'roster') {
+      mineData.roster.push({
+        id: mineData.nextIds.roster++,
+        employee: data.employee, crew: data.crew || '',
+        rotation: data.rotation || '2:1',
+        daysOn: parseInt(data.daysOn, 10) || 0,
+        fatigueScore: parseInt(data.fatigueScore, 10) || 0,
+        status: 'Active'
+      });
+    }
+    saveData();
+  }
+
+  /* ---------- DELETE ---------- */
+  function openDelete(type, id) {
+    deleteType = type;
+    deleteId = id;
+    $('#deleteModal').classList.add('active');
+  }
+  window.openDelete = openDelete;
+
+  function confirmDelete() {
+    if (!deleteType || deleteId == null) return;
+    const map = {
+      exploration: 'exploration', tenement: 'tenements',
+      drill: 'drills', haulage: 'haulage',
+      development: 'development', rfid: 'rfid',
+      metallurgy: 'metallurgy', stockpile: 'stockpiles',
+      railport: 'railport', vault: 'vault', offtake: 'offtake',
+      fleet: 'fleet', cashcall: 'cashcalls',
+      rehab: 'rehab', roster: 'roster'
+    };
+    const key = map[deleteType];
+    if (key && mineData[key]) {
+      mineData[key] = mineData[key].filter(x => String(x.id) !== String(deleteId));
+      saveData();
+      renderAll();
+      notify('Deleted', 'success');
+    }
+    closeModal('deleteModal');
+  }
+  window.confirmDelete = confirmDelete;
+
+  /* ---------- MODAL HELPERS ---------- */
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+  window.closeModal = closeModal;
+
+  /* ---------- EXPORT ---------- */
+  function exportTable(type) {
+    const map = {
+      exploration: 'exploration', tenements: 'tenements',
+      drills: 'drills', haulage: 'haulage',
+      development: 'development', rfid: 'rfid',
+      metallurgy: 'metallurgy', stockpiles: 'stockpiles',
+      railport: 'railport', vault: 'vault', offtake: 'offtake',
+      fleet: 'fleet', cashcalls: 'cashcalls',
+      rehab: 'rehab', roster: 'roster'
+    };
+    const key = map[type] || type;
+    const rows = mineData[key];
+    if (!rows || !rows.length) { notify('No data to export', 'info'); return; }
+    const headers = Object.keys(rows[0]);
+    const csv = [headers.join(',')]
+      .concat(rows.map(r => headers.map(h => JSON.stringify(r[h] ?? '')).join(',')))
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${key}_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    notify('Exported successfully', 'success');
+  }
+  window.exportTable = exportTable;
+
+  function exportCurrentTab() {
+    const map = {
+      geology:     'exploration',
+      tenements:   'tenements',
+      openpit:     'drills',
+      underground: 'development',
+      processing:  'metallurgy',
+      bulk:        'stockpiles',
+      sales:       'vault',
+      eam:         'fleet',
+      corporate:   'cashcalls'
+    };
+    const key = map[activeTab];
+    if (key) exportTable(key);
+    else notify('Nothing to export from this section', 'info');
+  }
+  window.exportCurrentTab = exportCurrentTab;
+
+  /* ---------- KEYBOARD ---------- */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+    }
+  });
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('modal')) e.target.classList.remove('active');
+  });
+  </script>
 </body>
 </html>
