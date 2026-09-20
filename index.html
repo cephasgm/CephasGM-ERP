@@ -2,743 +2,779 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes" />
-  
-  <!-- PWA Meta Tags -->
-  <meta name="theme-color" content="#2563eb" id="theme-color-meta" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- PWA Meta -->
+  <meta name="theme-color" content="#1a4c7a" id="theme-color-meta" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="CephasGM ERP">
-  
-  <title>CephasGM ERP r</title>
+  <meta name="apple-mobile-web-app-title" content="CephasGM ERP" />
+
+  <title>CephasGM ERP — Global Command Center</title>
 
   <!-- SEO / Social -->
   <meta name="description" content="CephasGM ERP — Multi-national Enterprise Resource Planning Command Center" />
   <meta name="keywords" content="ERP, Global, Finance, HR, Inventory, Projects, PWA, Multi-national, CephasGM" />
   <meta name="author" content="Cephas Gideon Mkama" />
-  
-  <!-- Open Graph -->
   <meta property="og:title" content="CephasGM ERP Global Command Center" />
   <meta property="og:description" content="Complete Enterprise Resource Planning for Multi-national Operations" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://cephasgm.github.io/CephasGM-ERP/" />
   <meta property="og:image" content="https://cephasgm.github.io/CephasGM-ERP/og-image.png" />
-  
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="manifest.json" />
 
-  <!-- Icons -->
+  <!-- PWA Manifest & Icons -->
+  <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" href="icon-192.png" />
   <link rel="apple-touch-icon" href="icon-192.png" />
 
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
   <style>
-    /* ===== RESET & VARIABLES ===== */
+    /* ============ DESIGN TOKENS ============ */
     :root {
-      --bg: #f0f2f5;
-      --card: #ffffff;
-      --text: #0a1e3c;
-      --text-secondary: #2c3e50;
-      --muted: #5e6f8d;
-      --primary: #1a4c7a;
-      --primary-600: #0e3a5c;
-      --primary-light: #e0eefb;
-      --success: #0f7b5a;
-      --warning: #e6a017;
-      --danger: #c0392b;
-      --info: #3498db;
-      --radius: 12px;
-      --radius-sm: 8px;
-      --gap: 1.5rem;
-      --shadow: 0 4px 12px rgba(0, 20, 40, 0.08);
-      --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.12);
-      --max-width: 1600px;
-      --nav-height: 70px;
-      --border-color: #e2e8f0;
+      --bg:            #f4f6fa;
+      --surface:       #ffffff;
+      --surface-alt:   #fafbfd;
+      --border:        #e6e9f0;
+      --border-strong: #d3d9e5;
+
+      --text:          #0a1e3c;
+      --text-2:        #2c3e50;
+      --text-muted:    #5e6f8d;
+      --text-subtle:   #94a3b8;
+
+      --primary:       #1a4c7a;
+      --primary-600:   #0e3a5c;
+      --primary-soft:  #e8f0fa;
+      --accent:        #2563eb;
+
+      --success:       #0f7b5a;
+      --warning:       #d97706;
+      --danger:        #c0392b;
+      --gold:          #b8860b;
+
+      --radius-lg:     16px;
+      --radius:        12px;
+      --radius-sm:     8px;
+      --radius-pill:   999px;
+
+      --shadow-sm:     0 1px 2px rgba(10, 30, 60, 0.04);
+      --shadow:        0 2px 10px rgba(10, 30, 60, 0.06);
+      --shadow-lg:     0 12px 32px rgba(10, 30, 60, 0.10);
+      --shadow-hero:   0 20px 60px rgba(10, 30, 60, 0.30);
+
+      --max-width:     1440px;
     }
 
-    /* Dark mode */
-    :root[data-theme='dark'] {
-      --bg: #0a1a2b;
-      --card: #122b44;
-      --text: #edf2f9;
-      --text-secondary: #cbd5e1;
-      --muted: #94a3b8;
-      --primary: #3b82f6;
-      --primary-light: #1e3a5f;
-      --border-color: #1e3a5f;
-      --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    }
-    
-    /* High Contrast Mode */
-    :root[data-theme='high-contrast'] {
-      --bg: #000000;
-      --card: #1a1a1a;
-      --text: #ffffff;
-      --text-secondary: #ffff99;
-      --muted: #ffcc00;
-      --primary: #ffff00;
-      --primary-600: #ffaa00;
-      --primary-light: #333300;
-      --success: #00ff00;
-      --warning: #ffaa00;
-      --danger: #ff5555;
-      --info: #88ccff;
-      --border-color: #ffff00;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ============ RESET ============ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
       font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.5;
       font-size: 14px;
-      transition: background 0.2s, color 0.2s;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    img { max-width: 100%; display: block; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
     }
 
-    .app-wrapper {
+    /* ============ LAYOUT ============ */
+    .app {
       max-width: var(--max-width);
       margin: 0 auto;
-      padding: 1rem 2rem;
+      padding: 1.25rem 2rem 3rem;
     }
 
-    /* Header */
-    .command-header {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 1rem 1.8rem;
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.5rem;
-      border: 1px solid var(--border-color);
-    }
-    .corporate-area {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
-    .logo-container {
+    /* ============ HEADER ============ */
+    .app-header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.5rem;
       display: flex;
       align-items: center;
       gap: 1rem;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.75rem;
     }
-    .corporate-logo {
-      width: 50px; height: 50px;
-      background: linear-gradient(135deg, var(--primary), #2c3e50);
-      border-radius: 12px;
+
+    .brand {
       display: flex;
       align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 1.8rem;
+      gap: 0.85rem;
+    }
+    .brand-mark {
+      width: 46px; height: 46px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary) 0%, #2c5a8a 55%, #3d6fa0 100%);
+      display: grid; place-items: center;
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 800;
+      box-shadow: 0 4px 12px rgba(26, 76, 122, 0.28);
+      letter-spacing: -0.03em;
+    }
+    .brand-text h1 {
+      font-size: 1.15rem;
       font-weight: 700;
-      text-decoration: none;
-    }
-    .logo-text h2 { 
-      font-size: 1.4rem; 
-      font-weight: 700; 
+      letter-spacing: -0.015em;
+      line-height: 1.15;
       color: var(--text);
-      background: linear-gradient(135deg, var(--primary), #2c3e50);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
-    
-    /* Timezone Selector */
-    .timezone-selector {
-      background: var(--primary-light);
-      padding: 0.4rem 1rem;
-      border-radius: 30px;
-      font-size: 0.85rem;
+    .brand-text p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
       font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .header-meta {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .env-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--success);
+      background: #e7f6ef;
+      border: 1px solid #c7e9d8;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.03em;
+    }
+    .env-badge .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 3px rgba(15, 123, 90, 0.15);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.3rem 0.85rem 0.3rem 0.3rem;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+    }
+    .user-chip .avatar {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #3d6fa0);
+      color: #fff;
+      display: grid; place-items: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .user-chip .who {
+      display: flex; flex-direction: column;
+      line-height: 1.15;
+    }
+    .user-chip .who strong {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .user-chip .who span {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    /* ============ HERO ============ */
+    .hero {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+      min-height: 380px;
+      display: flex;
+      align-items: center;
+      box-shadow: var(--shadow-hero);
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://img.magnific.com/free-vector/gradient-erp-illustration_23-2149379179.jpg');
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.02);
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        120deg,
+        rgba(10, 30, 60, 0.92) 0%,
+        rgba(26, 76, 122, 0.82) 45%,
+        rgba(37, 99, 235, 0.55) 100%
+      );
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 3rem 3rem;
+      max-width: 640px;
+      color: #fff;
+    }
+    .hero-content h2 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 0.9rem;
+    }
+    .hero-content p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.82);
+      margin-bottom: 1.75rem;
+      max-width: 520px;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.83rem;
+      font-weight: 600;
+      padding: 0.65rem 1.25rem;
+      border-radius: var(--radius-pill);
+      transition: all 0.2s;
+      letter-spacing: -0.005em;
+    }
+    .btn-primary {
+      background: #fff;
       color: var(--primary);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    }
+    .btn-primary:hover {
+      background: #f0f4fa;
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(6px);
+    }
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ============ PLATFORM HIGHLIGHTS ============ */
+    .highlights {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.1rem;
+      margin-bottom: 2.5rem;
+    }
+    .highlight {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    }
+    .highlight:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-3px);
+    }
+    .highlight-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: var(--primary-soft);
+    }
+    .highlight-body {
+      padding: 1.15rem 1.25rem 1.35rem;
+    }
+    .highlight-body h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 0.35rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
-    .timezone-selector select {
-      background: transparent;
-      border: none;
+    .highlight-body h4 i {
       color: var(--primary);
-      font-weight: 500;
       font-size: 0.85rem;
-      cursor: pointer;
-      outline: none;
     }
-    .language-selector select {
-      background: transparent;
-      border: 1px solid var(--border-color);
-      padding: 0.4rem 1.5rem 0.4rem 0.8rem;
-      border-radius: 20px;
-      font-weight: 500;
-      color: var(--text);
-      cursor: pointer;
+    .highlight-body p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.5;
     }
 
-    /* Global Search */
-    .search-quick-row {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
-    .global-search {
-      flex: 1;
-      min-width: 280px;
-      background: var(--card);
-      border-radius: 50px;
-      padding: 0.2rem 0.2rem 0.2rem 1.5rem;
-      display: flex;
-      align-items: center;
-      border: 1px solid var(--border-color);
-      box-shadow: var(--shadow);
-    }
-    .global-search i { color: var(--muted); }
-    .global-search input {
-      flex: 1;
-      padding: 0.8rem 0.5rem;
-      border: none;
-      background: transparent;
-      font-size: 0.95rem;
-      outline: none;
-      color: var(--text);
-    }
-    .global-search button {
-      background: var(--primary);
-      border: none;
-      color: white;
-      padding: 0.6rem 1.8rem;
-      border-radius: 50px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .global-search button:hover {
-      background: var(--primary-600);
-    }
-
-    /* KPI Grid */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    .kpi-card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 1.2rem;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border-color);
-      transition: transform 0.2s, box-shadow 0.2s;
-      cursor: pointer;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-    .kpi-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
-    .kpi-header { display: flex; justify-content: space-between; margin-bottom: 0.8rem; color: var(--muted); font-size: 0.85rem; }
-    .kpi-value { font-size: 1.9rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.3rem; }
-    .kpi-trend { font-size: 0.8rem; color: var(--success); }
-    .kpi-footer { font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--border-color); margin-top: 0.8rem; padding-top: 0.5rem; }
-    .badge-new { background: var(--warning); color: black; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
-
-    /* Modules Section */
+    /* ============ MODULES SECTION WITH IMAGE BACKGROUNDS ============ */
     .modules-section {
-      margin-bottom: 2rem;
-    }
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 2rem 0 1rem;
-    }
-    .section-header h2 { 
-      font-size: 1.3rem; 
-      font-weight: 600;
-      color: var(--primary);
-    }
-    .view-toggle { display: flex; gap: 0.4rem; }
-    .view-btn {
-      background: var(--card);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 0.3rem 0.8rem;
-      cursor: pointer;
-      color: var(--text);
-    }
-    .view-btn.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      padding: 2.25rem 2rem 2.5rem;
+      margin-bottom: 2.5rem;
+      isolation: isolate;
     }
 
-    .modules-grid {
+    /* Rotating background collage — 5 images blended */
+    .modules-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXiCLxH3MiowlkcbM7vCVBteQCVlBR3H3Ne1BddEYwww&s=10'),
+        url('https://www.aimcom.com/wp-content/uploads/2026/01/erp-systems-integrating-business-operations-and-supply-chain-processes-1.png'),
+        url('https://img.magnific.com/free-vector/gradient-erp-illustration_23-2149368728.jpg?semt=ais_hybrid&w=740&q=80'),
+        url('https://img.magnific.com/free-vector/hand-drawn-flat-design-erp-illustration_23-2149383351.jpg?semt=ais_hybrid&w=740&q=80'),
+        url('https://iceclog.com/wp-content/uploads/2025/05/Design-Ideas-Blogs-Icecat-10.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-blend-mode: overlay, soft-light, luminosity, normal, multiply;
+      opacity: 0.18;
+      z-index: -2;
+      filter: saturate(0.7) contrast(1.05);
+    }
+
+    /* Gradient overlay so text stays readable */
+    .modules-section::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(244, 246, 250, 0.55) 0%,
+        rgba(244, 246, 250, 0.85) 100%
+      );
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .modules-section .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin: 0 0 1.5rem;
+    }
+    .modules-section .section-head h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+    .modules-section .section-head h3 i {
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+    .modules-section .section-head .count {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid var(--border);
+      padding: 2px 10px;
+      border-radius: var(--radius-pill);
+      backdrop-filter: blur(6px);
+    }
+
+    .category {
+      margin-bottom: 1.9rem;
+    }
+    .category:last-child { margin-bottom: 0; }
+    .category-label {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      margin: 0 0 0.75rem;
+    }
+    .category-label i {
+      color: var(--text-subtle);
+      font-size: 0.72rem;
+    }
+    .category-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-strong);
+      opacity: 0.6;
+      margin-left: 0.5rem;
+    }
+
+    .module-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 1rem;
+      gap: 0.85rem;
     }
-    .modules-grid.list-view {
-      grid-template-columns: 1fr;
+
+    .module {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.05rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s, background 0.15s;
+      position: relative;
+      backdrop-filter: blur(4px);
     }
-    .modules-grid.list-view .module-card {
+    .module:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+      background: #fff;
+    }
+
+    .module-ico {
+      width: 38px; height: 38px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: grid; place-items: center;
+      font-size: 0.95rem;
+    }
+    .module-body { min-width: 0; flex: 1; }
+    .module-title-row {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.45rem;
+      margin-bottom: 0.2rem;
     }
-    .modules-grid.list-view .module-icon {
-      margin-bottom: 0;
+    .module-title {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      line-height: 1.2;
     }
-    .module-card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 1.2rem;
-      text-decoration: none;
-      color: inherit;
-      border: 1px solid var(--border-color);
-      transition: 0.2s;
-      position: relative;
-    }
-    .module-card:hover { 
-      border-color: var(--primary); 
-      box-shadow: var(--shadow);
-      transform: translateY(-2px);
-    }
-    .module-icon { font-size: 2rem; margin-bottom: 0.8rem; }
-    .module-title { 
-      font-weight: 600; 
-      font-size: 1rem; 
-      margin-bottom: 0.3rem;
+    .tag {
+      font-size: 0.58rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: var(--radius-pill);
+      background: var(--primary-soft);
       color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
     }
-    .module-description { 
-      font-size: 0.8rem; 
-      color: var(--muted);
-      margin-bottom: 0.5rem;
+    .tag.gold {
+      background: #fbf5e2;
+      color: var(--gold);
     }
-    .module-badge { 
-      position: absolute; 
-      top: 1rem; 
-      right: 1rem; 
-      background: var(--warning); 
-      padding: 0.2rem 0.5rem; 
-      border-radius: 20px; 
-      font-size: 0.7rem; 
+    .module-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    /* ============ FOOTER ============ */
+    .app-footer {
+      margin-top: 2.5rem;
+      padding: 1.4rem 0 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .app-footer strong {
+      color: var(--text-2);
       font-weight: 600;
     }
 
-    /* Footer */
-    .global-footer {
-      margin-top: 3rem;
-      padding: 2rem 0 1rem;
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.8rem;
-      color: var(--muted);
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 1100px) {
+      .highlights { grid-template-columns: repeat(3, 1fr); }
     }
-    .version-tag {
-      background: var(--primary-light);
-      padding: 0.2rem 0.6rem;
-      border-radius: 20px;
+    @media (max-width: 900px) {
+      .highlights { grid-template-columns: 1fr; }
+      .hero-content { padding: 2.25rem 1.75rem; }
+      .hero-content h2 { font-size: 1.7rem; }
+      .modules-section { padding: 1.75rem 1.25rem 2rem; }
     }
-    .theme-compact-row {
-      display: flex;
-      gap: 0.8rem;
-      align-items: center;
-    }
-    .icon-btn {
-      background: transparent;
-      border: 1px solid var(--border-color);
-      width: 38px; height: 38px;
-      border-radius: 50%;
-      cursor: pointer;
-      color: var(--text);
-    }
-
-    /* Responsive */
-    @media (max-width: 1200px) {
-      .content-pane { flex-direction: column; }
-    }
-    @media (max-width: 800px) {
-      .command-header { flex-direction: column; align-items: stretch; }
+    @media (max-width: 760px) {
+      .app { padding: 1rem; }
+      .app-header { padding: 0.9rem 1rem; }
+      .header-meta { width: 100%; margin-left: 0; justify-content: space-between; }
+      .module-grid { grid-template-columns: 1fr; }
+      .hero { min-height: 300px; }
+      .hero-content { padding: 1.75rem 1.25rem; }
+      .hero-content h2 { font-size: 1.4rem; }
+      .hero-content p { font-size: 0.85rem; }
+      .modules-section::before { opacity: 0.12; }
     }
   </style>
 </head>
-<body>
-  <div class="app-wrapper">
-    <!-- Header -->
-    <header class="command-header">
-      <div class="corporate-area">
-        <div class="logo-container">
-          <div class="corporate-logo">⚡</div>
-          <div class="logo-text">
-            <h2>CephasGM ERP</h2>
-          </div>
-        </div>
-        
-        <!-- Universal Timezone Selector -->
-        <div class="timezone-selector">
-          <i class="fas fa-globe"></i>
-          <select id="timezoneSelect" onchange="updateSelectedTimezone()">
-            <option value="America/New_York">New York (EST/EDT)</option>
-            <option value="America/Chicago">Chicago (CST/CDT)</option>
-            <option value="America/Denver">Denver (MST/MDT)</option>
-            <option value="America/Los_Angeles">Los Angeles (PST/PDT)</option>
-            <option value="Europe/London">London (GMT/BST)</option>
-            <option value="Europe/Paris">Paris (CET/CEST)</option>
-            <option value="Europe/Berlin">Berlin (CET/CEST)</option>
-            <option value="Europe/Moscow">Moscow (MSK)</option>
-            <option value="Asia/Dubai">Dubai (GST)</option>
-            <option value="Asia/Kolkata">India (IST)</option>
-            <option value="Asia/Shanghai">Shanghai (CST)</option>
-            <option value="Asia/Tokyo">Tokyo (JST)</option>
-            <option value="Australia/Sydney">Sydney (AEDT/AEST)</option>
-            <option value="Africa/Nairobi">Nairobi (EAT)</option>
-            <option value="Africa/Johannesburg">Johannesburg (SAST)</option>
-            <option value="Africa/Lagos">Lagos (WAT)</option>
-          </select>
-          <span id="currentTimeDisplay"></span>
-        </div>
 
-        <div class="language-selector">
-          <select id="languageSelect">
-            <option value="en">English</option>
-            <option value="zh">中文</option>
-            <option value="ja">日本語</option>
-            <option value="ar">العربية</option>
-            <option value="de">Deutsch</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-            <option value="pt">Português</option>
-            <option value="ru">Русский</option>
-          </select>
+<body>
+  <div class="app">
+
+    <!-- ============ HEADER ============ -->
+    <header class="app-header">
+      <a href="index.html" class="brand" aria-label="CephasGM ERP home">
+        <div class="brand-mark">C</div>
+        <div class="brand-text">
+          <h1>CephasGM ERP</h1>
+          <p>Global Command Center</p>
+        </div>
+      </a>
+
+      <div class="header-meta">
+        <span class="env-badge">
+          <span class="dot" aria-hidden="true"></span>
+          Production
+        </span>
+        <div class="user-chip">
+          <div class="avatar" aria-hidden="true">CG</div>
+          <div class="who">
+            <strong>Cephas G. Mkama</strong>
+            <span>Administrator</span>
+          </div>
         </div>
       </div>
     </header>
 
-    <!-- Global Search -->
-    <div class="search-quick-row">
-      <div class="global-search">
-        <i class="fas fa-search"></i>
-        <input type="text" id="globalSearchInput" placeholder="🔍 Search across 31 modules, transactions, customers..." data-i18n-placeholder="searchPlaceholder">
-        <button onclick="performSearch()" id="searchButton"><i class="fas fa-arrow-right"></i></button>
-      </div>
-    </div>
-
-    <!-- EXECUTIVE DASHBOARD KPI GRID -->
-    <div class="kpi-grid">
-      <a href="finance.html" class="kpi-card"><div class="kpi-header"><span data-i18n="kpiGlobalRevenue">Global Revenue (USD)</span> <i class="fas fa-chart-line"></i></div><div class="kpi-value">$247.8M</div><div class="kpi-trend">+12.3% vs LY</div><div class="kpi-footer" data-i18n="kpiRevenueFooter">Africa 98M · EU 89M · Am 60.8M</div></a>
-      <a href="hr.html" class="kpi-card"><div class="kpi-header"><span data-i18n="kpiHeadcount">Global Headcount</span> <i class="fas fa-users"></i></div><div class="kpi-value">3,842</div><div class="kpi-trend">128 online now</div><div class="kpi-footer" data-i18n="kpiHeadcountFooter">+22 this month</div></a>
-      <a href="projects.html" class="kpi-card"><div class="kpi-header"><span data-i18n="kpiActiveProjects">Active Projects</span> <i class="fas fa-rocket"></i></div><div class="kpi-value">47</div><div class="kpi-trend"><span style="color:#2ecc71;">● 33 On Track</span> <span style="color:#f39c12;">● 14 At Risk</span></div><div class="kpi-footer" data-i18n="kpiProjectsFooter">6 new this quarter</div></a>
-      <a href="procurement.html" class="kpi-card"><div class="kpi-header"><span data-i18n="kpiOpenPO">Open PO Value</span> <i class="fas fa-shopping-cart"></i></div><div class="kpi-value">$34.2M</div><div class="kpi-footer">2,134 POs</div></a>
-      <a href="inventory.html" class="kpi-card"><div class="kpi-header"><span data-i18n="kpiInventory">Inventory Value</span> <i class="fas fa-boxes"></i></div><div class="kpi-value">$112.5M</div><div class="kpi-trend">-2% vs target</div></a>
-      <a href="finance.html" class="kpi-card"><div class="kpi-header"><span data-i18n="kpiCashBalance">Cash Balance</span> <i class="fas fa-coins"></i></div><div class="kpi-value">$89.3M</div><div class="kpi-footer">45 bank accounts</div></a>
-      <a href="finance.html" class="kpi-card"><div class="kpi-header"><span data-i18n="kpiDSO">DSO (Days)</span> <i class="fas fa-clock"></i></div><div class="kpi-value">43.2</div><div class="kpi-trend">▼ 2.1 from last Q</div></a>
-      <a href="customer-service.html" class="kpi-card"><div class="kpi-header"><span data-i18n="kpiTickets">Pending Tickets</span> <i class="fas fa-headset"></i></div><div class="kpi-value">128</div><div class="kpi-trend"><span class="priority-high">● 12 high</span></div></a>
-      <a href="admin.html" class="kpi-card"><div class="kpi-header"><span data-i18n="kpiUptime">System Uptime</span> <i class="fas fa-server"></i></div><div class="kpi-value">99.94%</div><div class="kpi-footer">Americas 99.99%</div></a>
-      <a href="admin.html" class="kpi-card"><div class="kpi-header"><span data-i18n="kpiApprovals">Pending Approvals</span> <i class="fas fa-check-double"></i></div><div class="kpi-value">234</div><div class="kpi-footer">56 require you</div></a>
-      <a href="admin.html" class="kpi-card"><div class="kpi-header"><span data-i18n="kpiStorage">Data Storage</span> <i class="fas fa-database"></i></div><div class="kpi-value">78%</div><div class="kpi-footer">used of 50 TB</div></a>
-      <a href="#" class="kpi-card" onclick="event.preventDefault(); alert('ESG Score details'); return false;"><div class="kpi-header"><span data-i18n="kpiESG">ESG Score</span> <i class="fas fa-seedling"></i></div><div class="kpi-value">86</div><div class="kpi-trend">A- rating</div><div class="kpi-footer">+4 pts</div></a>
-    </div>
-
-    <!-- ALL MODULES SECTION - Well Arranged -->
-    <div class="modules-section">
-      <div class="section-header">
-        <h2><i class="fas fa-cubes"></i> <span data-i18n="allModules">All Business Modules</span> <span style="font-size:0.8rem; margin-left:1rem;">(31 modules)</span></h2>
-        <div class="view-toggle">
-          <button class="view-btn active" id="gridViewBtn"><i class="fas fa-th"></i></button>
-          <button class="view-btn" id="listViewBtn"><i class="fas fa-list"></i></button>
+    <!-- ============ HERO ============ -->
+    <section class="hero" aria-label="Platform introduction">
+      <div class="hero-bg" role="img" aria-label="ERP system illustration"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h2>One platform to run your entire enterprise.</h2>
+        <p>
+          Finance, supply chain, people, and compliance — unified in a single,
+          intelligent command center built for modern global operations.
+        </p>
+        <div class="hero-cta">
+          <a href="#modules" class="btn btn-primary">
+            <i class="fas fa-cubes" aria-hidden="true"></i>
+            Explore modules
+          </a>
+          <a href="admin.html" class="btn btn-ghost">
+            <i class="fas fa-sliders" aria-hidden="true"></i>
+            Get started
+          </a>
         </div>
       </div>
+    </section>
 
-      <!-- Modules Grid - All 31 modules well arranged -->
-      <div class="modules-grid" id="modulesGrid">
-        <!-- Financial & Operations -->
-        <a href="finance.html" class="module-card"><span class="module-badge">Core</span><div class="module-icon">📊</div><div class="module-title">Finance</div><div class="module-description">Accounting, budgeting, cash flow</div></a>
-        <a href="sales.html" class="module-card"><span class="module-badge">Core</span><div class="module-icon">💰</div><div class="module-title">Sales</div><div class="module-description">Leads, revenue, forecasting</div></a>
-        <a href="procurement.html" class="module-card"><span class="module-badge">Core</span><div class="module-icon">🛒</div><div class="module-title">Procurement</div><div class="module-description">POs, suppliers, sourcing</div></a>
-        <a href="inventory.html" class="module-card"><span class="module-badge">Core</span><div class="module-icon">📦</div><div class="module-title">Inventory</div><div class="module-description">Stock, warehouse, valuation</div></a>
-        
-        <!-- Industry Specific - NEW -->
-        <a href="payments-banking.html" class="module-card"><span class="module-badge">CephasPay™</span><div class="module-icon">💳</div><div class="module-title">CephasPay™</div><div class="module-description">Mobile money, banking, reconciliation</div></a>
-        <a href="construction.html" class="module-card"><span class="module-badge">CephasBuild™</span><div class="module-icon">🏗️</div><div class="module-title">CephasBuild™</div><div class="module-description">Construction, BOQs, site safety</div></a>
-        <a href="real-estate.html" class="module-card"><span class="module-badge">CephasEstate™</span><div class="module-icon">🏢</div><div class="module-title">CephasEstate™</div><div class="module-description">Property management, leases, tenants</div></a>
-        
-        <!-- Heavy Industry -->
-        <a href="manufacturing.html" class="module-card"><span class="module-badge">Industry</span><div class="module-icon">🏭</div><div class="module-title">Manufacturing</div><div class="module-description">Production, BOM, quality control</div></a>
-        <a href="mining.html" class="module-card"><span class="module-badge">Industry</span><div class="module-icon">⛏️</div><div class="module-title">Mining</div><div class="module-description">Operations, extraction, compliance</div></a>
-        <a href="oil-gas.html" class="module-card"><span class="module-badge">Industry</span><div class="module-icon">🛢️</div><div class="module-title">Oil & Gas</div><div class="module-description">Upstream, downstream, pipelines</div></a>
-        <a href="agriculture.html" class="module-card"><span class="module-badge">Industry</span><div class="module-icon">🌾</div><div class="module-title">Agriculture</div><div class="module-description">Farm management, crops, livestock</div></a>
-        
-        <!-- Operations & Logistics -->
-        <a href="transport.html" class="module-card"><div class="module-icon">🚚</div><div class="module-title">Transport</div><div class="module-description">Logistics, fleet, deliveries</div></a>
-        <a href="asset-operations.html" class="module-card"><span class="module-badge">Asset</span><div class="module-icon">🏢</div><div class="module-title">Asset Operations</div><div class="module-description">Facilities, fleet, maintenance</div></a>
-        <a href="projects.html" class="module-card"><div class="module-icon">📋</div><div class="module-title">Projects</div><div class="module-description">Timelines, resources, milestones</div></a>
-        
-        <!-- HR & People -->
-        <a href="hr.html" class="module-card"><div class="module-icon">👥</div><div class="module-title">Human Resources</div><div class="module-description">Employees, recruitment, perf.</div></a>
-        <a href="payroll.html" class="module-card"><div class="module-icon">💵</div><div class="module-title">Payroll</div><div class="module-description">Salaries, deductions, compliance</div></a>
-        <a href="attendance.html" class="module-card"><div class="module-icon">📅</div><div class="module-title">Attendance</div><div class="module-description">Time, leaves, tracking</div></a>
-        <a href="employee-portal.html" class="module-card"><span class="module-badge">Self-Service</span><div class="module-icon">👤</div><div class="module-title">Employee Portal</div><div class="module-description">Self-service, benefits, time-off</div></a>
-        <a href="training.html" class="module-card"><div class="module-icon">🎓</div><div class="module-title">Training</div><div class="module-description">Skills, certifications</div></a>
-        <a href="time-billing.html" class="module-card"><span class="module-badge">Services</span><div class="module-icon">⏱️</div><div class="module-title">Time & Billing</div><div class="module-description">Timesheets, professional services</div></a>
-        
-        <!-- Customer & Engagement -->
-        <a href="customer-service.html" class="module-card"><span class="module-badge">24/7</span><div class="module-icon">🤝</div><div class="module-title">Customer Service</div><div class="module-description">Tickets, support, quality</div></a>
-        <a href="marketing.html" class="module-card"><div class="module-icon">📢</div><div class="module-title">Marketing</div><div class="module-description">Campaigns, analytics, brand</div></a>
-        <a href="company-connect.html" class="module-card"><span class="module-badge">Social</span><div class="module-icon">🤝</div><div class="module-title">Company Connect</div><div class="module-description">Social hub, employee engagement</div></a>
-        <a href="community.html" class="module-card"><div class="module-icon">🌐</div><div class="module-title">Community</div><div class="module-description">Internal comms, engagement</div></a>
-        <a href="memberships.html" class="module-card"><span class="module-badge">Subscriptions</span><div class="module-icon">🎫</div><div class="module-title">Memberships</div><div class="module-description">Subscriptions, renewals, benefits</div></a>
-        
-        <!-- Governance & Compliance -->
-        <a href="legal.html" class="module-card"><div class="module-icon">⚖️</div><div class="module-title">Legal</div><div class="module-description">Contracts, compliance, documents</div></a>
-        <a href="safety.html" class="module-card"><div class="module-icon">🛡️</div><div class="module-title">Safety</div><div class="module-description">Incidents, compliance, training</div></a>
-        <a href="quality.html" class="module-card"><span class="module-badge">Executive</span><div class="module-icon">✨</div><div class="module-title">Quality & Innovation</div><div class="module-description">Continuous improvement, excellence</div></a>
-        
-        <!-- Admin & Meetings -->
-        <a href="admin.html" class="module-card"><span class="module-badge">Admin</span><div class="module-icon">⚙️</div><div class="module-title">System Admin</div><div class="module-description">Config, users, controls</div></a>
-        <a href="meetings.html" class="module-card"><div class="module-icon">👥</div><div class="module-title">Meetings</div><div class="module-description">Schedule, agendas, minutes</div></a>
-      </div>
-    </div>
+    <!-- ============ PLATFORM HIGHLIGHTS ============ -->
+    <section class="highlights" aria-label="Platform highlights">
 
-    <!-- FOOTER -->
-    <footer class="global-footer">
-      <div>© 2026 CephasGM ERP. All rights reserved. <span class="version-tag">v3.14.2 · Build 2026.02.22 · PROD</span></div>
-      <div class="theme-compact-row">
-        <button class="icon-btn" id="themeToggle" title="Toggle theme">🌓</button>
-        <button class="icon-btn" id="compactViewToggle" title="Toggle compact view">🗜️</button>
+      <article class="highlight">
+        <img class="highlight-img"
+             src="https://www.cio.com/wp-content/uploads/2025/03/272362-0-27498000-1741330535-enterprise_resource_planning-ERP.jpg?quality=50&strip=all&w=1024"
+             alt="Enterprise resource planning dashboard on a laptop" loading="lazy" />
+        <div class="highlight-body">
+          <h4><i class="fas fa-layer-group" aria-hidden="true"></i> Unified Operations</h4>
+          <p>Run finance, procurement, inventory, and projects from one
+             connected command center — no silos, no duplication.</p>
+        </div>
+      </article>
+
+      <article class="highlight">
+        <img class="highlight-img"
+             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXn2emhSzQD9PlqkdgJXR6NPVeP_XT6J1szytoL1TtjvLxIu_a591jzto&s=10"
+             alt="Business team collaborating around ERP data" loading="lazy" />
+        <div class="highlight-body">
+          <h4><i class="fas fa-globe" aria-hidden="true"></i> Global Ready</h4>
+          <p>Multi-currency, multi-entity, and multi-country compliance built
+             in — designed for multinational scale from day one.</p>
+        </div>
+      </article>
+
+      <article class="highlight">
+        <img class="highlight-img"
+             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9oGs6qPTxiK2WDK5Sq9MDI5UUAC8vC0V_BhZA1Jau4QMLqATXaUGb9APb&s=10"
+             alt="Data analytics and ERP insights" loading="lazy" />
+        <div class="highlight-body">
+          <h4><i class="fas fa-chart-simple" aria-hidden="true"></i> Insight-Driven</h4>
+          <p>Real-time dashboards and predictive analytics that turn
+             enterprise data into decisive business action.</p>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- ============ MODULES (with image background) ============ -->
+    <section class="modules-section" id="modules" aria-label="Business modules">
+      <div class="section-head">
+        <h3><i class="fas fa-cubes" aria-hidden="true"></i> Business Modules</h3>
+        <span class="count" id="moduleCount">20 modules</span>
       </div>
+
+      <div id="modulesRoot"></div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="app-footer">
+      Copyright © 2025 <strong>Cephas GM</strong> | Innovating for Tomorrow
     </footer>
+
   </div>
 
   <script>
-    // ========== UNIVERSAL TIMEZONE FUNCTION ==========
-    let selectedTimezone = localStorage.getItem('selectedTimezone') || 'Africa/Nairobi';
-    const timezoneSelect = document.getElementById('timezoneSelect');
-    const currentTimeDisplay = document.getElementById('currentTimeDisplay');
-    
-    timezoneSelect.value = selectedTimezone;
-    
-    function updateSelectedTimezone() {
-      selectedTimezone = timezoneSelect.value;
-      localStorage.setItem('selectedTimezone', selectedTimezone);
-      updateCurrentTime();
-    }
-    
-    function updateCurrentTime() {
-      if (!selectedTimezone) return;
-      
-      const now = new Date();
-      const options = {
-        timeZone: selectedTimezone,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true,
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric'
-      };
-      
-      try {
-        const formatter = new Intl.DateTimeFormat('en-US', options);
-        const timeString = formatter.format(now);
-        currentTimeDisplay.textContent = ` | ${timeString}`;
-      } catch (e) {
-        currentTimeDisplay.textContent = ' | Invalid timezone';
-      }
-    }
-    
-    updateCurrentTime();
-    setInterval(updateCurrentTime, 1000);
+  /* =========================================================
+     CephasGM ERP — index shell v4.0
+     Registry-driven. English-only. Clean, focused module set.
+     ========================================================= */
 
-    // ========== SEARCH FUNCTIONALITY ==========
-    window.performSearch = function() {
-      const searchInput = document.getElementById('globalSearchInput');
-      const searchTerm = searchInput.value.trim();
-      
-      if (searchTerm) {
-        alert(`Searching for: "${searchTerm}" across 31 modules`);
-      } else {
-        alert('Please enter a search term');
-      }
-    };
+  const CONFIG = {
+    app: {
+      name: 'CephasGM ERP',
+      version: '4.0.0',
+      build: '2026.03'
+    },
 
-    document.getElementById('globalSearchInput').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        performSearch();
-      }
+    categories: [
+      { id: 'core',       label: 'Core Business',            icon: 'fa-cube' },
+      { id: 'cephas',     label: 'Cephas™ Suite',            icon: 'fa-star' },
+      { id: 'operations', label: 'Operations & Supply Chain',icon: 'fa-truck-fast' },
+      { id: 'people',     label: 'Human Capital',            icon: 'fa-user-group' },
+      { id: 'customer',   label: 'Customer & Revenue',       icon: 'fa-handshake' },
+      { id: 'governance', label: 'Governance & Compliance',  icon: 'fa-shield-halved' },
+      { id: 'verticals',  label: 'Industry Verticals',       icon: 'fa-industry' },
+      { id: 'platform',   label: 'Platform & Admin',         icon: 'fa-sliders' }
+    ],
+
+    modules: [
+      /* ---------- Core Business ---------- */
+      { title:'Finance',         icon:'fa-chart-pie',           desc:'Accounting, budgeting, cash flow, tax',    category:'core',       badge:'Core',  href:'finance.html' },
+      { title:'Sales',           icon:'fa-tags',                desc:'Quotes, orders, revenue, forecasting',     category:'core',       badge:'Core',  href:'sales.html' },
+      { title:'Procurement',     icon:'fa-cart-shopping',       desc:'POs, suppliers, sourcing, contracts',      category:'core',       badge:'Core',  href:'procurement.html' },
+      { title:'Inventory',       icon:'fa-boxes-stacked',       desc:'Stock, warehouse, valuation, SKUs',        category:'core',       badge:'Core',  href:'inventory.html' },
+      { title:'Projects',        icon:'fa-diagram-project',     desc:'Timelines, resources, milestones',         category:'core',                      href:'projects.html' },
+
+      /* ---------- Cephas™ Suite ---------- */
+      { title:'CephasPay™',      icon:'fa-credit-card',         desc:'Mobile money, banking, reconciliation',    category:'cephas',     badge:'Suite', href:'payments-banking.html', gold:true },
+
+      /* ---------- Operations & Supply Chain ---------- */
+      { title:'Manufacturing',   icon:'fa-industry',            desc:'Production, BOM, work orders',             category:'operations',                href:'manufacturing.html' },
+      { title:'Transport',       icon:'fa-truck',               desc:'Logistics, fleet, deliveries',             category:'operations',                href:'transport.html' },
+      { title:'Asset Operations',icon:'fa-screwdriver-wrench',  desc:'Facilities, equipment, maintenance',       category:'operations',                href:'asset-operations.html' },
+      { title:'Quality',         icon:'fa-medal',               desc:'Inspection, standards, compliance',        category:'operations',                href:'quality.html' },
+
+      /* ---------- Human Capital ---------- */
+      { title:'Human Resources', icon:'fa-user-tie',            desc:'Employees, recruitment, performance',      category:'people',                    href:'hr.html' },
+      { title:'Payroll',         icon:'fa-money-bill-wave',     desc:'Salaries, deductions, compliance',         category:'people',                    href:'payroll.html' },
+
+      /* ---------- Customer & Revenue ---------- */
+      { title:'Customer Service',icon:'fa-headset',             desc:'CRM, tickets, support, SLAs',              category:'customer',                  href:'customer-service.html' },
+
+      /* ---------- Governance & Compliance ---------- */
+      { title:'Legal & Compliance', icon:'fa-scale-balanced',   desc:'Contracts, policies, regulatory records',  category:'governance',                href:'legal.html' },
+      { title:'Safety & HSE',    icon:'fa-shield-heart',        desc:'Incidents, risk, compliance, training',    category:'governance',                href:'safety.html' },
+
+      /* ---------- Industry Verticals ---------- */
+      { title:'Mining',          icon:'fa-mountain',            desc:'Extraction, licences, production ops',     category:'verticals',                 href:'mining.html' },
+      { title:'Oil & Gas',       icon:'fa-oil-well',            desc:'Upstream, downstream, pipelines',          category:'verticals',                 href:'oil-gas.html' },
+      { title:'Agriculture',     icon:'fa-wheat-awn',           desc:'Farms, crops, livestock, yields',          category:'verticals',                 href:'agriculture.html' },
+      { title:'CephasBuild™',    icon:'fa-helmet-safety',       desc:'Construction, BOQs, site safety',          category:'verticals',  badge:'Suite', href:'construction.html', gold:true },
+      { title:'CephasEstate™',   icon:'fa-building',            desc:'Property, leases, tenants, facilities',    category:'verticals',  badge:'Suite', href:'real-estate.html', gold:true },
+
+      /* ---------- Platform & Admin ---------- */
+      { title:'System Admin',    icon:'fa-sliders',             desc:'Config, users, roles, audit controls',     category:'platform',                  href:'admin.html' }
+    ]
+  };
+
+  /* ============ HELPERS ============ */
+  const $ = (s, r = document) => r.querySelector(s);
+
+  /* ============ BOOT ============ */
+  document.addEventListener('DOMContentLoaded', () => {
+    document.title = `${CONFIG.app.name} — Global Command Center`;
+    $('#moduleCount').textContent = `${CONFIG.modules.length} modules`;
+    renderModules();
+    console.log(`🚀 ${CONFIG.app.name} v${CONFIG.app.version} loaded · ${CONFIG.modules.length} modules`);
+  });
+
+  /* ============ MODULES ============ */
+  function renderModules() {
+    const root = $('#modulesRoot');
+
+    const grouped = {};
+    CONFIG.modules.forEach(m => {
+      (grouped[m.category] = grouped[m.category] || []).push(m);
     });
 
-    // ========== GRID/LIST VIEW TOGGLE ==========
-    const modulesGrid = document.getElementById('modulesGrid');
-    const gridViewBtn = document.getElementById('gridViewBtn');
-    const listViewBtn = document.getElementById('listViewBtn');
-    
-    gridViewBtn.addEventListener('click', () => {
-      modulesGrid.classList.remove('list-view');
-      gridViewBtn.classList.add('active');
-      listViewBtn.classList.remove('active');
-    });
-    
-    listViewBtn.addEventListener('click', () => {
-      modulesGrid.classList.add('list-view');
-      listViewBtn.classList.add('active');
-      gridViewBtn.classList.remove('active');
-    });
+    root.innerHTML = CONFIG.categories
+      .filter(c => grouped[c.id] && grouped[c.id].length)
+      .map(cat => `
+        <section class="category" aria-label="${cat.label}">
+          <div class="category-label">
+            <i class="fas ${cat.icon}" aria-hidden="true"></i>
+            <span>${cat.label}</span>
+          </div>
+          <div class="module-grid">
+            ${grouped[cat.id].map(moduleCard).join('')}
+          </div>
+        </section>
+      `).join('');
+  }
 
-    // ========== LANGUAGE TRANSLATIONS ==========
-    const translations = {
-      en: {
-        searchPlaceholder: "Search across 31 modules, transactions, customers...",
-        kpiGlobalRevenue: "Global Revenue (USD)",
-        kpiRevenueFooter: "Africa 98M · EU 89M · Am 60.8M",
-        kpiHeadcount: "Global Headcount",
-        kpiHeadcountFooter: "+22 this month",
-        kpiActiveProjects: "Active Projects",
-        kpiProjectsFooter: "6 new this quarter",
-        kpiOpenPO: "Open PO Value",
-        kpiInventory: "Inventory Value",
-        kpiCashBalance: "Cash Balance",
-        kpiDSO: "DSO (Days)",
-        kpiTickets: "Pending Tickets",
-        kpiUptime: "System Uptime",
-        kpiApprovals: "Pending Approvals",
-        kpiStorage: "Data Storage",
-        kpiESG: "ESG Score",
-        allModules: "All Business Modules"
-      },
-      zh: {
-        searchPlaceholder: "搜索31个模块、交易、客户...",
-        kpiGlobalRevenue: "全球收入 (美元)",
-        kpiRevenueFooter: "非洲98M · 欧盟89M · 美洲60.8M",
-        kpiHeadcount: "全球员工数",
-        kpiHeadcountFooter: "本月+22",
-        kpiActiveProjects: "活跃项目",
-        kpiProjectsFooter: "本季度新增6个",
-        kpiOpenPO: "未结采购订单价值",
-        kpiInventory: "库存价值",
-        kpiCashBalance: "现金余额",
-        kpiDSO: "销售未清账期",
-        kpiTickets: "待处理工单",
-        kpiUptime: "系统正常运行时间",
-        kpiApprovals: "待审批",
-        kpiStorage: "数据存储",
-        kpiESG: "ESG评分",
-        allModules: "所有业务模块"
-      },
-      ja: {
-        searchPlaceholder: "31のモジュール、取引、顧客を検索...",
-        kpiGlobalRevenue: "グローバル収益 (USD)",
-        kpiRevenueFooter: "アフリカ98M · EU89M · 米州60.8M",
-        kpiHeadcount: "従業員数",
-        kpiHeadcountFooter: "今月+22",
-        kpiActiveProjects: "進行中プロジェクト",
-        kpiProjectsFooter: "今四半期6件新規",
-        kpiOpenPO: "未処理発注金額",
-        kpiInventory: "在庫金額",
-        kpiCashBalance: "現金残高",
-        kpiDSO: "売上未収入金日数",
-        kpiTickets: "保留中のチケット",
-        kpiUptime: "システム稼働率",
-        kpiApprovals: "保留中の承認",
-        kpiStorage: "データ使用量",
-        kpiESG: "ESGスコア",
-        allModules: "全ビジネスモジュール"
-      }
-      // Additional languages would be included here
-    };
-
-    function changeLanguage(lang) {
-      const elements = document.querySelectorAll('[data-i18n]');
-      elements.forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[lang] && translations[lang][key]) {
-          if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-            el.placeholder = translations[lang][key];
-          } else {
-            el.textContent = translations[lang][key];
-          }
-        }
-      });
-      
-      const searchInput = document.getElementById('globalSearchInput');
-      if (searchInput && translations[lang] && translations[lang].searchPlaceholder) {
-        searchInput.placeholder = translations[lang].searchPlaceholder;
-      }
-      
-      localStorage.setItem('preferred-language', lang);
-    }
-
-    document.getElementById('languageSelect').addEventListener('change', (e) => {
-      changeLanguage(e.target.value);
-    });
-
-    const savedLang = localStorage.getItem('preferred-language') || 'en';
-    document.getElementById('languageSelect').value = savedLang;
-    changeLanguage(savedLang);
-
-    // ========== THEME TOGGLE ==========
-    const root = document.documentElement;
-    const themeBtn = document.getElementById('themeToggle');
-    
-    function updateThemeButton() {
-      const current = root.getAttribute('data-theme') || 'light';
-      themeBtn.textContent = current === 'light' ? '🌓' : (current === 'dark' ? '☀️' : '🔆');
-    }
-    
-    themeBtn.addEventListener('click', () => {
-      let current = root.getAttribute('data-theme') || 'light';
-      let next = current === 'light' ? 'dark' : (current === 'dark' ? 'light' : 'light');
-      root.setAttribute('data-theme', next);
-      localStorage.setItem('cephasgm-theme', next);
-      updateThemeButton();
-    });
-
-    const savedTheme = localStorage.getItem('cephasgm-theme');
-    if (savedTheme) {
-      root.setAttribute('data-theme', savedTheme);
-      updateThemeButton();
-    }
-
-    // ========== HIGH CONTRAST TOGGLE ==========
-    window.toggleHighContrast = function() {
-      const root = document.documentElement;
-      const currentTheme = root.getAttribute('data-theme');
-      if (currentTheme === 'high-contrast') {
-        root.setAttribute('data-theme', 'light');
-        localStorage.setItem('cephasgm-theme', 'light');
-      } else {
-        root.setAttribute('data-theme', 'high-contrast');
-        localStorage.setItem('cephasgm-theme', 'high-contrast');
-      }
-      updateThemeButton();
-    };
-
-    // ========== COMPACT VIEW TOGGLE ==========
-    const compactBtn = document.getElementById('compactViewToggle');
-    compactBtn.addEventListener('click', function() {
-      document.body.classList.toggle('compact-view');
-      if (document.body.classList.contains('compact-view')) {
-        document.querySelectorAll('.module-card').forEach(c => c.style.padding = '0.8rem');
-        document.querySelectorAll('.kpi-card').forEach(c => c.style.padding = '0.8rem');
-      } else {
-        document.querySelectorAll('.module-card').forEach(c => c.style.padding = '1.2rem');
-        document.querySelectorAll('.kpi-card').forEach(c => c.style.padding = '1.2rem');
-      }
-    });
-
-    console.log('🚀 CephasGM ERP loaded with 31 modules');
+  function moduleCard(m) {
+    const tagClass = m.gold ? 'tag gold' : 'tag';
+    return `
+      <a class="module" href="${m.href}">
+        <div class="module-ico"><i class="fas ${m.icon}" aria-hidden="true"></i></div>
+        <div class="module-body">
+          <div class="module-title-row">
+            <span class="module-title">${m.title}</span>
+            ${m.badge ? `<span class="${tagClass}">${m.badge}</span>` : ''}
+          </div>
+          <div class="module-desc">${m.desc}</div>
+        </div>
+      </a>
+    `;
+  }
   </script>
-  <script src="pwa-init.js"></script>
+
+  <script src="pwa-init.js" defer></script>
 </body>
 </html>
