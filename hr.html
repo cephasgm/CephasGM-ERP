@@ -1,863 +1,2026 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#2563eb">
-    <meta name="description" content="HR Management - CephasGM ERP">
-    <title>HR Management - CephasGM ERP</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="icon-192.png">
-    <style>
-        /* Root & Global styles from original, plus enhancements */
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #64748b;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --background: #f8fafc;
-            --surface: #ffffff;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-            --shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.6;
-        }
+  <!-- PWA Meta -->
+  <meta name="theme-color" content="#1a4c7a" id="theme-color-meta" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CephasGM ERP" />
 
-        .dashboard {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            min-height: 100vh;
-        }
+  <title>Human Resources — CephasGM ERP</title>
 
-        .sidebar {
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            padding: 2rem 1rem;
-            position: fixed;
-            width: 280px;
-            height: 100vh;
-            overflow-y: auto;
-        }
+  <meta name="description" content="CephasGM ERP Human Resources — Employees, recruitment, performance, and payroll integration" />
+  <meta name="author" content="Cephas Gideon Mkama" />
+  <meta property="og:title" content="Human Resources — CephasGM ERP" />
+  <meta property="og:description" content="Complete HR management for CephasGM ERP" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cephasgm.github.io/CephasGM-ERP/hr.html" />
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-            padding: 0 1rem;
-        }
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
 
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.25rem;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-        .nav-section { margin-bottom: 2rem; }
-        .nav-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--text-light);
-            margin-bottom: 1rem;
-            padding: 0 1rem;
-            letter-spacing: 0.5px;
-        }
+  <style>
+    /* ============ DESIGN TOKENS ============ */
+    :root {
+      --bg:            #f4f6fa;
+      --surface:       #ffffff;
+      --surface-alt:   #fafbfd;
+      --border:        #e6e9f0;
+      --border-strong: #d3d9e5;
 
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            color: var(--text-light);
-            text-decoration: none;
-            transition: all 0.2s;
-            margin-bottom: 0.25rem;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-            font-size: 0.95rem;
-        }
-        .nav-item:hover, .nav-item.active { background: var(--primary); color: white; }
-        .nav-icon { font-size: 1.25rem; width: 24px; text-align: center; }
+      --text:          #0a1e3c;
+      --text-2:        #2c3e50;
+      --text-muted:    #5e6f8d;
+      --text-subtle:   #94a3b8;
 
-        .main-content {
-            grid-column: 2;
-            padding: 2rem;
-            margin-left: 280px;
-        }
+      --primary:       #1a4c7a;
+      --primary-600:   #0e3a5c;
+      --primary-soft:  #e8f0fa;
+      --accent:        #2563eb;
+      --accent-hover:  #1d4ed8;
+      --accent-soft:   #eff4ff;
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .header h1 { font-size: 1.875rem; font-weight: 700; }
+      --success:       #0f7b5a;
+      --warning:       #d97706;
+      --danger:        #c0392b;
+      --gold:          #b8860b;
 
-        /* Enhanced Toolbar */
-        .toolbar {
-            margin-bottom: 2rem;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            padding: 1.5rem;
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-        }
+      --radius-lg:     16px;
+      --radius:        12px;
+      --radius-sm:     8px;
+      --radius-pill:   999px;
 
-        .btn-primary, .btn-success, .btn-secondary, .btn-danger {
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
-        .btn-success { background: var(--success); color: white; }
-        .btn-success:hover { background: #059669; transform: translateY(-1px); }
-        .btn-secondary { background: var(--secondary); color: white; }
-        .btn-secondary:hover { background: #475569; transform: translateY(-1px); }
-        .btn-danger { background: var(--error); color: white; }
-        .btn-danger:hover { background: #dc2626; transform: translateY(-1px); }
+      --shadow-sm:     0 1px 2px rgba(10, 30, 60, 0.04);
+      --shadow:        0 2px 10px rgba(10, 30, 60, 0.06);
+      --shadow-lg:     0 12px 32px rgba(10, 30, 60, 0.10);
 
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .stat-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--primary);
-        }
-        .stat-number { font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
-        .stat-label { color: var(--text-light); font-size: 0.9rem; }
-        .stat-trend { font-size: 0.875rem; margin-top: 0.5rem; font-weight: 600; }
-        .trend-up { color: var(--success); }
-        .trend-down { color: var(--error); }
+      --max-width:     1440px;
+      --sidebar-w:     264px;
+    }
 
-        /* HR Overview */
-        .hr-overview {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .overview-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-        }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .card-title { font-size: 1.25rem; font-weight: 600; }
-        .chart-container {
-            min-height: 250px;
-            background: var(--background);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-light);
-            padding: 1rem;
-        }
+    /* ============ RESET ============ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      position: relative;
+    }
 
-        /* Quick Actions */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1rem;
-        }
-        .action-btn {
-            background: var(--background);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.5rem 0.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .action-btn:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        .action-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    /* ============ PAGE BACKGROUND (ERP collage) ============ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        url('https://www.cio.com/wp-content/uploads/2025/03/272362-0-27498000-1741330535-enterprise_resource_planning-ERP.jpg?quality=50&strip=all&w=1024'),
+        url('https://img.magnific.com/free-vector/gradient-erp-illustration_23-2149379179.jpg'),
+        url('https://www.aimcom.com/wp-content/uploads/2026/01/erp-systems-integrating-business-operations-and-supply-chain-processes-1.png'),
+        url('https://img.magnific.com/free-vector/hand-drawn-flat-design-erp-illustration_23-2149383351.jpg?semt=ais_hybrid&w=740&q=80');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-blend-mode: overlay, soft-light, luminosity, multiply;
+      opacity: 0.07;
+      z-index: -1;
+      pointer-events: none;
+      filter: saturate(0.65) contrast(1.05);
+    }
 
-        /* Employee Section & Table */
-        .employee-section {
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
-        .table-container {
-            overflow-x: auto;
-            margin-top: 1rem;
-        }
-        .employee-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .employee-table th,
-        .employee-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-        .employee-table th {
-            font-weight: 600;
-            color: white;
-            background: var(--primary);
-            font-size: 0.875rem;
-        }
-        .employee-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 0.875rem;
-        }
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        .status-active { background: #dcfce7; color: #166534; }
-        .status-onboarding { background: #fef3c7; color: #92400e; }
-        .status-leave { background: #fecaca; color: #991b1b; }
-        .status-terminated { background: #e2e8f0; color: #334155; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    input, select, textarea { font-family: inherit; }
+    img { max-width: 100%; display: block; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
 
-        /* Module Grid */
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-        .module-card {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            box-shadow: var(--shadow);
-        }
-        .module-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-color: var(--primary);
-        }
-        .module-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary), #3b82f6);
-            color: white;
-        }
-        .module-card h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
-        .module-card p { color: var(--text-light); font-size: 0.95rem; }
+    /* ============ APP WRAPPER ============ */
+    .app {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 1.25rem 2rem 3rem;
+    }
 
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal.active { display: flex; }
-        .modal-content {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: 12px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-light);
-        }
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            font-size: 0.875rem;
-        }
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: var(--background);
-            color: var(--text);
-        }
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
+    /* ============ TOP BAR ============ */
+    .top-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.95rem 1.35rem;
+      display: flex;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .brand-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, var(--primary) 0%, #2c5a8a 55%, #3d6fa0 100%);
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      box-shadow: 0 4px 14px rgba(26, 76, 122, 0.28);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .brand-tab:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(26, 76, 122, 0.35);
+    }
+    .brand-tab i { font-size: 0.82rem; opacity: 0.9; }
 
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            color: var(--text-light);
-            border-top: 1px solid var(--border);
-        }
+    /* ============ LAYOUT ============ */
+    .hr-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
 
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .dashboard { grid-template-columns: 1fr; }
-            .sidebar { transform: translateX(-100%); }
-            .main-content { margin-left: 0; grid-column: 1; }
-            .hr-overview { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 768px) {
-            .main-content { padding: 1rem; }
-            .header { flex-direction: column; align-items: flex-start; }
-            .toolbar { flex-direction: column; }
-            .module-grid { grid-template-columns: 1fr; }
-        }
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --background: #0f172a;
-                --surface: #1e293b;
-                --text: #f1f5f9;
-                --text-light: #94a3b8;
-                --border: #334155;
-            }
-        }
-    </style>
+    /* ============ SIDEBAR ============ */
+    .hr-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: sticky;
+      top: 1rem;
+      max-height: calc(100vh - 2rem);
+      overflow-y: auto;
+      padding: 0.75rem 0.6rem 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .hr-sidebar::-webkit-scrollbar { width: 6px; }
+    .hr-sidebar::-webkit-scrollbar-thumb {
+      background: var(--border-strong); border-radius: 6px;
+    }
+
+    .nav-section { margin-bottom: 0.5rem; }
+    .nav-section-title {
+      padding: 0.75rem 0.75rem 0.4rem;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-subtle);
+      font-weight: 700;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.84rem;
+      transition: background 0.12s, color 0.12s;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 100%;
+      text-align: left;
+    }
+    .nav-link i {
+      width: 16px; text-align: center;
+      font-size: 0.82rem; color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .nav-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .nav-link:hover i { color: var(--accent); }
+    .nav-link.active {
+      background: var(--accent-soft); color: var(--accent); font-weight: 600;
+    }
+    .nav-link.active i { color: var(--accent); }
+
+    /* ============ MAIN ============ */
+    .hr-main { min-width: 0; }
+
+    .hr-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .hr-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text);
+    }
+    .hr-title i { color: var(--primary); font-size: 1.05rem; }
+    .hr-subtitle {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .hr-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+
+    /* ============ BUTTONS ============ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover); border-color: var(--accent-hover);
+    }
+    .btn-success {
+      background: var(--success); color: #fff; border-color: var(--success);
+    }
+    .btn-success:hover { background: #0b6349; border-color: #0b6349; }
+    .btn-secondary {
+      background: var(--surface); color: var(--text); border-color: var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--border-strong); }
+    .btn-danger {
+      background: var(--danger); color: #fff; border-color: var(--danger);
+    }
+    .btn-danger:hover { background: #a13024; border-color: #a13024; }
+    .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.72rem; }
+
+    /* ============ TAB CONTENT ============ */
+    .tab-content { display: none; }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============ CARDS ============ */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.15rem;
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-title i { color: var(--primary); font-size: 0.85rem; }
+
+    /* ============ STATS GRID ============ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.25rem;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+      cursor: pointer;
+    }
+    .stat-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .stat-title {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    .stat-icon {
+      width: 28px; height: 28px;
+      display: grid; place-items: center;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+    .stat-change {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ============ CHARTS ============ */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      min-height: 280px;
+      position: relative;
+    }
+    .chart-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--text-subtle);
+      font-size: 0.83rem;
+      min-height: 200px;
+      text-align: center;
+      padding: 2rem 1rem;
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-sm);
+    }
+    .chart-empty i { font-size: 1.5rem; opacity: 0.5; }
+
+    /* ============ TABLES ============ */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 1.5rem;
+    }
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding: 1.1rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-toolbar h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .table-toolbar-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .search-input-wrap {
+      position: relative;
+    }
+    .search-input-wrap i {
+      position: absolute;
+      left: 12px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-subtle);
+      font-size: 0.8rem;
+      pointer-events: none;
+    }
+    .search-input-wrap input {
+      padding: 0.5rem 0.85rem 0.5rem 2.2rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.83rem;
+      outline: none;
+      width: 240px;
+      max-width: 100%;
+    }
+    .search-input-wrap input:focus { border-color: var(--accent); }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    .data-table th {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover { background: var(--surface-alt); }
+    .data-table .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-subtle);
+    }
+    .data-table .empty-state i {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 0.55rem;
+      opacity: 0.5;
+    }
+
+    .table-actions { display: flex; gap: 0.35rem; }
+    .action-icon {
+      cursor: pointer;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      transition: background 0.12s, color 0.12s;
+    }
+    .action-icon:hover { background: var(--accent-soft); color: var(--accent); }
+
+    /* Employee avatar */
+    .emp-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .emp-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #3d6fa0);
+      color: #fff;
+      display: grid; place-items: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .emp-name {
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .emp-id {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .badge-success { background: #dcfce7; color: #166534; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger  { background: #fee2e2; color: #991b1b; }
+    .badge-info    { background: var(--accent-soft); color: var(--accent); }
+    .badge-gray    { background: #f1f5f9; color: #475569; }
+
+    /* ============ QUICK ACTIONS ============ */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.75rem;
+    }
+    .quick-action {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 0.75rem;
+      text-align: center;
+      transition: border-color 0.15s, background 0.15s, transform 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+      color: inherit;
+      display: block;
+    }
+    .quick-action:hover {
+      border-color: var(--accent);
+      background: #fff;
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .quick-action i {
+      display: block;
+      font-size: 1.4rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .quick-action span {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    /* ============ MODULE GRID ============ */
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+    .module-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.2rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+      cursor: pointer;
+    }
+    .module-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .module-icon {
+      width: 38px; height: 38px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: grid; place-items: center;
+      font-size: 0.95rem;
+    }
+    .module-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+      margin-bottom: 0.2rem;
+      color: var(--text);
+    }
+    .module-description {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+
+    /* ============ FORMS ============ */
+    .form-group { margin-bottom: 1.15rem; }
+    .form-label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: var(--text-2);
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.85rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    .form-section {
+      margin: 1.5rem 0 0.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+    .form-section:first-of-type {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+
+    /* ============ MODAL ============ */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      padding: 1rem;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalSlideIn 0.25s ease;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      padding: 1.15rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1;
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+    }
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      width: 34px; height: 34px;
+      display: grid; place-items: center;
+      border-radius: var(--radius-sm);
+      transition: background 0.12s, color 0.12s;
+    }
+    .modal-close:hover { background: var(--accent-soft); color: var(--accent); }
+    .modal-body { padding: 1.35rem; }
+    .modal-footer {
+      padding: 1rem 1.35rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.55rem;
+      position: sticky;
+      bottom: 0;
+      background: var(--surface);
+      border-bottom-left-radius: var(--radius-lg);
+      border-bottom-right-radius: var(--radius-lg);
+    }
+
+    /* ============ NOTIFICATION ============ */
+    .notification {
+      position: fixed;
+      top: 20px; right: 20px;
+      padding: 0.85rem 1.25rem;
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      font-size: 0.83rem;
+      font-weight: 500;
+      animation: slideIn 0.25s ease;
+      max-width: 400px;
+    }
+    .notification.success { background: var(--success); }
+    .notification.error   { background: var(--danger); }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ============ FOOTER ============ */
+    .app-footer {
+      margin-top: 2.5rem;
+      padding: 1.4rem 0 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .app-footer strong { color: var(--text-2); font-weight: 600; }
+
+    /* ============ MOBILE ============ */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem; left: 1rem;
+      background: var(--primary); color: #fff;
+      border-radius: var(--radius-sm);
+      width: 42px; height: 42px;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: var(--shadow);
+    }
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.5);
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+    .sidebar-overlay.active { display: block; }
+
+    @media (max-width: 960px) {
+      .app { padding: 1rem; padding-top: 4rem; }
+      .hr-layout { grid-template-columns: 1fr; }
+      .hr-sidebar {
+        position: fixed;
+        top: 0; left: 0;
+        width: var(--sidebar-w);
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        border: none;
+        border-right: 1px solid var(--border);
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        z-index: 1000;
+      }
+      .hr-sidebar.active { transform: translateX(0); }
+      .mobile-menu-toggle { display: flex; }
+    }
+    @media (max-width: 640px) {
+      .stats-grid, .charts-grid, .module-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .hr-header { flex-direction: column; align-items: flex-start; }
+      .search-input-wrap input { width: 100%; }
+    }
+  </style>
 </head>
 <body>
-    <div class="dashboard">
-        <nav class="sidebar">
-            <div class="logo">
-                <div class="logo-icon">CG</div>
-                <div>
-                    <div style="font-weight: 700; font-size: 1.25rem;">CephasGM</div>
-                    <div style="font-size: 0.875rem; color: var(--text-light);">ERP System</div>
-                </div>
-            </div>
+  <a href="#main-content" class="sr-only">Skip to main content</a>
 
-            <div class="nav-section">
-                <div class="nav-title">Main</div>
-                <a href="index.html" class="nav-item"><span class="nav-icon">📊</span>Dashboard</a>
-                <a href="hr.html" class="nav-item active"><span class="nav-icon">👥</span>HR Management</a>
-                <a href="finance.html" class="nav-item"><span class="nav-icon">💰</span>Finance</a>
-            </div>
-            <div class="nav-section">
-                <div class="nav-title">Operations</div>
-                <a href="attendance.html" class="nav-item"><span class="nav-icon">⏱️</span>Attendance</a>
-                <a href="payroll.html" class="nav-item"><span class="nav-icon">💳</span>Payroll</a>
-                <a href="inventory.html" class="nav-item"><span class="nav-icon">📦</span>Inventory</a>
-            </div>
-            <div class="nav-section">
-                <div class="nav-title">HR Modules</div>
-                <a href="recruitment.html" class="nav-item"><span class="nav-icon">💼</span>Recruitment</a>
-                <a href="performance.html" class="nav-item"><span class="nav-icon">📈</span>Performance</a>
-                <a href="training.html" class="nav-item"><span class="nav-icon">🎓</span>Training</a>
-            </div>
+  <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu" aria-expanded="false">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="app">
+    <!-- TOP BAR -->
+    <header class="top-bar">
+      <a href="index.html" class="brand-tab" aria-label="CephasGM ERP — return to homepage">
+        <i class="fas fa-bolt" aria-hidden="true"></i>
+        CephasGM ERP
+      </a>
+    </header>
+
+    <div class="hr-layout">
+      <!-- SIDEBAR -->
+      <aside class="hr-sidebar" id="hrSidebar" aria-label="HR navigation">
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <div class="nav-section-title">Overview</div>
+            <button class="nav-link active" data-tab="dashboard">
+              <i class="fas fa-chart-line"></i><span>Dashboard</span>
+            </button>
+            <button class="nav-link" data-tab="employees">
+              <i class="fas fa-users"></i><span>Employees</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Workforce</div>
+            <button class="nav-link" data-tab="recruitment">
+              <i class="fas fa-briefcase"></i><span>Recruitment</span>
+            </button>
+            <button class="nav-link" data-tab="performance">
+              <i class="fas fa-chart-simple"></i><span>Performance</span>
+            </button>
+            <button class="nav-link" data-tab="training">
+              <i class="fas fa-graduation-cap"></i><span>Training</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Compliance</div>
+            <button class="nav-link" data-tab="benefits">
+              <i class="fas fa-heart-pulse"></i><span>Benefits</span>
+            </button>
+            <button class="nav-link" data-tab="leave">
+              <i class="fas fa-umbrella-beach"></i><span>Leave</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Other Modules</div>
+            <a href="payroll.html" class="nav-link">
+              <i class="fas fa-money-check-alt"></i><span>Payroll</span>
+            </a>
+            <a href="finance.html" class="nav-link">
+              <i class="fas fa-chart-pie"></i><span>Finance</span>
+            </a>
+            <a href="safety.html" class="nav-link">
+              <i class="fas fa-shield-heart"></i><span>Safety</span>
+            </a>
+            <a href="legal.html" class="nav-link">
+              <i class="fas fa-scale-balanced"></i><span>Legal</span>
+            </a>
+            <a href="admin.html" class="nav-link">
+              <i class="fas fa-sliders"></i><span>Admin</span>
+            </a>
+          </div>
         </nav>
+      </aside>
 
-        <main class="main-content">
-            <div class="header">
-                <h1>Human Resources Management</h1>
-                <div style="color: var(--text-light);">Manage employees, recruitment, and HR operations with integrated analytics</div>
+      <!-- MAIN -->
+      <main class="hr-main" id="main-content" tabindex="-1">
+        <!-- Header -->
+        <header class="hr-header">
+          <div>
+            <h1 class="hr-title" id="pageTitle">
+              <i class="fas fa-user-tie"></i>
+              Human Resources Dashboard
+            </h1>
+            <p class="hr-subtitle" id="pageSubtitle">
+              Overview of employees, recruitment, and workforce metrics
+            </p>
+          </div>
+          <div class="hr-actions">
+            <button class="btn btn-secondary" onclick="exportCurrentTab()">
+              <i class="fas fa-download"></i> Export
+            </button>
+            <button class="btn btn-primary" id="addRecordBtn" onclick="openAddModal()">
+              <i class="fas fa-plus"></i> Add Employee
+            </button>
+          </div>
+        </header>
+
+        <!-- ============ DASHBOARD ============ -->
+        <div id="dashboard-tab" class="tab-content active">
+          <div class="stats-grid">
+            <div class="stat-card" onclick="switchTab('employees')">
+              <div class="stat-header">
+                <span class="stat-title">Total Employees</span>
+                <span class="stat-icon"><i class="fas fa-users"></i></span>
+              </div>
+              <div class="stat-value" id="totalEmployees">—</div>
+              <div class="stat-change">No data yet</div>
             </div>
-
-            <!-- Enhanced Toolbar -->
-            <div class="toolbar">
-                <button class="btn-primary" onclick="hrManager.showEmployeeModal()"><span>👤</span>Add Employee</button>
-                <button class="btn-primary" onclick="hrManager.runPayroll()"><span>💳</span>Run Payroll</button>
-                <button class="btn-success" onclick="hrManager.generateReports()"><span>📊</span>Generate Reports</button>
-                <button class="btn-primary" onclick="hrManager.syncAttendance()"><span>⏱️</span>Sync Attendance</button>
-                <button class="btn-secondary" onclick="hrManager.exportHRData()"><span>📤</span>Export Data</button>
+            <div class="stat-card" onclick="switchTab('recruitment')">
+              <div class="stat-header">
+                <span class="stat-title">Open Positions</span>
+                <span class="stat-icon"><i class="fas fa-briefcase"></i></span>
+              </div>
+              <div class="stat-value" id="openPositions">—</div>
+              <div class="stat-change">No data yet</div>
             </div>
-
-            <!-- Quick Stats (updated dynamically) -->
-            <div class="stats-grid">
-                <div class="stat-card" onclick="hrManager.viewEmployees()">
-                    <div class="stat-number" id="totalEmployees">0</div>
-                    <div class="stat-label">Total Employees</div>
-                    <div class="stat-trend trend-up" id="totalTrend">↑ 0 this month</div>
-                </div>
-                <div class="stat-card" onclick="hrManager.viewRecruitment()">
-                    <div class="stat-number" id="openPositions">0</div>
-                    <div class="stat-label">Open Positions</div>
-                    <div class="stat-trend trend-down" id="positionsTrend">↓ 0 from last week</div>
-                </div>
-                <div class="stat-card" onclick="hrManager.viewPerformance()">
-                    <div class="stat-number" id="satisfactionRate">0%</div>
-                    <div class="stat-label">Satisfaction Rate</div>
-                    <div class="stat-trend trend-up" id="satisfactionTrend">↑ 0% this quarter</div>
-                </div>
-                <div class="stat-card" onclick="hrManager.viewPendingRequests()">
-                    <div class="stat-number" id="pendingRequests">0</div>
-                    <div class="stat-label">Pending Requests</div>
-                    <div class="stat-trend trend-up" id="requestsTrend">↑ 0 today</div>
-                </div>
+            <div class="stat-card" onclick="switchTab('performance')">
+              <div class="stat-header">
+                <span class="stat-title">Avg Performance</span>
+                <span class="stat-icon"><i class="fas fa-chart-simple"></i></span>
+              </div>
+              <div class="stat-value" id="avgPerformance">—</div>
+              <div class="stat-change">No data yet</div>
             </div>
-
-            <!-- HR Overview with enhanced chart & actions -->
-            <div class="hr-overview">
-                <div class="overview-card">
-                    <div class="card-header">
-                        <div class="card-title">Workforce Analytics</div>
-                        <select id="analyticsRange" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px;">
-                            <option value="30">Last 30 Days</option>
-                            <option value="90">Last Quarter</option>
-                            <option value="365">Last Year</option>
-                        </select>
-                    </div>
-                    <div class="chart-container" id="workforceChart">
-                        <!-- Dynamic chart will be rendered here -->
-                    </div>
-                </div>
-
-                <div class="overview-card">
-                    <div class="card-header">
-                        <div class="card-title">Quick Actions</div>
-                    </div>
-                    <div class="quick-actions">
-                        <div class="action-btn" onclick="hrManager.processLeaveRequests()"><div class="action-icon">🏖️</div><div>Leave Requests</div></div>
-                        <div class="action-btn" onclick="hrManager.viewOnboarding()"><div class="action-icon">🚀</div><div>Onboarding</div></div>
-                        <div class="action-btn" onclick="hrManager.manageBenefits()"><div class="action-icon">🏥</div><div>Benefits</div></div>
-                        <div class="action-btn" onclick="hrManager.exportHRData()"><div class="action-icon">📤</div><div>Export Data</div></div>
-                    </div>
-                </div>
+            <div class="stat-card" onclick="switchTab('leave')">
+              <div class="stat-header">
+                <span class="stat-title">Pending Requests</span>
+                <span class="stat-icon"><i class="fas fa-clock"></i></span>
+              </div>
+              <div class="stat-value" id="pendingRequests">—</div>
+              <div class="stat-change">No data yet</div>
             </div>
+          </div>
 
-            <!-- Employee List (recent activity) -->
-            <div class="employee-section">
-                <div class="card-header">
-                    <div class="card-title">Employee Directory</div>
-                    <div style="display: flex; gap: 1rem;">
-                        <input type="text" id="employeeSearch" placeholder="Search employees..." style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px;">
-                        <button class="btn-primary" onclick="hrManager.viewAllEmployees()">View All</button>
-                    </div>
-                </div>
-                <div class="table-container">
-                    <table class="employee-table">
-                        <thead>
-                            <tr>
-                                <th>Employee</th><th>Department</th><th>Position</th><th>Join Date</th><th>Status</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="employeeList">
-                            <!-- Dynamic content from JS -->
-                        </tbody>
-                    </table>
-                </div>
+          <div class="charts-grid">
+            <div class="chart-container">
+              <canvas id="workforceChart"></canvas>
+              <div class="chart-empty" id="workforceChartEmpty">
+                <i class="fas fa-chart-bar"></i>
+                No workforce data yet — add employees to see the breakdown
+              </div>
             </div>
-
-            <!-- HR Modules Grid (all cards functional) -->
-            <div class="module-grid">
-                <a href="attendance.html" class="module-card"><div class="module-icon">⏱️</div><h3>Attendance & Time</h3><p>Track employee hours, leaves, and attendance records.</p></a>
-                <a href="payroll.html" class="module-card"><div class="module-icon">💳</div><h3>Payroll Management</h3><p>Process salaries, deductions, bonuses, and generate payslips.</p></a>
-                <a href="recruitment.html" class="module-card"><div class="module-icon">💼</div><h3>Recruitment</h3><p>Manage job postings, applications, interviews, and onboarding.</p></a>
-                <a href="training.html" class="module-card"><div class="module-icon">🎓</div><h3>Training & Development</h3><p>Employee skills tracking, training programs, and certifications.</p></a>
-                <a href="performance.html" class="module-card"><div class="module-icon">📈</div><h3>Performance Reviews</h3><p>Employee evaluations, KPI tracking, and 360-degree feedback.</p></a>
-                <a href="benefits.html" class="module-card"><div class="module-icon">🏥</div><h3>Benefits Administration</h3><p>Health insurance, retirement plans, and benefits management.</p></a>
-                <a href="legal.html" class="module-card"><div class="module-icon">⚖️</div><h3>Legal & Compliance</h3><p>Contract management, regulatory compliance, and audit trails.</p></a>
-                <a href="safety.html" class="module-card"><div class="module-icon">🛡️</div><h3>Health & Safety</h3><p>OSHA compliance, incident reports, and safety protocols.</p></a>
+            <div class="chart-container">
+              <div class="card-title" style="margin-bottom:1rem;">
+                <i class="fas fa-bolt"></i> Quick Actions
+              </div>
+              <div class="quick-actions">
+                <div class="quick-action" onclick="openAddModal('employee')">
+                  <i class="fas fa-user-plus"></i>
+                  <span>Add Employee</span>
+                </div>
+                <div class="quick-action" onclick="openAddModal('leave')">
+                  <i class="fas fa-umbrella-beach"></i>
+                  <span>Log Leave</span>
+                </div>
+                <div class="quick-action" onclick="openAddModal('job')">
+                  <i class="fas fa-briefcase"></i>
+                  <span>Post Job</span>
+                </div>
+                <div class="quick-action" onclick="openAddModal('training')">
+                  <i class="fas fa-graduation-cap"></i>
+                  <span>Add Training</span>
+                </div>
+              </div>
             </div>
+          </div>
 
-            <div class="footer">Copyright © 2025 😀</div>
-        </main>
-    </div>
-
-    <!-- Employee Modal (Add/Edit) -->
-    <div id="employeeModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">Add Employee</h2>
-                <button class="modal-close" onclick="hrManager.closeModal()">&times;</button>
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Recent Employees</h3>
+              <button class="btn btn-secondary btn-sm" onclick="switchTab('employees')">View All</button>
             </div>
-            <form id="employeeForm">
-                <input type="hidden" id="employeeId" value="">
-                <!-- Core Fields (condensed but expanded from list) -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="form-group"><label>Legal First Name *</label><input type="text" id="firstName" required></div>
-                    <div class="form-group"><label>Legal Last Name *</label><input type="text" id="lastName" required></div>
-                    <div class="form-group"><label>Preferred Name</label><input type="text" id="preferredName"></div>
-                    <div class="form-group"><label>Date of Birth</label><input type="date" id="dob"></div>
-                    <div class="form-group"><label>Gender</label><select id="gender"><option>Male</option><option>Female</option><option>Other</option></select></div>
-                    <div class="form-group"><label>Nationality</label><input type="text" id="nationality" value="Kenyan"></div>
-                    <div class="form-group"><label>Country of Residence</label><input type="text" id="countryResidence" value="Kenya"></div>
-                    <div class="form-group"><label>Work Country</label><input type="text" id="workCountry" value="Kenya"></div>
-                    <div class="form-group"><label>Personal Email</label><input type="email" id="personalEmail"></div>
-                    <div class="form-group"><label>Work Email</label><input type="email" id="workEmail"></div>
-                    <div class="form-group"><label>Personal Phone</label><input type="tel" id="personalPhone"></div>
-                    <div class="form-group"><label>Work Phone</label><input type="tel" id="workPhone"></div>
-                    <div class="form-group"><label>Emergency Contact Name</label><input type="text" id="emergencyName"></div>
-                    <div class="form-group"><label>Emergency Contact Phone</label><input type="tel" id="emergencyPhone"></div>
-                    <div class="form-group"><label>Marital Status</label><select id="maritalStatus"><option>Single</option><option>Married</option><option>Divorced</option></select></div>
-                    <div class="form-group"><label>Dependents</label><input type="number" id="dependents" value="0"></div>
-                    <div class="form-group"><label>Government ID</label><input type="text" id="govId"></div>
-                    <div class="form-group"><label>Passport Number</label><input type="text" id="passport"></div>
-                    <div class="form-group"><label>Passport Expiry</label><input type="date" id="passportExpiry"></div>
-                    <div class="form-group"><label>Work Permit Type</label><input type="text" id="workPermit"></div>
-                    <div class="form-group"><label>Permit Expiry</label><input type="date" id="permitExpiry"></div>
-                </div>
-                <hr style="margin: 1rem 0;">
-                <h3>Employment Details</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="form-group"><label>Employee ID</label><input type="text" id="empId" readonly placeholder="Auto-generated"></div>
-                    <div class="form-group"><label>Legal Entity</label><input type="text" id="legalEntity" value="CephasGM Kenya"></div>
-                    <div class="form-group"><label>Department</label><select id="department"><option>Engineering</option><option>Marketing</option><option>Sales</option><option>Finance</option><option>HR</option></select></div>
-                    <div class="form-group"><label>Job Title</label><input type="text" id="jobTitle" value="Developer"></div>
-                    <div class="form-group"><label>Job Grade</label><select id="jobGrade"><option>Associate</option><option>Specialist</option><option>Manager</option><option>Director</option></select></div>
-                    <div class="form-group"><label>Reports To (Manager ID)</label><input type="text" id="reportsTo" placeholder="EMP001"></div>
-                    <div class="form-group"><label>Contract Type</label><select id="contractType"><option>Permanent</option><option>Fixed-Term</option><option>Intern</option><option>Contractor</option></select></div>
-                    <div class="form-group"><label>Employment Status</label><select id="empStatus"><option value="active">Active</option><option value="onboarding">Onboarding</option><option value="leave">Leave</option><option value="terminated">Terminated</option></select></div>
-                    <div class="form-group"><label>Join Date</label><input type="date" id="joinDate" required></div>
-                    <div class="form-group"><label>Contract End Date</label><input type="date" id="contractEnd"></div>
-                    <div class="form-group"><label>Probation End Date</label><input type="date" id="probationEnd"></div>
-                    <div class="form-group"><label>Notice Period (days)</label><input type="number" id="noticePeriod" value="30"></div>
-                    <div class="form-group"><label>Termination Date</label><input type="date" id="terminationDate"></div>
-                    <div class="form-group"><label>Termination Reason</label><input type="text" id="terminationReason"></div>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-secondary" onclick="hrManager.closeModal()">Cancel</button>
-                    <button type="submit" class="btn-success">Save Employee</button>
-                </div>
-            </form>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Department</th>
+                  <th>Position</th>
+                  <th>Join Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="recentEmployeesBody"></tbody>
+            </table>
+          </div>
         </div>
+
+        <!-- ============ EMPLOYEES ============ -->
+        <div id="employees-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Employee Directory</h3>
+              <div class="table-toolbar-actions">
+                <div class="search-input-wrap">
+                  <i class="fas fa-magnifying-glass"></i>
+                  <input type="text" id="employeeSearch" placeholder="Search employees…" oninput="filterEmployees()" />
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('employees')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('employee')">
+                  <i class="fas fa-plus"></i> Add Employee
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Department</th>
+                  <th>Position</th>
+                  <th>Email</th>
+                  <th>Join Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="employeesBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ RECRUITMENT ============ -->
+        <div id="recruitment-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Open Positions</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('jobs')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('job')">
+                  <i class="fas fa-plus"></i> Post Job
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Position</th>
+                  <th>Department</th>
+                  <th>Location</th>
+                  <th>Type</th>
+                  <th>Applicants</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="jobsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ PERFORMANCE ============ -->
+        <div id="performance-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Performance Reviews</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('performance')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('review')">
+                  <i class="fas fa-plus"></i> New Review
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Review Cycle</th>
+                  <th>Score</th>
+                  <th>Reviewer</th>
+                  <th>Due Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="performanceBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ TRAINING ============ -->
+        <div id="training-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Training Programs</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('training')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('training')">
+                  <i class="fas fa-plus"></i> Add Training
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Program</th>
+                  <th>Category</th>
+                  <th>Trainer</th>
+                  <th>Start Date</th>
+                  <th>Enrolled</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="trainingBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ BENEFITS ============ -->
+        <div id="benefits-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Employee Benefits</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('benefits')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('benefit')">
+                  <i class="fas fa-plus"></i> Add Benefit
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Benefit</th>
+                  <th>Provider</th>
+                  <th>Coverage</th>
+                  <th>Start Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="benefitsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ LEAVE ============ -->
+        <div id="leave-tab" class="tab-content">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Leave Requests</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('leave')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('leave')">
+                  <i class="fas fa-plus"></i> Log Leave
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Type</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Days</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="leaveBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
     </div>
 
-    <script>
-        // Enhanced HR Manager with full CRUD, expanded fields, and all requested upgrades
-        class HRManager {
-            constructor() {
-                this.employees = JSON.parse(localStorage.getItem('hrEmployees')) || this.getSampleEmployees();
-                this.openPositions = 8; // for demo
-                this.pendingRequests = 12;
-                this.init();
-            }
+    <!-- FOOTER -->
+    <footer class="app-footer">
+      Copyright © 2025 <strong>Cephas GM</strong> | Innovating for Tomorrow
+    </footer>
+  </div>
 
-            init() {
-                this.setupEventListeners();
-                this.updateUI();
-                this.renderEmployeeList();
-                this.renderChart();
-                // Service worker
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW failed:', e));
-                }
-            }
+  <!-- ============ MODAL ============ -->
+  <div class="modal" id="editModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">New Employee</h2>
+        <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+      </div>
+      <form id="editForm" onsubmit="saveItem(event)">
+        <div class="modal-body">
+          <div id="formFields"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-            getSampleEmployees() {
-                return [
-                    { id: 'EMP001', firstName: 'John', lastName: 'Mwangi', preferredName: 'John', dob: '1985-06-15', gender: 'Male', nationality: 'Kenyan', countryResidence: 'Kenya', workCountry: 'Kenya', personalEmail: 'john.m@example.com', workEmail: 'john.mwangi@cephasgm.com', personalPhone: '+254700111222', workPhone: '1234', emergencyName: 'Mary Mwangi', emergencyPhone: '+254700111223', maritalStatus: 'Married', dependents: 2, govId: '12345678', passport: 'AB123456', passportExpiry: '2028-06-15', workPermit: 'Citizen', permitExpiry: '', legalEntity: 'CephasGM Kenya', department: 'Engineering', jobTitle: 'Senior Developer', jobGrade: 'Specialist', reportsTo: 'EMP002', contractType: 'Permanent', status: 'active', joinDate: '2023-01-15', contractEnd: '', probationEnd: '2023-04-15', noticePeriod: 30, terminationDate: '', terminationReason: '' },
-                    { id: 'EMP002', firstName: 'Sarah', lastName: 'Johnson', preferredName: 'Sarah', dob: '1990-03-12', gender: 'Female', nationality: 'British', countryResidence: 'UK', workCountry: 'UK', personalEmail: 'sarah.j@example.com', workEmail: 'sarah.johnson@cephasgm.com', personalPhone: '+447911123456', workPhone: '2234', emergencyName: 'Tom Johnson', emergencyPhone: '+447911123457', maritalStatus: 'Single', dependents: 0, govId: 'GB987654', passport: 'UK789012', passportExpiry: '2027-03-12', workPermit: 'Citizen', legalEntity: 'CephasGM UK', department: 'Marketing', jobTitle: 'Marketing Manager', jobGrade: 'Manager', reportsTo: 'EMP005', contractType: 'Permanent', status: 'active', joinDate: '2023-03-20', contractEnd: '', probationEnd: '2023-06-20', noticePeriod: 45 },
-                    { id: 'EMP003', firstName: 'David', lastName: 'Kimani', preferredName: 'David', dob: '1995-08-22', gender: 'Male', nationality: 'Kenyan', countryResidence: 'Kenya', workCountry: 'Kenya', personalEmail: 'david.k@example.com', workEmail: 'david.kimani@cephasgm.com', personalPhone: '+254722333444', workPhone: '3234', emergencyName: 'Ann Kimani', emergencyPhone: '+254722333445', maritalStatus: 'Single', dependents: 0, govId: '87654321', passport: 'KE345678', passportExpiry: '2029-08-22', workPermit: 'Citizen', legalEntity: 'CephasGM Kenya', department: 'Sales', jobTitle: 'Sales Executive', jobGrade: 'Associate', reportsTo: 'EMP004', contractType: 'Permanent', status: 'onboarding', joinDate: '2024-01-10', contractEnd: '', probationEnd: '2024-04-10', noticePeriod: 30 },
-                    { id: 'EMP004', firstName: 'Grace', lastName: 'Omondi', preferredName: 'Grace', dob: '1988-11-02', gender: 'Female', nationality: 'Kenyan', countryResidence: 'Kenya', workCountry: 'Kenya', personalEmail: 'grace.o@example.com', workEmail: 'grace.omondi@cephasgm.com', personalPhone: '+254733555666', workPhone: '4234', emergencyName: 'Peter Omondi', emergencyPhone: '+254733555667', maritalStatus: 'Married', dependents: 3, govId: '33445566', passport: 'KE456789', passportExpiry: '2026-11-02', workPermit: 'Citizen', legalEntity: 'CephasGM Kenya', department: 'Finance', jobTitle: 'Accountant', jobGrade: 'Specialist', reportsTo: 'EMP001', contractType: 'Permanent', status: 'active', joinDate: '2022-11-05', contractEnd: '', probationEnd: '2023-02-05', noticePeriod: 30 },
-                    { id: 'EMP005', firstName: 'Michael', lastName: 'Adebayo', preferredName: 'Michael', dob: '1992-04-18', gender: 'Male', nationality: 'Nigerian', countryResidence: 'Nigeria', workCountry: 'Nigeria', personalEmail: 'michael.a@example.com', workEmail: 'michael.adebayo@cephasgm.com', personalPhone: '+234802555777', workPhone: '5234', emergencyName: 'Funke Adebayo', emergencyPhone: '+234802555778', maritalStatus: 'Married', dependents: 1, govId: 'NG112233', passport: 'NG567890', passportExpiry: '2028-04-18', workPermit: 'Citizen', legalEntity: 'CephasGM Nigeria', department: 'HR', jobTitle: 'HR Specialist', jobGrade: 'Specialist', reportsTo: 'EMP002', contractType: 'Permanent', status: 'leave', joinDate: '2024-02-01', contractEnd: '', probationEnd: '2024-05-01', noticePeriod: 30 }
-                ];
-            }
+  <div class="modal" id="deleteModal" role="dialog" aria-modal="true">
+    <div class="modal-content" style="max-width:420px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirm Delete</h2>
+        <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-muted);font-size:0.88rem;">Are you sure you want to delete this record? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
 
-            setupEventListeners() {
-                document.getElementById('analyticsRange').addEventListener('change', () => this.renderChart());
-                document.getElementById('employeeSearch').addEventListener('input', () => this.renderEmployeeList());
-                document.getElementById('employeeForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.saveEmployee();
-                });
-            }
+  <script>
+  /* =========================================================
+     CephasGM ERP — HR Module v4.0
+     Empty-state on first load. Data persisted to localStorage.
+     ========================================================= */
 
-            // Modal functions
-            showEmployeeModal(empId = null) {
-                const modal = document.getElementById('employeeModal');
-                const form = document.getElementById('employeeForm');
-                if (empId) {
-                    const emp = this.employees.find(e => e.id === empId);
-                    if (emp) {
-                        document.getElementById('modalTitle').innerText = 'Edit Employee';
-                        // Populate form fields
-                        for (let key in emp) {
-                            const field = document.getElementById(key);
-                            if (field) field.value = emp[key] || '';
-                        }
-                        document.getElementById('firstName').value = emp.firstName || '';
-                        document.getElementById('lastName').value = emp.lastName || '';
-                        document.getElementById('empId').value = emp.id;
-                    }
-                } else {
-                    document.getElementById('modalTitle').innerText = 'Add Employee';
-                    form.reset();
-                    document.getElementById('empId').value = '';
-                    document.getElementById('employeeId').value = '';
-                }
-                modal.classList.add('active');
-            }
+  const TAB_META = {
+    dashboard:   ['Human Resources Dashboard', 'Overview of employees, recruitment, and workforce metrics'],
+    employees:   ['Employee Directory',        'All employees across the organisation'],
+    recruitment: ['Recruitment',               'Open positions and candidate pipeline'],
+    performance: ['Performance',               'Performance reviews and ratings'],
+    training:    ['Training & Development',    'Training programs and certifications'],
+    benefits:    ['Benefits',                  'Employee benefits and coverage'],
+    leave:       ['Leave Requests',            'Leave applications and approvals']
+  };
 
-            closeModal() {
-                document.getElementById('employeeModal').classList.remove('active');
-            }
+  /* ---------- STATE ---------- */
+  let hrData = loadData();
+  let activeTab = 'dashboard';
+  let charts = {};
+  let currentEditType = null;
+  let deleteType = null;
+  let deleteId = null;
 
-            saveEmployee() {
-                const formData = {};
-                const form = document.getElementById('employeeForm');
-                const inputs = form.querySelectorAll('input, select, textarea');
-                inputs.forEach(input => { if (input.id) formData[input.id] = input.value; });
-                
-                // Generate new ID if adding
-                if (!formData.empId) {
-                    const lastId = this.employees.length > 0 ? parseInt(this.employees[this.employees.length-1].id.replace('EMP','')) : 0;
-                    formData.id = 'EMP' + (lastId+1).toString().padStart(3,'0');
-                } else {
-                    formData.id = formData.empId;
-                }
-                
-                // Map fields to employee structure
-                const employee = {
-                    id: formData.id,
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
-                    preferredName: formData.preferredName,
-                    dob: formData.dob,
-                    gender: formData.gender,
-                    nationality: formData.nationality,
-                    countryResidence: formData.countryResidence,
-                    workCountry: formData.workCountry,
-                    personalEmail: formData.personalEmail,
-                    workEmail: formData.workEmail,
-                    personalPhone: formData.personalPhone,
-                    workPhone: formData.workPhone,
-                    emergencyName: formData.emergencyName,
-                    emergencyPhone: formData.emergencyPhone,
-                    maritalStatus: formData.maritalStatus,
-                    dependents: formData.dependents,
-                    govId: formData.govId,
-                    passport: formData.passport,
-                    passportExpiry: formData.passportExpiry,
-                    workPermit: formData.workPermit,
-                    permitExpiry: formData.permitExpiry,
-                    legalEntity: formData.legalEntity,
-                    department: formData.department,
-                    jobTitle: formData.jobTitle,
-                    jobGrade: formData.jobGrade,
-                    reportsTo: formData.reportsTo,
-                    contractType: formData.contractType,
-                    status: formData.empStatus,
-                    joinDate: formData.joinDate,
-                    contractEnd: formData.contractEnd,
-                    probationEnd: formData.probationEnd,
-                    noticePeriod: formData.noticePeriod,
-                    terminationDate: formData.terminationDate,
-                    terminationReason: formData.terminationReason
-                };
+  function loadData() {
+    const saved = localStorage.getItem('cephasgm_hr_data');
+    if (saved) return JSON.parse(saved);
+    return {
+      employees: [],
+      jobs: [],
+      performance: [],
+      training: [],
+      benefits: [],
+      leave: [],
+      nextIds: { employee: 1, job: 1, review: 1, training: 1, benefit: 1, leave: 1 }
+    };
+  }
+  function saveData() {
+    localStorage.setItem('cephasgm_hr_data', JSON.stringify(hrData));
+  }
 
-                const index = this.employees.findIndex(e => e.id === employee.id);
-                if (index >= 0) {
-                    this.employees[index] = employee;
-                } else {
-                    this.employees.push(employee);
-                }
+  /* ---------- HELPERS ---------- */
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
-                localStorage.setItem('hrEmployees', JSON.stringify(this.employees));
-                this.updateUI();
-                this.renderEmployeeList();
-                this.renderChart();
-                this.closeModal();
-                alert('Employee saved successfully!');
-            }
+  function emptyRow(cols, message, icon = 'fa-inbox') {
+    return `<tr><td colspan="${cols}" class="empty-state"><i class="fas ${icon}"></i>${message}</td></tr>`;
+  }
+  function notify(msg, type = 'info') {
+    const n = document.createElement('div');
+    n.className = `notification ${type}`;
+    n.textContent = msg;
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 3200);
+  }
+  function initialsOf(first, last) {
+    const f = (first || '').charAt(0).toUpperCase();
+    const l = (last || '').charAt(0).toUpperCase();
+    return (f + l) || '?';
+  }
+  function badgeForStatus(status) {
+    const s = (status || '').toLowerCase();
+    if (s.includes('active') || s.includes('approved') || s.includes('completed') || s.includes('open') || s.includes('granted') || s.includes('passed')) return 'success';
+    if (s.includes('onboarding') || s.includes('pending') || s.includes('progress') || s.includes('scheduled') || s.includes('review')) return 'warning';
+    if (s.includes('terminated') || s.includes('rejected') || s.includes('declined') || s.includes('cancelled')) return 'danger';
+    return 'gray';
+  }
 
-            deleteEmployee(empId) {
-                if (confirm('Are you sure you want to delete this employee?')) {
-                    this.employees = this.employees.filter(e => e.id !== empId);
-                    localStorage.setItem('hrEmployees', JSON.stringify(this.employees));
-                    this.updateUI();
-                    this.renderEmployeeList();
-                    this.renderChart();
-                }
-            }
+  /* ---------- BOOT ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNav();
+    setupMobileMenu();
+    setupAddButton();
+    renderAll();
+    initCharts();
+  });
 
-            // Render employee list with search
-            renderEmployeeList() {
-                const search = document.getElementById('employeeSearch').value.toLowerCase();
-                const filtered = this.employees.filter(e => 
-                    e.firstName.toLowerCase().includes(search) || 
-                    e.lastName.toLowerCase().includes(search) ||
-                    e.department.toLowerCase().includes(search)
-                );
-                const tbody = document.getElementById('employeeList');
-                tbody.innerHTML = filtered.map(emp => {
-                    const initials = (emp.firstName[0] + emp.lastName[0]).toUpperCase();
-                    return `<tr>
-                        <td><div style="display: flex; align-items: center; gap: 0.75rem;"><div class="employee-avatar">${initials}</div><div><div style="font-weight:600;">${emp.preferredName || emp.firstName} ${emp.lastName}</div><div style="font-size:0.875rem; color:var(--text-light);">ID: ${emp.id}</div></div></div></td>
-                        <td>${emp.department}</td>
-                        <td>${emp.jobTitle}</td>
-                        <td>${new Date(emp.joinDate).toLocaleDateString()}</td>
-                        <td><span class="status-badge status-${emp.status}">${emp.status.charAt(0).toUpperCase()+emp.status.slice(1)}</span></td>
-                        <td>
-                            <button class="btn-secondary" style="padding:0.25rem 0.75rem; font-size:0.75rem;" onclick="hrManager.showEmployeeModal('${emp.id}')">Edit</button>
-                            <button class="btn-danger" style="padding:0.25rem 0.75rem; font-size:0.75rem;" onclick="hrManager.deleteEmployee('${emp.id}')">Del</button>
-                        </td>
-                    </tr>`;
-                }).join('');
-            }
+  function setupNav() {
+    $$('.nav-link[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+  }
+  function setupMobileMenu() {
+    const toggle = $('#mobileMenuToggle');
+    const sidebar = $('#hrSidebar');
+    const overlay = $('#sidebarOverlay');
+    toggle.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('active');
+      overlay.classList.toggle('active', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  }
+  function setupAddButton() {
+    const btn = $('#addRecordBtn');
+    if (btn) {
+      btn.onclick = () => openAddModal();
+      updateAddButtonLabel();
+    }
+  }
+  function updateAddButtonLabel() {
+    const btn = $('#addRecordBtn');
+    if (!btn) return;
+    const type = inferTypeFromTab(activeTab);
+    const labels = {
+      employee: 'Add Employee',
+      job:      'Post Job',
+      review:   'New Review',
+      training: 'Add Training',
+      benefit:  'Add Benefit',
+      leave:    'Log Leave'
+    };
+    btn.innerHTML = `<i class="fas fa-plus"></i> ${labels[type] || 'Add Employee'}`;
+  }
 
-            updateUI() {
-                // Update stats with dynamic counts
-                const total = this.employees.length;
-                const active = this.employees.filter(e => e.status === 'active').length;
-                document.getElementById('totalEmployees').innerText = total;
-                document.getElementById('totalTrend').innerHTML = `↑ ${active} active`;
-                document.getElementById('openPositions').innerText = this.openPositions;
-                document.getElementById('positionsTrend').innerHTML = `↓ 2 from last week`;
-                document.getElementById('satisfactionRate').innerText = '94%';
-                document.getElementById('satisfactionTrend').innerHTML = '↑ 3% this quarter';
-                document.getElementById('pendingRequests').innerText = this.pendingRequests;
-                document.getElementById('requestsTrend').innerHTML = '↑ 4 today';
-            }
+  function switchTab(tab) {
+    activeTab = tab;
+    $$('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.tab === tab));
+    $$('.tab-content').forEach(c => c.classList.toggle('active', c.id === `${tab}-tab`));
+    const meta = TAB_META[tab] || TAB_META.dashboard;
+    $('#pageTitle').innerHTML = `<i class="fas fa-user-tie"></i> ${meta[0]}`;
+    $('#pageSubtitle').textContent = meta[1];
+    updateAddButtonLabel();
+    const sidebar = $('#hrSidebar');
+    if (sidebar.classList.contains('active')) {
+      sidebar.classList.remove('active');
+      $('#sidebarOverlay').classList.remove('active');
+      $('#mobileMenuToggle').setAttribute('aria-expanded', 'false');
+    }
+  }
+  window.switchTab = switchTab;
 
-            renderChart() {
-                const chart = document.getElementById('workforceChart');
-                const active = this.employees.filter(e => e.status === 'active').length;
-                const onboarding = this.employees.filter(e => e.status === 'onboarding').length;
-                const leave = this.employees.filter(e => e.status === 'leave').length;
-                const total = this.employees.length;
-                const activePct = total ? Math.round((active/total)*100) : 0;
-                const onboardingPct = total ? Math.round((onboarding/total)*100) : 0;
-                const leavePct = total ? Math.round((leave/total)*100) : 0;
-                chart.innerHTML = `
-                    <div style="width:100%; text-align:center;">
-                        <div style="display:flex; justify-content:center; gap:30px; margin-bottom:20px;">
-                            <div><span style="display:inline-block; width:12px; height:12px; background:var(--success); border-radius:2px;"></span> Active: ${activePct}% (${active})</div>
-                            <div><span style="display:inline-block; width:12px; height:12px; background:var(--warning); border-radius:2px;"></span> Onboarding: ${onboardingPct}% (${onboarding})</div>
-                            <div><span style="display:inline-block; width:12px; height:12px; background:var(--error); border-radius:2px;"></span> On Leave: ${leavePct}% (${leave})</div>
-                        </div>
-                        <div style="background:var(--border); height:20px; width:100%; border-radius:10px; overflow:hidden;">
-                            <div style="height:100%; width:${activePct}%; background:var(--success); float:left;"></div>
-                            <div style="height:100%; width:${onboardingPct}%; background:var(--warning); float:left;"></div>
-                            <div style="height:100%; width:${leavePct}%; background:var(--error); float:left;"></div>
-                        </div>
-                    </div>
-                `;
-            }
+  /* ---------- RENDER ALL ---------- */
+  function renderAll() {
+    renderDashboard();
+    renderEmployees();
+    renderJobs();
+    renderPerformance();
+    renderTraining();
+    renderBenefits();
+    renderLeave();
+    refreshCharts();
+  }
 
-            // Action functions (linked to buttons)
-            addNewEmployee() { this.showEmployeeModal(); }
-            runPayroll() { alert('Initiating Payroll Process...'); window.location.href = 'payroll.html'; }
-            generateReports() { alert('Generating HR Reports...'); }
-            syncAttendance() { alert('Syncing with Attendance System...'); window.location.href = 'attendance.html'; }
-            viewEmployees() { alert('Opening Employee Directory...'); }
-            viewRecruitment() { alert('Opening Recruitment Dashboard...'); }
-            viewPerformance() { alert('Opening Performance Management...'); }
-            viewPendingRequests() { alert('Opening Pending Requests...'); }
-            processLeaveRequests() { alert('Processing Leave Requests...'); }
-            viewOnboarding() { alert('Viewing Onboarding Process...'); }
-            manageBenefits() { alert('Managing Employee Benefits...'); }
-            exportHRData() { 
-                const dataStr = JSON.stringify(this.employees, null, 2);
-                const blob = new Blob([dataStr], {type: 'application/json'});
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'hr_export.json';
-                a.click();
-            }
-            viewAllEmployees() { this.renderEmployeeList(); document.getElementById('employeeSearch').value = ''; }
-        }
+  /* ---------- DASHBOARD ---------- */
+  function renderDashboard() {
+    const emps = hrData.employees;
+    const jobs = hrData.jobs;
+    const perf = hrData.performance;
+    const leave = hrData.leave;
 
-        // Initialize the HR manager globally
-        const hrManager = new HRManager();
-    </script>
+    const total = emps.length;
+    const openJobs = jobs.filter(j => (j.status || '').toLowerCase() === 'open').length;
+    const avgPerf = perf.length
+      ? (perf.reduce((s, p) => s + (parseFloat(p.score) || 0), 0) / perf.length).toFixed(1)
+      : null;
+    const pendingLeave = leave.filter(l => (l.status || '').toLowerCase() === 'pending').length;
+
+    $('#totalEmployees').textContent = total || '—';
+    $('#openPositions').textContent = jobs.length ? openJobs : '—';
+    $('#avgPerformance').textContent = avgPerf !== null ? avgPerf + '/5' : '—';
+    $('#pendingRequests').textContent = leave.length ? pendingLeave : '—';
+
+    const body = $('#recentEmployeesBody');
+    const recent = [...emps].slice(-5).reverse();
+    if (!recent.length) {
+      body.innerHTML = emptyRow(6, 'No employees yet — click "Add Employee" to start building your team.', 'fa-users');
+    } else {
+      body.innerHTML = recent.map(e => `
+        <tr>
+          <td>
+            <div class="emp-cell">
+              <div class="emp-avatar">${initialsOf(e.firstName, e.lastName)}</div>
+              <div>
+                <div class="emp-name">${e.firstName || ''} ${e.lastName || ''}</div>
+                <div class="emp-id">${e.employeeId || ''}</div>
+              </div>
+            </div>
+          </td>
+          <td>${e.department || '—'}</td>
+          <td>${e.jobTitle || '—'}</td>
+          <td>${e.joinDate || '—'}</td>
+          <td><span class="badge badge-${badgeForStatus(e.status)}">${e.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('employee', ${e.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+  }
+
+  /* ---------- EMPLOYEES ---------- */
+  function renderEmployees() {
+    const body = $('#employeesBody');
+    if (!hrData.employees.length) {
+      body.innerHTML = emptyRow(7, 'No employees yet — add your first employee to begin.', 'fa-users');
+      return;
+    }
+    body.innerHTML = hrData.employees.map(e => `
+      <tr>
+        <td>
+          <div class="emp-cell">
+            <div class="emp-avatar">${initialsOf(e.firstName, e.lastName)}</div>
+            <div>
+              <div class="emp-name">${e.firstName || ''} ${e.lastName || ''}</div>
+              <div class="emp-id">${e.employeeId || ''}</div>
+            </div>
+          </div>
+        </td>
+        <td>${e.department || '—'}</td>
+        <td>${e.jobTitle || '—'}</td>
+        <td>${e.workEmail || e.personalEmail || '—'}</td>
+        <td>${e.joinDate || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(e.status)}">${e.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('employee', ${e.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  function filterEmployees() {
+    const q = ($('#employeeSearch')?.value || '').toLowerCase();
+    const rows = $$('#employeesBody tr');
+    rows.forEach(r => {
+      r.style.display = q && !r.textContent.toLowerCase().includes(q) ? 'none' : '';
+    });
+  }
+  window.filterEmployees = filterEmployees;
+
+  /* ---------- JOBS ---------- */
+  function renderJobs() {
+    const body = $('#jobsBody');
+    if (!hrData.jobs.length) {
+      body.innerHTML = emptyRow(7, 'No open positions yet — post your first job.', 'fa-briefcase');
+      return;
+    }
+    body.innerHTML = hrData.jobs.map(j => `
+      <tr>
+        <td>${j.title}</td>
+        <td>${j.department || '—'}</td>
+        <td>${j.location || '—'}</td>
+        <td>${j.type || '—'}</td>
+        <td>${j.applicants || 0}</td>
+        <td><span class="badge badge-${badgeForStatus(j.status)}">${j.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('job', ${j.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- PERFORMANCE ---------- */
+  function renderPerformance() {
+    const body = $('#performanceBody');
+    if (!hrData.performance.length) {
+      body.innerHTML = emptyRow(7, 'No performance reviews yet — create one to begin tracking.', 'fa-chart-simple');
+      return;
+    }
+    body.innerHTML = hrData.performance.map(p => `
+      <tr>
+        <td>${p.employee || '—'}</td>
+        <td>${p.cycle || '—'}</td>
+        <td>${p.score || 0}/5</td>
+        <td>${p.reviewer || '—'}</td>
+        <td>${p.dueDate || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(p.status)}">${p.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('review', ${p.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- TRAINING ---------- */
+  function renderTraining() {
+    const body = $('#trainingBody');
+    if (!hrData.training.length) {
+      body.innerHTML = emptyRow(7, 'No training programs yet.', 'fa-graduation-cap');
+      return;
+    }
+    body.innerHTML = hrData.training.map(t => `
+      <tr>
+        <td>${t.program}</td>
+        <td>${t.category || '—'}</td>
+        <td>${t.trainer || '—'}</td>
+        <td>${t.startDate || '—'}</td>
+        <td>${t.enrolled || 0}</td>
+        <td><span class="badge badge-${badgeForStatus(t.status)}">${t.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('training', ${t.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- BENEFITS ---------- */
+  function renderBenefits() {
+    const body = $('#benefitsBody');
+    if (!hrData.benefits.length) {
+      body.innerHTML = emptyRow(7, 'No benefits recorded yet.', 'fa-heart-pulse');
+      return;
+    }
+    body.innerHTML = hrData.benefits.map(b => `
+      <tr>
+        <td>${b.employee || '—'}</td>
+        <td>${b.benefit}</td>
+        <td>${b.provider || '—'}</td>
+        <td>${b.coverage || '—'}</td>
+        <td>${b.startDate || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(b.status)}">${b.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('benefit', ${b.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- LEAVE ---------- */
+  function renderLeave() {
+    const body = $('#leaveBody');
+    if (!hrData.leave.length) {
+      body.innerHTML = emptyRow(7, 'No leave requests yet.', 'fa-umbrella-beach');
+      return;
+    }
+    body.innerHTML = hrData.leave.map(l => `
+      <tr>
+        <td>${l.employee || '—'}</td>
+        <td>${l.type || '—'}</td>
+        <td>${l.startDate || '—'}</td>
+        <td>${l.endDate || '—'}</td>
+        <td>${l.days || 0}</td>
+        <td><span class="badge badge-${badgeForStatus(l.status)}">${l.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('leave', ${l.id})" title="Delete"></i>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---------- CHARTS ---------- */
+  function initCharts() {
+    refreshCharts();
+  }
+
+  function refreshCharts() {
+    const hasData = hrData.employees.length > 0;
+    const canvas = document.getElementById('workforceChart');
+    const empty = document.getElementById('workforceChartEmpty');
+
+    Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} });
+    charts = {};
+
+    if (!hasData) {
+      if (canvas) canvas.style.display = 'none';
+      if (empty) empty.style.display = 'flex';
+      return;
+    }
+    if (canvas) canvas.style.display = 'block';
+    if (empty) empty.style.display = 'none';
+
+    const ctx = canvas.getContext('2d');
+    const byDept = {};
+    hrData.employees.forEach(e => {
+      const d = e.department || 'Other';
+      byDept[d] = (byDept[d] || 0) + 1;
+    });
+    charts.workforce = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(byDept),
+        datasets: [{
+          data: Object.values(byDept),
+          backgroundColor: ['#2563eb','#0f7b5a','#d97706','#8b5cf6','#ec4899','#f97316','#c0392b']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+  }
+
+  /* ---------- ADD MODAL ---------- */
+  function openAddModal(type) {
+    type = type || inferTypeFromTab(activeTab);
+    currentEditType = type;
+    const titles = {
+      employee: 'Add Employee',
+      job:      'Post Job',
+      review:   'New Performance Review',
+      training: 'Add Training Program',
+      benefit:  'Add Benefit',
+      leave:    'Log Leave Request'
+    };
+    $('#modalTitle').textContent = titles[type] || 'New Record';
+    $('#formFields').innerHTML = formFor(type);
+    $('#editModal').classList.add('active');
+  }
+  window.openAddModal = openAddModal;
+
+  function inferTypeFromTab(tab) {
+    return ({
+      dashboard:   'employee',
+      employees:   'employee',
+      recruitment: 'job',
+      performance: 'review',
+      training:    'training',
+      benefits:    'benefit',
+      leave:       'leave'
+    })[tab] || 'employee';
+  }
+
+  function formFor(type) {
+    if (type === 'employee') return `
+      <div class="form-section">Personal Information</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">First Name *</label><input type="text" class="form-control" name="firstName" required></div>
+        <div class="form-group"><label class="form-label">Last Name *</label><input type="text" class="form-control" name="lastName" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Date of Birth</label><input type="date" class="form-control" name="dob"></div>
+        <div class="form-group"><label class="form-label">Gender</label>
+          <select class="form-control" name="gender"><option value="">—</option><option>Male</option><option>Female</option><option>Other</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Nationality</label><input type="text" class="form-control" name="nationality"></div>
+        <div class="form-group"><label class="form-label">Marital Status</label>
+          <select class="form-control" name="maritalStatus"><option value="">—</option><option>Single</option><option>Married</option><option>Divorced</option></select>
+        </div>
+      </div>
+
+      <div class="form-section">Contact</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Personal Email</label><input type="email" class="form-control" name="personalEmail"></div>
+        <div class="form-group"><label class="form-label">Work Email</label><input type="email" class="form-control" name="workEmail"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Personal Phone</label><input type="tel" class="form-control" name="personalPhone"></div>
+        <div class="form-group"><label class="form-label">Work Phone</label><input type="tel" class="form-control" name="workPhone"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Emergency Contact Name</label><input type="text" class="form-control" name="emergencyName"></div>
+        <div class="form-group"><label class="form-label">Emergency Contact Phone</label><input type="tel" class="form-control" name="emergencyPhone"></div>
+      </div>
+
+      <div class="form-section">Identification</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Government ID</label><input type="text" class="form-control" name="govId"></div>
+        <div class="form-group"><label class="form-label">Passport Number</label><input type="text" class="form-control" name="passport"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Passport Expiry</label><input type="date" class="form-control" name="passportExpiry"></div>
+        <div class="form-group"><label class="form-label">Work Permit</label><input type="text" class="form-control" name="workPermit"></div>
+      </div>
+
+      <div class="form-section">Employment</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Employee ID</label><input type="text" class="form-control" name="employeeId" placeholder="Auto-generated"></div>
+        <div class="form-group"><label class="form-label">Legal Entity</label><input type="text" class="form-control" name="legalEntity"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Department</label>
+          <select class="form-control" name="department">
+            <option value="">—</option>
+            <option>Engineering</option><option>Marketing</option><option>Sales</option>
+            <option>Finance</option><option>HR</option><option>Operations</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Job Title</label><input type="text" class="form-control" name="jobTitle"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Job Grade</label>
+          <select class="form-control" name="jobGrade"><option value="">—</option><option>Associate</option><option>Specialist</option><option>Manager</option><option>Director</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Contract Type</label>
+          <select class="form-control" name="contractType"><option value="">—</option><option>Permanent</option><option>Fixed-Term</option><option>Intern</option><option>Contractor</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Join Date</label><input type="date" class="form-control" name="joinDate"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Active</option><option>Onboarding</option><option>On Leave</option><option>Terminated</option>
+          </select>
+        </div>
+      </div>`;
+
+    if (type === 'job') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Position Title</label><input type="text" class="form-control" name="title" required></div>
+        <div class="form-group"><label class="form-label">Department</label><input type="text" class="form-control" name="department"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Location</label><input type="text" class="form-control" name="location"></div>
+        <div class="form-group"><label class="form-label">Type</label>
+          <select class="form-control" name="type">
+            <option>Full-time</option><option>Part-time</option><option>Contract</option><option>Internship</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Applicants</label><input type="number" class="form-control" name="applicants" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Open</option><option>In Review</option><option>Closed</option>
+          </select>
+        </div>
+      </div>`;
+
+    if (type === 'review') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Employee</label><input type="text" class="form-control" name="employee" required></div>
+        <div class="form-group"><label class="form-label">Review Cycle</label><input type="text" class="form-control" name="cycle" placeholder="e.g. Q1 2026"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Score (0–5)</label><input type="number" class="form-control" name="score" min="0" max="5" step="0.1" value="0"></div>
+        <div class="form-group"><label class="form-label">Reviewer</label><input type="text" class="form-control" name="reviewer"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Due Date</label><input type="date" class="form-control" name="dueDate"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Pending</option><option>In Progress</option><option>Completed</option>
+          </select>
+        </div>
+      </div>`;
+
+    if (type === 'training') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Program</label><input type="text" class="form-control" name="program" required></div>
+        <div class="form-group"><label class="form-label">Category</label>
+          <select class="form-control" name="category">
+            <option>Technical</option><option>Leadership</option><option>Compliance</option>
+            <option>Safety</option><option>Soft Skills</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Trainer</label><input type="text" class="form-control" name="trainer"></div>
+        <div class="form-group"><label class="form-label">Start Date</label><input type="date" class="form-control" name="startDate"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Enrolled</label><input type="number" class="form-control" name="enrolled" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Scheduled</option><option>In Progress</option><option>Completed</option><option>Cancelled</option>
+          </select>
+        </div>
+      </div>`;
+
+    if (type === 'benefit') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Employee</label><input type="text" class="form-control" name="employee" required></div>
+        <div class="form-group"><label class="form-label">Benefit</label><input type="text" class="form-control" name="benefit" placeholder="e.g. Health Insurance" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Provider</label><input type="text" class="form-control" name="provider"></div>
+        <div class="form-group"><label class="form-label">Coverage</label><input type="text" class="form-control" name="coverage" placeholder="e.g. Family"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Start Date</label><input type="date" class="form-control" name="startDate"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Active</option><option>Pending</option><option>Cancelled</option>
+          </select>
+        </div>
+      </div>`;
+
+    if (type === 'leave') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Employee</label><input type="text" class="form-control" name="employee" required></div>
+        <div class="form-group"><label class="form-label">Type</label>
+          <select class="form-control" name="type">
+            <option>Annual</option><option>Sick</option><option>Maternity</option>
+            <option>Paternity</option><option>Compassionate</option><option>Unpaid</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Start Date</label><input type="date" class="form-control" name="startDate"></div>
+        <div class="form-group"><label class="form-label">End Date</label><input type="date" class="form-control" name="endDate"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Days</label><input type="number" class="form-control" name="days" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Pending</option><option>Approved</option><option>Rejected</option>
+          </select>
+        </div>
+      </div>`;
+
+    return '<p style="color:var(--text-muted);font-size:0.85rem;">No form available for this record type.</p>';
+  }
+
+  function saveItem(e) {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const type = currentEditType;
+    if (!type) return;
+    const data = Object.fromEntries(f.entries());
+    addRecord(type, data);
+    closeModal('editModal');
+    renderAll();
+    notify('Saved successfully', 'success');
+  }
+  window.saveItem = saveItem;
+
+  function addRecord(type, data) {
+    if (type === 'employee') {
+      hrData.employees.push({
+        id: hrData.nextIds.employee++,
+        employeeId: data.employeeId || `EMP-${String(hrData.employees.length + 1).padStart(4, '0')}`,
+        firstName: data.firstName, lastName: data.lastName,
+        dob: data.dob || '', gender: data.gender || '',
+        nationality: data.nationality || '',
+        maritalStatus: data.maritalStatus || '',
+        personalEmail: data.personalEmail || '',
+        workEmail: data.workEmail || '',
+        personalPhone: data.personalPhone || '',
+        workPhone: data.workPhone || '',
+        emergencyName: data.emergencyName || '',
+        emergencyPhone: data.emergencyPhone || '',
+        govId: data.govId || '', passport: data.passport || '',
+        passportExpiry: data.passportExpiry || '',
+        workPermit: data.workPermit || '',
+        legalEntity: data.legalEntity || '',
+        department: data.department || '',
+        jobTitle: data.jobTitle || '',
+        jobGrade: data.jobGrade || '',
+        contractType: data.contractType || '',
+        joinDate: data.joinDate || '',
+        status: data.status || 'Active'
+      });
+    }
+    else if (type === 'job') {
+      hrData.jobs.push({
+        id: hrData.nextIds.job++,
+        title: data.title, department: data.department || '',
+        location: data.location || '', type: data.type || 'Full-time',
+        applicants: parseInt(data.applicants, 10) || 0,
+        status: data.status || 'Open'
+      });
+    }
+    else if (type === 'review') {
+      hrData.performance.push({
+        id: hrData.nextIds.review++,
+        employee: data.employee, cycle: data.cycle || '',
+        score: parseFloat(data.score) || 0,
+        reviewer: data.reviewer || '',
+        dueDate: data.dueDate || '',
+        status: data.status || 'Pending'
+      });
+    }
+    else if (type === 'training') {
+      hrData.training.push({
+        id: hrData.nextIds.training++,
+        program: data.program, category: data.category || '',
+        trainer: data.trainer || '',
+        startDate: data.startDate || '',
+        enrolled: parseInt(data.enrolled, 10) || 0,
+        status: data.status || 'Scheduled'
+      });
+    }
+    else if (type === 'benefit') {
+      hrData.benefits.push({
+        id: hrData.nextIds.benefit++,
+        employee: data.employee, benefit: data.benefit,
+        provider: data.provider || '',
+        coverage: data.coverage || '',
+        startDate: data.startDate || '',
+        status: data.status || 'Active'
+      });
+    }
+    else if (type === 'leave') {
+      hrData.leave.push({
+        id: hrData.nextIds.leave++,
+        employee: data.employee, type: data.type || 'Annual',
+        startDate: data.startDate || '',
+        endDate: data.endDate || '',
+        days: parseInt(data.days, 10) || 0,
+        status: data.status || 'Pending'
+      });
+    }
+    saveData();
+  }
+
+  /* ---------- DELETE ---------- */
+  function openDelete(type, id) {
+    deleteType = type;
+    deleteId = id;
+    $('#deleteModal').classList.add('active');
+  }
+  window.openDelete = openDelete;
+
+  function confirmDelete() {
+    if (!deleteType || deleteId == null) return;
+    const map = {
+      employee: 'employees', job: 'jobs', review: 'performance',
+      training: 'training', benefit: 'benefits', leave: 'leave'
+    };
+    const key = map[deleteType];
+    if (key && hrData[key]) {
+      hrData[key] = hrData[key].filter(x => String(x.id) !== String(deleteId));
+      saveData();
+      renderAll();
+      notify('Deleted', 'success');
+    }
+    closeModal('deleteModal');
+  }
+  window.confirmDelete = confirmDelete;
+
+  /* ---------- MODAL HELPERS ---------- */
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+  window.closeModal = closeModal;
+
+  /* ---------- EXPORT ---------- */
+  function exportTable(type) {
+    const map = {
+      employees: 'employees', jobs: 'jobs',
+      performance: 'performance', training: 'training',
+      benefits: 'benefits', leave: 'leave'
+    };
+    const key = map[type] || type;
+    const rows = hrData[key];
+    if (!rows || !rows.length) { notify('No data to export', 'info'); return; }
+    const headers = Object.keys(rows[0]);
+    const csv = [headers.join(',')]
+      .concat(rows.map(r => headers.map(h => JSON.stringify(r[h] ?? '')).join(',')))
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${key}_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    notify('Exported successfully', 'success');
+  }
+  window.exportTable = exportTable;
+
+  function exportCurrentTab() {
+    const map = {
+      employees: 'employees', recruitment: 'jobs',
+      performance: 'performance', training: 'training',
+      benefits: 'benefits', leave: 'leave'
+    };
+    const key = map[activeTab];
+    if (key) exportTable(key);
+    else notify('Nothing to export from this section', 'info');
+  }
+  window.exportCurrentTab = exportCurrentTab;
+
+  /* ---------- KEYBOARD ---------- */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+    }
+  });
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('modal')) e.target.classList.remove('active');
+  });
+  </script>
 </body>
 </html>
