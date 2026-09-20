@@ -1,972 +1,3071 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oil & Gas · CephasGM ERP</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        body {
-            background: #0b1120;
-            color: #e9edf5;
-            line-height: 1.5;
-        }
+  <!-- PWA Meta -->
+  <meta name="theme-color" content="#1a4c7a" id="theme-color-meta" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CephasGM ERP" />
 
-        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap');
+  <title>Oil &amp; Gas Operations — CephasGM ERP</title>
 
-        /* ===== PROFESSIONAL NAVBAR (CLEAN) ===== */
-        .navbar {
-            background: #0f1a2f;
-            border-bottom: 2px solid #f97316;
-            padding: 0.5rem 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .nav-brand {
-            font-size: 1.5rem;
-            font-weight: 600;
-            background: linear-gradient(145deg, #f97316, #ffb347);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.02em;
-        }
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-        .nav-links a {
-            color: #b4c6e0;
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 450;
-            transition: 0.2s;
-            padding: 0.3rem 0;
-            border-bottom: 2px solid transparent;
-        }
-        .nav-links a:hover {
-            color: #f97316;
-            border-bottom-color: #f97316;
-        }
+  <meta name="description" content="CephasGM ERP Oil &amp; Gas — Upstream, midstream, downstream, trading, integrity, and HSSE" />
+  <meta name="author" content="Cephas Gideon Mkama" />
+  <meta property="og:title" content="Oil &amp; Gas Operations — CephasGM ERP" />
+  <meta property="og:description" content="Complete oil and gas ERP for upstream, midstream, and downstream operations" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cephasgm.github.io/CephasGM-ERP/oil-gas.html" />
 
-        /* ===== DROPDOWN (ALL MODULES) ===== */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        .dropbtn {
-            background: #1e2b42;
-            color: #f9b572;
-            padding: 0.4rem 1.5rem;
-            border: 1px solid #f9731650;
-            border-radius: 40px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 450;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .dropbtn:hover {
-            background: #2a3b58;
-            border-color: #f97316;
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            background: #14263b;
-            min-width: 280px;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.8);
-            border-radius: 24px;
-            padding: 1rem 0;
-            border: 1px solid #f9731630;
-            z-index: 1000;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-        .dropdown-content a {
-            color: #cad5f0;
-            padding: 0.7rem 1.8rem;
-            text-decoration: none;
-            display: block;
-            font-size: 0.9rem;
-            border-left: 3px solid transparent;
-        }
-        .dropdown-content a:hover {
-            background: #1f3450;
-            color: #f97316;
-            border-left-color: #f97316;
-        }
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
 
-        .user-badge {
-            background: #1e2b42;
-            border-radius: 40px;
-            padding: 0.3rem 1.2rem;
-            color: #f9b572;
-            border: 1px solid #f9731650;
-            font-size: 0.9rem;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        /* ===== MAIN CONTAINER ===== */
-        .container {
-            max-width: 1600px;
-            margin: 2rem auto;
-            padding: 0 2.5rem;
-        }
+  <style>
+    /* ============ DESIGN TOKENS ============ */
+    :root {
+      --bg:            #f4f6fa;
+      --surface:       #ffffff;
+      --surface-alt:   #fafbfd;
+      --border:        #e6e9f0;
+      --border-strong: #d3d9e5;
 
-        /* ===== HEADER ===== */
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2.5rem;
-            flex-wrap: wrap;
-        }
-        .page-header h1 {
-            font-size: 2.2rem;
-            font-weight: 500;
-            background: linear-gradient(135deg, #ffffff, #f6d1b0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.02em;
-        }
-        .btn-primary {
-            background: #f97316;
-            border: 1px solid #f97316;
-            padding: 0.7rem 2.2rem;
-            border-radius: 40px;
-            font-weight: 600;
-            color: #0b1120;
-            cursor: pointer;
-            font-size: 0.95rem;
-            transition: 0.2s;
-            box-shadow: 0 6px 14px rgba(249,115,22,0.25);
-        }
-        .btn-primary:hover {
-            background: transparent;
-            color: #f97316;
-        }
+      --text:          #0a1e3c;
+      --text-2:        #2c3e50;
+      --text-muted:    #5e6f8d;
+      --text-subtle:   #94a3b8;
 
-        /* ===== TABS - FULLY FUNCTIONAL ===== */
-        .sector-tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 2.5rem;
-            flex-wrap: wrap;
-            border-bottom: 1px solid #2a3a55;
-            padding-bottom: 0.8rem;
-        }
-        .sector-tab {
-            padding: 0.6rem 1.5rem;
-            border-radius: 40px;
-            background: transparent;
-            cursor: pointer;
-            color: #b0c2da;
-            border: 1px solid #3e506e;
-            font-weight: 480;
-            transition: all 0.15s;
-            font-size: 0.9rem;
-        }
-        .sector-tab.active {
-            background: #f97316;
-            color: #0b1120;
-            border-color: #f97316;
-            font-weight: 550;
-        }
-        .sector-tab:hover:not(.active) {
-            background: #1f2c40;
-            color: #f9b572;
-            border-color: #f97316;
-        }
+      --primary:       #1a4c7a;
+      --primary-600:   #0e3a5c;
+      --primary-soft:  #e8f0fa;
+      --accent:        #2563eb;
+      --accent-hover:  #1d4ed8;
+      --accent-soft:   #eff4ff;
 
-        /* ===== TAB CONTENT SECTIONS ===== */
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active-content {
-            display: block;
-        }
+      --success:       #0f7b5a;
+      --warning:       #d97706;
+      --danger:        #c0392b;
+      --gold:          #b8860b;
+      --amber:         #f59e0b;
 
-        /* ===== STAT CARDS ===== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.8rem;
-            margin-bottom: 2.8rem;
-        }
-        .stat-card {
-            background: #142437;
-            padding: 1.5rem 1.8rem;
-            border-radius: 28px;
-            border-left: 5px solid #f97316;
-            box-shadow: 0 18px 30px -10px #03060e;
-            transition: transform 0.15s;
-        }
-        .stat-card:hover { transform: translateY(-3px); }
-        .stat-label {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            color: #9fb0d0;
-            margin-bottom: 0.5rem;
-        }
-        .stat-value {
-            font-size: 2.2rem;
-            font-weight: 600;
-            color: white;
-            line-height: 1.2;
-        }
-        .stat-detail {
-            color: #b8c7e3;
-            font-size: 0.9rem;
-            margin-top: 0.3rem;
-        }
-        .stat-actions {
-            margin-top: 1rem;
-            display: flex;
-            gap: 0.5rem;
-        }
+      --radius-lg:     16px;
+      --radius:        12px;
+      --radius-sm:     8px;
+      --radius-pill:   999px;
 
-        /* ===== VALUE CHAIN ===== */
-        .value-chain {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin: 3rem 0;
-        }
-        .chain-segment {
-            background: #14273f;
-            padding: 1.8rem 1.2rem;
-            border-radius: 32px;
-            text-align: center;
-            border-top: 5px solid;
-            box-shadow: 0 15px 25px -10px #02060c;
-            transition: all 0.2s;
-        }
-        .chain-segment:hover { transform: scale(1.02); background: #193049; }
-        .upstream { border-color: #2ecc71; }
-        .midstream { border-color: #f39c12; }
-        .downstream { border-color: #e74c3c; }
-        .chain-segment h3 { font-size: 1.5rem; margin-bottom: 0.4rem; }
-        .chain-edit { margin-top: 1rem; }
+      --shadow-sm:     0 1px 2px rgba(10, 30, 60, 0.04);
+      --shadow:        0 2px 10px rgba(10, 30, 60, 0.06);
+      --shadow-lg:     0 12px 32px rgba(10, 30, 60, 0.10);
 
-        /* ===== CARD ===== */
-        .card {
-            background: #14263b;
-            border-radius: 32px;
-            padding: 1.8rem;
-            border: 1px solid #2e4160;
-            box-shadow: 0 18px 30px -10px #020812;
-            margin-bottom: 2rem;
-        }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.8rem;
-            flex-wrap: wrap;
-        }
-        .card-title {
-            font-size: 1.4rem;
-            font-weight: 500;
-            color: #f0f4ff;
-        }
+      --max-width:     1440px;
+      --sidebar-w:     264px;
+    }
 
-        /* ===== TABLE ===== */
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .table th {
-            text-align: left;
-            padding: 0.8rem 0.5rem;
-            border-bottom: 2px solid #f97316;
-            color: #f7b773;
-            font-weight: 550;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-        }
-        .table td {
-            padding: 0.9rem 0.5rem;
-            border-bottom: 1px solid #2f4465;
-            color: #e2eaff;
-        }
-        .btn-icon {
-            background: transparent;
-            border: none;
-            color: #f9a95a;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 0.2rem 0.4rem;
-            transition: 0.1s;
-        }
-        .btn-icon:hover { color: #f97316; transform: scale(1.2); }
-        .btn-sm {
-            background: #1f314b;
-            border: 1px solid #f9731660;
-            color: #f9b97a;
-            padding: 0.4rem 1.2rem;
-            border-radius: 40px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-        .btn-sm:hover { background: #f97316; color: #0b1120; border-color: #f97316; }
+    /* ============ RESET ============ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      position: relative;
+    }
 
-        .status-producing { color: #2ecc71; font-weight: 550; }
-        .status-drilling { color: #f39c12; font-weight: 550; }
-        .status-exploring { color: #3498db; font-weight: 550; }
-        .status-trading { color: #9b59b6; font-weight: 550; }
-        .status-compliance { color: #e67e22; font-weight: 550; }
-        .status-decom { color: #95a5a6; font-weight: 550; }
+    /* ============ PAGE BACKGROUND (ERP collage) ============ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        url('https://www.cio.com/wp-content/uploads/2025/03/272362-0-27498000-1741330535-enterprise_resource_planning-ERP.jpg?quality=50&strip=all&w=1024'),
+        url('https://img.magnific.com/free-vector/gradient-erp-illustration_23-2149379179.jpg'),
+        url('https://www.aimcom.com/wp-content/uploads/2026/01/erp-systems-integrating-business-operations-and-supply-chain-processes-1.png'),
+        url('https://img.magnific.com/free-vector/hand-drawn-flat-design-erp-illustration_23-2149383351.jpg?semt=ais_hybrid&w=740&q=80');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-blend-mode: overlay, soft-light, luminosity, multiply;
+      opacity: 0.07;
+      z-index: -1;
+      pointer-events: none;
+      filter: saturate(0.65) contrast(1.05);
+    }
 
-        .facility-badge {
-            background: #1f3653;
-            padding: 0.25rem 1.2rem;
-            border-radius: 40px;
-            color: #f9b572;
-            display: inline-block;
-            margin-right: 0.7rem;
-            margin-bottom: 0.4rem;
-            border: 1px solid #f9731660;
-        }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    input, select, textarea { font-family: inherit; }
+    img { max-width: 100%; display: block; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
 
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr 0.85fr;
-            gap: 2.2rem;
-            align-items: start;
-        }
+    /* ============ APP WRAPPER ============ */
+    .app {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 1.25rem 2rem 3rem;
+    }
 
-        /* ===== FOOTER ===== */
-        .footer {
-            background: #0c1628;
-            border-top: 1px solid #f9731630;
-            padding: 2rem 2.5rem;
-            margin-top: 3.5rem;
-            text-align: center;
-            color: #93a9cc;
-            font-size: 0.9rem;
-        }
-        .footer span { color: #f9a95a; }
+    /* ============ TOP BAR ============ */
+    .top-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.95rem 1.35rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .brand-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, var(--primary) 0%, #2c5a8a 55%, #3d6fa0 100%);
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      box-shadow: 0 4px 14px rgba(26, 76, 122, 0.28);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .brand-tab:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(26, 76, 122, 0.35);
+    }
+    .brand-tab i { font-size: 0.82rem; opacity: 0.9; }
 
-        /* ===== MODAL ===== */
-        .modal-overlay {
-            position: fixed;
-            top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-card {
-            background: #1f314b;
-            padding: 2.2rem;
-            border-radius: 48px;
-            border: 2px solid #f97316;
-            min-width: 380px;
-            box-shadow: 0 30px 50px black;
-        }
-        .modal-card h3 { margin-bottom: 1.8rem; color: white; }
-        .modal-card input {
-            width:100%; background:#0f1d30; border:1px solid #f9731660;
-            padding:0.9rem; border-radius:30px; margin:0.7rem 0; color:white;
-        }
-        .modal-buttons { display:flex; gap:1rem; justify-content:flex-end; margin-top:2rem; }
-    </style>
+    .asset-selector {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 0.35rem 0.5rem 0.35rem 1rem;
+      margin-left: auto;
+    }
+    .asset-selector label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-muted);
+    }
+    .asset-selector select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 0.45rem 2rem 0.45rem 0.85rem;
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235e6f8d' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+    }
+    .asset-selector select:focus { border-color: var(--accent); }
+
+    /* ============ LAYOUT ============ */
+    .og-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============ SIDEBAR ============ */
+    .og-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: sticky;
+      top: 1rem;
+      max-height: calc(100vh - 2rem);
+      overflow-y: auto;
+      padding: 0.75rem 0.6rem 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .og-sidebar::-webkit-scrollbar { width: 6px; }
+    .og-sidebar::-webkit-scrollbar-thumb {
+      background: var(--border-strong); border-radius: 6px;
+    }
+
+    .nav-section { margin-bottom: 0.5rem; }
+    .nav-section-title {
+      padding: 0.75rem 0.75rem 0.4rem;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-subtle);
+      font-weight: 700;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.84rem;
+      transition: background 0.12s, color 0.12s;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 100%;
+      text-align: left;
+    }
+    .nav-link i {
+      width: 16px; text-align: center;
+      font-size: 0.82rem; color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .nav-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .nav-link:hover i { color: var(--accent); }
+    .nav-link.active {
+      background: var(--accent-soft); color: var(--accent); font-weight: 600;
+    }
+    .nav-link.active i { color: var(--accent); }
+
+    .sidebar-summary {
+      margin: 0.5rem 0.6rem 0.25rem;
+      padding: 0.85rem 0.85rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-600));
+      border-radius: var(--radius);
+      color: #fff;
+    }
+    .sidebar-summary .label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .sidebar-summary .value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin: 0.15rem 0 0.15rem;
+    }
+    .sidebar-summary .sub {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    /* ============ MAIN ============ */
+    .og-main { min-width: 0; }
+
+    .og-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .og-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text);
+    }
+    .og-title i { color: var(--primary); font-size: 1.05rem; }
+    .og-subtitle {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .og-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+
+    /* ============ BUTTONS ============ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover); border-color: var(--accent-hover);
+    }
+    .btn-success {
+      background: var(--success); color: #fff; border-color: var(--success);
+    }
+    .btn-success:hover { background: #0b6349; border-color: #0b6349; }
+    .btn-secondary {
+      background: var(--surface); color: var(--text); border-color: var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--border-strong); }
+    .btn-danger {
+      background: var(--danger); color: #fff; border-color: var(--danger);
+    }
+    .btn-danger:hover { background: #a13024; border-color: #a13024; }
+    .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.72rem; }
+
+    /* ============ TAB CONTENT ============ */
+    .tab-content { display: none; }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============ CARDS ============ */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.15rem;
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-title i { color: var(--primary); font-size: 0.85rem; }
+
+    /* ============ STATS GRID ============ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.25rem;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+      opacity: 0.8;
+    }
+    .stat-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .stat-title {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    .stat-icon {
+      width: 28px; height: 28px;
+      display: grid; place-items: center;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+    .stat-change {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ============ CHARTS ============ */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      height: 300px;
+      position: relative;
+    }
+    .chart-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--text-subtle);
+      font-size: 0.83rem;
+    }
+    .chart-empty i { font-size: 1.5rem; opacity: 0.5; }
+
+    /* ============ PROCESS FLOW ============ */
+    .process-flow {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .process-step {
+      flex: 1;
+      min-width: 140px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      text-align: center;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .process-step:hover {
+      border-color: var(--accent);
+      box-shadow: var(--shadow);
+    }
+    .process-step .step-icon {
+      width: 36px; height: 36px;
+      margin: 0 auto 0.5rem;
+      display: grid; place-items: center;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 10px;
+      font-size: 0.9rem;
+    }
+    .process-step .step-name {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+    .process-step .step-metric {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .process-arrow {
+      color: var(--text-subtle);
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    /* ============ TABLES ============ */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 1.5rem;
+    }
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding: 1.1rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-toolbar h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .table-toolbar-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    .data-table th {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover { background: var(--surface-alt); }
+    .data-table .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-subtle);
+    }
+    .data-table .empty-state i {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 0.55rem;
+      opacity: 0.5;
+    }
+
+    .table-actions { display: flex; gap: 0.35rem; }
+    .action-icon {
+      cursor: pointer;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      transition: background 0.12s, color 0.12s;
+    }
+    .action-icon:hover { background: var(--accent-soft); color: var(--accent); }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .badge-success { background: #dcfce7; color: #166534; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger  { background: #fee2e2; color: #991b1b; }
+    .badge-info    { background: var(--accent-soft); color: var(--accent); }
+    .badge-gray    { background: #f1f5f9; color: #475569; }
+    .badge-amber   { background: #fef3c7; color: #92400e; }
+
+    /* ============ WIDGET GRID ============ */
+    .widget-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .widget-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.35rem;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .widget-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow);
+    }
+    .widget-card h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .widget-card h4 i { color: var(--primary); font-size: 0.78rem; }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+    }
+    .metric-row:last-child { border-bottom: none; }
+    .metric-row .label { color: var(--text-muted); }
+    .metric-row .value { font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+
+    .gauge {
+      margin: 0.5rem 0 0.35rem;
+    }
+    .gauge-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .gauge-fill {
+      height: 100%;
+      background: var(--success);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .gauge-fill.warning { background: var(--warning); }
+    .gauge-fill.danger  { background: var(--danger); }
+    .gauge-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+
+    /* ============ FORMS ============ */
+    .form-group { margin-bottom: 1.15rem; }
+    .form-label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: var(--text-2);
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.85rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    .form-section {
+      margin: 1.5rem 0 0.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+    .form-section:first-of-type {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+
+    /* ============ MODAL ============ */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      padding: 1rem;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 720px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalSlideIn 0.25s ease;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      padding: 1.15rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1;
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+    }
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      width: 34px; height: 34px;
+      display: grid; place-items: center;
+      border-radius: var(--radius-sm);
+      transition: background 0.12s, color 0.12s;
+    }
+    .modal-close:hover { background: var(--accent-soft); color: var(--accent); }
+    .modal-body { padding: 1.35rem; }
+    .modal-footer {
+      padding: 1rem 1.35rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.55rem;
+      position: sticky;
+      bottom: 0;
+      background: var(--surface);
+      border-bottom-left-radius: var(--radius-lg);
+      border-bottom-right-radius: var(--radius-lg);
+    }
+
+    /* ============ NOTIFICATION ============ */
+    .notification {
+      position: fixed;
+      top: 20px; right: 20px;
+      padding: 0.85rem 1.25rem;
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      font-size: 0.83rem;
+      font-weight: 500;
+      animation: slideIn 0.25s ease;
+      max-width: 400px;
+    }
+    .notification.success { background: var(--success); }
+    .notification.error   { background: var(--danger); }
+    .notification.warning { background: var(--warning); }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ============ FOOTER ============ */
+    .app-footer {
+      margin-top: 2.5rem;
+      padding: 1.4rem 0 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .app-footer strong { color: var(--text-2); font-weight: 600; }
+
+    /* ============ MOBILE ============ */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem; left: 1rem;
+      background: var(--primary); color: #fff;
+      border-radius: var(--radius-sm);
+      width: 42px; height: 42px;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: var(--shadow);
+    }
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.5);
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+    .sidebar-overlay.active { display: block; }
+
+    @media (max-width: 960px) {
+      .app { padding: 1rem; padding-top: 4rem; }
+      .og-layout { grid-template-columns: 1fr; }
+      .og-sidebar {
+        position: fixed;
+        top: 0; left: 0;
+        width: var(--sidebar-w);
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        border: none;
+        border-right: 1px solid var(--border);
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        z-index: 1000;
+      }
+      .og-sidebar.active { transform: translateX(0); }
+      .mobile-menu-toggle { display: flex; }
+    }
+    @media (max-width: 640px) {
+      .stats-grid, .charts-grid, .widget-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .og-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Clean navbar: only Home link + dropdown for all modules -->
-    <div class="navbar">
-        <div class="nav-brand">CEPHASGM · OIL & GAS</div>
-        <div class="nav-links">
-            <a href="https://cephasgm.github.io/CephasGM-ERP/index.html">🏠 Home</a>
-            <!-- Dropdown for all other modules (clean) -->
-            <div class="dropdown">
-                <button class="dropbtn">📋 Modules ▼</button>
-                <div class="dropdown-content">
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/inventory.html">📦 Inventory Management</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/procurement.html">📑 Procurement</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/transport.html">🚛 Transport & Logistics</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/projects.html">📋 Project Management</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/sales.html">💰 Sales Operations</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/marketing.html">📊 Marketing & BI</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/customer-service.html">🎧 Customer Service</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/legal.html">⚖️ Legal & Compliance</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/hr.html">👥 Human Resources</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/payroll.html">💰 Payroll</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/attendance.html">⏱️ Attendance</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/training.html">📚 Training</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/meetings.html">🤝 Meetings</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/community.html">🌍 Community & CSR</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/safety.html">🛡️ HSE</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/admin.html">⚙️ System Admin</a>
-                    <a href="https://cephasgm.github.io/CephasGM-ERP/finance.html">💹 Financial Management</a>
-                </div>
-            </div>
+  <a href="#main-content" class="sr-only">Skip to main content</a>
+
+  <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu" aria-expanded="false">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="app">
+    <!-- TOP BAR -->
+    <header class="top-bar">
+      <a href="index.html" class="brand-tab" aria-label="CephasGM ERP — return to homepage">
+        <i class="fas fa-bolt" aria-hidden="true"></i>
+        CephasGM ERP
+      </a>
+      <div class="asset-selector">
+        <label for="assetSelect"><i class="fas fa-oil-well"></i> Asset</label>
+        <select id="assetSelect" aria-label="Select oil & gas asset">
+          <option value="all">All Assets</option>
+          <option value="permian">Permian Basin — Sector 4</option>
+          <option value="gom">Gulf of Mexico Deepwater</option>
+          <option value="northsea">North Sea Cluster</option>
+        </select>
+      </div>
+    </header>
+
+    <div class="og-layout">
+      <!-- SIDEBAR -->
+      <aside class="og-sidebar" id="ogSidebar" aria-label="Oil & Gas navigation">
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <div class="nav-section-title">Overview</div>
+            <button class="nav-link active" data-tab="dashboard">
+              <i class="fas fa-chart-pie"></i><span>Global Operations</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Upstream</div>
+            <button class="nav-link" data-tab="upstream">
+              <i class="fas fa-oil-well"></i><span>Wells &amp; Production</span>
+            </button>
+            <button class="nav-link" data-tab="land">
+              <i class="fas fa-file-signature"></i><span>JIB &amp; Land</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Midstream</div>
+            <button class="nav-link" data-tab="midstream">
+              <i class="fas fa-pipe-valve"></i><span>Pipelines &amp; Storage</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Downstream</div>
+            <button class="nav-link" data-tab="downstream">
+              <i class="fas fa-industry"></i><span>Refining</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Trading</div>
+            <button class="nav-link" data-tab="etrm">
+              <i class="fas fa-arrow-right-arrow-left"></i><span>Supply &amp; ETRM</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Assets &amp; HSSE</div>
+            <button class="nav-link" data-tab="integrity">
+              <i class="fas fa-shield-halved"></i><span>Integrity &amp; Field Service</span>
+            </button>
+            <button class="nav-link" data-tab="hsse">
+              <i class="fas fa-shield-heart"></i><span>HSSE &amp; ESG</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Other Modules</div>
+            <a href="inventory.html" class="nav-link">
+              <i class="fas fa-boxes-stacked"></i><span>Inventory</span>
+            </a>
+            <a href="procurement.html" class="nav-link">
+              <i class="fas fa-cart-shopping"></i><span>Procurement</span>
+            </a>
+            <a href="transport.html" class="nav-link">
+              <i class="fas fa-truck"></i><span>Transport</span>
+            </a>
+            <a href="safety.html" class="nav-link">
+              <i class="fas fa-shield-heart"></i><span>Safety &amp; HSE</span>
+            </a>
+            <a href="admin.html" class="nav-link">
+              <i class="fas fa-sliders"></i><span>Admin</span>
+            </a>
+          </div>
+        </nav>
+
+        <div class="sidebar-summary" id="sidebarSummary">
+          <div class="label">Daily Production</div>
+          <div class="value" id="summaryValue">—</div>
+          <div class="sub" id="summarySub">No data yet</div>
         </div>
-        <div class="user-badge">🔆 D. Washington · onshore dir.</div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="og-main" id="main-content" tabindex="-1">
+        <!-- Header -->
+        <header class="og-header">
+          <div>
+            <h1 class="og-title" id="pageTitle">
+              <i class="fas fa-oil-well"></i>
+              <span id="pageTitleText">Global Operations Overview</span>
+            </h1>
+            <p class="og-subtitle" id="pageSubtitle">
+              Cross-functional KPIs across upstream, midstream, and downstream
+            </p>
+          </div>
+          <div class="og-actions">
+            <button class="btn btn-secondary" onclick="exportCurrentTab()">
+              <i class="fas fa-download"></i> Export
+            </button>
+            <button class="btn btn-primary" id="addRecordBtn" onclick="openAddModal()">
+              <i class="fas fa-plus"></i>
+              <span id="addBtnLabel">New Record</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- ============ GLOBAL OPERATIONS OVERVIEW ============ -->
+        <div id="dashboard-tab" class="tab-content active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Daily Production</span>
+                <span class="stat-icon"><i class="fas fa-oil-well"></i></span>
+              </div>
+              <div class="stat-value" id="ovProduction">—</div>
+              <div class="stat-change">Oil + gas (BOE/d)</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Pipeline Throughput</span>
+                <span class="stat-icon"><i class="fas fa-pipe-valve"></i></span>
+              </div>
+              <div class="stat-value" id="ovPipeline">—</div>
+              <div class="stat-change">Bulk liquids per day</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Unbilled JIB</span>
+                <span class="stat-icon"><i class="fas fa-file-invoice-dollar"></i></span>
+              </div>
+              <div class="stat-value" id="ovJib">—</div>
+              <div class="stat-change">Open partner invoices</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Active Safety Incidents</span>
+                <span class="stat-icon"><i class="fas fa-shield-heart"></i></span>
+              </div>
+              <div class="stat-value" id="ovIncidents">—</div>
+              <div class="stat-change">Open + under investigation</div>
+            </div>
+          </div>
+
+          <div class="charts-grid">
+            <div class="chart-container">
+              <canvas id="ovTrendChart"></canvas>
+              <div class="chart-empty" id="ovTrendChartEmpty">
+                <i class="fas fa-chart-line"></i>
+                No production data yet
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="ovSegmentChart"></canvas>
+              <div class="chart-empty" id="ovSegmentChartEmpty">
+                <i class="fas fa-chart-pie"></i>
+                No segment data yet
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-diagram-project"></i> Value Chain Snapshot</div>
+            </div>
+            <div class="process-flow">
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-oil-well"></i></div>
+                <div class="step-name">Upstream</div>
+                <div class="step-metric" id="ovUp">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-pipe-valve"></i></div>
+                <div class="step-name">Midstream</div>
+                <div class="step-metric" id="ovMid">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-industry"></i></div>
+                <div class="step-name">Downstream</div>
+                <div class="step-metric" id="ovDown">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-arrow-right-arrow-left"></i></div>
+                <div class="step-name">Trading</div>
+                <div class="step-metric" id="ovTrade">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ UPSTREAM ============ -->
+        <div id="upstream-tab" class="tab-content">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Active Wells</span></div>
+              <div class="stat-value" id="upActiveWells">—</div>
+              <div class="stat-change">Drilling, casing, completing</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Gross Oil</span></div>
+              <div class="stat-value" id="upGrossOil">—</div>
+              <div class="stat-change">bbl/d</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Gross Gas</span></div>
+              <div class="stat-value" id="upGrossGas">—</div>
+              <div class="stat-change">Mcf/d</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Water Cut</span></div>
+              <div class="stat-value" id="upWaterCut">—</div>
+              <div class="stat-change">Weighted average</div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Well Lifecycle Status</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('wells')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('well')">
+                  <i class="fas fa-plus"></i> Add Well
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Well ID</th>
+                  <th>Field</th>
+                  <th>Operator</th>
+                  <th>Stage</th>
+                  <th>Gross Oil (bbl/d)</th>
+                  <th>Gas (Mcf/d)</th>
+                  <th>Water Cut %</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="wellsBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Daily Production Allocation</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('allocations')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('allocation')">
+                  <i class="fas fa-plus"></i> Add Allocation
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Stream</th>
+                  <th>Gross (bbl/d)</th>
+                  <th>Net (bbl/d)</th>
+                  <th>Allocation Factor</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="allocationsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ JIB & LAND ============ -->
+        <div id="land-tab" class="tab-content">
+          <div class="widget-grid">
+            <div class="widget-card">
+              <h4><i class="fas fa-file-invoice-dollar"></i> JIB Summary</h4>
+              <div class="metric-row"><span class="label">Total Partner Billed</span><span class="value" id="jibTotal">—</span></div>
+              <div class="metric-row"><span class="label">Unbilled</span><span class="value" id="jibUnbilled">—</span></div>
+              <div class="metric-row"><span class="label">Overdue</span><span class="value" id="jibOverdue">—</span></div>
+            </div>
+            <div class="widget-card">
+              <h4><i class="fas fa-sitemap"></i> Division of Interest</h4>
+              <div class="metric-row"><span class="label">Partners on DOI</span><span class="value" id="doiPartners">—</span></div>
+              <div class="metric-row"><span class="label">Landowner Tiers</span><span class="value" id="doiLandowners">—</span></div>
+              <div class="metric-row"><span class="label">Operator Share</span><span class="value" id="doiOperator">—</span></div>
+            </div>
+            <div class="widget-card">
+              <h4><i class="fas fa-map-location-dot"></i> Land &amp; Leases</h4>
+              <div class="metric-row"><span class="label">Active Leases</span><span class="value" id="landLeases">—</span></div>
+              <div class="metric-row"><span class="label">Expiring &lt; 12 months</span><span class="value" id="landExpiring">—</span></div>
+              <div class="metric-row"><span class="label">Royalty Owners</span><span class="value" id="landRoyalty">—</span></div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Joint Interest Billing (JIB) Statement</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('jib')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('jib')">
+                  <i class="fas fa-plus"></i> Add Partner
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Partner</th>
+                  <th>Working Interest %</th>
+                  <th>CapEx Allocation</th>
+                  <th>OpEx Allocation</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="jibBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Division of Interest (DOI)</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('doi')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('doi')">
+                  <i class="fas fa-plus"></i> Add Tier
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tier</th>
+                  <th>Party Name</th>
+                  <th>Interest %</th>
+                  <th>Type</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="doiBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ MIDSTREAM ============ -->
+        <div id="midstream-tab" class="tab-content">
+          <div class="widget-grid">
+            <div class="widget-card">
+              <h4><i class="fas fa-pipe-valve"></i> Pipeline Capacity</h4>
+              <div class="metric-row"><span class="label">Total Capacity</span><span class="value" id="pipeCapacity">—</span></div>
+              <div class="metric-row"><span class="label">Contracted</span><span class="value" id="pipeContracted">—</span></div>
+              <div class="metric-row"><span class="label">Utilization</span><span class="value" id="pipeUtil">—</span></div>
+            </div>
+            <div class="widget-card">
+              <h4><i class="fas fa-tank-water"></i> Storage Inventory</h4>
+              <div class="metric-row"><span class="label">Total Tanks</span><span class="value" id="tankCount">—</span></div>
+              <div class="metric-row"><span class="label">Total Capacity</span><span class="value" id="tankCapacity">—</span></div>
+              <div class="metric-row"><span class="label">Fill Rate</span><span class="value" id="tankFill">—</span></div>
+            </div>
+            <div class="widget-card">
+              <h4><i class="fas fa-gauge-high"></i> LACT Meter Telemetry</h4>
+              <div class="metric-row"><span class="label">Active Meters</span><span class="value" id="lactActive">—</span></div>
+              <div class="metric-row"><span class="label">Avg API Gravity</span><span class="value" id="lactApi">—</span></div>
+              <div class="metric-row"><span class="label">Custody Transfers (24h)</span><span class="value" id="lactTransfers">—</span></div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Pipeline Nominations &amp; Scheduling</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('nominations')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('nomination')">
+                  <i class="fas fa-plus"></i> Submit Nomination
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Pipeline</th>
+                  <th>Shipper</th>
+                  <th>Nominated</th>
+                  <th>Confirmed</th>
+                  <th>Capacity Alert</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="nominationsBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Tank Farm Inventory &amp; Custody Transfer</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('tanks')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('tank')">
+                  <i class="fas fa-plus"></i> Add Tank
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tank ID</th>
+                  <th>Product</th>
+                  <th>Fill %</th>
+                  <th>API Gravity</th>
+                  <th>Temperature</th>
+                  <th>BS&amp;W %</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tanksBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ DOWNSTREAM ============ -->
+        <div id="downstream-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-industry"></i> Refinery Flow</div>
+            </div>
+            <div class="process-flow">
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-droplet"></i></div>
+                <div class="step-name">Crude Input</div>
+                <div class="step-metric" id="refCrude">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-fire"></i></div>
+                <div class="step-name">Distillation</div>
+                <div class="step-metric" id="refDist">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-gas-pump"></i></div>
+                <div class="step-name">Gasoline</div>
+                <div class="step-metric" id="refGasoline">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-truck-droplet"></i></div>
+                <div class="step-name">Diesel</div>
+                <div class="step-metric" id="refDiesel">—</div>
+              </div>
+              <div class="process-arrow"><i class="fas fa-chevron-right"></i></div>
+              <div class="process-step">
+                <div class="step-icon"><i class="fas fa-plane-up"></i></div>
+                <div class="step-name">Jet Fuel</div>
+                <div class="step-metric" id="refJet">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Refinery Yields</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('yields')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('yield')">
+                  <i class="fas fa-plus"></i> Add Yield
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Refinery</th>
+                  <th>Crude Input (bbl/d)</th>
+                  <th>Gasoline %</th>
+                  <th>Diesel %</th>
+                  <th>Jet %</th>
+                  <th>Petchem %</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="yieldsBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Turnaround (TAR) Planner</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('tar')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('tar')">
+                  <i class="fas fa-plus"></i> Schedule TAR
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Unit</th>
+                  <th>Refinery</th>
+                  <th>Planned Start</th>
+                  <th>Duration (days)</th>
+                  <th>Estimated Cost</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tarBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ ETRM ============ -->
+        <div id="etrm-tab" class="tab-content">
+          <div class="widget-grid">
+            <div class="widget-card">
+              <h4><i class="fas fa-warehouse"></i> Physical Inventory</h4>
+              <div class="metric-row"><span class="label">Crude in Tanks</span><span class="value" id="physCrude">—</span></div>
+              <div class="metric-row"><span class="label">Refined Products</span><span class="value" id="physRefined">—</span></div>
+              <div class="metric-row"><span class="label">Gas Volumes</span><span class="value" id="physGas">—</span></div>
+            </div>
+            <div class="widget-card">
+              <h4><i class="fas fa-chart-line"></i> Financial Hedges</h4>
+              <div class="metric-row"><span class="label">Active Contracts</span><span class="value" id="hedgeCount">—</span></div>
+              <div class="metric-row"><span class="label">Total MTM</span><span class="value" id="hedgeMtm">—</span></div>
+              <div class="metric-row"><span class="label">Hedge Ratio</span><span class="value" id="hedgeRatio">—</span></div>
+            </div>
+            <div class="widget-card">
+              <h4><i class="fas fa-ship"></i> Marine Logistics</h4>
+              <div class="metric-row"><span class="label">Vessels at Berth</span><span class="value" id="marineBerth">—</span></div>
+              <div class="metric-row"><span class="label">Demurrage Exposure</span><span class="value" id="marineDemurrage">—</span></div>
+              <div class="metric-row"><span class="label">Avg Wait Time</span><span class="value" id="marineWait">—</span></div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Physical vs Financial Position</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('etrm')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('etrm')">
+                  <i class="fas fa-plus"></i> Add Position
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Commodity</th>
+                  <th>Physical Qty</th>
+                  <th>Futures Qty</th>
+                  <th>Net Exposure</th>
+                  <th>MTM P&amp;L</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="etrmBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Demurrage &amp; Quality Adjustment</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('demurrage')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('demurrage')">
+                  <i class="fas fa-plus"></i> Add Claim
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Vessel</th>
+                  <th>Berth</th>
+                  <th>Laytime Allowed</th>
+                  <th>Laytime Used</th>
+                  <th>Demurrage Claim</th>
+                  <th>BS&amp;W Deduction</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="demurrageBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ INTEGRITY ============ -->
+        <div id="integrity-tab" class="tab-content">
+          <div class="widget-grid">
+            <div class="widget-card">
+              <h4><i class="fas fa-shield-halved"></i> RBI Status</h4>
+              <div class="metric-row"><span class="label">Assets in RBI Program</span><span class="value" id="rbiAssets">—</span></div>
+              <div class="metric-row"><span class="label">Due This Quarter</span><span class="value" id="rbiDue">—</span></div>
+              <div class="metric-row"><span class="label">Overdue Inspections</span><span class="value" id="rbiOverdue">—</span></div>
+            </div>
+            <div class="widget-card">
+              <h4><i class="fas fa-helicopter"></i> Crew Change</h4>
+              <div class="metric-row"><span class="label">Personnel Offshore</span><span class="value" id="crewOffshore">—</span></div>
+              <div class="metric-row"><span class="label">Next Flight</span><span class="value" id="crewNextFlight">—</span></div>
+              <div class="metric-row"><span class="label">Helicopter Status</span><span class="value" id="crewHeli">—</span></div>
+            </div>
+            <div class="widget-card">
+              <h4><i class="fas fa-clipboard-list"></i> Inspection Findings</h4>
+              <div class="metric-row"><span class="label">Total Open</span><span class="value" id="inspOpen">—</span></div>
+              <div class="metric-row"><span class="label">High Priority</span><span class="value" id="inspHigh">—</span></div>
+              <div class="metric-row"><span class="label">Avg Days to Close</span><span class="value" id="inspClose">—</span></div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Risk-Based Inspection (RBI) Schedule</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('rbi')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('rbi')">
+                  <i class="fas fa-plus"></i> Add Inspection
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Asset ID</th>
+                  <th>Type</th>
+                  <th>Location</th>
+                  <th>Last Inspection</th>
+                  <th>Next Due</th>
+                  <th>Risk Level</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="rbiBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Offshore Crew Change Dispatch</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('crew')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('crew')">
+                  <i class="fas fa-plus"></i> Schedule Flight
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Flight ID</th>
+                  <th>Platform</th>
+                  <th>Departure</th>
+                  <th>Pax Count</th>
+                  <th>Weather</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="crewBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ HSSE ============ -->
+        <div id="hsse-tab" class="tab-content">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Active PTW</span></div>
+              <div class="stat-value" id="hssePtw">—</div>
+              <div class="stat-change">Hot Work, LOTO, Confined Space</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Scope 1 CO₂e</span></div>
+              <div class="stat-value" id="hsseScope1">—</div>
+              <div class="stat-change">tCO₂e this year</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">Scope 2 CO₂e</span></div>
+              <div class="stat-value" id="hsseScope2">—</div>
+              <div class="stat-change">tCO₂e this year</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-title">ARO Provision</span></div>
+              <div class="stat-value" id="hsseAro">—</div>
+              <div class="stat-change">Asset retirement obligation</div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Permit to Work (PTW) Control Hub</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('ptw')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('ptw')">
+                  <i class="fas fa-plus"></i> Issue Permit
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Permit ID</th>
+                  <th>Type</th>
+                  <th>Location</th>
+                  <th>Issued To</th>
+                  <th>Valid To</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="ptwBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Carbon Emissions &amp; ESG Audit</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('esg')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('esg')">
+                  <i class="fas fa-plus"></i> Add Entry
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Scope</th>
+                  <th>Source</th>
+                  <th>Value (tCO₂e)</th>
+                  <th>Target</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="esgBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Asset Retirement Obligations</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('aro')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddModal('aro')">
+                  <i class="fas fa-plus"></i> Add Provision
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Asset</th>
+                  <th>Location</th>
+                  <th>Provision Value</th>
+                  <th>Funded</th>
+                  <th>Decom Year</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="aroBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
     </div>
 
-    <div class="container">
-        <div class="page-header">
-            <h1>Integrated energy management · live operations</h1>
-            <button class="btn-primary" id="globalAddBtn">+ new project</button>
-        </div>
-
-        <!-- Fully functional tabs with click handlers -->
-        <div class="sector-tabs" id="sectorTabs">
-            <div class="sector-tab active" data-tab="overview">🌍 Overview</div>
-            <div class="sector-tab" data-tab="upstream">🛢️ Upstream</div>
-            <div class="sector-tab" data-tab="midstream">📦 Midstream</div>
-            <div class="sector-tab" data-tab="downstream">⛽ Downstream</div>
-            <div class="sector-tab" data-tab="exploration">🔬 Exploration</div>
-            <div class="sector-tab" data-tab="trading">📊 Trading</div>
-            <div class="sector-tab" data-tab="compliance">⚖️ Compliance</div>
-            <div class="sector-tab" data-tab="decommission">🌱 Decom</div>
-        </div>
-
-        <!-- Tab Content Sections - Each with its own data -->
-        <div id="overview" class="tab-content active-content">
-            <!-- Overview Content - Full dashboard -->
-            <!-- stats fully editable -->
-            <div class="stats-grid" id="statsGrid">
-                <div class="stat-card" id="statProd">
-                    <div class="stat-label">daily production</div>
-                    <div class="stat-value" id="prodVal">1.28M BOE</div>
-                    <div class="stat-detail" id="prodDetail">Oil: 872K bbl · Gas: 2.18B cf</div>
-                    <div class="stat-actions"><button class="btn-sm edit-stat-btn" data-target="prod">✎ edit</button></div>
-                </div>
-                <div class="stat-card" id="statWells">
-                    <div class="stat-label">active wells</div>
-                    <div class="stat-value" id="wellsVal">1,289</div>
-                    <div class="stat-detail" id="wellsDetail">Offshore: 362 · Onshore: 927</div>
-                    <div class="stat-actions"><button class="btn-sm edit-stat-btn" data-target="wells">✎ edit</button></div>
-                </div>
-                <div class="stat-card" id="statReserves">
-                    <div class="stat-label">reserves (p+p)</div>
-                    <div class="stat-value" id="reservesVal">4.37B BOE</div>
-                    <div class="stat-detail" id="reservesDetail">proven + probable</div>
-                    <div class="stat-actions"><button class="btn-sm edit-stat-btn" data-target="reserves">✎ edit</button></div>
-                </div>
-                <div class="stat-card" id="statRef">
-                    <div class="stat-label">refining capacity</div>
-                    <div class="stat-value" id="refVal">872K bbl/d</div>
-                    <div class="stat-detail" id="refDetail">5 refineries · 94% utilization</div>
-                    <div class="stat-actions"><button class="btn-sm edit-stat-btn" data-target="refining">✎ edit</button></div>
-                </div>
-            </div>
-
-            <!-- value chain interactive -->
-            <div class="value-chain">
-                <div class="chain-segment upstream" data-chain="upstream">
-                    <h3>🛢️ Upstream</h3>
-                    <p id="upDesc">Exploration & production</p>
-                    <small id="upSmall">131 active platforms</small>
-                    <div class="chain-edit"><button class="btn-sm edit-chain" data-field="upstream">✎ edit segment</button></div>
-                </div>
-                <div class="chain-segment midstream" data-chain="midstream">
-                    <h3>📦 Midstream</h3>
-                    <p id="midDesc">Transport & storage</p>
-                    <small id="midSmall">8,920km pipeline</small>
-                    <div class="chain-edit"><button class="btn-sm edit-chain" data-field="midstream">✎ edit segment</button></div>
-                </div>
-                <div class="chain-segment downstream" data-chain="downstream">
-                    <h3>⛽ Downstream</h3>
-                    <p id="downDesc">Refining & marketing</p>
-                    <small id="downSmall">5 refineries · 2,550 stations</small>
-                    <div class="chain-edit"><button class="btn-sm edit-chain" data-field="downstream">✎ edit segment</button></div>
-                </div>
-            </div>
-
-            <!-- two column content -->
-            <div class="content-grid">
-                <!-- left: tables -->
-                <div>
-                    <!-- fields table -->
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="card-title">🛢️ major producing fields</span>
-                            <button class="btn-sm" id="addFieldBtn">+ add field</button>
-                        </div>
-                        <table class="table" id="fieldTable">
-                            <thead><tr><th>Field</th><th>Region</th><th>Type</th><th>Daily prod</th><th>Wells</th><th>Water cut</th><th>Status</th><th></th></tr></thead>
-                            <tbody id="fieldBody">
-                                <tr><td>Ghawar</td><td>Saudi Arabia</td><td>Onshore</td><td>3.8M bbl</td><td>1,200+</td><td>32%</td><td class="status-producing">Producing</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                                <tr><td>Permian Basin</td><td>USA</td><td>Shale</td><td>1.2M bbl</td><td>850</td><td>18%</td><td class="status-producing">Producing</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                                <tr><td>Johan Sverdrup</td><td>Norway</td><td>Offshore</td><td>720K bbl</td><td>48</td><td>5%</td><td class="status-producing">Producing</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- drilling operations -->
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="card-title">🔴 active drilling ops</span>
-                            <button class="btn-sm" id="addDrillBtn">+ add rig</button>
-                        </div>
-                        <table class="table" id="drillTable">
-                            <thead><tr><th>Rig</th><th>Location</th><th>Type</th><th>Depth</th><th>Target</th><th>Progress</th><th>Status</th><th></th></tr></thead>
-                            <tbody id="drillBody">
-                                <tr><td>Deepwater Titan</td><td>Gulf of Mexico</td><td>Deepwater</td><td>9,450m</td><td>Lower Tertiary</td><td>72%</td><td class="status-drilling">Drilling</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                                <tr><td>Noble Discoverer</td><td>North Sea</td><td>Semi-sub</td><td>3,200m</td><td>Jurassic</td><td>45%</td><td class="status-drilling">Drilling</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <!-- right: pipeline / storage / hse -->
-                <div>
-                    <!-- pipeline list -->
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="card-title">📦 pipeline network</span>
-                            <button class="btn-sm" id="addPipelineBtn">+ add pipeline</button>
-                        </div>
-                        <div id="pipelineContainer">
-                            <div class="pipeline-item" style="display:flex; gap:0.5rem; align-items:center; margin-bottom:1rem;"><span>• Trans-Alaska: 1,287 km · 98% capacity</span> <button class="btn-icon editPipeline">✏️</button><button class="btn-icon deletePipeline">🗑️</button></div>
-                            <div class="pipeline-item" style="display:flex; gap:0.5rem; align-items:center; margin-bottom:1rem;"><span>• Keystone XL: 2,700 km · 85% capacity</span> <button class="btn-icon editPipeline">✏️</button><button class="btn-icon deletePipeline">🗑️</button></div>
-                            <div class="pipeline-item" style="display:flex; gap:0.5rem; align-items:center; margin-bottom:1rem;"><span>• Nord Stream: 1,224 km · operational</span> <button class="btn-icon editPipeline">✏️</button><button class="btn-icon deletePipeline">🗑️</button></div>
-                        </div>
-                    </div>
-                    <!-- storage facilities -->
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="card-title">🏭 storage facilities</span>
-                            <button class="btn-sm" id="addStorageBtn">+ add storage</button>
-                        </div>
-                        <table class="table" id="storageTable">
-                            <tbody id="storageBody">
-                                <tr><td>Cushing, OK</td><td>45M bbl</td><td>62% full</td><td><button class="btn-icon editStorage">✏️</button><button class="btn-icon deleteStorage">🗑️</button></td></tr>
-                                <tr><td>Rotterdam</td><td>32M bbl</td><td>78% full</td><td><button class="btn-icon editStorage">✏️</button><button class="btn-icon deleteStorage">🗑️</button></td></tr>
-                                <tr><td>Fujairah</td><td>28M bbl</td><td>55% full</td><td><button class="btn-icon editStorage">✏️</button><button class="btn-icon deleteStorage">🗑️</button></td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- HSE dashboard -->
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="card-title">⚠️ HSE dashboard</span>
-                            <button class="btn-sm" id="editHseBtn">✎ edit HSE</button>
-                        </div>
-                        <div id="hseContent">
-                            <div style="color:#2ecc71;" id="hseLTI">✓ 0.10 LTI frequency</div>
-                            <div style="color:#f39c12;" id="hseSpills">⚠️ 1 minor spill (Q1)</div>
-                            <div style="color:#3498db;" id="hseFlaring">📊 98% flaring reduction</div>
-                        </div>
-                        <div style="margin-top:1.5rem;">
-                            <span class="facility-badge">ISO 14001</span>
-                            <span class="facility-badge">OGMP 2.0</span>
-                            <span class="facility-badge">API RP 754</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Upstream Tab Content -->
-        <div id="upstream" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">🛢️ Upstream Operations</span>
-                    <button class="btn-sm" id="addUpstreamFieldBtn">+ add upstream field</button>
-                </div>
-                <table class="table" id="upstreamTable">
-                    <thead><tr><th>Field</th><th>Basin</th><th>Type</th><th>Daily Production</th><th>Wells</th><th>API Gravity</th><th>Status</th><th></th></tr></thead>
-                    <tbody id="upstreamBody">
-                        <tr><td>Ghawar</td><td>Arabian Basin</td><td>Conventional</td><td>3.8M bbl</td><td>1,200</td><td>34°</td><td class="status-producing">Producing</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                        <tr><td>Kashagan</td><td>Caspian Sea</td><td>Offshore</td><td>380K bbl</td><td>42</td><td>42°</td><td class="status-producing">Producing</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                        <tr><td>Permian</td><td>West Texas</td><td>Shale</td><td>1.2M bbl</td><td>850</td><td>40°</td><td class="status-producing">Producing</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Midstream Tab Content -->
-        <div id="midstream" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">📦 Pipeline & Storage Assets</span>
-                    <button class="btn-sm" id="addMidstreamBtn">+ add asset</button>
-                </div>
-                <table class="table" id="midstreamTable">
-                    <thead><tr><th>Asset</th><th>Type</th><th>Capacity</th><th>Length/Volume</th><th>Utilization</th><th>Status</th><th></th></tr></thead>
-                    <tbody id="midstreamBody">
-                        <tr><td>Trans-Alaska</td><td>Pipeline</td><td>2.1M bbl/d</td><td>1,287 km</td><td>98%</td><td class="status-producing">Active</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                        <tr><td>Cushing Terminal</td><td>Storage</td><td>45M bbl</td><td>45M bbl</td><td>62%</td><td class="status-producing">Active</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                        <tr><td>Keystone XL</td><td>Pipeline</td><td>830K bbl/d</td><td>2,700 km</td><td>85%</td><td class="status-producing">Active</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Downstream Tab Content -->
-        <div id="downstream" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">⛽ Refineries & Marketing</span>
-                    <button class="btn-sm" id="addDownstreamBtn">+ add refinery</button>
-                </div>
-                <table class="table" id="downstreamTable">
-                    <thead><tr><th>Refinery</th><th>Location</th><th>Capacity</th><th>Utilization</th><th>Nelson Index</th><th>Status</th><th></th></tr></thead>
-                    <tbody id="downstreamBody">
-                        <tr><td>Port Arthur</td><td>Texas, USA</td><td>600K bbl/d</td><td>94%</td><td>9.8</td><td class="status-producing">Operating</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                        <tr><td>Jamnagar</td><td>India</td><td>1.24M bbl/d</td><td>98%</td><td>11.2</td><td class="status-producing">Operating</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                        <tr><td>Rotterdam</td><td>Netherlands</td><td>400K bbl/d</td><td>89%</td><td>8.5</td><td class="status-producing">Operating</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Exploration Tab Content -->
-        <div id="exploration" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">🔬 Exploration Activities</span>
-                    <button class="btn-sm" id="addExplorationBtn">+ add prospect</button>
-                </div>
-                <table class="table" id="explorationTable">
-                    <thead><tr><th>Prospect</th><th>Basin</th><th>Water Depth</th><th>Target Formation</th><th>Probability</th><th>Status</th><th></th></tr></thead>
-                    <tbody id="explorationBody">
-                        <tr><td>Whale Deep</td><td>Gulf of Mexico</td><td>2,400m</td><td>Miocene</td><td>32%</td><td class="status-exploring">Seismic</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                        <tr><td>Orion North</td><td>North Sea</td><td>180m</td><td>Jurassic</td><td>45%</td><td class="status-exploring">Drilling</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                        <tr><td>Zamba</td><td>Namibia Basin</td><td>2,800m</td><td>Cretaceous</td><td>28%</td><td class="status-exploring">Evaluation</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Trading Tab Content -->
-        <div id="trading" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">📊 Trading Positions</span>
-                    <button class="btn-sm" id="addTradingBtn">+ add position</button>
-                </div>
-                <table class="table" id="tradingTable">
-                    <thead><tr><th>Commodity</th><th>Contract</th><th>Volume</th><th>Avg Price</th><th>MTM P&L</th><th>Status</th><th></th></tr></thead>
-                    <tbody id="tradingBody">
-                        <tr><td>WTI Crude</td><td>Jun 2026</td><td>2.4M bbl</td><td>$78.50</td><td class="status-producing">+$2.1M</td><td class="status-trading">Hedged</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                        <tr><td>Brent Crude</td><td>Jul 2026</td><td>1.8M bbl</td><td>$82.30</td><td class="status-producing">+$1.4M</td><td class="status-trading">Open</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                        <tr><td>Natural Gas</td><td>Q3 2026</td><td>5.2B cf</td><td>$3.45</td><td class="status-drilling">-$0.8M</td><td class="status-trading">Open</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Compliance Tab Content -->
-        <div id="compliance" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">⚖️ Regulatory Compliance</span>
-                    <button class="btn-sm" id="addComplianceBtn">+ add requirement</button>
-                </div>
-                <table class="table" id="complianceTable">
-                    <thead><tr><th>Regulation</th><th>Jurisdiction</th><th>Due Date</th><th>Status</th><th>Auditor</th><th></th></tr></thead>
-                    <tbody id="complianceBody">
-                        <tr><td>Methane Rule</td><td>EPA</td><td>2026-06-30</td><td class="status-producing">Compliant</td><td>Deloitte</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                        <tr><td>Flaring Permit</td><td>Texas RRC</td><td>2026-04-15</td><td class="status-compliance">Pending</td><td>Internal</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                        <tr><td>EU ETS</td><td>EU</td><td>2026-03-31</td><td class="status-producing">Compliant</td><td>PwC</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Decommission Tab Content -->
-        <div id="decommission" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">🌱 Decommissioning Projects</span>
-                    <button class="btn-sm" id="addDecomBtn">+ add project</button>
-                </div>
-                <table class="table" id="decomTable">
-                    <thead><tr><th>Asset</th><th>Location</th><th>Type</th><th>Cost Estimate</th><th>Completion</th><th>Status</th><th></th></tr></thead>
-                    <tbody id="decomBody">
-                        <tr><td>Brent Alpha</td><td>North Sea</td><td>Platform</td><td>$280M</td><td>2027 Q2</td><td class="status-decom">Planning</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                        <tr><td>GulfStar 5</td><td>GOM</td><td>Subsea</td><td>$95M</td><td>2026 Q4</td><td class="status-decom">Active</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                        <tr><td>Ekofisk 2/4</td><td>Norway</td><td>Platform</td><td>$420M</td><td>2028 Q1</td><td class="status-decom">Feasibility</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- modal -->
-    <div class="modal-overlay" id="editModal">
-        <div class="modal-card">
-            <h3 id="modalTitle">edit value</h3>
-            <input type="text" id="modalInput" placeholder="new value">
-            <div class="modal-buttons">
-                <button class="btn-sm" id="modalSave">save</button>
-                <button class="btn-sm" id="modalCancel">cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <footer class="footer">
-        © 2026 CephasGM Group. All rights reserved. v3.14.2 · Build 2026.02.21 · PROD<br>
-        <span>full edit / save / delete enabled — professional operations</span>
+    <!-- FOOTER -->
+    <footer class="app-footer">
+      Copyright © 2025 <strong>Cephas GM</strong> | Innovating for Tomorrow
     </footer>
+  </div>
 
-    <script>
-        (function() {
-            // Tab switching functionality
-            const tabs = document.querySelectorAll('.sector-tab');
-            const contents = document.querySelectorAll('.tab-content');
-            
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Remove active class from all tabs
-                    tabs.forEach(t => t.classList.remove('active'));
-                    // Add active class to clicked tab
-                    this.classList.add('active');
-                    
-                    // Hide all content sections
-                    contents.forEach(content => content.classList.remove('active-content'));
-                    
-                    // Show selected content
-                    const tabId = this.getAttribute('data-tab');
-                    document.getElementById(tabId).classList.add('active-content');
-                });
-            });
+  <!-- ============ MODAL ============ -->
+  <div class="modal" id="editModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">New Record</h2>
+        <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+      </div>
+      <form id="editForm" onsubmit="saveItem(event)">
+        <div class="modal-body">
+          <div id="formFields"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-            // Modal functionality
-            const modal = document.getElementById('editModal');
-            const modalInput = document.getElementById('modalInput');
-            const modalTitle = document.getElementById('modalTitle');
-            let activeCallback = null;
+  <div class="modal" id="deleteModal" role="dialog" aria-modal="true">
+    <div class="modal-content" style="max-width:420px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirm Delete</h2>
+        <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-muted);font-size:0.88rem;">Are you sure you want to delete this record? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
 
-            function showModal(title, initial, callback) {
-                modalTitle.innerText = title;
-                modalInput.value = initial;
-                modal.style.display = 'flex';
-                activeCallback = callback;
+  <script>
+  /* =========================================================
+     CephasGM ERP — Oil & Gas Module v4.0
+     7 structural pillars + Global Operations Overview.
+     Empty-state on first load. Data persisted to localStorage.
+     ========================================================= */
+
+  const TAB_META = {
+    dashboard: ['Global Operations Overview',  'Cross-functional KPIs across upstream, midstream, and downstream'],
+    upstream:  ['Wells & Production',          'Well lifecycle, drilling, and daily production allocation'],
+    land:      ['JIB & Land Management',       'Joint interest billing, working interests, and DOI hierarchy'],
+    midstream: ['Pipelines & Storage',         'Nominations, scheduling, tank farm, and custody transfers'],
+    downstream:['Refining & Processing',       'Crude input, yields, and turnaround planning'],
+    etrm:      ['Supply Chain & ETRM',         'Physical inventory, financial hedges, and demurrage'],
+    integrity: ['Integrity & Field Service',   'RBI, offshore crew change, and inspection findings'],
+    hsse:      ['HSSE & ESG',                  'Permits to work, emissions, and asset retirement obligations']
+  };
+
+  /* ---------- STATE ---------- */
+  let ogData = loadData();
+  let activeTab = 'dashboard';
+  let charts = {};
+  let currentEditType = null;
+  let deleteType = null;
+  let deleteId = null;
+
+  function loadData() {
+    const saved = localStorage.getItem('cephasgm_oilgas_data');
+    if (saved) return JSON.parse(saved);
+    return {
+      wells: [],
+      allocations: [],
+      jib: [],
+      doi: [],
+      nominations: [],
+      tanks: [],
+      yields: [],
+      tar: [],
+      etrm: [],
+      demurrage: [],
+      rbi: [],
+      crew: [],
+      ptw: [],
+      esg: [],
+      aro: [],
+      nextIds: {
+        well: 1, allocation: 1, jib: 1, doi: 1,
+        nomination: 1, tank: 1, yield: 1, tar: 1,
+        etrm: 1, demurrage: 1, rbi: 1, crew: 1,
+        ptw: 1, esg: 1, aro: 1
+      }
+    };
+  }
+  function saveData() {
+    localStorage.setItem('cephasgm_oilgas_data', JSON.stringify(ogData));
+  }
+
+  /* ---------- HELPERS ---------- */
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+
+  function fmtCurrency(amount) {
+    if (amount == null || isNaN(amount)) return '—';
+    const abs = Math.abs(amount);
+    if (abs >= 1e9) return '$' + (amount / 1e9).toFixed(2) + 'B';
+    if (abs >= 1e6) return '$' + (amount / 1e6).toFixed(2) + 'M';
+    if (abs >= 1e3) return '$' + (amount / 1e3).toFixed(1) + 'K';
+    return '$' + Math.round(amount).toLocaleString();
+  }
+  function fmtNum(n, unit = '') {
+    if (n == null || isNaN(n)) return '—';
+    return Number(n).toLocaleString() + (unit ? ' ' + unit : '');
+  }
+  function emptyRow(cols, message, icon = 'fa-inbox') {
+    return `<tr><td colspan="${cols}" class="empty-state"><i class="fas ${icon}"></i>${message}</td></tr>`;
+  }
+  function notify(msg, type = 'info') {
+    const n = document.createElement('div');
+    n.className = `notification ${type}`;
+    n.textContent = msg;
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 3200);
+  }
+  function badgeForStatus(status) {
+    const s = (status || '').toLowerCase();
+    if (s.includes('active') || s.includes('producing') || s.includes('approved') || s.includes('compliant') || s.includes('operating') || s.includes('completed') || s.includes('confirmed') || s.includes('cleared') || s.includes('passed')) return 'success';
+    if (s.includes('pending') || s.includes('planning') || s.includes('drilling') || s.includes('in progress') || s.includes('scheduled') || s.includes('review')) return 'warning';
+    if (s.includes('shut') || s.includes('overdue') || s.includes('failed') || s.includes('breached') || s.includes('critical') || s.includes('denied')) return 'danger';
+    return 'gray';
+  }
+  function badgeForRisk(level) {
+    const l = (level || '').toLowerCase();
+    if (l.includes('low')) return 'success';
+    if (l.includes('medium')) return 'warning';
+    if (l.includes('high') || l.includes('extreme') || l.includes('critical')) return 'danger';
+    return 'info';
+  }
+
+  /* ---------- BOOT ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNav();
+    setupMobileMenu();
+    setupAddButton();
+    setupAssetSelector();
+    renderAll();
+    initCharts();
+  });
+
+  function setupNav() {
+    $$('.nav-link[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+  }
+  function setupMobileMenu() {
+    const toggle = $('#mobileMenuToggle');
+    const sidebar = $('#ogSidebar');
+    const overlay = $('#sidebarOverlay');
+    toggle.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('active');
+      overlay.classList.toggle('active', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  }
+  function setupAddButton() {
+    const btn = $('#addRecordBtn');
+    if (btn) {
+      btn.onclick = () => openAddModal();
+      updateAddButtonLabel();
+    }
+  }
+  function setupAssetSelector() {
+    const sel = $('#assetSelect');
+    if (!sel) return;
+    sel.addEventListener('change', () => {
+      notify(`Filtered by: ${sel.options[sel.selectedIndex].text}`, 'info');
+    });
+  }
+  function updateAddButtonLabel() {
+    const btn = $('#addRecordBtn');
+    if (!btn) return;
+    const type = inferTypeFromTab(activeTab);
+    const labels = {
+      well:       'Add Well',
+      allocation: 'Add Allocation',
+      jib:        'Add Partner',
+      doi:        'Add DOI Tier',
+      nomination: 'Submit Nomination',
+      tank:       'Add Tank',
+      yield:      'Add Yield',
+      tar:        'Schedule TAR',
+      etrm:       'Add Position',
+      demurrage:  'Add Claim',
+      rbi:        'Add Inspection',
+      crew:       'Schedule Flight',
+      ptw:        'Issue Permit',
+      esg:        'Add ESG Entry',
+      aro:        'Add Provision'
+    };
+    $('#addBtnLabel').textContent = labels[type] || 'New Record';
+  }
+
+  function switchTab(tab) {
+    activeTab = tab;
+    $$('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.tab === tab));
+    $$('.tab-content').forEach(c => c.classList.toggle('active', c.id === `${tab}-tab`));
+    const meta = TAB_META[tab] || TAB_META.dashboard;
+    $('#pageTitleText').textContent = meta[0];
+    $('#pageSubtitle').textContent = meta[1];
+    updateAddButtonLabel();
+    const sidebar = $('#ogSidebar');
+    if (sidebar.classList.contains('active')) {
+      sidebar.classList.remove('active');
+      $('#sidebarOverlay').classList.remove('active');
+      $('#mobileMenuToggle').setAttribute('aria-expanded', 'false');
+    }
+    refreshCharts();
+  }
+  window.switchTab = switchTab;
+
+  /* ---------- RENDER ALL ---------- */
+  function renderAll() {
+    renderOverview();
+    renderUpstream();
+    renderLand();
+    renderMidstream();
+    renderDownstream();
+    renderEtrm();
+    renderIntegrity();
+    renderHsse();
+    refreshCharts();
+  }
+
+  /* ---------- OVERVIEW ---------- */
+  function renderOverview() {
+    // Aggregate from modules
+    const totalOil = ogData.wells.reduce((s, w) => s + (parseFloat(w.grossOil) || 0), 0);
+    const totalGas = ogData.wells.reduce((s, w) => s + (parseFloat(w.gas) || 0), 0);
+    const totalBoe = totalOil + (totalGas / 6); // 6 Mcf = 1 BOE
+
+    const pipelineThroughput = ogData.nominations.reduce((s, n) => s + (parseFloat(n.confirmed) || 0), 0);
+    const totalJib = ogData.jib.reduce((s, j) => s + (parseFloat(j.capex) || 0) + (parseFloat(j.opex) || 0), 0);
+    const openIncidents = ogData.ptw.filter(p => (p.status || '').toLowerCase() !== 'closed').length;
+
+    $('#ovProduction').textContent = totalBoe ? totalBoe.toLocaleString() + ' BOE/d' : '—';
+    $('#ovPipeline').textContent = pipelineThroughput ? pipelineThroughput.toLocaleString() + ' bbl/d' : '—';
+    $('#ovJib').textContent = ogData.jib.length ? fmtCurrency(totalJib) : '—';
+    $('#ovIncidents').textContent = ogData.ptw.length ? openIncidents : '—';
+
+    $('#ovUp').textContent = ogData.wells.length ? `${ogData.wells.length} wells` : '—';
+    $('#ovMid').textContent = ogData.nominations.length ? `${ogData.nominations.length} nominations` : '—';
+    $('#ovDown').textContent = ogData.yields.length ? `${ogData.yields.length} refineries` : '—';
+    $('#ovTrade').textContent = ogData.etrm.length ? `${ogData.etrm.length} positions` : '—';
+
+    // Sidebar summary
+    $('#summaryValue').textContent = totalBoe ? (totalBoe / 1000).toFixed(1) + 'K BOE/d' : '—';
+    const moduleCount = ['wells','nominations','yields','etrm','jib','rbi','ptw'].filter(k => ogData[k] && ogData[k].length).length;
+    $('#summarySub').textContent = moduleCount ? `${moduleCount} active modules` : 'No data yet';
+  }
+
+  /* ---------- UPSTREAM ---------- */
+  function renderUpstream() {
+    const wBody = $('#wellsBody');
+    if (!ogData.wells.length) {
+      wBody.innerHTML = emptyRow(9, 'No wells registered yet — add your first well to begin tracking production.', 'fa-oil-well');
+    } else {
+      wBody.innerHTML = ogData.wells.map(w => `
+        <tr>
+          <td>${w.wellId}</td>
+          <td>${w.field || '—'}</td>
+          <td>${w.operator || '—'}</td>
+          <td><span class="badge badge-info">${w.stage || '—'}</span></td>
+          <td>${fmtNum(w.grossOil)}</td>
+          <td>${fmtNum(w.gas)}</td>
+          <td>${w.waterCut || 0}%</td>
+          <td><span class="badge badge-${badgeForStatus(w.status)}">${w.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('well', ${w.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    const aBody = $('#allocationsBody');
+    if (!ogData.allocations.length) {
+      aBody.innerHTML = emptyRow(6, 'No production allocations recorded yet.', 'fa-scale-balanced');
+    } else {
+      aBody.innerHTML = ogData.allocations.map(a => `
+        <tr>
+          <td>${a.date || '—'}</td>
+          <td>${a.stream || '—'}</td>
+          <td>${fmtNum(a.gross)}</td>
+          <td>${fmtNum(a.net)}</td>
+          <td>${a.factor || '—'}</td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('allocation', ${a.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    // Stats
+    const activeWells = ogData.wells.filter(w => ['drilling','casing','completing','producing'].includes((w.stage || '').toLowerCase())).length;
+    const totalOil = ogData.wells.reduce((s, w) => s + (parseFloat(w.grossOil) || 0), 0);
+    const totalGas = ogData.wells.reduce((s, w) => s + (parseFloat(w.gas) || 0), 0);
+    const avgWater = ogData.wells.length
+      ? (ogData.wells.reduce((s, w) => s + (parseFloat(w.waterCut) || 0), 0) / ogData.wells.length).toFixed(1)
+      : null;
+
+    $('#upActiveWells').textContent = ogData.wells.length ? activeWells : '—';
+    $('#upGrossOil').textContent = totalOil ? totalOil.toLocaleString() : '—';
+    $('#upGrossGas').textContent = totalGas ? totalGas.toLocaleString() : '—';
+    $('#upWaterCut').textContent = avgWater !== null ? avgWater + '%' : '—';
+  }
+
+  /* ---------- LAND / JIB ---------- */
+  function renderLand() {
+    const jBody = $('#jibBody');
+    if (!ogData.jib.length) {
+      jBody.innerHTML = emptyRow(6, 'No JIB partners recorded yet.', 'fa-file-invoice-dollar');
+    } else {
+      jBody.innerHTML = ogData.jib.map(j => `
+        <tr>
+          <td>${j.partner}</td>
+          <td>${j.wi || 0}%</td>
+          <td>${fmtCurrency(j.capex)}</td>
+          <td>${fmtCurrency(j.opex)}</td>
+          <td><span class="badge badge-${badgeForStatus(j.status)}">${j.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('jib', ${j.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    const dBody = $('#doiBody');
+    if (!ogData.doi.length) {
+      dBody.innerHTML = emptyRow(5, 'No DOI tiers configured yet.', 'fa-sitemap');
+    } else {
+      dBody.innerHTML = ogData.doi.map(d => `
+        <tr>
+          <td>${d.tier}</td>
+          <td>${d.party || '—'}</td>
+          <td>${d.interest || 0}%</td>
+          <td>${d.type || '—'}</td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('doi', ${d.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    // Widget metrics
+    const totalCapex = ogData.jib.reduce((s, j) => s + (parseFloat(j.capex) || 0), 0);
+    const totalOpex = ogData.jib.reduce((s, j) => s + (parseFloat(j.opex) || 0), 0);
+    $('#jibTotal').textContent = ogData.jib.length ? fmtCurrency(totalCapex + totalOpex) : '—';
+    const unbilled = ogData.jib.filter(j => (j.status || '').toLowerCase() === 'pending').length;
+    $('#jibUnbilled').textContent = ogData.jib.length ? unbilled : '—';
+    $('#jibOverdue').textContent = '—';
+
+    $('#doiPartners').textContent = ogData.doi.length || '—';
+    const landowners = ogData.doi.filter(d => (d.type || '').toLowerCase() === 'landowner').length;
+    $('#doiLandowners').textContent = ogData.doi.length ? landowners : '—';
+    const operator = ogData.doi.find(d => (d.type || '').toLowerCase() === 'operator');
+    $('#doiOperator').textContent = operator ? operator.interest + '%' : '—';
+
+    $('#landLeases').textContent = '—';
+    $('#landExpiring').textContent = '—';
+    $('#landRoyalty').textContent = '—';
+  }
+
+  /* ---------- MIDSTREAM ---------- */
+  function renderMidstream() {
+    const nBody = $('#nominationsBody');
+    if (!ogData.nominations.length) {
+      nBody.innerHTML = emptyRow(7, 'No pipeline nominations yet — submit one to begin.', 'fa-pipe-valve');
+    } else {
+      nBody.innerHTML = ogData.nominations.map(n => `
+        <tr>
+          <td>${n.pipeline}</td>
+          <td>${n.shipper || '—'}</td>
+          <td>${fmtNum(n.nominated, 'bbl/d')}</td>
+          <td>${fmtNum(n.confirmed, 'bbl/d')}</td>
+          <td><span class="badge badge-${badgeForStatus(n.alert)}">${n.alert || 'OK'}</span></td>
+          <td><span class="badge badge-${badgeForStatus(n.status)}">${n.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('nomination', ${n.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    const tBody = $('#tanksBody');
+    if (!ogData.tanks.length) {
+      tBody.innerHTML = emptyRow(7, 'No tanks registered yet.', 'fa-tank-water');
+    } else {
+      tBody.innerHTML = ogData.tanks.map(t => `
+        <tr>
+          <td>${t.tankId}</td>
+          <td>${t.product || '—'}</td>
+          <td>${t.fill || 0}%</td>
+          <td>${t.api || 0}°</td>
+          <td>${t.temp || 0}°F</td>
+          <td>${t.bsw || 0}%</td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('tank', ${t.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    // Widgets
+    const totalNominated = ogData.nominations.reduce((s, n) => s + (parseFloat(n.nominated) || 0), 0);
+    const totalConfirmed = ogData.nominations.reduce((s, n) => s + (parseFloat(n.confirmed) || 0), 0);
+    $('#pipeCapacity').textContent = totalNominated ? fmtNum(totalNominated, 'bbl/d') : '—';
+    $('#pipeContracted').textContent = totalConfirmed ? fmtNum(totalConfirmed, 'bbl/d') : '—';
+    const util = totalNominated ? Math.round((totalConfirmed / totalNominated) * 100) : null;
+    $('#pipeUtil').textContent = util !== null ? util + '%' : '—';
+
+    $('#tankCount').textContent = ogData.tanks.length || '—';
+    const avgFill = ogData.tanks.length
+      ? Math.round(ogData.tanks.reduce((s, t) => s + (parseFloat(t.fill) || 0), 0) / ogData.tanks.length)
+      : null;
+    $('#tankCapacity').textContent = '—';
+    $('#tankFill').textContent = avgFill !== null ? avgFill + '%' : '—';
+
+    $('#lactActive').textContent = '—';
+    const avgApi = ogData.tanks.length
+      ? (ogData.tanks.reduce((s, t) => s + (parseFloat(t.api) || 0), 0) / ogData.tanks.length).toFixed(1)
+      : null;
+    $('#lactApi').textContent = avgApi !== null ? avgApi + '°' : '—';
+    $('#lactTransfers').textContent = '—';
+  }
+
+  /* ---------- DOWNSTREAM ---------- */
+  function renderDownstream() {
+    const body = $('#yieldsBody');
+    if (!ogData.yields.length) {
+      body.innerHTML = emptyRow(7, 'No refinery yields recorded yet.', 'fa-industry');
+    } else {
+      body.innerHTML = ogData.yields.map(y => `
+        <tr>
+          <td>${y.refinery}</td>
+          <td>${fmtNum(y.crudeInput)}</td>
+          <td>${y.gasoline || 0}%</td>
+          <td>${y.diesel || 0}%</td>
+          <td>${y.jet || 0}%</td>
+          <td>${y.petchem || 0}%</td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('yield', ${y.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    const tBody = $('#tarBody');
+    if (!ogData.tar.length) {
+      tBody.innerHTML = emptyRow(7, 'No turnarounds scheduled yet.', 'fa-calendar-check');
+    } else {
+      tBody.innerHTML = ogData.tar.map(t => `
+        <tr>
+          <td>${t.unit}</td>
+          <td>${t.refinery || '—'}</td>
+          <td>${t.startDate || '—'}</td>
+          <td>${t.duration || 0}</td>
+          <td>${fmtCurrency(t.cost)}</td>
+          <td><span class="badge badge-${badgeForStatus(t.status)}">${t.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('tar', ${t.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    // Process flow
+    const totalCrude = ogData.yields.reduce((s, y) => s + (parseFloat(y.crudeInput) || 0), 0);
+    const avgGasoline = ogData.yields.length
+      ? (ogData.yields.reduce((s, y) => s + (parseFloat(y.gasoline) || 0), 0) / ogData.yields.length).toFixed(1)
+      : null;
+    const avgDiesel = ogData.yields.length
+      ? (ogData.yields.reduce((s, y) => s + (parseFloat(y.diesel) || 0), 0) / ogData.yields.length).toFixed(1)
+      : null;
+    const avgJet = ogData.yields.length
+      ? (ogData.yields.reduce((s, y) => s + (parseFloat(y.jet) || 0), 0) / ogData.yields.length).toFixed(1)
+      : null;
+
+    $('#refCrude').textContent = totalCrude ? fmtNum(totalCrude, 'bbl/d') : '—';
+    $('#refDist').textContent = '—';
+    $('#refGasoline').textContent = avgGasoline !== null ? avgGasoline + '%' : '—';
+    $('#refDiesel').textContent = avgDiesel !== null ? avgDiesel + '%' : '—';
+    $('#refJet').textContent = avgJet !== null ? avgJet + '%' : '—';
+  }
+
+  /* ---------- ETRM ---------- */
+  function renderEtrm() {
+    const body = $('#etrmBody');
+    if (!ogData.etrm.length) {
+      body.innerHTML = emptyRow(6, 'No trading positions recorded yet.', 'fa-arrow-right-arrow-left');
+    } else {
+      body.innerHTML = ogData.etrm.map(e => `
+        <tr>
+          <td>${e.commodity}</td>
+          <td>${fmtNum(e.physical)}</td>
+          <td>${fmtNum(e.futures)}</td>
+          <td>${fmtNum((parseFloat(e.physical) || 0) - (parseFloat(e.futures) || 0))}</td>
+          <td>${fmtCurrency(e.mtm)}</td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('etrm', ${e.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    const dBody = $('#demurrageBody');
+    if (!ogData.demurrage.length) {
+      dBody.innerHTML = emptyRow(8, 'No demurrage claims logged yet.', 'fa-ship');
+    } else {
+      dBody.innerHTML = ogData.demurrage.map(d => `
+        <tr>
+          <td>${d.vessel}</td>
+          <td>${d.berth || '—'}</td>
+          <td>${d.laytimeAllowed || '—'}</td>
+          <td>${d.laytimeUsed || '—'}</td>
+          <td>${fmtCurrency(d.claim)}</td>
+          <td>${d.bsw || 0}%</td>
+          <td><span class="badge badge-${badgeForStatus(d.status)}">${d.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('demurrage', ${d.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    // Widgets
+    const totalPhysical = ogData.etrm.reduce((s, e) => s + (parseFloat(e.physical) || 0), 0);
+    const totalFutures = ogData.etrm.reduce((s, e) => s + (parseFloat(e.futures) || 0), 0);
+    const totalMtm = ogData.etrm.reduce((s, e) => s + (parseFloat(e.mtm) || 0), 0);
+
+    $('#physCrude').textContent = totalPhysical ? fmtNum(totalPhysical) : '—';
+    $('#physRefined').textContent = '—';
+    $('#physGas').textContent = '—';
+
+    $('#hedgeCount').textContent = ogData.etrm.length || '—';
+    $('#hedgeMtm').textContent = ogData.etrm.length ? fmtCurrency(totalMtm) : '—';
+    const hedgeRatio = totalPhysical ? Math.round((totalFutures / totalPhysical) * 100) : null;
+    $('#hedgeRatio').textContent = hedgeRatio !== null ? hedgeRatio + '%' : '—';
+
+    const demurrageTotal = ogData.demurrage.reduce((s, d) => s + (parseFloat(d.claim) || 0), 0);
+    $('#marineBerth').textContent = '—';
+    $('#marineDemurrage').textContent = ogData.demurrage.length ? fmtCurrency(demurrageTotal) : '—';
+    $('#marineWait').textContent = '—';
+  }
+
+  /* ---------- INTEGRITY ---------- */
+  function renderIntegrity() {
+    const body = $('#rbiBody');
+    if (!ogData.rbi.length) {
+      body.innerHTML = emptyRow(8, 'No RBI inspections scheduled yet.', 'fa-shield-halved');
+    } else {
+      body.innerHTML = ogData.rbi.map(r => `
+        <tr>
+          <td>${r.assetId}</td>
+          <td>${r.type || '—'}</td>
+          <td>${r.location || '—'}</td>
+          <td>${r.lastInspection || '—'}</td>
+          <td>${r.nextDue || '—'}</td>
+          <td><span class="badge badge-${badgeForRisk(r.riskLevel)}">${r.riskLevel || '—'}</span></td>
+          <td><span class="badge badge-${badgeForStatus(r.status)}">${r.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('rbi', ${r.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    const cBody = $('#crewBody');
+    if (!ogData.crew.length) {
+      cBody.innerHTML = emptyRow(7, 'No crew change flights scheduled yet.', 'fa-helicopter');
+    } else {
+      cBody.innerHTML = ogData.crew.map(c => `
+        <tr>
+          <td>${c.flightId}</td>
+          <td>${c.platform || '—'}</td>
+          <td>${c.departure || '—'}</td>
+          <td>${c.pax || 0}</td>
+          <td>${c.weather || '—'}</td>
+          <td><span class="badge badge-${badgeForStatus(c.status)}">${c.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('crew', ${c.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    // Widgets
+    $('#rbiAssets').textContent = ogData.rbi.length || '—';
+    const today = new Date();
+    const quarter = new Date(today.getTime() + 90 * 24 * 60 * 60 * 1000);
+    const due = ogData.rbi.filter(r => r.nextDue && new Date(r.nextDue) <= quarter).length;
+    $('#rbiDue').textContent = ogData.rbi.length ? due : '—';
+    const overdue = ogData.rbi.filter(r => r.nextDue && new Date(r.nextDue) < today).length;
+    $('#rbiOverdue').textContent = ogData.rbi.length ? overdue : '—';
+
+    const pax = ogData.crew.reduce((s, c) => s + (parseInt(c.pax) || 0), 0);
+    $('#crewOffshore').textContent = ogData.crew.length ? pax : '—';
+    $('#crewNextFlight').textContent = '—';
+    $('#crewHeli').textContent = '—';
+
+    $('#inspOpen').textContent = '—';
+    $('#inspHigh').textContent = '—';
+    $('#inspClose').textContent = '—';
+  }
+
+  /* ---------- HSSE ---------- */
+  function renderHsse() {
+    const body = $('#ptwBody');
+    if (!ogData.ptw.length) {
+      body.innerHTML = emptyRow(7, 'No permits issued yet.', 'fa-clipboard-check');
+    } else {
+      body.innerHTML = ogData.ptw.map(p => `
+        <tr>
+          <td>${p.permitId}</td>
+          <td>${p.type || '—'}</td>
+          <td>${p.location || '—'}</td>
+          <td>${p.issuedTo || '—'}</td>
+          <td>${p.validTo || '—'}</td>
+          <td><span class="badge badge-${badgeForStatus(p.status)}">${p.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('ptw', ${p.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    const eBody = $('#esgBody');
+    if (!ogData.esg.length) {
+      eBody.innerHTML = emptyRow(7, 'No ESG emission entries yet.', 'fa-leaf');
+    } else {
+      eBody.innerHTML = ogData.esg.map(e => `
+        <tr>
+          <td>${e.date || '—'}</td>
+          <td>${e.scope || '—'}</td>
+          <td>${e.source || '—'}</td>
+          <td>${fmtNum(e.value)}</td>
+          <td>${fmtNum(e.target)}</td>
+          <td><span class="badge badge-${badgeForStatus(e.status)}">${e.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('esg', ${e.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    const aBody = $('#aroBody');
+    if (!ogData.aro.length) {
+      aBody.innerHTML = emptyRow(7, 'No ARO provisions recorded yet.', 'fa-hand-holding-dollar');
+    } else {
+      aBody.innerHTML = ogData.aro.map(a => `
+        <tr>
+          <td>${a.asset}</td>
+          <td>${a.location || '—'}</td>
+          <td>${fmtCurrency(a.provision)}</td>
+          <td>${fmtCurrency(a.funded)}</td>
+          <td>${a.decomYear || '—'}</td>
+          <td><span class="badge badge-${badgeForStatus(a.status)}">${a.status || '—'}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('aro', ${a.id})" title="Delete"></i>
+          </td>
+        </tr>`).join('');
+    }
+
+    // Stats
+    const activePtw = ogData.ptw.filter(p => (p.status || '').toLowerCase() !== 'closed').length;
+    $('#hssePtw').textContent = ogData.ptw.length ? activePtw : '—';
+    const scope1 = ogData.esg.filter(e => (e.scope || '').toLowerCase() === 'scope 1').reduce((s, e) => s + (parseFloat(e.value) || 0), 0);
+    const scope2 = ogData.esg.filter(e => (e.scope || '').toLowerCase() === 'scope 2').reduce((s, e) => s + (parseFloat(e.value) || 0), 0);
+    $('#hsseScope1').textContent = ogData.esg.length ? scope1.toLocaleString() : '—';
+    $('#hsseScope2').textContent = ogData.esg.length ? scope2.toLocaleString() : '—';
+    const aroTotal = ogData.aro.reduce((s, a) => s + (parseFloat(a.provision) || 0), 0);
+    $('#hsseAro').textContent = ogData.aro.length ? fmtCurrency(aroTotal) : '—';
+  }
+
+  /* ---------- CHARTS ---------- */
+  function initCharts() {
+    refreshCharts();
+  }
+
+  function refreshCharts() {
+    const hasWells = ogData.wells.length > 0;
+    const hasNominations = ogData.nominations.length > 0;
+
+    const showEmpty = (canvasId, emptyId, has) => {
+      const c = document.getElementById(canvasId);
+      const e = document.getElementById(emptyId);
+      if (c) c.style.display = has ? 'block' : 'none';
+      if (e) e.style.display = has ? 'none' : 'flex';
+    };
+
+    showEmpty('ovTrendChart', 'ovTrendChartEmpty', hasWells);
+    showEmpty('ovSegmentChart', 'ovSegmentChartEmpty', hasNominations);
+
+    Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} });
+    charts = {};
+
+    if (hasWells) {
+      const ctx = document.getElementById('ovTrendChart')?.getContext('2d');
+      if (ctx) {
+        const top = [...ogData.wells].sort((a, b) => (parseFloat(b.grossOil) || 0) - (parseFloat(a.grossOil) || 0)).slice(0, 8);
+        charts.trend = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: top.map(w => w.wellId),
+            datasets: [{
+              label: 'Gross Oil (bbl/d)',
+              data: top.map(w => parseFloat(w.grossOil) || 0),
+              backgroundColor: '#2563eb',
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+              x: { grid: { display: false } }
             }
-            
-            document.getElementById('modalSave').onclick = () => {
-                if (activeCallback) activeCallback(modalInput.value);
-                modal.style.display = 'none';
-            };
-            
-            document.getElementById('modalCancel').onclick = () => modal.style.display = 'none';
+          }
+        });
+      }
+    }
 
-            // Stats edit
-            document.querySelectorAll('.edit-stat-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const target = btn.dataset.target;
-                    if (target === 'prod') showModal('daily production', document.getElementById('prodVal').innerText, (v) => document.getElementById('prodVal').innerText = v);
-                    if (target === 'wells') showModal('active wells', document.getElementById('wellsVal').innerText, (v) => document.getElementById('wellsVal').innerText = v);
-                    if (target === 'reserves') showModal('reserves', document.getElementById('reservesVal').innerText, (v) => document.getElementById('reservesVal').innerText = v);
-                    if (target === 'refining') showModal('refining capacity', document.getElementById('refVal').innerText, (v) => document.getElementById('refVal').innerText = v);
-                });
-            });
+    if (hasNominations) {
+      const ctx = document.getElementById('ovSegmentChart')?.getContext('2d');
+      if (ctx) {
+        const byPipeline = {};
+        ogData.nominations.forEach(n => {
+          const k = n.pipeline || 'Other';
+          byPipeline[k] = (byPipeline[k] || 0) + (parseFloat(n.confirmed) || 0);
+        });
+        charts.segment = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: Object.keys(byPipeline),
+            datasets: [{
+              data: Object.values(byPipeline),
+              backgroundColor: ['#2563eb','#0f7b5a','#d97706','#c0392b','#8b5cf6','#ec4899']
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } }
+          }
+        });
+      }
+    }
+  }
 
-            // Chain edit
-            document.querySelectorAll('.edit-chain').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const field = btn.dataset.field;
-                    if (field === 'upstream') showModal('upstream small', document.getElementById('upSmall').innerText, (v)=>document.getElementById('upSmall').innerText=v);
-                    if (field === 'midstream') showModal('midstream small', document.getElementById('midSmall').innerText, (v)=>document.getElementById('midSmall').innerText=v);
-                    if (field === 'downstream') showModal('downstream small', document.getElementById('downSmall').innerText, (v)=>document.getElementById('downSmall').innerText=v);
-                });
-            });
+  /* ---------- ADD MODAL ---------- */
+  function openAddModal(type) {
+    type = type || inferTypeFromTab(activeTab);
+    currentEditType = type;
+    const titles = {
+      well:       'Add Well',
+      allocation: 'Add Production Allocation',
+      jib:        'Add JIB Partner',
+      doi:        'Add DOI Tier',
+      nomination: 'Submit Pipeline Nomination',
+      tank:       'Add Storage Tank',
+      yield:      'Add Refinery Yield',
+      tar:        'Schedule Turnaround',
+      etrm:       'Add Trading Position',
+      demurrage:  'Add Demurrage Claim',
+      rbi:        'Add RBI Inspection',
+      crew:       'Schedule Crew Change',
+      ptw:        'Issue Permit to Work',
+      esg:        'Add ESG Emission Entry',
+      aro:        'Add ARO Provision'
+    };
+    $('#modalTitle').textContent = titles[type] || 'New Record';
+    $('#formFields').innerHTML = formFor(type);
+    $('#editModal').classList.add('active');
+  }
+  window.openAddModal = openAddModal;
 
-            // Generic table edit/delete functionality
-            function bindTableEvents(tbody) {
-                if (!tbody) return;
-                
-                tbody.querySelectorAll('.editRow').forEach(btn => {
-                    btn.onclick = () => {
-                        const row = btn.closest('tr');
-                        const cells = row.querySelectorAll('td:not(:last-child)');
-                        let idx = 0;
-                        cells.forEach(cell => {
-                            if (idx < cells.length-1) {
-                                const old = cell.innerText;
-                                showModal(`edit field`, old, (newVal) => { cell.innerText = newVal; });
-                            }
-                            idx++;
-                        });
-                    };
-                });
-                
-                tbody.querySelectorAll('.deleteRow').forEach(btn => {
-                    btn.onclick = () => { 
-                        if (confirm('Delete this record?')) {
-                            btn.closest('tr').remove(); 
-                        }
-                    };
-                });
-            }
+  function inferTypeFromTab(tab) {
+    return ({
+      dashboard:  'well',
+      upstream:   'well',
+      land:       'jib',
+      midstream:  'nomination',
+      downstream: 'yield',
+      etrm:       'etrm',
+      integrity:  'rbi',
+      hsse:       'ptw'
+    })[tab] || 'well';
+  }
 
-            // Bind all table bodies
-            const tableBodies = [
-                'fieldBody', 'drillBody', 'upstreamBody', 'midstreamBody', 
-                'downstreamBody', 'explorationBody', 'tradingBody', 
-                'complianceBody', 'decomBody', 'storageBody'
-            ];
-            
-            tableBodies.forEach(id => {
-                const tbody = document.getElementById(id);
-                if (tbody) bindTableEvents(tbody);
-            });
+  function formFor(type) {
+    if (type === 'well') return `
+      <div class="form-section">Well Information</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Well ID</label><input type="text" class="form-control" name="wellId" placeholder="Auto-generated" required></div>
+        <div class="form-group"><label class="form-label">Field</label><input type="text" class="form-control" name="field"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Operator</label><input type="text" class="form-control" name="operator"></div>
+        <div class="form-group"><label class="form-label">Stage</label>
+          <select class="form-control" name="stage">
+            <option>Drilling</option><option>Casing</option><option>Completing</option>
+            <option>Producing</option><option>Shut-In</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-section">Production Streams</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Gross Oil (bbl/d)</label><input type="number" class="form-control" name="grossOil" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Gas (Mcf/d)</label><input type="number" class="form-control" name="gas" step="0.01" min="0" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Water Cut %</label><input type="number" class="form-control" name="waterCut" step="0.1" min="0" max="100" value="0"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Producing</option><option>Shut-In</option><option>Testing</option>
+          </select>
+        </div>
+      </div>`;
 
-            // Add buttons for each tab
-            document.getElementById('addFieldBtn')?.addEventListener('click', () => {
-                const b = document.getElementById('fieldBody');
-                const nr = document.createElement('tr');
-                nr.innerHTML = `<td>new field</td><td>region</td><td>onshore</td><td>0 bbl</td><td>0</td><td>0%</td><td class="status-producing">planned</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
-                b.appendChild(nr); bindTableEvents(b);
-            });
+    if (type === 'allocation') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-control" name="date" required></div>
+        <div class="form-group"><label class="form-label">Stream</label>
+          <select class="form-control" name="stream">
+            <option>Oil</option><option>Gas</option><option>Water</option><option>NGLs</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Gross</label><input type="number" class="form-control" name="gross" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Net</label><input type="number" class="form-control" name="net" step="0.01" min="0" value="0"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Allocation Factor</label><input type="text" class="form-control" name="factor" placeholder="e.g. 0.852"></div>`;
 
-            document.getElementById('addDrillBtn')?.addEventListener('click', () => {
-                const b = document.getElementById('drillBody');
-                const nr = document.createElement('tr');
-                nr.innerHTML = `<td>new rig</td><td>loc</td><td>semi</td><td>0m</td><td>target</td><td>0%</td><td class="status-drilling">prep</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
-                b.appendChild(nr); bindTableEvents(b);
-            });
+    if (type === 'jib') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Partner</label><input type="text" class="form-control" name="partner" required></div>
+        <div class="form-group"><label class="form-label">Working Interest %</label><input type="number" class="form-control" name="wi" step="0.01" min="0" max="100" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">CapEx Allocation</label><input type="number" class="form-control" name="capex" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">OpEx Allocation</label><input type="number" class="form-control" name="opex" step="0.01" min="0" value="0"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status">
+          <option>Pending</option><option>Approved</option><option>Disputed</option>
+        </select>
+      </div>`;
 
-            document.getElementById('addUpstreamFieldBtn')?.addEventListener('click', () => {
-                const b = document.getElementById('upstreamBody');
-                const nr = document.createElement('tr');
-                nr.innerHTML = `<td>new field</td><td>basin</td><td>conventional</td><td>0 bbl</td><td>0</td><td>0°</td><td class="status-exploring">exploring</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
-                b.appendChild(nr); bindTableEvents(b);
-            });
+    if (type === 'doi') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Tier</label><input type="number" class="form-control" name="tier" min="1" value="1"></div>
+        <div class="form-group"><label class="form-label">Party Name</label><input type="text" class="form-control" name="party" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Interest %</label><input type="number" class="form-control" name="interest" step="0.0001" min="0" max="100" value="0"></div>
+        <div class="form-group"><label class="form-label">Type</label>
+          <select class="form-control" name="type">
+            <option>Operator</option><option>Working Interest</option>
+            <option>Royalty</option><option>Landowner</option><option>Overriding Royalty</option>
+          </select>
+        </div>
+      </div>`;
 
-            document.getElementById('addMidstreamBtn')?.addEventListener('click', () => {
-                const b = document.getElementById('midstreamBody');
-                const nr = document.createElement('tr');
-                nr.innerHTML = `<td>new asset</td><td>pipeline</td><td>0 bbl/d</td><td>0 km</td><td>0%</td><td class="status-producing">planned</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
-                b.appendChild(nr); bindTableEvents(b);
-            });
+    if (type === 'nomination') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Pipeline</label><input type="text" class="form-control" name="pipeline" required></div>
+        <div class="form-group"><label class="form-label">Shipper</label><input type="text" class="form-control" name="shipper"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Nominated (bbl/d)</label><input type="number" class="form-control" name="nominated" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Confirmed (bbl/d)</label><input type="number" class="form-control" name="confirmed" step="0.01" min="0" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Capacity Alert</label>
+          <select class="form-control" name="alert">
+            <option>OK</option><option>Near Capacity</option><option>Over Capacity</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Submitted</option><option>Confirmed</option><option>Rejected</option>
+          </select>
+        </div>
+      </div>`;
 
-            document.getElementById('addDownstreamBtn')?.addEventListener('click', () => {
-                const b = document.getElementById('downstreamBody');
-                const nr = document.createElement('tr');
-                nr.innerHTML = `<td>new refinery</td><td>location</td><td>0 bbl/d</td><td>0%</td><td>0</td><td class="status-producing">planned</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
-                b.appendChild(nr); bindTableEvents(b);
-            });
+    if (type === 'tank') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Tank ID</label><input type="text" class="form-control" name="tankId" required></div>
+        <div class="form-group"><label class="form-label">Product</label>
+          <select class="form-control" name="product">
+            <option>Crude Oil</option><option>Gasoline</option><option>Diesel</option>
+            <option>Jet Fuel</option><option>Naphtha</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Fill %</label><input type="number" class="form-control" name="fill" step="0.1" min="0" max="100" value="0"></div>
+        <div class="form-group"><label class="form-label">API Gravity</label><input type="number" class="form-control" name="api" step="0.1" min="0" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Temperature (°F)</label><input type="number" class="form-control" name="temp" step="0.1" value="0"></div>
+        <div class="form-group"><label class="form-label">BS&amp;W %</label><input type="number" class="form-control" name="bsw" step="0.01" min="0" max="100" value="0"></div>
+      </div>`;
 
-            document.getElementById('addExplorationBtn')?.addEventListener('click', () => {
-                const b = document.getElementById('explorationBody');
-                const nr = document.createElement('tr');
-                nr.innerHTML = `<td>new prospect</td><td>basin</td><td>0m</td><td>formation</td><td>0%</td><td class="status-exploring">planned</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
-                b.appendChild(nr); bindTableEvents(b);
-            });
+    if (type === 'yield') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Refinery</label><input type="text" class="form-control" name="refinery" required></div>
+        <div class="form-group"><label class="form-label">Crude Input (bbl/d)</label><input type="number" class="form-control" name="crudeInput" step="0.01" min="0" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Gasoline %</label><input type="number" class="form-control" name="gasoline" step="0.1" min="0" max="100" value="0"></div>
+        <div class="form-group"><label class="form-label">Diesel %</label><input type="number" class="form-control" name="diesel" step="0.1" min="0" max="100" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Jet Fuel %</label><input type="number" class="form-control" name="jet" step="0.1" min="0" max="100" value="0"></div>
+        <div class="form-group"><label class="form-label">Petrochemical %</label><input type="number" class="form-control" name="petchem" step="0.1" min="0" max="100" value="0"></div>
+      </div>`;
 
-            document.getElementById('addTradingBtn')?.addEventListener('click', () => {
-                const b = document.getElementById('tradingBody');
-                const nr = document.createElement('tr');
-                nr.innerHTML = `<td>new commodity</td><td>contract</td><td>0</td><td>$0</td><td class="status-producing">$0</td><td class="status-trading">new</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
-                b.appendChild(nr); bindTableEvents(b);
-            });
+    if (type === 'tar') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Unit</label><input type="text" class="form-control" name="unit" placeholder="e.g. FCC, CDU" required></div>
+        <div class="form-group"><label class="form-label">Refinery</label><input type="text" class="form-control" name="refinery"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Planned Start</label><input type="date" class="form-control" name="startDate"></div>
+        <div class="form-group"><label class="form-label">Duration (days)</label><input type="number" class="form-control" name="duration" min="0" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Estimated Cost (USD)</label><input type="number" class="form-control" name="cost" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Planning</option><option>Scheduled</option><option>In Progress</option><option>Completed</option>
+          </select>
+        </div>
+      </div>`;
 
-            document.getElementById('addComplianceBtn')?.addEventListener('click', () => {
-                const b = document.getElementById('complianceBody');
-                const nr = document.createElement('tr');
-                nr.innerHTML = `<td>new reg</td><td>jurisdiction</td><td>2026-12-31</td><td class="status-compliance">pending</td><td>internal</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
-                b.appendChild(nr); bindTableEvents(b);
-            });
+    if (type === 'etrm') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Commodity</label>
+          <select class="form-control" name="commodity">
+            <option>WTI Crude</option><option>Brent Crude</option><option>Natural Gas</option>
+            <option>Gasoline</option><option>Diesel</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Physical Quantity</label><input type="number" class="form-control" name="physical" step="0.01" min="0" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Futures Quantity</label><input type="number" class="form-control" name="futures" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">MTM P&amp;L</label><input type="number" class="form-control" name="mtm" step="0.01" value="0"></div>
+      </div>`;
 
-            document.getElementById('addDecomBtn')?.addEventListener('click', () => {
-                const b = document.getElementById('decomBody');
-                const nr = document.createElement('tr');
-                nr.innerHTML = `<td>new asset</td><td>location</td><td>platform</td><td>$0M</td><td>2027 Q1</td><td class="status-decom">planning</td><td><button class="btn-icon editRow">✏️</button><button class="btn-icon deleteRow">🗑️</button></td>`;
-                b.appendChild(nr); bindTableEvents(b);
-            });
+    if (type === 'demurrage') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Vessel</label><input type="text" class="form-control" name="vessel" required></div>
+        <div class="form-group"><label class="form-label">Berth</label><input type="text" class="form-control" name="berth"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Laytime Allowed</label><input type="text" class="form-control" name="laytimeAllowed" placeholder="e.g. 72h"></div>
+        <div class="form-group"><label class="form-label">Laytime Used</label><input type="text" class="form-control" name="laytimeUsed" placeholder="e.g. 84h"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Demurrage Claim (USD)</label><input type="number" class="form-control" name="claim" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">BS&amp;W Deduction %</label><input type="number" class="form-control" name="bsw" step="0.01" min="0" max="100" value="0"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status">
+          <option>Open</option><option>Submitted</option><option>Settled</option><option>Disputed</option>
+        </select>
+      </div>`;
 
-            // Pipeline management
-            const pipeCont = document.getElementById('pipelineContainer');
-            function refreshPipeline() {
-                document.querySelectorAll('.editPipeline').forEach(b => {
-                    b.onclick = () => {
-                        const span = b.closest('.pipeline-item')?.querySelector('span');
-                        if (span) showModal('pipeline', span.innerText, (v)=>span.innerText = v);
-                    };
-                });
-                document.querySelectorAll('.deletePipeline').forEach(b => {
-                    b.onclick = () => { 
-                        if (confirm('Delete pipeline?')) {
-                            b.closest('.pipeline-item').remove(); 
-                        }
-                    };
-                });
-            }
-            refreshPipeline();
+    if (type === 'rbi') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Asset ID</label><input type="text" class="form-control" name="assetId" required></div>
+        <div class="form-group"><label class="form-label">Type</label>
+          <select class="form-control" name="type">
+            <option>Pipeline</option><option>Pressure Vessel</option><option>Storage Tank</option>
+            <option>Offshore Structure</option><option>Valve</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Location</label><input type="text" class="form-control" name="location"></div>
+        <div class="form-group"><label class="form-label">Risk Level</label>
+          <select class="form-control" name="riskLevel">
+            <option>Low</option><option>Medium</option><option>High</option><option>Extreme</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Last Inspection</label><input type="date" class="form-control" name="lastInspection"></div>
+        <div class="form-group"><label class="form-label">Next Due</label><input type="date" class="form-control" name="nextDue"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status">
+          <option>Scheduled</option><option>In Progress</option><option>Completed</option><option>Overdue</option>
+        </select>
+      </div>`;
 
-            document.getElementById('addPipelineBtn')?.addEventListener('click', () => {
-                const d = document.createElement('div');
-                d.className = 'pipeline-item'; 
-                d.style.display = 'flex'; 
-                d.style.gap = '0.5rem'; 
-                d.style.alignItems = 'center'; 
-                d.style.marginBottom = '1rem';
-                d.innerHTML = `<span>• new pipeline: 0 km · new stats</span> <button class="btn-icon editPipeline">✏️</button><button class="btn-icon deletePipeline">🗑️</button>`;
-                pipeCont.appendChild(d); refreshPipeline();
-            });
+    if (type === 'crew') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Flight ID</label><input type="text" class="form-control" name="flightId" placeholder="Auto-generated" required></div>
+        <div class="form-group"><label class="form-label">Platform</label><input type="text" class="form-control" name="platform"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Departure</label><input type="datetime-local" class="form-control" name="departure"></div>
+        <div class="form-group"><label class="form-label">Pax Count</label><input type="number" class="form-control" name="pax" min="0" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Weather</label>
+          <select class="form-control" name="weather">
+            <option>Clear</option><option>Marginal</option><option>Grounded</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Scheduled</option><option>In Flight</option><option>Completed</option><option>Cancelled</option>
+          </select>
+        </div>
+      </div>`;
 
-            // Storage management
-            const storageBody = document.getElementById('storageBody');
-            function bindStorage() {
-                document.querySelectorAll('.editStorage').forEach(b => {
-                    b.onclick = () => {
-                        const row = b.closest('tr');
-                        const cells = row.querySelectorAll('td');
-                        showModal('edit location', cells[0].innerText, (v)=>cells[0].innerText=v);
-                    };
-                });
-                document.querySelectorAll('.deleteStorage').forEach(b => {
-                    b.onclick = () => { 
-                        if (confirm('Delete storage facility?')) {
-                            b.closest('tr').remove(); 
-                        }
-                    };
-                });
-            }
-            bindStorage();
+    if (type === 'ptw') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Permit ID</label><input type="text" class="form-control" name="permitId" placeholder="Auto-generated" required></div>
+        <div class="form-group"><label class="form-label">Type</label>
+          <select class="form-control" name="type">
+            <option>Hot Work</option><option>Confined Space</option><option>LOTO</option>
+            <option>Working at Height</option><option>Excavation</option><option>Radiography</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Location</label><input type="text" class="form-control" name="location"></div>
+        <div class="form-group"><label class="form-label">Issued To</label><input type="text" class="form-control" name="issuedTo"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Valid To</label><input type="datetime-local" class="form-control" name="validTo"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Active</option><option>Pending</option><option>Closed</option><option>Suspended</option>
+          </select>
+        </div>
+      </div>`;
 
-            document.getElementById('addStorageBtn')?.addEventListener('click', () => {
-                const nr = document.createElement('tr');
-                nr.innerHTML = `<td>new site</td><td>0 bbl</td><td>0% full</td><td><button class="btn-icon editStorage">✏️</button><button class="btn-icon deleteStorage">🗑️</button></td>`;
-                storageBody.appendChild(nr); bindStorage();
-            });
+    if (type === 'esg') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-control" name="date" required></div>
+        <div class="form-group"><label class="form-label">Scope</label>
+          <select class="form-control" name="scope">
+            <option>Scope 1</option><option>Scope 2</option><option>Scope 3</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Source</label><input type="text" class="form-control" name="source" placeholder="e.g. Flaring, Methane leak"></div>
+        <div class="form-group"><label class="form-label">Value (tCO₂e)</label><input type="number" class="form-control" name="value" step="0.01" min="0" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Target (tCO₂e)</label><input type="number" class="form-control" name="target" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>On Track</option><option>Above Target</option><option>Below Target</option>
+          </select>
+        </div>
+      </div>`;
 
-            // HSE edit
-            document.getElementById('editHseBtn')?.addEventListener('click', () => {
-                showModal('LTI', document.getElementById('hseLTI').innerText.replace('✓ ',''), (v)=>document.getElementById('hseLTI').innerHTML = `✓ ${v}`);
-            });
+    if (type === 'aro') return `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Asset</label><input type="text" class="form-control" name="asset" required></div>
+        <div class="form-group"><label class="form-label">Location</label><input type="text" class="form-control" name="location"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Provision Value (USD)</label><input type="number" class="form-control" name="provision" step="0.01" min="0" value="0"></div>
+        <div class="form-group"><label class="form-label">Funded (USD)</label><input type="number" class="form-control" name="funded" step="0.01" min="0" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Decom Year</label><input type="number" class="form-control" name="decomYear" min="2025" max="2100" value="2030"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status">
+            <option>Funded</option><option>Partially Funded</option><option>Unfunded</option>
+          </select>
+        </div>
+      </div>`;
 
-            // Global add button
-            document.getElementById('globalAddBtn')?.addEventListener('click', () => {
-                const activeTab = document.querySelector('.sector-tab.active').getAttribute('data-tab');
-                switch(activeTab) {
-                    case 'overview': document.getElementById('addFieldBtn')?.click(); break;
-                    case 'upstream': document.getElementById('addUpstreamFieldBtn')?.click(); break;
-                    case 'midstream': document.getElementById('addMidstreamBtn')?.click(); break;
-                    case 'downstream': document.getElementById('addDownstreamBtn')?.click(); break;
-                    case 'exploration': document.getElementById('addExplorationBtn')?.click(); break;
-                    case 'trading': document.getElementById('addTradingBtn')?.click(); break;
-                    case 'compliance': document.getElementById('addComplianceBtn')?.click(); break;
-                    case 'decommission': document.getElementById('addDecomBtn')?.click(); break;
-                }
-            });
-        })();
-    </script>
+    return '<p style="color:var(--text-muted);font-size:0.85rem;">No form available.</p>';
+  }
+
+  function saveItem(e) {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const type = currentEditType;
+    if (!type) return;
+    const data = Object.fromEntries(f.entries());
+    addRecord(type, data);
+    closeModal('editModal');
+    renderAll();
+    notify('Saved successfully', 'success');
+  }
+  window.saveItem = saveItem;
+
+  function addRecord(type, data) {
+    if (type === 'well') {
+      ogData.wells.push({
+        id: ogData.nextIds.well++,
+        wellId: data.wellId || `WL-${String(ogData.wells.length + 1).padStart(4, '0')}`,
+        field: data.field || '', operator: data.operator || '',
+        stage: data.stage || 'Producing',
+        grossOil: parseFloat(data.grossOil) || 0,
+        gas: parseFloat(data.gas) || 0,
+        waterCut: parseFloat(data.waterCut) || 0,
+        status: data.status || 'Producing'
+      });
+    }
+    else if (type === 'allocation') {
+      ogData.allocations.push({
+        id: ogData.nextIds.allocation++,
+        date: data.date || '', stream: data.stream || 'Oil',
+        gross: parseFloat(data.gross) || 0,
+        net: parseFloat(data.net) || 0,
+        factor: data.factor || ''
+      });
+    }
+    else if (type === 'jib') {
+      ogData.jib.push({
+        id: ogData.nextIds.jib++,
+        partner: data.partner,
+        wi: parseFloat(data.wi) || 0,
+        capex: parseFloat(data.capex) || 0,
+        opex: parseFloat(data.opex) || 0,
+        status: data.status || 'Pending'
+      });
+    }
+    else if (type === 'doi') {
+      ogData.doi.push({
+        id: ogData.nextIds.doi++,
+        tier: parseInt(data.tier, 10) || 1,
+        party: data.party,
+        interest: parseFloat(data.interest) || 0,
+        type: data.type || 'Working Interest'
+      });
+    }
+    else if (type === 'nomination') {
+      ogData.nominations.push({
+        id: ogData.nextIds.nomination++,
+        pipeline: data.pipeline, shipper: data.shipper || '',
+        nominated: parseFloat(data.nominated) || 0,
+        confirmed: parseFloat(data.confirmed) || 0,
+        alert: data.alert || 'OK',
+        status: data.status || 'Submitted'
+      });
+    }
+    else if (type === 'tank') {
+      ogData.tanks.push({
+        id: ogData.nextIds.tank++,
+        tankId: data.tankId, product: data.product || 'Crude Oil',
+        fill: parseFloat(data.fill) || 0,
+        api: parseFloat(data.api) || 0,
+        temp: parseFloat(data.temp) || 0,
+        bsw: parseFloat(data.bsw) || 0
+      });
+    }
+    else if (type === 'yield') {
+      ogData.yields.push({
+        id: ogData.nextIds.yield++,
+        refinery: data.refinery,
+        crudeInput: parseFloat(data.crudeInput) || 0,
+        gasoline: parseFloat(data.gasoline) || 0,
+        diesel: parseFloat(data.diesel) || 0,
+        jet: parseFloat(data.jet) || 0,
+        petchem: parseFloat(data.petchem) || 0
+      });
+    }
+    else if (type === 'tar') {
+      ogData.tar.push({
+        id: ogData.nextIds.tar++,
+        unit: data.unit, refinery: data.refinery || '',
+        startDate: data.startDate || '',
+        duration: parseInt(data.duration, 10) || 0,
+        cost: parseFloat(data.cost) || 0,
+        status: data.status || 'Planning'
+      });
+    }
+    else if (type === 'etrm') {
+      ogData.etrm.push({
+        id: ogData.nextIds.etrm++,
+        commodity: data.commodity, physical: parseFloat(data.physical) || 0,
+        futures: parseFloat(data.futures) || 0,
+        mtm: parseFloat(data.mtm) || 0
+      });
+    }
+    else if (type === 'demurrage') {
+      ogData.demurrage.push({
+        id: ogData.nextIds.demurrage++,
+        vessel: data.vessel, berth: data.berth || '',
+        laytimeAllowed: data.laytimeAllowed || '',
+        laytimeUsed: data.laytimeUsed || '',
+        claim: parseFloat(data.claim) || 0,
+        bsw: parseFloat(data.bsw) || 0,
+        status: data.status || 'Open'
+      });
+    }
+    else if (type === 'rbi') {
+      ogData.rbi.push({
+        id: ogData.nextIds.rbi++,
+        assetId: data.assetId, type: data.type || '',
+        location: data.location || '',
+        lastInspection: data.lastInspection || '',
+        nextDue: data.nextDue || '',
+        riskLevel: data.riskLevel || 'Low',
+        status: data.status || 'Scheduled'
+      });
+    }
+    else if (type === 'crew') {
+      ogData.crew.push({
+        id: ogData.nextIds.crew++,
+        flightId: data.flightId || `FL-${String(ogData.crew.length + 1).padStart(4, '0')}`,
+        platform: data.platform || '',
+        departure: data.departure || '',
+        pax: parseInt(data.pax, 10) || 0,
+        weather: data.weather || 'Clear',
+        status: data.status || 'Scheduled'
+      });
+    }
+    else if (type === 'ptw') {
+      ogData.ptw.push({
+        id: ogData.nextIds.ptw++,
+        permitId: data.permitId || `PTW-${String(ogData.ptw.length + 1).padStart(4, '0')}`,
+        type: data.type || 'Hot Work',
+        location: data.location || '',
+        issuedTo: data.issuedTo || '',
+        validTo: data.validTo || '',
+        status: data.status || 'Active'
+      });
+    }
+    else if (type === 'esg') {
+      ogData.esg.push({
+        id: ogData.nextIds.esg++,
+        date: data.date || '',
+        scope: data.scope || 'Scope 1',
+        source: data.source || '',
+        value: parseFloat(data.value) || 0,
+        target: parseFloat(data.target) || 0,
+        status: data.status || 'On Track'
+      });
+    }
+    else if (type === 'aro') {
+      ogData.aro.push({
+        id: ogData.nextIds.aro++,
+        asset: data.asset, location: data.location || '',
+        provision: parseFloat(data.provision) || 0,
+        funded: parseFloat(data.funded) || 0,
+        decomYear: parseInt(data.decomYear, 10) || 2030,
+        status: data.status || 'Funded'
+      });
+    }
+    saveData();
+  }
+
+  /* ---------- DELETE ---------- */
+  function openDelete(type, id) {
+    deleteType = type;
+    deleteId = id;
+    $('#deleteModal').classList.add('active');
+  }
+  window.openDelete = openDelete;
+
+  function confirmDelete() {
+    if (!deleteType || deleteId == null) return;
+    const map = {
+      well: 'wells', allocation: 'allocations',
+      jib: 'jib', doi: 'doi',
+      nomination: 'nominations', tank: 'tanks',
+      yield: 'yields', tar: 'tar',
+      etrm: 'etrm', demurrage: 'demurrage',
+      rbi: 'rbi', crew: 'crew',
+      ptw: 'ptw', esg: 'esg', aro: 'aro'
+    };
+    const key = map[deleteType];
+    if (key && ogData[key]) {
+      ogData[key] = ogData[key].filter(x => String(x.id) !== String(deleteId));
+      saveData();
+      renderAll();
+      notify('Deleted', 'success');
+    }
+    closeModal('deleteModal');
+  }
+  window.confirmDelete = confirmDelete;
+
+  /* ---------- MODAL HELPERS ---------- */
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+  window.closeModal = closeModal;
+
+  /* ---------- EXPORT ---------- */
+  function exportTable(type) {
+    const map = {
+      wells: 'wells', allocations: 'allocations',
+      jib: 'jib', doi: 'doi',
+      nominations: 'nominations', tanks: 'tanks',
+      yields: 'yields', tar: 'tar',
+      etrm: 'etrm', demurrage: 'demurrage',
+      rbi: 'rbi', crew: 'crew',
+      ptw: 'ptw', esg: 'esg', aro: 'aro'
+    };
+    const key = map[type] || type;
+    const rows = ogData[key];
+    if (!rows || !rows.length) { notify('No data to export', 'info'); return; }
+    const headers = Object.keys(rows[0]);
+    const csv = [headers.join(',')]
+      .concat(rows.map(r => headers.map(h => JSON.stringify(r[h] ?? '')).join(',')))
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${key}_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    notify('Exported successfully', 'success');
+  }
+  window.exportTable = exportTable;
+
+  function exportCurrentTab() {
+    const map = {
+      upstream:   'wells',
+      land:       'jib',
+      midstream:  'nominations',
+      downstream: 'yields',
+      etrm:       'etrm',
+      integrity:  'rbi',
+      hsse:       'ptw'
+    };
+    const key = map[activeTab];
+    if (key) exportTable(key);
+    else notify('Nothing to export from this section', 'info');
+  }
+  window.exportCurrentTab = exportCurrentTab;
+
+  /* ---------- KEYBOARD ---------- */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+    }
+  });
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('modal')) e.target.classList.remove('active');
+  });
+  </script>
 </body>
 </html>
