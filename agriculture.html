@@ -1,661 +1,3333 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agriculture Management · CephasGM ERP</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        body {
-            background: #f4f6fa;
-            color: #1e2e3d;
-            line-height: 1.5;
-        }
+  <!-- PWA Meta -->
+  <meta name="theme-color" content="#1a4c7a" id="theme-color-meta" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CephasGM ERP" />
 
-        /* clean, minimal navbar */
-        .navbar {
-            background: white;
-            border-bottom: 1px solid #e2e8f0;
-            padding: 0.8rem 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        }
+  <title>Agriculture — CephasGM ERP</title>
 
-        .nav-brand {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #0f4c2f;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+  <meta name="description" content="CephasGM ERP Agriculture — Crops, livestock, machinery, cold chain, trading, compliance, and financials" />
+  <meta name="author" content="Cephas Gideon Mkama" />
+  <meta property="og:title" content="Agriculture — CephasGM ERP" />
+  <meta property="og:description" content="Next-generation agricultural ERP for commercial farming operations" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cephasgm.github.io/CephasGM-ERP/agriculture.html" />
 
-        .nav-brand span {
-            background: #e6f0ea;
-            padding: 4px 10px;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #0f4c2f;
-        }
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
 
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        .home-link {
-            font-weight: 500;
-            color: #0f4c2f;
-            text-decoration: none;
-            background: #ecf6f0;
-            padding: 0.5rem 1.3rem;
-            border-radius: 40px;
-            font-size: 0.95rem;
-            border: 1px solid #cde0d5;
-        }
+  <style>
+    /* ============ DESIGN TOKENS ============ */
+    :root {
+      --bg:            #f4f6fa;
+      --surface:       #ffffff;
+      --surface-alt:   #fafbfd;
+      --border:        #e6e9f0;
+      --border-strong: #d3d9e5;
 
-        .home-link:hover {
-            background: #d9ede0;
-        }
+      --text:          #0a1e3c;
+      --text-2:        #2c3e50;
+      --text-muted:    #5e6f8d;
+      --text-subtle:   #94a3b8;
 
-        .module-dropdown {
-            position: relative;
-            display: inline-block;
-        }
+      --primary:       #1a4c7a;
+      --primary-600:   #0e3a5c;
+      --primary-soft:  #e8f0fa;
+      --accent:        #2563eb;
+      --accent-hover:  #1d4ed8;
+      --accent-soft:   #eff4ff;
 
-        .dropdown-btn {
-            background: #f1f5f9;
-            border: 1px solid #d7e0e9;
-            padding: 0.5rem 1.5rem;
-            border-radius: 40px;
-            font-weight: 500;
-            font-size: 0.95rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+      --success:       #0f7b5a;
+      --warning:       #d97706;
+      --danger:        #c0392b;
+      --gold:          #b8860b;
+      --leaf:          #15803d;
+      --leaf-soft:     #dcfce7;
 
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 130%;
-            background: white;
-            min-width: 240px;
-            border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            border: 1px solid #e9edf2;
-            z-index: 200;
-            padding: 0.6rem 0;
-        }
+      --radius-lg:     16px;
+      --radius:        12px;
+      --radius-sm:     8px;
+      --radius-pill:   999px;
 
-        .dropdown-content a {
-            color: #1e2e3d;
-            padding: 0.7rem 1.5rem;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.95rem;
-            transition: background 0.1s;
-        }
+      --shadow-sm:     0 1px 2px rgba(10, 30, 60, 0.04);
+      --shadow:        0 2px 10px rgba(10, 30, 60, 0.06);
+      --shadow-lg:     0 12px 32px rgba(10, 30, 60, 0.10);
 
-        .dropdown-content a:hover {
-            background: #f1f9f4;
-            color: #0f4c2f;
-        }
+      --max-width:     1440px;
+      --sidebar-w:     272px;
+    }
 
-        .module-dropdown:hover .dropdown-content {
-            display: block;
-        }
+    /* ============ RESET ============ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      position: relative;
+    }
 
-        /* main container */
-        .container {
-            max-width: 1600px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-        }
+    /* ============ PAGE BACKGROUND (ERP collage) ============ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        url('https://www.cio.com/wp-content/uploads/2025/03/272362-0-27498000-1741330535-enterprise_resource_planning-ERP.jpg?quality=50&strip=all&w=1024'),
+        url('https://img.magnific.com/free-vector/gradient-erp-illustration_23-2149379179.jpg'),
+        url('https://www.aimcom.com/wp-content/uploads/2026/01/erp-systems-integrating-business-operations-and-supply-chain-processes-1.png'),
+        url('https://img.magnific.com/free-vector/hand-drawn-flat-design-erp-illustration_23-2149383351.jpg?semt=ais_hybrid&w=740&q=80');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-blend-mode: overlay, soft-light, luminosity, multiply;
+      opacity: 0.07;
+      z-index: -1;
+      pointer-events: none;
+      filter: saturate(0.65) contrast(1.05);
+    }
 
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    input, select, textarea { font-family: inherit; }
+    img { max-width: 100%; display: block; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
 
-        .page-header h1 {
-            font-weight: 600;
-            font-size: 2rem;
-            color: #172c3a;
-        }
+    /* ============ APP WRAPPER ============ */
+    .app {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 1.25rem 2rem 3rem;
+    }
 
-        .btn-primary {
-            background: #0f4c2f;
-            color: white;
-            padding: 0.7rem 2rem;
-            border: none;
-            border-radius: 40px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 4px 10px rgba(15,76,47,0.2);
-            border: 1px solid #0c3d26;
-        }
+    /* ============ TOP BAR ============ */
+    .top-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.95rem 1.35rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .brand-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, var(--primary) 0%, #2c5a8a 55%, #3d6fa0 100%);
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      box-shadow: 0 4px 14px rgba(26, 76, 122, 0.28);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .brand-tab:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(26, 76, 122, 0.35);
+    }
+    .brand-tab i { font-size: 0.82rem; opacity: 0.9; }
 
-        .btn-primary:hover {
-            background: #0a3d24;
-        }
+    .live-metrics {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .live-metrics .metric {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .live-metrics .metric strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+    .live-metrics .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 3px rgba(15, 123, 90, 0.15);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
 
-        /* sector tabs */
-        .sector-tabs {
-            display: flex;
-            gap: 0.4rem;
-            margin-bottom: 2.2rem;
-            flex-wrap: wrap;
-            border-bottom: 1px solid #e4e9f0;
-            padding-bottom: 0.6rem;
-        }
+    /* ============ LAYOUT ============ */
+    .agri-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
 
-        .sector-tab {
-            padding: 0.5rem 1.3rem;
-            border-radius: 40px;
-            background: transparent;
-            cursor: pointer;
-            font-weight: 500;
-            color: #4f637b;
-            border: 1px solid transparent;
-            transition: 0.2s;
-        }
+    /* ============ SIDEBAR ============ */
+    .agri-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: sticky;
+      top: 1rem;
+      max-height: calc(100vh - 2rem);
+      overflow-y: auto;
+      padding: 0.75rem 0.6rem 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .agri-sidebar::-webkit-scrollbar { width: 6px; }
+    .agri-sidebar::-webkit-scrollbar-thumb {
+      background: var(--border-strong); border-radius: 6px;
+    }
 
-        .sector-tab.active {
-            background: #0f4c2f;
-            color: white;
-            border-color: #0f4c2f;
-        }
+    .nav-section { margin-bottom: 0.5rem; }
+    .nav-section-title {
+      padding: 0.75rem 0.75rem 0.4rem;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-subtle);
+      font-weight: 700;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.84rem;
+      transition: background 0.12s, color 0.12s;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 100%;
+      text-align: left;
+    }
+    .nav-link i {
+      width: 16px; text-align: center;
+      font-size: 0.82rem; color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .nav-link:hover { background: var(--accent-soft); color: var(--accent); }
+    .nav-link:hover i { color: var(--accent); }
+    .nav-link.active {
+      background: var(--accent-soft); color: var(--accent); font-weight: 600;
+    }
+    .nav-link.active i { color: var(--accent); }
 
-        .sector-tab:not(.active):hover {
-            background: #eef3f7;
-            border-color: #cbdae5;
-        }
+    /* ============ MAIN ============ */
+    .agri-main { min-width: 0; }
 
-        /* stats cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
+    .agri-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .agri-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text);
+    }
+    .agri-title i { color: var(--leaf); font-size: 1.05rem; }
+    .agri-subtitle {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .agri-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
 
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 24px;
-            border: 1px solid #eef2f6;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.02);
-        }
+    /* ============ BUTTONS ============ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover); border-color: var(--accent-hover);
+    }
+    .btn-success {
+      background: var(--success); color: #fff; border-color: var(--success);
+    }
+    .btn-success:hover { background: #0b6349; border-color: #0b6349; }
+    .btn-secondary {
+      background: var(--surface); color: var(--text); border-color: var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--border-strong); }
+    .btn-danger {
+      background: var(--danger); color: #fff; border-color: var(--danger);
+    }
+    .btn-danger:hover { background: #a13024; border-color: #a13024; }
+    .btn-leaf {
+      background: var(--leaf); color: #fff; border-color: var(--leaf);
+    }
+    .btn-leaf:hover { background: #0f5a2b; border-color: #0f5a2b; }
+    .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.72rem; }
 
-        .stat-label {
-            font-size: 0.9rem;
-            color: #6a7c94;
-            margin-bottom: 4px;
-        }
+    /* ============ TAB CONTENT ============ */
+    .tab-content { display: none; }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #1a2c3c;
-        }
+    /* ============ CARDS ============ */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.15rem;
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-title i { color: var(--leaf); font-size: 0.85rem; }
+    .card-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
 
-        .stat-detail {
-            font-size: 0.85rem;
-            color: #5b718b;
-            margin-top: 6px;
-        }
+    /* ============ STATS GRID ============ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.25rem;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--leaf), var(--accent));
+    }
+    .stat-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .stat-title {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    .stat-icon {
+      width: 28px; height: 28px;
+      display: grid; place-items: center;
+      background: var(--leaf-soft);
+      color: var(--leaf);
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+    .stat-change {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
 
-        .world-map {
-            background: white;
-            border-radius: 28px;
-            margin-bottom: 2rem;
-            height: 190px;
-            background: linear-gradient(145deg, #e4f3e8, #d7eade);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #0f4c2f;
-            font-weight: 500;
-            border: 1px solid #d0e2d6;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 1.1rem;
-        }
+    /* ============ CHARTS ============ */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      height: 300px;
+      position: relative;
+    }
+    .chart-container.tall { height: 360px; }
+    .chart-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--text-subtle);
+      font-size: 0.83rem;
+    }
+    .chart-empty i { font-size: 1.5rem; opacity: 0.5; }
 
-        .world-map:hover {
-            background: #d4ecd9;
-        }
+    /* ============ GIS MAP GRID ============ */
+    .plot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .plot-cell {
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .plot-cell:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      z-index: 2;
+    }
+    .plot-cell .plot-id {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+    .plot-cell .plot-crop {
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.9);
+      font-weight: 500;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+    .plot-cell .plot-stats {
+      display: flex;
+      gap: 0.35rem;
+      font-size: 0.6rem;
+      color: #fff;
+    }
+    .plot-cell .plot-stats span {
+      background: rgba(0,0,0,0.35);
+      padding: 1px 6px;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
+    }
+    .plot-empty {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-subtle);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+    }
+    .plot-empty i {
+      display: block;
+      font-size: 1.5rem;
+      opacity: 0.5;
+      margin-bottom: 0.55rem;
+    }
+    .plot-legend {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 1rem;
+    }
+    .plot-legend .item { display: flex; align-items: center; gap: 0.4rem; }
+    .plot-legend .swatch {
+      width: 12px; height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+    }
 
-        .content-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
-        }
+    /* ============ TABLES ============ */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 1.5rem;
+    }
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding: 1.1rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-toolbar h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .table-toolbar-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
 
-        .card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 28px;
-            border: 1px solid #eef3f8;
-            margin-bottom: 2rem;
-            box-shadow: 0 8px 18px rgba(0,0,0,0.02);
-        }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    .data-table th {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover { background: var(--surface-alt); }
+    .data-table .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-subtle);
+    }
+    .data-table .empty-state i {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 0.55rem;
+      opacity: 0.5;
+    }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.2rem;
-        }
+    .table-actions { display: flex; gap: 0.35rem; }
+    .action-icon {
+      cursor: pointer;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      transition: background 0.12s, color 0.12s;
+    }
+    .action-icon:hover { background: var(--accent-soft); color: var(--accent); }
 
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #1e2e3d;
-        }
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .badge-success { background: #dcfce7; color: #166534; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger  { background: #fee2e2; color: #991b1b; }
+    .badge-info    { background: var(--accent-soft); color: var(--accent); }
+    .badge-gray    { background: #f1f5f9; color: #475569; }
+    .badge-leaf    { background: var(--leaf-soft); color: var(--leaf); }
+    .badge-gold    { background: #fbf5e2; color: var(--gold); }
 
-        .badge-action {
-            background: #edf4fa;
-            padding: 0.3rem 1.2rem;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #0f4c2f;
-            cursor: pointer;
-            border: 1px solid #d0deec;
-        }
+    /* Progress bars */
+    .progress-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      display: inline-block;
+      width: 80px;
+      vertical-align: middle;
+      margin-right: 0.5rem;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--leaf);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .progress-fill.success { background: var(--success); }
+    .progress-fill.warning { background: var(--warning); }
+    .progress-fill.danger  { background: var(--danger); }
 
-        .badge-action:hover {
-            background: #d7ecdd;
-        }
+    /* ============ KPI MINI ============ */
+    .mini-kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .mini-kpi {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+    }
+    .mini-kpi .label {
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    .mini-kpi .value {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+    .mini-kpi .sub {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
 
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
+    /* ============ TWO-COLUMN ============ */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1.5rem;
+    }
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
 
-        .table th {
-            text-align: left;
-            padding: 0.6rem 0.3rem;
-            border-bottom: 1px solid #e2e9f2;
-            font-weight: 600;
-            color: #3f546e;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
+    /* ============ CHECKLIST ============ */
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.65rem 0.85rem;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      transition: border-color 0.15s;
+    }
+    .check-item:hover { border-color: var(--border-strong); }
+    .check-item .tick {
+      width: 22px; height: 22px;
+      border-radius: 6px;
+      display: grid; place-items: center;
+      flex-shrink: 0;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .check-item.passed .tick { background: var(--success); color: #fff; }
+    .check-item.pending .tick { background: #fef3c7; color: #92400e; }
+    .check-item.failed .tick { background: var(--danger); color: #fff; }
+    .check-item .name { flex: 1; font-weight: 500; }
+    .check-item .meta { font-size: 0.7rem; color: var(--text-muted); }
 
-        .table td {
-            padding: 0.8rem 0.3rem;
-            border-bottom: 1px solid #eef4f9;
-            color: #1e2e3d;
-        }
+    .empty-block {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-subtle);
+      font-size: 0.83rem;
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-sm);
+    }
+    .empty-block i {
+      display: block;
+      font-size: 1.5rem;
+      opacity: 0.5;
+      margin-bottom: 0.5rem;
+    }
 
-        .status-badge {
-            padding: 0.2rem 1rem;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            display: inline-block;
-        }
+    /* ============ FORMS ============ */
+    .form-group { margin-bottom: 1.15rem; }
+    .form-label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: var(--text-2);
+      text-transform: capitalize;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.85rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    .form-section {
+      margin: 1.5rem 0 0.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+    .form-section:first-of-type {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
 
-        .status-active { background: #e0f2e3; color: #0f4c2f; }
-        .status-harvested { background: #ffedd5; color: #b85e00; }
+    /* ============ MODAL ============ */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      padding: 1rem;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 640px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalSlideIn 0.25s ease;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      padding: 1.15rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1;
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+    }
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      width: 34px; height: 34px;
+      display: grid; place-items: center;
+      border-radius: var(--radius-sm);
+      transition: background 0.12s, color 0.12s;
+    }
+    .modal-close:hover { background: var(--accent-soft); color: var(--accent); }
+    .modal-body { padding: 1.35rem; }
+    .modal-footer {
+      padding: 1rem 1.35rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.55rem;
+      position: sticky;
+      bottom: 0;
+      background: var(--surface);
+      border-bottom-left-radius: var(--radius-lg);
+      border-bottom-right-radius: var(--radius-lg);
+    }
 
-        .certification-badge {
-            background: #e7f0fd; color: #1d4f8b; padding: 0.2rem 0.8rem;
-            border-radius: 40px; font-size: 0.7rem; font-weight: 500;
-        }
+    /* ============ NOTIFICATION ============ */
+    .notification {
+      position: fixed;
+      top: 20px; right: 20px;
+      padding: 0.85rem 1.25rem;
+      background: var(--leaf);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      font-size: 0.83rem;
+      font-weight: 500;
+      animation: slideIn 0.25s ease;
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .notification.success { background: var(--success); }
+    .notification.error   { background: var(--danger); }
+    .notification.warning { background: var(--warning); }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
 
-        .action-icons span {
-            cursor: pointer;
-            margin: 0 6px 0 0;
-            font-size: 1.2rem;
-            opacity: 0.7;
-        }
-        .action-icons span:hover { opacity: 1; }
+    /* ============ FOOTER ============ */
+    .app-footer {
+      margin-top: 2.5rem;
+      padding: 1.4rem 0 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .app-footer strong { color: var(--text-2); font-weight: 600; }
 
-        .footer {
-            background: white;
-            padding: 1.5rem 2rem;
-            text-align: center;
-            border-top: 1px solid #e4eaf0;
-            font-size: 0.85rem;
-            color: #617388;
-            margin-top: 3rem;
-        }
+    /* ============ MOBILE ============ */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem; left: 1rem;
+      background: var(--leaf); color: #fff;
+      border-radius: var(--radius-sm);
+      width: 42px; height: 42px;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: var(--shadow);
+    }
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 60, 0.5);
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+    .sidebar-overlay.active { display: block; }
 
-        /* modal */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 30, 25, 0.5); backdrop-filter: blur(4px);
-            align-items: center; justify-content: center; z-index: 1000;
-        }
-        .modal-content {
-            background: white; padding: 2rem 2rem 1.8rem; border-radius: 36px;
-            max-width: 500px; width: 90%; border: 1px solid #dee7f0;
-        }
-        .modal-content h3 { margin-bottom: 1.5rem; font-weight: 600; }
-        .modal-content input, .modal-content select {
-            width: 100%; margin: 10px 0; padding: 12px 20px; border: 1px solid #d7e2ed;
-            border-radius: 40px; font-size: 0.95rem;
-        }
-        .modal-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem; }
-        .btn-modal { background: #0f4c2f; color: white; border: none; padding: 0.6rem 2rem; border-radius: 40px; cursor: pointer; }
-        .btn-modal.cancel { background: #eef2f6; color: #1e2e3d; }
-    </style>
+    @media (max-width: 960px) {
+      .app { padding: 1rem; padding-top: 4rem; }
+      .agri-layout { grid-template-columns: 1fr; }
+      .agri-sidebar {
+        position: fixed;
+        top: 0; left: 0;
+        width: var(--sidebar-w);
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        border: none;
+        border-right: 1px solid var(--border);
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        z-index: 1000;
+      }
+      .agri-sidebar.active { transform: translateX(0); }
+      .mobile-menu-toggle { display: flex; }
+      .two-col { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .stats-grid, .charts-grid, .three-col { grid-template-columns: 1fr; }
+      .agri-header { flex-direction: column; align-items: flex-start; }
+      .live-metrics { font-size: 0.72rem; gap: 0.85rem; }
+    }
+  </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="nav-brand">
-            🌾 CephasGM · Agriculture
-            <span>v3.14</span>
-        </div>
-        <div class="nav-right">
-            <a href="#" class="home-link" id="homeLink">🏠 Home / Dashboard</a>
-            <div class="module-dropdown">
-                <button class="dropdown-btn">📋 ERP Modules ▼</button>
-                <div class="dropdown-content">
-                    <a href="#" data-module="inventory">📦 Inventory</a>
-                    <a href="#" data-module="procurement">📥 Procurement</a>
-                    <a href="#" data-module="transport">🚛 Transport</a>
-                    <a href="#" data-module="projects">📋 Projects</a>
-                    <a href="#" data-module="sales">💹 Sales</a>
-                    <a href="#" data-module="marketing">📊 Marketing</a>
-                    <a href="#" data-module="customer">👥 Customer Service</a>
-                    <a href="#" data-module="legal">⚖️ Legal</a>
-                    <a href="#" data-module="hr">👤 HR</a>
-                    <a href="#" data-module="payroll">💰 Payroll</a>
-                    <a href="#" data-module="attendance">⏳ Attendance</a>
-                    <a href="#" data-module="training">📚 Training</a>
-                    <a href="#" data-module="meetings">🤝 Meetings</a>
-                    <a href="#" data-module="community">🌍 Community</a>
-                    <a href="#" data-module="safety">🛡️ OHS</a>
-                    <a href="#" data-module="admin">⚙️ Admin</a>
-                    <a href="#" data-module="finance">💵 Finance</a>
-                </div>
+  <a href="#main-content" class="sr-only">Skip to main content</a>
+
+  <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu" aria-expanded="false">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="app">
+    <!-- TOP BAR -->
+    <header class="top-bar">
+      <a href="index.html" class="brand-tab" aria-label="CephasGM ERP — return to homepage">
+        <i class="fas fa-bolt" aria-hidden="true"></i>
+        CephasGM ERP
+      </a>
+      <div class="live-metrics" id="liveMetrics">
+        <span class="metric"><span class="dot"></span> Live</span>
+        <span class="metric">Facility: <strong id="liveFacility">—</strong></span>
+        <span class="metric">Plots: <strong id="livePlots">—</strong></span>
+        <span class="metric">Head: <strong id="liveHead">—</strong></span>
+        <span class="metric">FCR: <strong id="liveFcr">—</strong></span>
+      </div>
+    </header>
+
+    <div class="agri-layout">
+      <!-- SIDEBAR -->
+      <aside class="agri-sidebar" id="agriSidebar" aria-label="Agriculture navigation">
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <div class="nav-section-title">Overview</div>
+            <button class="nav-link active" data-tab="overview">
+              <i class="fas fa-chart-line"></i><span>Farm &amp; Ag-Ops</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Agronomy</div>
+            <button class="nav-link" data-tab="crops">
+              <i class="fas fa-seedling"></i><span>Crops &amp; Plots</span>
+            </button>
+            <button class="nav-link" data-tab="spray">
+              <i class="fas fa-spray-can"></i><span>Spray Journal</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Livestock</div>
+            <button class="nav-link" data-tab="herds">
+              <i class="fas fa-cow"></i><span>Herds &amp; Flocks</span>
+            </button>
+            <button class="nav-link" data-tab="vet">
+              <i class="fas fa-stethoscope"></i><span>Vet Ledger</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Machinery</div>
+            <button class="nav-link" data-tab="machinery">
+              <i class="fas fa-tractor"></i><span>Telemetry</span>
+            </button>
+            <button class="nav-link" data-tab="wear">
+              <i class="fas fa-screwdriver-wrench"></i><span>Wear Monitor</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Post-Harvest</div>
+            <button class="nav-link" data-tab="weighbridge">
+              <i class="fas fa-truck-ramp-box"></i><span>Weighbridge</span>
+            </button>
+            <button class="nav-link" data-tab="coldchain">
+              <i class="fas fa-snowflake"></i><span>Cold Chain</span>
+            </button>
+            <button class="nav-link" data-tab="traceability">
+              <i class="fas fa-qrcode"></i><span>Traceability</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Commodity Trading</div>
+            <button class="nav-link" data-tab="pools">
+              <i class="fas fa-users-rectangle"></i><span>Grower Pools</span>
+            </button>
+            <button class="nav-link" data-tab="hedging">
+              <i class="fas fa-scale-balanced"></i><span>Off-Take Hedging</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">ESG &amp; Compliance</div>
+            <button class="nav-link" data-tab="certs">
+              <i class="fas fa-certificate"></i><span>Certifications</span>
+            </button>
+            <button class="nav-link" data-tab="nutrient">
+              <i class="fas fa-water"></i><span>Nutrient Monitor</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Financials</div>
+            <button class="nav-link" data-tab="labor">
+              <i class="fas fa-people-group"></i><span>Piece-Rate Labor</span>
+            </button>
+            <button class="nav-link" data-tab="bio-assets">
+              <i class="fas fa-chart-area"></i><span>Biological Assets</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">Other Modules</div>
+            <a href="inventory.html" class="nav-link">
+              <i class="fas fa-boxes-stacked"></i><span>Inventory</span>
+            </a>
+            <a href="procurement.html" class="nav-link">
+              <i class="fas fa-cart-shopping"></i><span>Procurement</span>
+            </a>
+            <a href="transport.html" class="nav-link">
+              <i class="fas fa-truck-fast"></i><span>Transport</span>
+            </a>
+            <a href="finance.html" class="nav-link">
+              <i class="fas fa-chart-pie"></i><span>Finance</span>
+            </a>
+            <a href="admin.html" class="nav-link">
+              <i class="fas fa-sliders"></i><span>Admin</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="agri-main" id="main-content" tabindex="-1">
+        <!-- Header -->
+        <header class="agri-header">
+          <div>
+            <h1 class="agri-title" id="pageTitle">
+              <i class="fas fa-wheat-awn"></i>
+              Global Farm &amp; Ag-Ops Overview
+            </h1>
+            <p class="agri-subtitle" id="pageSubtitle">
+              Consolidated KPIs across crops, livestock, machinery, cold chain, and financials
+            </p>
+          </div>
+          <div class="agri-actions">
+            <button class="btn btn-secondary" onclick="exportCurrentTab()">
+              <i class="fas fa-download"></i> Export Snapshot
+            </button>
+            <button class="btn btn-leaf" onclick="openAddModal()">
+              <i class="fas fa-plus"></i> New Operation
+            </button>
+          </div>
+        </header>
+
+        <!-- ============ 1. OVERVIEW ============ -->
+        <div id="overview-tab" class="tab-content active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Total Harvested</span>
+                <span class="stat-icon"><i class="fas fa-wheat-awn"></i></span>
+              </div>
+              <div class="stat-value" id="ovHarvested">—</div>
+              <div class="stat-change">No data yet</div>
             </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Average FCR</span>
+                <span class="stat-icon"><i class="fas fa-drumstick-bite"></i></span>
+              </div>
+              <div class="stat-value" id="ovFcr">—</div>
+              <div class="stat-change">No data yet</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Cold Room Status</span>
+                <span class="stat-icon"><i class="fas fa-snowflake"></i></span>
+              </div>
+              <div class="stat-value" id="ovCold">—</div>
+              <div class="stat-change">No data yet</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Piece-Rate Payroll</span>
+                <span class="stat-icon"><i class="fas fa-people-group"></i></span>
+              </div>
+              <div class="stat-value" id="ovLabor">—</div>
+              <div class="stat-change">Accrued · week to date</div>
+            </div>
+          </div>
+
+          <div class="mini-kpis">
+            <div class="mini-kpi">
+              <div class="label">Total Acres Managed</div>
+              <div class="value" id="ovAcres">—</div>
+              <div class="sub">Across all farms</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="label">Active Head Count</div>
+              <div class="value" id="ovHead">—</div>
+              <div class="sub">Cattle · Sheep · Poultry</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="label">Avg NDVI Canopy</div>
+              <div class="value" id="ovNdvi">—</div>
+              <div class="sub">Across all plots</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="label">IAS 41 Value</div>
+              <div class="value" id="ovIas">—</div>
+              <div class="sub">Living biological assets</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="label">Open Contracts</div>
+              <div class="value" id="ovContracts">—</div>
+              <div class="sub">Hedge positions</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="label">Compliance Score</div>
+              <div class="value" id="ovCompliance">—</div>
+              <div class="sub">Certifications passed</div>
+            </div>
+          </div>
+
+          <div class="charts-grid">
+            <div class="chart-container">
+              <canvas id="overviewYieldChart"></canvas>
+              <div class="chart-empty" id="overviewYieldChartEmpty">
+                <i class="fas fa-chart-bar"></i>
+                No harvest data yet
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="overviewFcrChart"></canvas>
+              <div class="chart-empty" id="overviewFcrChartEmpty">
+                <i class="fas fa-chart-line"></i>
+                No FCR data yet
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="overviewIasChart"></canvas>
+              <div class="chart-empty" id="overviewIasChartEmpty">
+                <i class="fas fa-chart-pie"></i>
+                No biological asset data yet
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-triangle-exclamation"></i> Cross-Module Alerts</div>
+            </div>
+            <div class="checklist" id="overviewAlerts">
+              <div class="empty-block">
+                <i class="fas fa-circle-check"></i>
+                No active alerts. All systems within specification.
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- ============ 2. CROPS & PLOTS ============ -->
+        <div id="crops-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-map"></i> Field &amp; Plot GIS Mapping</div>
+              <span class="badge badge-leaf" id="plotsNdviBadge">— NDVI</span>
+            </div>
+            <p class="card-desc">
+              Interactive soil moisture index, NDVI canopy levels, and active crop types across all mapped fields.
+            </p>
+            <div class="plot-grid" id="plotGrid">
+              <div class="plot-empty">
+                <i class="fas fa-map-location-dot"></i>
+                No plots mapped yet — click "Add Plot" to register your first field.
+              </div>
+            </div>
+            <div class="plot-legend">
+              <div class="item"><span class="swatch" style="background:#16a34a;"></span> Vigorous (NDVI &gt; 0.7)</div>
+              <div class="item"><span class="swatch" style="background:#84cc16;"></span> Healthy (0.5–0.7)</div>
+              <div class="item"><span class="swatch" style="background:#eab308;"></span> Moderate (0.3–0.5)</div>
+              <div class="item"><span class="swatch" style="background:#dc2626;"></span> Stress (&lt; 0.3)</div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Plot Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('plots')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-leaf btn-sm" onclick="openAddModal('plot')">
+                  <i class="fas fa-plus"></i> Add Plot
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Plot ID</th>
+                  <th>Crop</th>
+                  <th>Area (ac)</th>
+                  <th>Planted</th>
+                  <th>Expected Harvest</th>
+                  <th>NDVI</th>
+                  <th>Soil Moisture</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="plotsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 3. SPRAY JOURNAL ============ -->
+        <div id="spray-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-spray-can"></i> Agronomy Spray &amp; Chemical Journal</div>
+              <button class="btn btn-leaf btn-sm" onclick="openAddModal('spray')">
+                <i class="fas fa-plus"></i> Log Spray Application
+              </button>
+            </div>
+            <p class="card-desc">
+              Chemical applications logged with strict MRL compliance badges and pre-harvest withdrawal windows.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Spray Applications</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('sprays')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Plot</th>
+                  <th>Chemical</th>
+                  <th>Active Ingredient</th>
+                  <th>Rate</th>
+                  <th>Applicator</th>
+                  <th>Withdrawal (days)</th>
+                  <th>MRL Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="sprayBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 4. HERDS & FLOCKS ============ -->
+        <div id="herds-tab" class="tab-content">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Total Head</span>
+                <span class="stat-icon"><i class="fas fa-cow"></i></span>
+              </div>
+              <div class="stat-value" id="herdsTotal">—</div>
+              <div class="stat-change">Cattle · Sheep · Poultry</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Avg FCR</span>
+                <span class="stat-icon"><i class="fas fa-chart-line"></i></span>
+              </div>
+              <div class="stat-value" id="herdsFcr">—</div>
+              <div class="stat-change">Feed conversion ratio</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Species Tracked</span>
+                <span class="stat-icon"><i class="fas fa-paw"></i></span>
+              </div>
+              <div class="stat-value" id="herdsSpecies">—</div>
+              <div class="stat-change">Distinct species</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Health Alerts</span>
+                <span class="stat-icon"><i class="fas fa-triangle-exclamation"></i></span>
+              </div>
+              <div class="stat-value" id="herdsAlerts">—</div>
+              <div class="stat-change">Under observation</div>
+            </div>
+          </div>
+
+          <div class="chart-container tall">
+            <canvas id="fcrCurveChart"></canvas>
+            <div class="chart-empty" id="fcrCurveChartEmpty">
+              <i class="fas fa-chart-line"></i>
+              No FCR data yet — add a herd to see the growth curve
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Herd / Flock Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('herds')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-leaf btn-sm" onclick="openAddModal('herd')">
+                  <i class="fas fa-plus"></i> Add Herd
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Herd ID</th>
+                  <th>Species</th>
+                  <th>Breed</th>
+                  <th>Head Count</th>
+                  <th>Avg Weight</th>
+                  <th>FCR</th>
+                  <th>Health</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="herdsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 5. VET LEDGER ============ -->
+        <div id="vet-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-stethoscope"></i> Veterinary Ledger &amp; Withdrawal Monitor</div>
+              <button class="btn btn-leaf btn-sm" onclick="openAddModal('vet')">
+                <i class="fas fa-plus"></i> Log Treatment
+              </button>
+            </div>
+            <p class="card-desc">
+              Color-coded medical harvest-withdrawal windows. Do not harvest livestock flagged with an active withdrawal.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Treatment Records</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('vets')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Herd</th>
+                  <th>Treatment</th>
+                  <th>Drug / Vaccine</th>
+                  <th>Vet</th>
+                  <th>Withdrawal Ends</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="vetBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 6. MACHINERY TELEMETRY ============ -->
+        <div id="machinery-tab" class="tab-content">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Active Units</span>
+                <span class="stat-icon"><i class="fas fa-tractor"></i></span>
+              </div>
+              <div class="stat-value" id="machActive">—</div>
+              <div class="stat-change">Across all farms</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Total Fuel Burn</span>
+                <span class="stat-icon"><i class="fas fa-gas-pump"></i></span>
+              </div>
+              <div class="stat-value" id="machFuel">—</div>
+              <div class="stat-change">Fleet · last 24h</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Field Path State</span>
+                <span class="stat-icon"><i class="fas fa-route"></i></span>
+              </div>
+              <div class="stat-value" id="machInField">—</div>
+              <div class="stat-change">Units in-field</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Run Hours Today</span>
+                <span class="stat-icon"><i class="fas fa-clock"></i></span>
+              </div>
+              <div class="stat-value" id="machHours">—</div>
+              <div class="stat-change">Fleet total</div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Fleet Telemetry</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('machinery')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-leaf btn-sm" onclick="openAddModal('machinery')">
+                  <i class="fas fa-plus"></i> Add Unit
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Unit ID</th>
+                  <th>Make / Model</th>
+                  <th>Operator</th>
+                  <th>Fuel Burn (L/h)</th>
+                  <th>Run Hours</th>
+                  <th>Field Path</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="machineryBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 7. WEAR MONITOR ============ -->
+        <div id="wear-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-screwdriver-wrench"></i> Plow &amp; Implement Wear Monitor</div>
+              <button class="btn btn-leaf btn-sm" onclick="openAddModal('wear')">
+                <i class="fas fa-plus"></i> Add Component
+              </button>
+            </div>
+            <p class="card-desc">
+              Countdown hours to expected breakdown for planter discs, combine headers, and other high-wear components.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Component Health</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('wear')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Component</th>
+                  <th>Machine</th>
+                  <th>Hours Used</th>
+                  <th>Expected Life</th>
+                  <th>Remaining</th>
+                  <th>Wear %</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="wearBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 8. WEIGHBRIDGE ============ -->
+        <div id="weighbridge-tab" class="tab-content">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Trucks Today</span>
+                <span class="stat-icon"><i class="fas fa-truck-ramp-box"></i></span>
+              </div>
+              <div class="stat-value" id="wbTrucks">—</div>
+              <div class="stat-change">Gate throughput</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Total Net Weight</span>
+                <span class="stat-icon"><i class="fas fa-weight-hanging"></i></span>
+              </div>
+              <div class="stat-value" id="wbNet">—</div>
+              <div class="stat-change">Today's intake</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Avg Moisture</span>
+                <span class="stat-icon"><i class="fas fa-droplet"></i></span>
+              </div>
+              <div class="stat-value" id="wbMoisture">—</div>
+              <div class="stat-change">All loads</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Avg Dirt Dockage</span>
+                <span class="stat-icon"><i class="fas fa-filter"></i></span>
+              </div>
+              <div class="stat-value" id="wbDirt">—</div>
+              <div class="stat-change">All loads</div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Weighbridge Gate &amp; Intake Queue</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('weighbridge')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-leaf btn-sm" onclick="openAddModal('weighbridge')">
+                  <i class="fas fa-plus"></i> New Ticket
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ticket</th>
+                  <th>Time</th>
+                  <th>Truck</th>
+                  <th>Field Bin</th>
+                  <th>Gross (T)</th>
+                  <th>Tare (T)</th>
+                  <th>Net (T)</th>
+                  <th>Moisture</th>
+                  <th>Dirt Dockage</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="weighbridgeBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 9. COLD CHAIN ============ -->
+        <div id="coldchain-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-snowflake"></i> Cold Storage Atmosphere Panel</div>
+              <span class="badge badge-leaf" id="coldStatusBadge">— Chambers</span>
+            </div>
+            <p class="card-desc">
+              Live temperature, relative humidity, and ethylene gas tracking for packhouse cold rooms and reefer containers.
+            </p>
+          </div>
+
+          <div class="three-col" id="coldRooms">
+            <div class="empty-block" style="grid-column:1/-1;">
+              <i class="fas fa-snowflake"></i>
+              No cold rooms configured yet — add a chamber to begin monitoring.
+            </div>
+          </div>
+
+          <div style="text-align:right; margin-bottom:1.5rem;">
+            <button class="btn btn-leaf btn-sm" onclick="openAddModal('coldroom')">
+              <i class="fas fa-plus"></i> Add Cold Room
+            </button>
+          </div>
+        </div>
+
+        <!-- ============ 10. TRACEABILITY ============ -->
+        <div id="traceability-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-qrcode"></i> Traceability Block-Lot Lookup</div>
+              <button class="btn btn-leaf btn-sm" onclick="verifyTrace()">
+                <i class="fas fa-check-circle"></i> Verify Traceability Code
+              </button>
+            </div>
+            <p class="card-desc">
+              Track any finished product lot backward to its specific harvest block, date, and operator.
+            </p>
+
+            <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:1.25rem;">
+              <input class="form-control" id="traceInput" placeholder="Enter Lot ID (e.g. LOT-24081)" style="max-width:280px;">
+              <button class="btn btn-primary" onclick="verifyTrace()">
+                <i class="fas fa-magnifying-glass"></i> Lookup
+              </button>
+            </div>
+
+            <div id="traceResult" style="display:none;">
+              <div class="mini-kpis">
+                <div class="mini-kpi">
+                  <div class="label">Lot ID</div>
+                  <div class="value" id="traceLot">—</div>
+                  <div class="sub">Finished goods · packaged</div>
+                </div>
+                <div class="mini-kpi">
+                  <div class="label">Harvest Block</div>
+                  <div class="value" id="traceBlock">—</div>
+                  <div class="sub">Source field</div>
+                </div>
+                <div class="mini-kpi">
+                  <div class="label">Harvest Date</div>
+                  <div class="value" id="traceDate">—</div>
+                  <div class="sub">Batch closure</div>
+                </div>
+                <div class="mini-kpi">
+                  <div class="label">Crop</div>
+                  <div class="value" id="traceCrop">—</div>
+                  <div class="sub">Certified product</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 11. GROWER POOLS ============ -->
+        <div id="pools-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-users-rectangle"></i> Grower Pool Accounting</div>
+              <button class="btn btn-leaf btn-sm" onclick="openAddModal('pool')">
+                <i class="fas fa-plus"></i> Create Pool
+              </button>
+            </div>
+            <p class="card-desc">
+              Multi-grower advanced payments, quality premium bonuses, and final cooperative distributions.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Pool Settlement Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('pools')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Pool ID</th>
+                  <th>Season</th>
+                  <th>Growers</th>
+                  <th>Total Tonnage</th>
+                  <th>Advance Paid</th>
+                  <th>Quality Premium</th>
+                  <th>Final Distribution</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="poolsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 12. OFF-TAKE HEDGING ============ -->
+        <div id="hedging-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-scale-balanced"></i> Off-Take Hedging Desk</div>
+              <span class="badge badge-leaf">Physical vs Futures</span>
+            </div>
+            <p class="card-desc">
+              Physical grain silo and cold-vault inventory mapped against active CBOT (Chicago Board of Trade) futures contracts.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Hedge Positions</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('hedges')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-leaf btn-sm" onclick="openAddModal('hedge')">
+                  <i class="fas fa-plus"></i> Add Position
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Commodity</th>
+                  <th>Physical Position</th>
+                  <th>Futures Contract</th>
+                  <th>Contract Qty</th>
+                  <th>Strike Price</th>
+                  <th>Mark-to-Market</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="hedgingBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 13. CERTIFICATIONS ============ -->
+        <div id="certs-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-certificate"></i> GlobalGAP &amp; Organic Certification Checklist</div>
+              <button class="btn btn-leaf btn-sm" onclick="openAddModal('cert')">
+                <i class="fas fa-plus"></i> Add Certification
+              </button>
+            </div>
+            <p class="card-desc">
+              Compliance audit steps passed, active soil organic carbon (SOC) levels, and methane emission outputs.
+            </p>
+          </div>
+
+          <div class="two-col">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i class="fas fa-list-check"></i> Audit Checklist</div>
+              </div>
+              <div class="checklist" id="certChecklist">
+                <div class="empty-block">
+                  <i class="fas fa-certificate"></i>
+                  No certifications tracked yet.
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i class="fas fa-leaf"></i> ESG Metrics</div>
+              </div>
+              <div class="mini-kpis">
+                <div class="mini-kpi">
+                  <div class="label">Soil Organic Carbon</div>
+                  <div class="value" id="esgSoc">—</div>
+                  <div class="sub">Measured %</div>
+                </div>
+                <div class="mini-kpi">
+                  <div class="label">Methane Output</div>
+                  <div class="value" id="esgMethane">—</div>
+                  <div class="sub">Livestock · monthly</div>
+                </div>
+                <div class="mini-kpi">
+                  <div class="label">Water Efficiency</div>
+                  <div class="value" id="esgWater">—</div>
+                  <div class="sub">L per kg output</div>
+                </div>
+                <div class="mini-kpi">
+                  <div class="label">Renewable Energy</div>
+                  <div class="value" id="esgEnergy">—</div>
+                  <div class="sub">Share of total</div>
+                </div>
+              </div>
+              <div style="text-align:right; margin-top:1rem;">
+                <button class="btn btn-secondary btn-sm" onclick="openEsgModal()">
+                  <i class="fas fa-pen"></i> Update ESG Metrics
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 14. NUTRIENT MONITOR ============ -->
+        <div id="nutrient-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-water"></i> Nutrient Runoff Monitor</div>
+              <span class="badge badge-leaf" id="nutrientStatusBadge">No samples</span>
+            </div>
+            <p class="card-desc">
+              Nitrogen and phosphorus metrics logged to guard local water drainage safety.
+            </p>
+          </div>
+
+          <div class="chart-container tall">
+            <canvas id="nutrientChart"></canvas>
+            <div class="chart-empty" id="nutrientChartEmpty">
+              <i class="fas fa-chart-line"></i>
+              No nutrient samples yet — add a sample to see the trend
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Drainage Sample Register</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('nutrient')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-leaf btn-sm" onclick="openAddModal('nutrient')">
+                  <i class="fas fa-plus"></i> Add Sample
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Sample ID</th>
+                  <th>Date</th>
+                  <th>Drainage Point</th>
+                  <th>N (mg/L)</th>
+                  <th>P (mg/L)</th>
+                  <th>Threshold</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="nutrientBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 15. PIECE-RATE LABOR ============ -->
+        <div id="labor-tab" class="tab-content">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Accrued This Week</span>
+                <span class="stat-icon"><i class="fas fa-dollar-sign"></i></span>
+              </div>
+              <div class="stat-value" id="laborAccrued">—</div>
+              <div class="stat-change">All crews</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Active Crew</span>
+                <span class="stat-icon"><i class="fas fa-people-group"></i></span>
+              </div>
+              <div class="stat-value" id="laborCrews">—</div>
+              <div class="stat-change">Registered crews</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Workers</span>
+                <span class="stat-icon"><i class="fas fa-user-group"></i></span>
+              </div>
+              <div class="stat-value" id="laborWorkers">—</div>
+              <div class="stat-change">Total active</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">H-2A Visa Active</span>
+                <span class="stat-icon"><i class="fas fa-passport"></i></span>
+              </div>
+              <div class="stat-value" id="laborH2a">—</div>
+              <div class="stat-change">Active crew</div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <h3>Piece-Rate Field Crew Timesheet</h3>
+              <div class="table-toolbar-actions">
+                <button class="btn btn-secondary btn-sm" onclick="exportTable('labor')">
+                  <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-leaf btn-sm" onclick="authorizePayroll()">
+                  <i class="fas fa-check"></i> Authorize Piece-Rate Batch
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Crew</th>
+                  <th>Foreman</th>
+                  <th>Workers</th>
+                  <th>Units Picked</th>
+                  <th>Rate</th>
+                  <th>Accrued</th>
+                  <th>H-2A Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="laborBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ 16. BIOLOGICAL ASSETS ============ -->
+        <div id="bio-assets-tab" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-chart-area"></i> Biological Asset Valuation (IAS 41)</div>
+              <span class="badge badge-gold" id="iasBadge">No data</span>
+            </div>
+            <p class="card-desc">
+              Market valuation of living, growing biological resources compared against historical cost tracking.
+            </p>
+          </div>
+
+          <div class="chart-container tall">
+            <canvas id="iasChart"></canvas>
+            <div class="chart-empty" id="iasChartEmpty">
+              <i class="fas fa-chart-area"></i>
+              No biological asset valuation yet — add a valuation to see the trend
+            </div>
+          </div>
+
+          <div class="mini-kpis">
+            <div class="mini-kpi">
+              <div class="label">Fair Value (IAS 41)</div>
+              <div class="value" id="iasFair">—</div>
+              <div class="sub">Latest valuation</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="label">Historical Cost</div>
+              <div class="value" id="iasCost">—</div>
+              <div class="sub">Accumulated investment</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="label">Unrealized Gain</div>
+              <div class="value" id="iasGain">—</div>
+              <div class="sub">Recognized in P&amp;L</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="label">Change vs Last Year</div>
+              <div class="value" id="iasChange">—</div>
+              <div class="sub">Year over year</div>
+            </div>
+          </div>
+
+          <div style="text-align:right; margin-bottom:1.5rem;">
+            <button class="btn btn-leaf btn-sm" onclick="openAddModal('ias')">
+              <i class="fas fa-plus"></i> Add Valuation
+            </button>
+          </div>
+        </div>
+      </main>
     </div>
 
-    <div class="container">
-        <div class="page-header">
-            <h1>Agricultural operations</h1>
-            <button class="btn-primary" id="newOperationBtn">+ New operation</button>
-        </div>
-
-        <div class="sector-tabs" id="sectorTabs">
-            <div class="sector-tab active" data-sector="all">🌱 All sectors</div>
-            <div class="sector-tab" data-sector="crops">🌽 Crops</div>
-            <div class="sector-tab" data-sector="livestock">🐄 Livestock</div>
-            <div class="sector-tab" data-sector="poultry">🐔 Poultry</div>
-            <div class="sector-tab" data-sector="fisheries">🐟 Fisheries</div>
-            <div class="sector-tab" data-sector="forestry">🌳 Forestry</div>
-            <div class="sector-tab" data-sector="processing">📦 Processing</div>
-            <div class="sector-tab" data-sector="trade">🌍 Global trade</div>
-        </div>
-
-        <!-- stats -->
-        <div class="stats-grid">
-            <div class="stat-card"> <div class="stat-label">Total farms/operations</div><div class="stat-value" id="statFarms">312</div><div class="stat-detail">28 countries</div> </div>
-            <div class="stat-card"> <div class="stat-label">Active cultivation (ha)</div><div class="stat-value" id="statCultivation">178,500</div><div class="stat-detail">↑ 14% vs last season</div> </div>
-            <div class="stat-card"> <div class="stat-label">Livestock (heads)</div><div class="stat-value" id="statLivestock">127,200</div><div class="stat-detail">Cattle: 58K | Sheep: 69.2K</div> </div>
-            <div class="stat-card"> <div class="stat-label">Monthly production</div><div class="stat-value" id="statProduction">18,230 MT</div><div class="stat-detail">Value: $11.4M</div> </div>
-        </div>
-
-        <div class="world-map" id="worldMap">🌍  Global operations map — real-time regional data</div>
-
-        <div class="content-grid">
-            <!-- LEFT: ALL EIGHT SECTOR CARDS (each fully populated) -->
-            <div id="allCards">
-                <!-- Crops -->
-                <div class="card" data-sector="crops" id="cropsCard">
-                    <div class="card-header"><span class="card-title">🌽 Crop operations</span><span class="badge-action add-row" data-table="crops">+ Add crop</span></div>
-                    <table class="table" id="cropsTable"><thead><tr><th>Farm/location</th><th>Crop</th><th>Area (ha)</th><th>Planting</th><th>Harvest</th><th>Status</th><th>Irrigation</th><th>Actions</th></tr></thead><tbody></tbody></table>
-                </div>
-                <!-- Livestock -->
-                <div class="card" data-sector="livestock" id="livestockCard">
-                    <div class="card-header"><span class="card-title">🐄 Livestock</span><span class="badge-action add-row" data-table="livestock">+ Add herd</span></div>
-                    <table class="table" id="livestockTable"><thead><tr><th>Ranch</th><th>Species</th><th>Breed</th><th>Head count</th><th>Avg weight</th><th>Health</th><th>Next vacc.</th><th>Actions</th></tr></thead><tbody></tbody></table>
-                </div>
-                <!-- POUltry -->
-                <div class="card" data-sector="poultry" id="poultryCard">
-                    <div class="card-header"><span class="card-title">🐔 Poultry farms</span><span class="badge-action add-row" data-table="poultry">+ Add flock</span></div>
-                    <table class="table" id="poultryTable"><thead><tr><th>Farm</th><th>Type</th><th>Breed</th><th>Birds</th><th>Age (weeks)</th><th>Health</th><th>Next vaccination</th><th>Actions</th></tr></thead><tbody></tbody></table>
-                </div>
-                <!-- Fisheries -->
-                <div class="card" data-sector="fisheries" id="fisheriesCard">
-                    <div class="card-header"><span class="card-title">🐟 Fisheries</span><span class="badge-action add-row" data-table="fisheries">+ Add fishery</span></div>
-                    <table class="table" id="fisheriesTable"><thead><tr><th>Location</th><th>Type</th><th>Species</th><th>Volume (MT)</th><th>Cycle</th><th>Water quality</th><th>Certification</th><th>Actions</th></tr></thead><tbody></tbody></table>
-                </div>
-                <!-- Forestry -->
-                <div class="card" data-sector="forestry" id="forestryCard">
-                    <div class="card-header"><span class="card-title">🌳 Forestry</span><span class="badge-action add-row" data-table="forestry">+ Add forest</span></div>
-                    <table class="table" id="forestryTable"><thead><tr><th>Concession</th><th>Type</th><th>Species</th><th>Area (ha)</th><th>Planting year</th><th>Harvest year</th><th>Certification</th><th>Actions</th></tr></thead><tbody></tbody></table>
-                </div>
-                <!-- Processing -->
-                <div class="card" data-sector="processing" id="processingCard">
-                    <div class="card-header"><span class="card-title">📦 Processing facilities</span><span class="badge-action add-row" data-table="processing">+ Add facility</span></div>
-                    <table class="table" id="processingTable"><thead><tr><th>Facility</th><th>Type</th><th>Input product</th><th>Output</th><th>Monthly capacity (MT)</th><th>Utilization</th><th>Certification</th><th>Actions</th></tr></thead><tbody></tbody></table>
-                </div>
-                <!-- Global trade -->
-                <div class="card" data-sector="trade" id="tradeCard">
-                    <div class="card-header"><span class="card-title">🌍 Global trade</span><span class="badge-action add-row" data-table="trade">+ Add trade deal</span></div>
-                    <table class="table" id="tradeTable"><thead><tr><th>Market</th><th>Share</th><th>Main products</th><th>Contract value (M$)</th><th>Status</th><th>Actions</th></tr></thead><tbody></tbody></table>
-                </div>
-            </div>
-
-            <!-- right column: pipeline / certs / weather (editable) -->
-            <div>
-                <div class="card">
-                    <div class="card-header"><span class="card-title">📦 Farm to market</span><span class="badge-action" id="editPipeline">✎ edit</span></div>
-                    <div id="pipelineContent"><div>In Transit: <span id="transitVal">32</span> shipments</div><div>At Processing: <span id="processingVal">17</span> batches</div><div>Quality Control: <span id="qcVal">11</span> batches</div><div>Ready for Export: <span id="exportVal">22</span> containers</div></div>
-                </div>
-                <div class="card">
-                    <div class="card-header"><span class="card-title">🏅 Certifications</span><span class="badge-action" id="addCert">+ Add</span></div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;" id="certList"></div>
-                </div>
-                <div class="card">
-                    <div class="card-header"><span class="card-title">⚠️ Weather alerts</span><span class="badge-action" id="editWeather">✎ edit</span></div>
-                    <div id="weatherContent" style="color:#b85e00;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer class="footer">
-        © 2026 CephasGM Group. All rights reserved. v3.14.2 · Build 2026.02.21 · PROD
+    <!-- FOOTER -->
+    <footer class="app-footer">
+      Copyright © 2025 <strong>Cephas GM</strong> | Innovating for Tomorrow
     </footer>
+  </div>
 
-    <!-- modal -->
-    <div id="genericModal" class="modal">
-        <div class="modal-content">
-            <h3 id="modalTitle">Edit / Add</h3>
-            <div id="modalFields"></div>
-            <div class="modal-actions">
-                <button class="btn-modal cancel" id="modalCancel">Cancel</button>
-                <button class="btn-modal" id="modalSave">Save</button>
-            </div>
+  <!-- ============ GENERIC MODAL ============ -->
+  <div class="modal" id="genericModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">
+          <i class="fas fa-plus-circle"></i> New Record
+        </h2>
+        <button class="modal-close" onclick="closeModal('genericModal')">&times;</button>
+      </div>
+      <form id="modalForm" onsubmit="saveModal(event)">
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('genericModal')">Cancel</button>
+          <button type="submit" class="btn btn-leaf">Save</button>
         </div>
+      </form>
     </div>
+  </div>
 
-    <script>
-        (function() {
-            // ==========  FULL DATA FOR ALL EIGHT SECTORS (real, populated) ==========
-            // Crops
-            let cropsData = [
-                {id:'c1', farm:'Green Valley Farm 🇧🇷', crop:'Soybean', area:'2500', plant:'2025-10-15', harvest:'2026-03-20', status:'Growing', irrigation:'Center Pivot'},
-                {id:'c2', farm:'Sunrise Plantation 🇺🇸', crop:'Corn', area:'1800', plant:'2026-02-01', harvest:'2026-08-15', status:'Growing', irrigation:'Drip'},
-                {id:'c3', farm:'Golden Grains 🇦🇺', crop:'Wheat', area:'3200', plant:'2025-11-20', harvest:'2026-04-10', status:'Harvesting', irrigation:'Rainfed'},
-                {id:'c4', farm:'Pampas Ag 🇦🇷', crop:'Sunflower', area:'1100', plant:'2026-01-10', harvest:'2026-07-01', status:'Growing', irrigation:'Flood'}
-            ];
-            // Livestock
-            let livestockData = [
-                {id:'l1', ranch:'Pampas Ranch 🇦🇷', species:'Cattle', breed:'Angus', head:'5200', weight:'520 kg', health:'✅ Healthy', nextVacc:'2026-03-15'},
-                {id:'l2', ranch:'Outback Station 🇦🇺', species:'Sheep', breed:'Merino', head:'12000', weight:'45 kg', health:'⚠️ Under observation', nextVacc:'2026-03-01'},
-                {id:'l3', ranch:'Texas Range 🇺🇸', species:'Cattle', breed:'Hereford', head:'8300', weight:'610 kg', health:'✅ Healthy', nextVacc:'2026-04-12'}
-            ];
-            // Poultry
-            let poultryData = [
-                {id:'p1', farm:'Sunny Chicks 🇺🇸', type:'Broiler', breed:'Cobb 500', birds:'45000', age:'6', health:'✅ Good', nextVacc:'2026-03-10'},
-                {id:'p2', farm:'La Granja 🇪🇸', type:'Layer', breed:'Lohmann', birds:'27500', age:'32', health:'✅ Healthy', nextVacc:'2026-03-22'},
-                {id:'p3', farm:'Tropical Fowl 🇧🇷', type:'Broiler', breed:'Ross', birds:'62000', age:'5', health:'⚠️ Coccidia watch', nextVacc:'2026-02-28'}
-            ];
-            // Fisheries
-            let fisheriesData = [
-                {id:'f1', location:'Coastal Farms 🇳🇴', type:'Marine', species:'Atlantic Salmon', volume:'850', cycle:'18 months', water:'✅ Optimal', cert:'ASC Certified'},
-                {id:'f2', location:'Delta Ponds 🇻🇳', type:'Freshwater', species:'Tilapia', volume:'1200', cycle:'8 months', water:'⚠️ Monitoring', cert:'GlobalGAP'},
-                {id:'f3', location:'Med Fish 🇬🇷', type:'Marine', species:'Sea bass', volume:'430', cycle:'14 months', water:'✅ Optimal', cert:'Friend of Sea'}
-            ];
-            // Forestry
-            let forestryData = [
-                {id:'fr1', concession:'Mato Grosso 🇧🇷', type:'Natural', species:'Mahogany', area:'5400', plant:'2018', harvest:'2033', cert:'FSC'},
-                {id:'fr2', concession:'British Columbia 🇨🇦', type:'Planted', species:'Douglas fir', area:'8200', plant:'2015', harvest:'2040', cert:'SFI'},
-                {id:'fr3', concession:'Congo Basin 🇨🇬', type:'Natural', species:'Okoumé', area:'3100', plant:'2010', harvest:'2030', cert:'FSC'}
-            ];
-            // Processing
-            let processingData = [
-                {id:'pr1', facility:'Soybean crush 🇧🇷', type:'Crushing', input:'Soybean', output:'Oil, meal', capacity:'25000', utilization:'82%', cert:'ISO 22000'},
-                {id:'pr2', facility:'Poultry abattoir 🇺🇸', type:'Slaughter', input:'Broiler', output:'Chicken meat', capacity:'18000', utilization:'91%', cert:'BRCGS'},
-                {id:'pr3', facility:'Fish fillet 🇳🇴', type:'Processing', input:'Salmon', output:'Fillets', capacity:'3200', utilization:'76%', cert:'ASC'}
-            ];
-            // Global trade
-            let tradeData = [
-                {id:'t1', market:'China', share:'42%', products:'Soybean, Beef', value:'124', status:'Active'},
-                {id:'t2', market:'EU', share:'31%', products:'Organic grains, Seafood', value:'88', status:'Active'},
-                {id:'t3', market:'USA', share:'19%', products:'Fruit, Poultry', value:'62', status:'Negotiation'},
-                {id:'t4', market:'Japan', share:'8%', products:'High-grade beef', value:'27', status:'Active'}
-            ];
+  <script>
+  /* =========================================================
+     CephasGM ERP — Agriculture Module v4.0
+     Empty-state on first load. Data persisted to localStorage.
+     ========================================================= */
 
-            // pipeline etc
-            let pipeline = { transit:32, processing:17, qc:11, export:22 };
-            let certs = ['🌱 Organic (EU)','🌍 GlobalGAP','🔄 Rainforest Alliance','🐄 Animal Welfare','🌿 Non-GMO','📦 BRCGS','🌳 FSC'];
-            let weatherAlerts = ['⚠️ Drought - Brazil (Soybean)','⚠️ Frost risk - Argentina (Wheat)','🌧️ Heavy rain - Vietnam (Aquaculture)','🔥 High fire risk - Canada forestry'];
+  const TAB_META = {
+    overview:     ['Global Farm & Ag-Ops Overview', 'Consolidated KPIs across crops, livestock, machinery, cold chain, and financials'],
+    crops:        ['Crops & Precision Agronomy',    'Field & plot GIS mapping with soil moisture and NDVI canopy tracking'],
+    spray:        ['Spray & Chemical Journal',      'Applications logged with MRL compliance and withdrawal windows'],
+    herds:        ['Herds & Flocks Performance',    'Head counts, growth curves, and real-time feed conversion ratios'],
+    vet:          ['Veterinary Ledger',             'Treatments, health alerts, and safety withdrawal countdowns'],
+    machinery:    ['Machinery Telemetry',           'Tractor and harvester fleet with live fuel and field-path tracking'],
+    wear:         ['Implement Wear Monitor',        'Countdown to expected breakdown for high-wear components'],
+    weighbridge:  ['Weighbridge Gate & Intake',     'Truck harvest tickets with tare, moisture, and dockage deductions'],
+    coldchain:    ['Cold Storage Atmosphere',       'Live temperature, humidity, and ethylene tracking for cold rooms'],
+    traceability: ['Traceability Block-Lot Lookup', 'Track any finished product lot back to its harvest block'],
+    pools:        ['Grower Pool Accounting',        'Multi-grower payments, premiums, and cooperative distributions'],
+    hedging:      ['Off-Take Hedging Desk',         'Physical inventory mapped against CBOT futures contracts'],
+    certs:        ['Certifications & ESG',          'GlobalGAP checklist, SOC levels, and methane emission tracking'],
+    nutrient:     ['Nutrient Runoff Monitor',       'Nitrogen and phosphorus drainage metrics for water safety'],
+    labor:        ['Piece-Rate Labor',              'Crew timesheets, units picked, and H-2A visa validity'],
+    'bio-assets': ['Biological Assets (IAS 41)',    'Fair value valuation of living biological resources']
+  };
 
-            // render functions for each table
-            function renderCrops() { let tbody = document.querySelector('#cropsTable tbody'); if(tbody) tbody.innerHTML = cropsData.map(r => `<tr data-id="${r.id}"><td>${r.farm}</td><td>${r.crop}</td><td>${r.area}</td><td>${r.plant}</td><td>${r.harvest}</td><td><span class="status-badge ${r.status==='Growing'?'status-active':'status-harvested'}">${r.status}</span></td><td>${r.irrigation}</td><td class="action-icons"><span class="editRow" data-table="crops" data-id="${r.id}">✏️</span> <span class="deleteRow" data-table="crops" data-id="${r.id}">🗑️</span></td></tr>`).join(''); }
-            function renderLivestock() { let tbody = document.querySelector('#livestockTable tbody'); if(tbody) tbody.innerHTML = livestockData.map(r => `<tr data-id="${r.id}"><td>${r.ranch}</td><td>${r.species}</td><td>${r.breed}</td><td>${r.head}</td><td>${r.weight}</td><td><span class="certification-badge">${r.health}</span></td><td>${r.nextVacc}</td><td class="action-icons"><span class="editRow" data-table="livestock" data-id="${r.id}">✏️</span> <span class="deleteRow" data-table="livestock" data-id="${r.id}">🗑️</span></td></tr>`).join(''); }
-            function renderPoultry() { let tbody = document.querySelector('#poultryTable tbody'); if(tbody) tbody.innerHTML = poultryData.map(r => `<tr data-id="${r.id}"><td>${r.farm}</td><td>${r.type}</td><td>${r.breed}</td><td>${r.birds}</td><td>${r.age}</td><td>${r.health}</td><td>${r.nextVacc}</td><td class="action-icons"><span class="editRow" data-table="poultry" data-id="${r.id}">✏️</span> <span class="deleteRow" data-table="poultry" data-id="${r.id}">🗑️</span></td></tr>`).join(''); }
-            function renderFisheries() { let tbody = document.querySelector('#fisheriesTable tbody'); if(tbody) tbody.innerHTML = fisheriesData.map(r => `<tr data-id="${r.id}"><td>${r.location}</td><td>${r.type}</td><td>${r.species}</td><td>${r.volume}</td><td>${r.cycle}</td><td>${r.water}</td><td>${r.cert}</td><td class="action-icons"><span class="editRow" data-table="fisheries" data-id="${r.id}">✏️</span> <span class="deleteRow" data-table="fisheries" data-id="${r.id}">🗑️</span></td></tr>`).join(''); }
-            function renderForestry() { let tbody = document.querySelector('#forestryTable tbody'); if(tbody) tbody.innerHTML = forestryData.map(r => `<tr data-id="${r.id}"><td>${r.concession}</td><td>${r.type}</td><td>${r.species}</td><td>${r.area}</td><td>${r.plant}</td><td>${r.harvest}</td><td>${r.cert}</td><td class="action-icons"><span class="editRow" data-table="forestry" data-id="${r.id}">✏️</span> <span class="deleteRow" data-table="forestry" data-id="${r.id}">🗑️</span></td></tr>`).join(''); }
-            function renderProcessing() { let tbody = document.querySelector('#processingTable tbody'); if(tbody) tbody.innerHTML = processingData.map(r => `<tr data-id="${r.id}"><td>${r.facility}</td><td>${r.type}</td><td>${r.input}</td><td>${r.output}</td><td>${r.capacity}</td><td>${r.utilization}</td><td>${r.cert}</td><td class="action-icons"><span class="editRow" data-table="processing" data-id="${r.id}">✏️</span> <span class="deleteRow" data-table="processing" data-id="${r.id}">🗑️</span></td></tr>`).join(''); }
-            function renderTradeTable() { let tbody = document.querySelector('#tradeTable tbody'); if(tbody) tbody.innerHTML = tradeData.map(r => `<tr data-id="${r.id}"><td>${r.market}</td><td>${r.share}</td><td>${r.products}</td><td>${r.value}</td><td>${r.status}</td><td class="action-icons"><span class="editRow" data-table="trade" data-id="${r.id}">✏️</span> <span class="deleteRow" data-table="trade" data-id="${r.id}">🗑️</span></td></tr>`).join(''); }
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
-            function renderPipeline() { document.getElementById('transitVal').innerText = pipeline.transit; document.getElementById('processingVal').innerText = pipeline.processing; document.getElementById('qcVal').innerText = pipeline.qc; document.getElementById('exportVal').innerText = pipeline.export; }
-            function renderCerts() { let cont = document.getElementById('certList'); cont.innerHTML = certs.map(c => `<span class="certification-badge" style="cursor:default;">${c} <span class="removeCert" style="cursor:pointer;">✖</span></span>`).join(''); document.querySelectorAll('.removeCert').forEach((el,i) => { el.addEventListener('click',(e)=>{ e.stopPropagation(); certs.splice(i,1); renderCerts(); }); }); }
-            function renderWeather() { document.getElementById('weatherContent').innerHTML = weatherAlerts.map(w => `<div>${w}</div>`).join(''); }
-            function refreshStats() { 
-                let totalFarms = cropsData.length + livestockData.length + poultryData.length + fisheriesData.length + forestryData.length + processingData.length + tradeData.length;
-                document.getElementById('statFarms').innerText = totalFarms + 4;
-                let area = cropsData.reduce((a,r)=>a+parseInt(r.area||0),0) + forestryData.reduce((a,r)=>a+parseInt(r.area||0),0);
-                document.getElementById('statCultivation').innerText = area.toLocaleString();
-                let heads = livestockData.reduce((a,r)=>a+parseInt(r.head||0),0) + poultryData.reduce((a,r)=>a+parseInt(r.birds||0)/1000,0)*1000;
-                document.getElementById('statLivestock').innerText = heads.toLocaleString();
-                let prod = fisheriesData.reduce((a,r)=>a+parseInt(r.volume||0),0) + 3500;
-                document.getElementById('statProduction').innerText = prod + ' MT';
-            }
+  /* ---------- STATE ---------- */
+  let agriData = loadData();
+  let activeTab = 'overview';
+  let charts = {};
+  let currentEditType = null;
+  let deleteType = null;
+  let deleteId = null;
 
-            // modal helper
-            let modal = document.getElementById('genericModal');
-            let modalTitle = document.getElementById('modalTitle');
-            let modalFields = document.getElementById('modalFields');
-            let currentSaveCallback = null;
-            function showModal(title, fields, onSave) { modalTitle.innerText = title; modalFields.innerHTML = fields.map(f => `<input type="text" placeholder="${f.placeholder}" value="${f.value || ''}" data-field="${f.name}" class="modal-field">`).join(''); currentSaveCallback = onSave; modal.style.display = 'flex'; }
-            document.getElementById('modalCancel').onclick = () => modal.style.display = 'none';
-            document.getElementById('modalSave').onclick = () => { if(currentSaveCallback) { let vals = {}; document.querySelectorAll('#modalFields .modal-field').forEach(i => vals[i.dataset.field] = i.value); currentSaveCallback(vals); } modal.style.display = 'none'; };
+  function loadData() {
+    const saved = localStorage.getItem('cephasgm_agriculture_data');
+    if (saved) return JSON.parse(saved);
+    return {
+      plots: [],
+      sprays: [],
+      herds: [],
+      vets: [],
+      machinery: [],
+      wear: [],
+      weighbridge: [],
+      coldrooms: [],
+      pools: [],
+      hedges: [],
+      certs: [],
+      nutrient: [],
+      labor: [],
+      ias: [],
+      esg: { soc:'', methane:'', water:'', energy:'' },
+      nextIds: {
+        plot: 1, spray: 1, herd: 1, vet: 1, machinery: 1, wear: 1,
+        weighbridge: 1, coldroom: 1, pool: 1, hedge: 1, cert: 1,
+        nutrient: 1, labor: 1, ias: 1
+      }
+    };
+  }
+  function saveData() {
+    localStorage.setItem('cephasgm_agriculture_data', JSON.stringify(agriData));
+  }
 
-            // add row listeners (for each sector)
-            document.querySelectorAll('.add-row').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    let tbl = btn.dataset.table;
-                    if(tbl === 'crops') showModal('New crop', [{name:'farm',placeholder:'Farm'},{name:'crop'},{name:'area'},{name:'plant'},{name:'harvest'},{name:'status',value:'Growing'},{name:'irrigation'}], (v)=>{ cropsData.push({id:'c'+Date.now(), ...v}); renderCrops(); refreshStats(); });
-                    else if(tbl === 'livestock') showModal('New livestock', [{name:'ranch'},{name:'species'},{name:'breed'},{name:'head'},{name:'weight'},{name:'health'},{name:'nextVacc'}], (v)=>{ livestockData.push({id:'l'+Date.now(), ...v}); renderLivestock(); refreshStats(); });
-                    else if(tbl === 'poultry') showModal('New poultry', [{name:'farm'},{name:'type'},{name:'breed'},{name:'birds'},{name:'age'},{name:'health'},{name:'nextVacc'}], (v)=>{ poultryData.push({id:'p'+Date.now(), ...v}); renderPoultry(); refreshStats(); });
-                    else if(tbl === 'fisheries') showModal('New fishery', [{name:'location'},{name:'type'},{name:'species'},{name:'volume'},{name:'cycle'},{name:'water'},{name:'cert'}], (v)=>{ fisheriesData.push({id:'f'+Date.now(), ...v}); renderFisheries(); refreshStats(); });
-                    else if(tbl === 'forestry') showModal('New forestry', [{name:'concession'},{name:'type'},{name:'species'},{name:'area'},{name:'plant'},{name:'harvest'},{name:'cert'}], (v)=>{ forestryData.push({id:'fr'+Date.now(), ...v}); renderForestry(); refreshStats(); });
-                    else if(tbl === 'processing') showModal('New facility', [{name:'facility'},{name:'type'},{name:'input'},{name:'output'},{name:'capacity'},{name:'utilization'},{name:'cert'}], (v)=>{ processingData.push({id:'pr'+Date.now(), ...v}); renderProcessing(); refreshStats(); });
-                    else if(tbl === 'trade') showModal('New trade deal', [{name:'market'},{name:'share'},{name:'products'},{name:'value'},{name:'status'}], (v)=>{ tradeData.push({id:'t'+Date.now(), ...v}); renderTradeTable(); refreshStats(); });
-                });
-            });
+  /* ---------- HELPERS ---------- */
+  function emptyRow(cols, message, icon = 'fa-inbox') {
+    return `<tr><td colspan="${cols}" class="empty-state"><i class="fas ${icon}"></i>${message}</td></tr>`;
+  }
+  function notify(msg, type = 'success') {
+    const n = document.createElement('div');
+    n.className = `notification ${type}`;
+    n.innerHTML = `<i class="fas fa-${type === 'error' ? 'circle-exclamation' : type === 'warning' ? 'triangle-exclamation' : 'circle-check'}"></i> ${msg}`;
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 3400);
+  }
+  window.notify = notify;
 
-            // delete & edit via delegation
-            document.addEventListener('click', (e) => {
-                if(e.target.classList.contains('deleteRow')) {
-                    let tbl = e.target.dataset.table; let id = e.target.dataset.id;
-                    if(tbl === 'crops') cropsData = cropsData.filter(d => d.id !== id);
-                    else if(tbl === 'livestock') livestockData = livestockData.filter(d => d.id !== id);
-                    else if(tbl === 'poultry') poultryData = poultryData.filter(d => d.id !== id);
-                    else if(tbl === 'fisheries') fisheriesData = fisheriesData.filter(d => d.id !== id);
-                    else if(tbl === 'forestry') forestryData = forestryData.filter(d => d.id !== id);
-                    else if(tbl === 'processing') processingData = processingData.filter(d => d.id !== id);
-                    else if(tbl === 'trade') tradeData = tradeData.filter(d => d.id !== id);
-                    renderCrops(); renderLivestock(); renderPoultry(); renderFisheries(); renderForestry(); renderProcessing(); renderTradeTable(); refreshStats();
-                }
-                if(e.target.classList.contains('editRow')) {
-                    let tbl = e.target.dataset.table; let id = e.target.dataset.id; let item;
-                    if(tbl === 'crops') item = cropsData.find(d => d.id === id);
-                    else if(tbl === 'livestock') item = livestockData.find(d => d.id === id);
-                    else if(tbl === 'poultry') item = poultryData.find(d => d.id === id);
-                    else if(tbl === 'fisheries') item = fisheriesData.find(d => d.id === id);
-                    else if(tbl === 'forestry') item = forestryData.find(d => d.id === id);
-                    else if(tbl === 'processing') item = processingData.find(d => d.id === id);
-                    else if(tbl === 'trade') item = tradeData.find(d => d.id === id);
-                    if(!item) return;
-                    let fields = Object.keys(item).filter(k => k !== 'id').map(k => ({name:k, placeholder:k, value:item[k]}));
-                    showModal('Edit '+tbl, fields, (vals) => { Object.assign(item, vals); renderCrops(); renderLivestock(); renderPoultry(); renderFisheries(); renderForestry(); renderProcessing(); renderTradeTable(); refreshStats(); });
-                }
-            });
+  function fmtMoney(amount, currency = 'USD') {
+    if (amount == null || isNaN(amount)) return '—';
+    const sym = { USD:'$', EUR:'€', GBP:'£', TZS:'TSh ', KES:'KSh ', NGN:'₦' }[currency] || '$';
+    const abs = Math.abs(amount);
+    if (abs >= 1e9) return sym + (amount / 1e9).toFixed(2) + 'B';
+    if (abs >= 1e6) return sym + (amount / 1e6).toFixed(2) + 'M';
+    if (abs >= 1e3) return sym + (amount / 1e3).toFixed(1) + 'K';
+    return sym + Math.round(amount).toLocaleString();
+  }
 
-            // pipeline, certs, weather
-            document.getElementById('editPipeline').addEventListener('click', ()=>{ showModal('Pipeline', [{name:'transit',value:pipeline.transit},{name:'processing',value:pipeline.processing},{name:'qc',value:pipeline.qc},{name:'export',value:pipeline.export}], (v)=>{ pipeline = {transit:parseInt(v.transit)||0, processing:parseInt(v.processing)||0, qc:parseInt(v.qc)||0, export:parseInt(v.export)||0}; renderPipeline(); }); });
-            document.getElementById('addCert').addEventListener('click', ()=>{ let c = prompt('Certification name'); if(c) { certs.push(c); renderCerts(); } });
-            document.getElementById('editWeather').addEventListener('click', ()=>{ let joined = weatherAlerts.join('\n'); let newW = prompt('Edit alerts (one per line):', joined); if(newW!==null) weatherAlerts = newW.split('\n').filter(l=>l.trim()!==''); renderWeather(); });
+  function badgeForStatus(status) {
+    const s = (status || '').toLowerCase();
+    if (s.includes('vigorous') || s.includes('healthy') || s.includes('accepted') || s.includes('active') || s.includes('safe') || s.includes('passed') || s.includes('compliant') || s.includes('cleared') || s.includes('settled') || s.includes('matched')) return 'success';
+    if (s.includes('moderate') || s.includes('observation') || s.includes('flagged') || s.includes('warning') || s.includes('pending') || s.includes('monitor') || s.includes('expiring') || s.includes('partial')) return 'warning';
+    if (s.includes('stress') || s.includes('critical') || s.includes('failed') || s.includes('danger')) return 'danger';
+    return 'gray';
+  }
 
-            // sector filter
-            document.querySelectorAll('.sector-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    document.querySelectorAll('.sector-tab').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    let sector = this.dataset.sector;
-                    document.querySelectorAll('[data-sector]').forEach(card => {
-                        if(sector === 'all' || card.dataset.sector === sector) card.style.display = 'block';
-                        else card.style.display = 'none';
-                    });
-                });
-            });
+  /* ---------- NAV ---------- */
+  function setupNav() {
+    $$('.nav-link[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+  }
+  function setupMobileMenu() {
+    const toggle = $('#mobileMenuToggle');
+    const sidebar = $('#agriSidebar');
+    const overlay = $('#sidebarOverlay');
+    toggle.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('active');
+      overlay.classList.toggle('active', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  }
+  function switchTab(tab) {
+    activeTab = tab;
+    $$('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.tab === tab));
+    $$('.tab-content').forEach(c => c.classList.toggle('active', c.id === `${tab}-tab`));
+    const meta = TAB_META[tab] || TAB_META.overview;
+    $('#pageTitle').innerHTML = `<i class="fas fa-wheat-awn"></i> ${meta[0]}`;
+    $('#pageSubtitle').textContent = meta[1];
+    const sidebar = $('#agriSidebar');
+    if (sidebar.classList.contains('active')) {
+      sidebar.classList.remove('active');
+      $('#sidebarOverlay').classList.remove('active');
+      $('#mobileMenuToggle').setAttribute('aria-expanded', 'false');
+    }
+  }
+  window.switchTab = switchTab;
 
-            // extras
-            document.getElementById('worldMap').addEventListener('click', ()=> alert('🌍 Interactive regional map (live data integration)'));
-            document.getElementById('newOperationBtn').addEventListener('click', ()=> alert('➕ New operation – wizard linked to all sectors.'));
-            document.getElementById('homeLink').addEventListener('click', (e)=>{ e.preventDefault(); alert('🏠 Home dashboard (fully integrated)'); });
-            document.querySelectorAll('.dropdown-content a').forEach(a => a.addEventListener('click', (e)=>{ e.preventDefault(); alert(`ERP module: ${a.innerText}`); }));
+  /* ---------- MODAL ---------- */
+  function openModal(title, fields, onSave) {
+    currentEditType = onSave;
+    $('#modalTitle').innerHTML = `<i class="fas fa-plus-circle"></i> ${title}`;
+    $('#modalBody').innerHTML = fields.map(f => `
+      <label class="form-label">${f.label || f.name}</label>
+      ${f.type === 'select'
+        ? `<select class="form-control" name="${f.name}">${(f.options || []).map(o => `<option value="${o}">${o}</option>`).join('')}</select>`
+        : `<input type="${f.type || 'text'}" class="form-control" name="${f.name}" placeholder="${f.placeholder || ''}" value="${f.value || ''}" ${f.required ? 'required' : ''}>`
+      }
+    `).join('');
+    $('#genericModal').classList.add('active');
+  }
+  window.openModal = openModal;
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+  window.closeModal = closeModal;
+  function saveModal(e) {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const data = Object.fromEntries(f.entries());
+    if (currentEditType) currentEditType(data);
+    closeModal('genericModal');
+    renderAll();
+    notify('Saved successfully.', 'success');
+  }
+  window.saveModal = saveModal;
 
-            // initial renders
-            renderCrops(); renderLivestock(); renderPoultry(); renderFisheries(); renderForestry(); renderProcessing(); renderTradeTable();
-            renderPipeline(); renderCerts(); renderWeather(); refreshStats();
-        })();
-    </script>
+  /* ---------- RENDER ALL ---------- */
+  function renderAll() {
+    renderOverview();
+    renderPlots();
+    renderSpray();
+    renderHerds();
+    renderVet();
+    renderMachinery();
+    renderWear();
+    renderWeighbridge();
+    renderColdRooms();
+    renderPools();
+    renderHedging();
+    renderCertChecklist();
+    renderNutrient();
+    renderLabor();
+    renderIas();
+    renderLiveMetrics();
+    refreshCharts();
+  }
+
+  /* ---------- LIVE METRICS (top bar) ---------- */
+  function renderLiveMetrics() {
+    $('#livePlots').textContent = agriData.plots.length || '0';
+    const head = agriData.herds.reduce((s, h) => s + (parseInt(h.head) || 0), 0);
+    $('#liveHead').textContent = head ? head.toLocaleString() : '0';
+    const fcrValues = agriData.herds.map(h => parseFloat(h.fcr)).filter(v => !isNaN(v));
+    $('#liveFcr').textContent = fcrValues.length ? (fcrValues.reduce((s,v)=>s+v,0)/fcrValues.length).toFixed(2) : '—';
+    // Facility is empty by default
+    $('#liveFacility').textContent = agriData.esg.facility || '—';
+  }
+
+  /* ---------- OVERVIEW ---------- */
+  function renderOverview() {
+    const totalArea = agriData.plots.reduce((s, p) => s + (parseFloat(p.area) || 0), 0);
+    const totalHead = agriData.herds.reduce((s, h) => s + (parseInt(h.head) || 0), 0);
+    const ndviValues = agriData.plots.map(p => parseFloat(p.ndvi)).filter(v => !isNaN(v));
+    const avgNdvi = ndviValues.length ? (ndviValues.reduce((s,v)=>s+v,0)/ndviValues.length).toFixed(2) : null;
+    const fcrValues = agriData.herds.map(h => parseFloat(h.fcr)).filter(v => !isNaN(v));
+    const avgFcr = fcrValues.length ? (fcrValues.reduce((s,v)=>s+v,0)/fcrValues.length).toFixed(2) : null;
+    const safeCold = agriData.coldrooms.filter(c => (c.status || '').toLowerCase() === 'safe').length;
+    const totalCold = agriData.coldrooms.length;
+    const laborAccrued = agriData.labor.reduce((s, l) => s + (parseFloat(String(l.accrued).replace(/[^0-9.-]/g, '')) || 0), 0);
+    const hedgesOpen = agriData.hedges.length;
+    const certsPassed = agriData.certs.filter(c => (c.status || '').toLowerCase() === 'passed').length;
+    const compliance = agriData.certs.length ? Math.round((certsPassed / agriData.certs.length) * 100) : null;
+    const latestIas = agriData.ias.length ? agriData.ias[agriData.ias.length - 1] : null;
+
+    $('#ovHarvested').textContent = totalArea ? totalArea.toLocaleString() + ' ac' : '—';
+    $('#ovFcr').textContent = avgFcr || '—';
+    $('#ovCold').textContent = totalCold ? `${safeCold} / ${totalCold} Safe` : '—';
+    $('#ovLabor').textContent = laborAccrued ? fmtMoney(laborAccrued) : '—';
+    $('#ovAcres').textContent = totalArea ? totalArea.toLocaleString() + ' ac' : '—';
+    $('#ovHead').textContent = totalHead ? totalHead.toLocaleString() : '—';
+    $('#ovNdvi').textContent = avgNdvi ? (avgNdvi * 100).toFixed(0) + '%' : '—';
+    $('#ovIas').textContent = latestIas ? fmtMoney(parseFloat(latestIas.fair)) : '—';
+    $('#ovContracts').textContent = hedgesOpen || '—';
+    $('#ovCompliance').textContent = compliance !== null ? compliance + '%' : '—';
+
+    // Alerts from all modules
+    const alerts = [];
+    agriData.sprays.forEach(s => {
+      if (s.withdrawal && parseInt(s.withdrawal) > 0 && (s.mrl || '').toLowerCase().includes('review')) {
+        alerts.push({ type:'pending', text:`Spray withdrawal active on ${s.plot} — ${s.withdrawal} days remaining`, meta:'Spray journal' });
+      }
+    });
+    agriData.weighbridge.forEach(w => {
+      if ((w.status || '').toLowerCase().includes('flag')) {
+        alerts.push({ type:'failed', text:`Weighbridge ticket ${w.ticket} flagged — dockage over threshold`, meta:'Review required' });
+      }
+    });
+    agriData.vets.forEach(v => {
+      if ((v.status || '').toLowerCase() === 'active') {
+        alerts.push({ type:'pending', text:`Withdrawal active for herd ${v.herd} until ${v.withdrawalEnds}`, meta:'Vet ledger' });
+      }
+    });
+    agriData.coldrooms.forEach(c => {
+      if ((c.status || '').toLowerCase() !== 'safe') {
+        alerts.push({ type:'failed', text:`Cold room ${c.name} outside specification`, meta:'Cold chain' });
+      }
+    });
+
+    const alertBlock = $('#overviewAlerts');
+    if (!alerts.length) {
+      alertBlock.innerHTML = `<div class="empty-block"><i class="fas fa-circle-check"></i>No active alerts. All systems within specification.</div>`;
+    } else {
+      alertBlock.innerHTML = alerts.map(a => `
+        <div class="check-item ${a.type}">
+          <span class="tick"><i class="fas fa-${a.type === 'passed' ? 'check' : a.type === 'failed' ? 'times' : 'clock'}"></i></span>
+          <span class="name">${a.text}</span>
+          <span class="meta">${a.meta}</span>
+        </div>
+      `).join('');
+    }
+  }
+
+  /* ---------- PLOTS ---------- */
+  function ndviColor(ndvi) {
+    if (ndvi > 0.7) return '#16a34a';
+    if (ndvi > 0.5) return '#84cc16';
+    if (ndvi > 0.3) return '#eab308';
+    return '#dc2626';
+  }
+  function renderPlots() {
+    const grid = $('#plotGrid');
+    if (!agriData.plots.length) {
+      grid.innerHTML = `<div class="plot-empty"><i class="fas fa-map-location-dot"></i>No plots mapped yet — click "Add Plot" to register your first field.</div>`;
+    } else {
+      grid.innerHTML = agriData.plots.map(p => {
+        const ndvi = parseFloat(p.ndvi) || 0;
+        return `
+          <div class="plot-cell" style="background:linear-gradient(135deg, ${ndviColor(ndvi)}, ${ndviColor(ndvi)}dd);" onclick="notify('${p.plotId} · ${p.crop} · NDVI ${p.ndvi} · Moisture ${p.moisture}%', 'success')">
+            <div class="plot-id">${p.plotId}</div>
+            <div class="plot-crop">${p.crop}</div>
+            <div class="plot-stats">
+              <span>NDVI ${p.ndvi}</span>
+              <span>${p.moisture}%</span>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    const ndviValues = agriData.plots.map(p => parseFloat(p.ndvi)).filter(v => !isNaN(v));
+    const avg = ndviValues.length ? (ndviValues.reduce((s,v)=>s+v,0)/ndviValues.length).toFixed(2) : null;
+    $('#plotsNdviBadge').textContent = avg ? `${avg} avg NDVI` : '— NDVI';
+
+    const body = $('#plotsBody');
+    if (!agriData.plots.length) {
+      body.innerHTML = emptyRow(9, 'No plots yet — click "Add Plot" to register your first field.', 'fa-seedling');
+      return;
+    }
+    body.innerHTML = agriData.plots.map(p => `
+      <tr>
+        <td><strong>${p.plotId}</strong></td>
+        <td>${p.crop}</td>
+        <td>${p.area}</td>
+        <td>${p.planted || '—'}</td>
+        <td>${p.harvest || '—'}</td>
+        <td>${p.ndvi}</td>
+        <td>${p.moisture}%</td>
+        <td><span class="badge badge-${badgeForStatus(p.status)}">${p.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('plot', ${p.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function openAddPlot() {
+    openModal('New Plot', [
+      { name:'plotId', label:'Plot ID', placeholder:'CV-13', required:true },
+      { name:'crop', label:'Crop', placeholder:'e.g. Organic Almonds', required:true },
+      { name:'area', label:'Area (ac)', type:'number', placeholder:'120' },
+      { name:'planted', label:'Planted', type:'date' },
+      { name:'harvest', label:'Expected Harvest', type:'date' },
+      { name:'ndvi', label:'NDVI (0-1)', type:'number', placeholder:'0.65' },
+      { name:'moisture', label:'Soil Moisture (%)', type:'number', placeholder:'55' },
+      { name:'status', label:'Status', type:'select', options:['Vigorous','Healthy','Moderate','Stress'] }
+    ], (data) => {
+      agriData.plots.push({
+        id: agriData.nextIds.plot++,
+        plotId: data.plotId, crop: data.crop,
+        area: parseFloat(data.area) || 0,
+        planted: data.planted || '',
+        harvest: data.harvest || '',
+        ndvi: parseFloat(data.ndvi) || 0.55,
+        moisture: parseFloat(data.moisture) || 55,
+        status: data.status || 'Healthy'
+      });
+      saveData();
+    });
+  }
+  window.openAddPlot = openAddPlot;
+
+  /* ---------- SPRAY ---------- */
+  function renderSpray() {
+    const body = $('#sprayBody');
+    if (!agriData.sprays.length) {
+      body.innerHTML = emptyRow(9, 'No spray applications logged yet.', 'fa-spray-can');
+      return;
+    }
+    body.innerHTML = agriData.sprays.map(s => `
+      <tr>
+        <td>${s.date}</td>
+        <td>${s.plot}</td>
+        <td>${s.chemical}</td>
+        <td>${s.ai || '—'}</td>
+        <td>${s.rate || '—'}</td>
+        <td>${s.applicator || '—'}</td>
+        <td>${s.withdrawal || 0} days</td>
+        <td><span class="badge badge-${badgeForStatus(s.mrl)}">${s.mrl || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('spray', ${s.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function openAddSpray() {
+    openModal('Log Spray Application', [
+      { name:'date', label:'Date', type:'date', required:true },
+      { name:'plot', label:'Plot ID', placeholder:'CV-07', required:true },
+      { name:'chemical', label:'Chemical', placeholder:'Copper Hydroxide', required:true },
+      { name:'ai', label:'Active Ingredient', placeholder:'Copper' },
+      { name:'rate', label:'Rate', placeholder:'2.0 kg/ha' },
+      { name:'applicator', label:'Applicator', placeholder:'M. Alvarez' },
+      { name:'withdrawal', label:'Withdrawal (days)', type:'number', placeholder:'14' },
+      { name:'mrl', label:'MRL Status', type:'select', options:['Compliant','Review','Non-compliant'] }
+    ], (data) => {
+      agriData.sprays.unshift({
+        id: agriData.nextIds.spray++,
+        date: data.date, plot: data.plot,
+        chemical: data.chemical, ai: data.ai || '',
+        rate: data.rate || '', applicator: data.applicator || '',
+        withdrawal: parseInt(data.withdrawal, 10) || 0,
+        mrl: data.mrl || 'Compliant'
+      });
+      saveData();
+    });
+  }
+  window.openAddSpray = openAddSpray;
+
+  /* ---------- HERDS ---------- */
+  function renderHerds() {
+    const total = agriData.herds.reduce((s, h) => s + (parseInt(h.head) || 0), 0);
+    const fcrValues = agriData.herds.map(h => parseFloat(h.fcr)).filter(v => !isNaN(v));
+    const avgFcr = fcrValues.length ? (fcrValues.reduce((s,v)=>s+v,0)/fcrValues.length).toFixed(2) : null;
+    const species = new Set(agriData.herds.map(h => h.species).filter(Boolean)).size;
+    const alerts = agriData.herds.filter(h => (h.health || '').toLowerCase() !== 'healthy').length;
+
+    $('#herdsTotal').textContent = total ? total.toLocaleString() : '—';
+    $('#herdsFcr').textContent = avgFcr || '—';
+    $('#herdsSpecies').textContent = species || '—';
+    $('#herdsAlerts').textContent = agriData.herds.length ? alerts : '—';
+
+    const body = $('#herdsBody');
+    if (!agriData.herds.length) {
+      body.innerHTML = emptyRow(8, 'No herds registered yet — add a herd to begin tracking.', 'fa-cow');
+      return;
+    }
+    body.innerHTML = agriData.herds.map(h => `
+      <tr>
+        <td><strong>${h.herdId}</strong></td>
+        <td>${h.species}</td>
+        <td>${h.breed || '—'}</td>
+        <td>${(parseInt(h.head) || 0).toLocaleString()}</td>
+        <td>${h.weight || '—'}</td>
+        <td>${h.fcr || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(h.health)}">${h.health || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('herd', ${h.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function openAddHerd() {
+    openModal('Add Herd / Flock', [
+      { name:'herdId', label:'Herd ID', placeholder:'HRD-07', required:true },
+      { name:'species', label:'Species', type:'select', options:['Cattle','Sheep','Goat','Poultry','Pig','Fish'], required:true },
+      { name:'breed', label:'Breed', placeholder:'Angus' },
+      { name:'head', label:'Head Count', type:'number', placeholder:'1800', required:true },
+      { name:'weight', label:'Avg Weight', placeholder:'520 kg' },
+      { name:'fcr', label:'FCR', type:'number', placeholder:'5.8' },
+      { name:'health', label:'Health', type:'select', options:['Healthy','Observation','Under treatment'] }
+    ], (data) => {
+      agriData.herds.push({
+        id: agriData.nextIds.herd++,
+        herdId: data.herdId, species: data.species,
+        breed: data.breed || '',
+        head: parseInt(data.head, 10) || 0,
+        weight: data.weight || '',
+        fcr: parseFloat(data.fcr) || 0,
+        health: data.health || 'Healthy'
+      });
+      saveData();
+    });
+  }
+  window.openAddHerd = openAddHerd;
+
+  /* ---------- VET ---------- */
+  function renderVet() {
+    const body = $('#vetBody');
+    if (!agriData.vets.length) {
+      body.innerHTML = emptyRow(8, 'No veterinary treatments logged yet.', 'fa-stethoscope');
+      return;
+    }
+    body.innerHTML = agriData.vets.map(v => `
+      <tr>
+        <td>${v.date}</td>
+        <td>${v.herd}</td>
+        <td>${v.treatment}</td>
+        <td>${v.drug || '—'}</td>
+        <td>${v.vet || '—'}</td>
+        <td>${v.withdrawalEnds || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(v.status)}">${v.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('vet', ${v.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function openAddVet() {
+    openModal('Log Veterinary Treatment', [
+      { name:'date', label:'Date', type:'date', required:true },
+      { name:'herd', label:'Herd ID', placeholder:'HRD-03', required:true },
+      { name:'treatment', label:'Treatment', placeholder:'Booster Vaccination', required:true },
+      { name:'drug', label:'Drug / Vaccine', placeholder:'Clostridial 7-way' },
+      { name:'vet', label:'Veterinarian', placeholder:'Dr. R. Okonkwo' },
+      { name:'withdrawalEnds', label:'Withdrawal Ends', type:'date' },
+      { name:'status', label:'Status', type:'select', options:['Active','Cleared','Cancelled'] }
+    ], (data) => {
+      agriData.vets.unshift({
+        id: agriData.nextIds.vet++,
+        date: data.date, herd: data.herd,
+        treatment: data.treatment, drug: data.drug || '',
+        vet: data.vet || '',
+        withdrawalEnds: data.withdrawalEnds || '',
+        status: data.status || 'Active'
+      });
+      saveData();
+    });
+  }
+  window.openAddVet = openAddVet;
+
+  /* ---------- MACHINERY ---------- */
+  function renderMachinery() {
+    const total = agriData.machinery.length;
+    const inField = agriData.machinery.filter(m => (m.status || '').toLowerCase() === 'in-field').length;
+    const fuel = agriData.machinery.reduce((s, m) => s + (parseFloat(m.fuel) || 0), 0);
+    const hours = agriData.machinery.reduce((s, m) => s + (parseFloat(m.hours) || 0), 0);
+
+    $('#machActive').textContent = total || '—';
+    $('#machFuel').textContent = fuel ? fuel.toFixed(1) + ' L' : '—';
+    $('#machInField').textContent = total ? inField : '—';
+    $('#machHours').textContent = hours ? hours.toLocaleString() + ' h' : '—';
+
+    const body = $('#machineryBody');
+    if (!total) {
+      body.innerHTML = emptyRow(8, 'No machinery registered yet.', 'fa-tractor');
+      return;
+    }
+    body.innerHTML = agriData.machinery.map(m => `
+      <tr>
+        <td><strong>${m.unitId}</strong></td>
+        <td>${m.model}</td>
+        <td>${m.operator || '—'}</td>
+        <td>${m.fuel || 0} L/h</td>
+        <td>${(parseFloat(m.hours) || 0).toLocaleString()} h</td>
+        <td>${m.path || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(m.status)}">${m.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('machinery', ${m.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function openAddMachinery() {
+    openModal('Add Machinery Unit', [
+      { name:'unitId', label:'Unit ID', placeholder:'TR-07', required:true },
+      { name:'model', label:'Make / Model', placeholder:'John Deere 8R 410', required:true },
+      { name:'operator', label:'Operator', placeholder:'M. Alvarez' },
+      { name:'fuel', label:'Fuel Burn (L/h)', type:'number', placeholder:'38.4' },
+      { name:'hours', label:'Run Hours', type:'number', placeholder:'12450' },
+      { name:'path', label:'Field Path', placeholder:'CV-06' },
+      { name:'status', label:'Status', type:'select', options:['In-Field','Idle','Maintenance','Offline'] }
+    ], (data) => {
+      agriData.machinery.push({
+        id: agriData.nextIds.machinery++,
+        unitId: data.unitId, model: data.model,
+        operator: data.operator || '',
+        fuel: parseFloat(data.fuel) || 0,
+        hours: parseFloat(data.hours) || 0,
+        path: data.path || '',
+        status: data.status || 'Idle'
+      });
+      saveData();
+    });
+  }
+  window.openAddMachinery = openAddMachinery;
+
+  /* ---------- WEAR ---------- */
+  function renderWear() {
+    const body = $('#wearBody');
+    if (!agriData.wear.length) {
+      body.innerHTML = emptyRow(8, 'No implement wear tracked yet.', 'fa-screwdriver-wrench');
+      return;
+    }
+    body.innerHTML = agriData.wear.map(w => {
+      const used = parseFloat(w.used) || 0;
+      const life = parseFloat(w.life) || 1;
+      const remaining = life - used;
+      const wearPct = Math.round((used / life) * 100);
+      const status = wearPct > 90 ? 'Critical' : wearPct > 75 ? 'Warning' : 'OK';
+      return `
+        <tr>
+          <td><strong>${w.component}</strong></td>
+          <td>${w.machine}</td>
+          <td>${used.toLocaleString()} h</td>
+          <td>${life.toLocaleString()} h</td>
+          <td>${remaining.toLocaleString()} h</td>
+          <td>
+            <span class="progress-bar"><span class="progress-fill ${wearPct > 90 ? 'danger' : wearPct > 75 ? 'warning' : 'success'}" style="width:${Math.min(wearPct,100)}%"></span></span>
+            ${wearPct}%
+          </td>
+          <td><span class="badge badge-${badgeForStatus(status)}">${status}</span></td>
+          <td class="table-actions">
+            <i class="fas fa-trash action-icon" onclick="openDelete('wear', ${w.id})" title="Delete"></i>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function openAddWear() {
+    openModal('Add Component', [
+      { name:'component', label:'Component', placeholder:'Planter Discs', required:true },
+      { name:'machine', label:'Machine', placeholder:'TR-01', required:true },
+      { name:'used', label:'Hours Used', type:'number', placeholder:'8420' },
+      { name:'life', label:'Expected Life (h)', type:'number', placeholder:'9500' }
+    ], (data) => {
+      agriData.wear.push({
+        id: agriData.nextIds.wear++,
+        component: data.component, machine: data.machine,
+        used: parseFloat(data.used) || 0,
+        life: parseFloat(data.life) || 0
+      });
+      saveData();
+    });
+  }
+  window.openAddWear = openAddWear;
+
+  /* ---------- WEIGHBRIDGE ---------- */
+  function renderWeighbridge() {
+    const tickets = agriData.weighbridge;
+    const total = tickets.length;
+    const totalNet = tickets.reduce((s, w) => s + (parseFloat(w.net) || 0), 0);
+    const moistures = tickets.map(w => parseFloat(w.moisture)).filter(v => !isNaN(v));
+    const avgMoisture = moistures.length ? (moistures.reduce((s,v)=>s+v,0)/moistures.length).toFixed(1) : null;
+    const dirts = tickets.map(w => parseFloat(w.dirt)).filter(v => !isNaN(v));
+    const avgDirt = dirts.length ? (dirts.reduce((s,v)=>s+v,0)/dirts.length).toFixed(1) : null;
+
+    $('#wbTrucks').textContent = total || '—';
+    $('#wbNet').textContent = totalNet ? totalNet.toFixed(1) + ' T' : '—';
+    $('#wbMoisture').textContent = avgMoisture ? avgMoisture + '%' : '—';
+    $('#wbDirt').textContent = avgDirt ? avgDirt + '%' : '—';
+
+    const body = $('#weighbridgeBody');
+    if (!total) {
+      body.innerHTML = emptyRow(11, 'No weighbridge tickets yet.', 'fa-truck-ramp-box');
+      return;
+    }
+    body.innerHTML = tickets.map(w => `
+      <tr>
+        <td><strong>${w.ticket}</strong></td>
+        <td>${w.time || '—'}</td>
+        <td>${w.truck || '—'}</td>
+        <td>${w.bin || '—'}</td>
+        <td>${w.gross || 0} T</td>
+        <td>${w.tare || 0} T</td>
+        <td>${w.net || 0} T</td>
+        <td>${w.moisture || '—'}</td>
+        <td>${w.dirt || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(w.status)}">${w.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('weighbridge', ${w.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function openAddWeighbridge() {
+    openModal('New Weighbridge Ticket', [
+      { name:'ticket', label:'Ticket ID', placeholder:'WB-2842', required:true },
+      { name:'time', label:'Time', placeholder:'15:10' },
+      { name:'truck', label:'Truck', placeholder:'CA-4482' },
+      { name:'bin', label:'Field Bin', placeholder:'FB-112' },
+      { name:'gross', label:'Gross (T)', type:'number', placeholder:'38.4' },
+      { name:'tare', label:'Tare (T)', type:'number', placeholder:'14.2' },
+      { name:'net', label:'Net (T)', type:'number', placeholder:'24.2' },
+      { name:'moisture', label:'Moisture (%)', placeholder:'11.2%' },
+      { name:'dirt', label:'Dirt Dockage (%)', placeholder:'0.6%' },
+      { name:'status', label:'Status', type:'select', options:['Accepted','Flagged','Rejected'] }
+    ], (data) => {
+      agriData.weighbridge.unshift({
+        id: agriData.nextIds.weighbridge++,
+        ticket: data.ticket, time: data.time || '',
+        truck: data.truck || '', bin: data.bin || '',
+        gross: parseFloat(data.gross) || 0,
+        tare: parseFloat(data.tare) || 0,
+        net: parseFloat(data.net) || 0,
+        moisture: data.moisture || '',
+        dirt: data.dirt || '',
+        status: data.status || 'Accepted'
+      });
+      saveData();
+    });
+  }
+  window.openAddWeighbridge = openAddWeighbridge;
+
+  /* ---------- COLD ROOMS ---------- */
+  function renderColdRooms() {
+    const cont = $('#coldRooms');
+    const total = agriData.coldrooms.length;
+    const safe = agriData.coldrooms.filter(c => (c.status || '').toLowerCase() === 'safe').length;
+    $('#coldStatusBadge').textContent = total ? `${safe} / ${total} Safe` : '— Chambers';
+
+    if (!total) {
+      cont.innerHTML = `<div class="empty-block" style="grid-column:1/-1;"><i class="fas fa-snowflake"></i>No cold rooms configured yet — add a chamber to begin monitoring.</div>`;
+      return;
+    }
+    cont.innerHTML = agriData.coldrooms.map(c => `
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-header" style="margin-bottom:0.75rem;">
+          <div class="card-title" style="font-size:0.85rem;"><i class="fas fa-snowflake"></i> ${c.name}</div>
+          <span class="badge badge-${badgeForStatus(c.status)}">${c.status || '—'}</span>
+        </div>
+        <div class="mini-kpis" style="margin-bottom:0; grid-template-columns:repeat(3,1fr);">
+          <div class="mini-kpi" style="padding:0.6rem;">
+            <div class="label">Temp</div>
+            <div class="value" style="font-size:1rem;">${c.temp}°C</div>
+          </div>
+          <div class="mini-kpi" style="padding:0.6rem;">
+            <div class="label">Humidity</div>
+            <div class="value" style="font-size:1rem;">${c.humidity}%</div>
+          </div>
+          <div class="mini-kpi" style="padding:0.6rem;">
+            <div class="label">Ethylene</div>
+            <div class="value" style="font-size:1rem;">${c.ethylene} ppm</div>
+          </div>
+        </div>
+        <div style="text-align:right; margin-top:0.75rem;">
+          <i class="fas fa-trash action-icon" onclick="openDelete('coldroom', ${c.id})" title="Delete"></i>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function openAddColdRoom() {
+    openModal('Add Cold Room', [
+      { name:'name', label:'Room Name', placeholder:'Cold Room 5 · Packhouse', required:true },
+      { name:'temp', label:'Temperature (°C)', type:'number', placeholder:'-1.0' },
+      { name:'humidity', label:'Humidity (%)', type:'number', placeholder:'92' },
+      { name:'ethylene', label:'Ethylene (ppm)', type:'number', placeholder:'0.5' },
+      { name:'status', label:'Status', type:'select', options:['Safe','Warning','Critical'] }
+    ], (data) => {
+      agriData.coldrooms.push({
+        id: agriData.nextIds.coldroom++,
+        name: data.name,
+        temp: parseFloat(data.temp) || 0,
+        humidity: parseFloat(data.humidity) || 0,
+        ethylene: parseFloat(data.ethylene) || 0,
+        status: data.status || 'Safe'
+      });
+      saveData();
+    });
+  }
+  window.openAddColdRoom = openAddColdRoom;
+
+  /* ---------- TRACEABILITY ---------- */
+  function verifyTrace() {
+    const input = $('#traceInput');
+    const query = (input?.value || '').trim();
+    if (!query) {
+      notify('Enter a Lot ID to verify.', 'warning');
+      return;
+    }
+    $('#traceLot').textContent = query;
+    $('#traceBlock').textContent = '—';
+    $('#traceDate').textContent = '—';
+    $('#traceCrop').textContent = '—';
+    $('#traceResult').style.display = 'block';
+    notify(`No trace record found for ${query}. Add it via the harvest log.`, 'warning');
+  }
+  window.verifyTrace = verifyTrace;
+
+  /* ---------- POOLS ---------- */
+  function renderPools() {
+    const body = $('#poolsBody');
+    if (!agriData.pools.length) {
+      body.innerHTML = emptyRow(9, 'No grower pools created yet.', 'fa-users-rectangle');
+      return;
+    }
+    body.innerHTML = agriData.pools.map(p => `
+      <tr>
+        <td><strong>${p.poolId}</strong></td>
+        <td>${p.season}</td>
+        <td>${p.growers}</td>
+        <td>${p.tonnage}</td>
+        <td>${p.advance}</td>
+        <td>${p.premium}</td>
+        <td>${p.final || 'Pending'}</td>
+        <td><span class="badge badge-${badgeForStatus(p.status)}">${p.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('pool', ${p.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function openAddPool() {
+    openModal('Create Grower Pool', [
+      { name:'poolId', label:'Pool ID', placeholder:'POOL-2403', required:true },
+      { name:'season', label:'Season', placeholder:'2025/26' },
+      { name:'growers', label:'Growers', type:'number', placeholder:'42' },
+      { name:'tonnage', label:'Total Tonnage', placeholder:'8,420 T' },
+      { name:'advance', label:'Advance Paid', placeholder:'$1.82M' },
+      { name:'premium', label:'Quality Premium', placeholder:'$142K' },
+      { name:'final', label:'Final Distribution', placeholder:'Pending' },
+      { name:'status', label:'Status', type:'select', options:['Open','Settled','Closed'] }
+    ], (data) => {
+      agriData.pools.push({
+        id: agriData.nextIds.pool++,
+        poolId: data.poolId, season: data.season || '',
+        growers: parseInt(data.growers, 10) || 0,
+        tonnage: data.tonnage || '',
+        advance: data.advance || '',
+        premium: data.premium || '',
+        final: data.final || 'Pending',
+        status: data.status || 'Open'
+      });
+      saveData();
+    });
+  }
+  window.openAddPool = openAddPool;
+
+  /* ---------- HEDGING ---------- */
+  function renderHedging() {
+    const body = $('#hedgingBody');
+    if (!agriData.hedges.length) {
+      body.innerHTML = emptyRow(8, 'No hedge positions logged yet.', 'fa-scale-balanced');
+      return;
+    }
+    body.innerHTML = agriData.hedges.map(h => `
+      <tr>
+        <td><strong>${h.commodity}</strong></td>
+        <td>${h.physical}</td>
+        <td>${h.contract}</td>
+        <td>${h.qty || '—'}</td>
+        <td>${h.strike || '—'}</td>
+        <td style="color:${String(h.mtm || '').startsWith('+') ? 'var(--success)' : 'var(--danger)'}; font-weight:600;">${h.mtm || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(h.status)}">${h.status || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('hedge', ${h.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function openAddHedge() {
+    openModal('Add Hedge Position', [
+      { name:'commodity', label:'Commodity', placeholder:'Wheat', required:true },
+      { name:'physical', label:'Physical Position', placeholder:'4,200 T' },
+      { name:'contract', label:'Futures Contract', placeholder:'ZW Dec 2026' },
+      { name:'qty', label:'Contract Qty', placeholder:'1,000 contracts' },
+      { name:'strike', label:'Strike Price', placeholder:'$6.42/bu' },
+      { name:'mtm', label:'Mark-to-Market', placeholder:'+$184K' },
+      { name:'status', label:'Status', type:'select', options:['Matched','Partial','Unhedged'] }
+    ], (data) => {
+      agriData.hedges.push({
+        id: agriData.nextIds.hedge++,
+        commodity: data.commodity, physical: data.physical || '',
+        contract: data.contract || '', qty: data.qty || '',
+        strike: data.strike || '', mtm: data.mtm || '',
+        status: data.status || 'Matched'
+      });
+      saveData();
+    });
+  }
+  window.openAddHedge = openAddHedge;
+
+  /* ---------- CERTS ---------- */
+  function renderCertChecklist() {
+    const cont = $('#certChecklist');
+    if (!agriData.certs.length) {
+      cont.innerHTML = `<div class="empty-block"><i class="fas fa-certificate"></i>No certifications tracked yet.</div>`;
+      return;
+    }
+    cont.innerHTML = agriData.certs.map(c => `
+      <div class="check-item ${c.status}">
+        <span class="tick"><i class="fas fa-${c.status === 'passed' ? 'check' : c.status === 'failed' ? 'times' : 'clock'}"></i></span>
+        <span class="name">${c.name}</span>
+        <span class="meta">${c.meta || ''}</span>
+        <i class="fas fa-trash action-icon" onclick="openDelete('cert', ${c.id})" title="Delete"></i>
+      </div>
+    `).join('');
+
+    // ESG metrics
+    $('#esgSoc').textContent = agriData.esg.soc || '—';
+    $('#esgMethane').textContent = agriData.esg.methane || '—';
+    $('#esgWater').textContent = agriData.esg.water || '—';
+    $('#esgEnergy').textContent = agriData.esg.energy || '—';
+  }
+
+  function openAddCert() {
+    openModal('Add Certification', [
+      { name:'name', label:'Certification Name', placeholder:'GlobalGAP IFA', required:true },
+      { name:'status', label:'Status', type:'select', options:['passed','pending','failed'] },
+      { name:'meta', label:'Notes', placeholder:'Renewed 2026-01-12' }
+    ], (data) => {
+      agriData.certs.push({
+        id: agriData.nextIds.cert++,
+        name: data.name,
+        status: data.status || 'pending',
+        meta: data.meta || ''
+      });
+      saveData();
+    });
+  }
+  window.openAddCert = openAddCert;
+
+  function openEsgModal() {
+    openModal('Update ESG Metrics', [
+      { name:'soc', label:'Soil Organic Carbon (%)', placeholder:'3.4%', value: agriData.esg.soc },
+      { name:'methane', label:'Methane Output', placeholder:'18.2 t CO₂e', value: agriData.esg.methane },
+      { name:'water', label:'Water Efficiency', placeholder:'1.8 L/kg', value: agriData.esg.water },
+      { name:'energy', label:'Renewable Energy Share', placeholder:'34%', value: agriData.esg.energy }
+    ], (data) => {
+      agriData.esg = { ...agriData.esg, ...data };
+      saveData();
+    });
+  }
+  window.openEsgModal = openEsgModal;
+
+  /* ---------- NUTRIENT ---------- */
+  function renderNutrient() {
+    const samples = agriData.nutrient;
+    const compliant = samples.filter(n => (n.status || '').toLowerCase() === 'compliant').length;
+    $('#nutrientStatusBadge').textContent = samples.length
+      ? `${compliant} / ${samples.length} Compliant`
+      : 'No samples';
+
+    const body = $('#nutrientBody');
+    if (!samples.length) {
+      body.innerHTML = emptyRow(7, 'No nutrient samples yet.', 'fa-water');
+      return;
+    }
+    body.innerHTML = samples.map(n => `
+      <tr>
+        <td><strong>${n.sampleId}</strong></td>
+        <td>${n.date}</td>
+        <td>${n.point}</td>
+        <td>${n.n}</td>
+        <td>${n.p}</td>
+        <td>${n.threshold}</td>
+        <td><span class="badge badge-${badgeForStatus(n.status)}">${n.status}</span></td>
+      </tr>
+    `).join('');
+  }
+
+  function openAddNutrient() {
+    openModal('Add Nutrient Sample', [
+      { name:'sampleId', label:'Sample ID', placeholder:'NS-1043', required:true },
+      { name:'date', label:'Date', type:'date', required:true },
+      { name:'point', label:'Drainage Point', placeholder:'North Drainage' },
+      { name:'n', label:'Nitrogen (mg/L)', type:'number', placeholder:'2.4' },
+      { name:'p', label:'Phosphorus (mg/L)', type:'number', placeholder:'0.18' },
+      { name:'threshold', label:'Threshold (mg/L)', type:'number', placeholder:'5.0' },
+      { name:'status', label:'Status', type:'select', options:['Compliant','Monitor','Exceeded'] }
+    ], (data) => {
+      agriData.nutrient.unshift({
+        id: agriData.nextIds.nutrient++,
+        sampleId: data.sampleId, date: data.date,
+        point: data.point || '',
+        n: parseFloat(data.n) || 0,
+        p: parseFloat(data.p) || 0,
+        threshold: parseFloat(data.threshold) || 0,
+        status: data.status || 'Compliant'
+      });
+      saveData();
+    });
+  }
+  window.openAddNutrient = openAddNutrient;
+
+  /* ---------- LABOR ---------- */
+  function renderLabor() {
+    const crews = agriData.labor;
+    const workers = crews.reduce((s, l) => s + (parseInt(l.workers) || 0), 0);
+    const h2aActive = crews.filter(l => (l.h2a || '').toLowerCase() === 'active').length;
+    const accrued = crews.reduce((s, l) => s + (parseFloat(String(l.accrued || '').replace(/[^0-9.-]/g, '')) || 0), 0);
+
+    $('#laborAccrued').textContent = accrued ? fmtMoney(accrued) : '—';
+    $('#laborCrews').textContent = crews.length || '—';
+    $('#laborWorkers').textContent = workers || '—';
+    $('#laborH2a').textContent = crews.length ? h2aActive : '—';
+
+    const body = $('#laborBody');
+    if (!crews.length) {
+      body.innerHTML = emptyRow(8, 'No crews registered yet.', 'fa-people-group');
+      return;
+    }
+    body.innerHTML = crews.map(l => `
+      <tr>
+        <td><strong>${l.crew}</strong></td>
+        <td>${l.foreman || '—'}</td>
+        <td>${l.workers}</td>
+        <td>${l.units || '—'}</td>
+        <td>${l.rate || '—'}</td>
+        <td style="font-weight:600; color:var(--leaf);">${l.accrued || '—'}</td>
+        <td><span class="badge badge-${badgeForStatus(l.h2a)}">${l.h2a || '—'}</span></td>
+        <td class="table-actions">
+          <i class="fas fa-trash action-icon" onclick="openDelete('labor', ${l.id})" title="Delete"></i>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function openAddLabor() {
+    openModal('Add Field Crew', [
+      { name:'crew', label:'Crew Name', placeholder:'Crew A · Almonds', required:true },
+      { name:'foreman', label:'Foreman', placeholder:'M. Alvarez' },
+      { name:'workers', label:'Workers', type:'number', placeholder:'24' },
+      { name:'units', label:'Units Picked', placeholder:'12,480 baskets' },
+      { name:'rate', label:'Rate', placeholder:'$1.25/basket' },
+      { name:'accrued', label:'Accrued', placeholder:'$15,600' },
+      { name:'h2a', label:'H-2A Status', type:'select', options:['Active','Expiring','Expired'] }
+    ], (data) => {
+      agriData.labor.push({
+        id: agriData.nextIds.labor++,
+        crew: data.crew, foreman: data.foreman || '',
+        workers: parseInt(data.workers, 10) || 0,
+        units: data.units || '', rate: data.rate || '',
+        accrued: data.accrued || '',
+        h2a: data.h2a || 'Active'
+      });
+      saveData();
+    });
+  }
+  window.openAddLabor = openAddLabor;
+
+  function authorizePayroll() {
+    if (!agriData.labor.length) {
+      notify('No crews to authorize yet.', 'warning');
+      return;
+    }
+    notify('Piece-rate batch authorized. Payroll will be processed at week close.', 'success');
+  }
+  window.authorizePayroll = authorizePayroll;
+
+  /* ---------- IAS 41 ---------- */
+  function renderIas() {
+    const latest = agriData.ias.length ? agriData.ias[agriData.ias.length - 1] : null;
+    const fair = latest ? parseFloat(latest.fair) : 0;
+    const cost = latest ? parseFloat(latest.cost) : 0;
+    const gain = fair - cost;
+    const prev = agriData.ias.length > 1 ? parseFloat(agriData.ias[agriData.ias.length - 2].fair) : null;
+    const change = prev ? ((fair - prev) / prev * 100).toFixed(1) : null;
+
+    $('#iasBadge').textContent = latest ? fmtMoney(fair) + ' current' : 'No data';
+    $('#iasFair').textContent = latest ? fmtMoney(fair) : '—';
+    $('#iasCost').textContent = latest ? fmtMoney(cost) : '—';
+    $('#iasGain').textContent = latest ? (gain >= 0 ? '+' : '') + fmtMoney(gain) : '—';
+    $('#iasGain').style.color = gain >= 0 ? 'var(--success)' : 'var(--danger)';
+    $('#iasChange').textContent = change ? (change >= 0 ? '+' : '') + change + '%' : '—';
+    $('#iasChange').style.color = change && change >= 0 ? 'var(--success)' : 'var(--danger)';
+  }
+
+  function openAddIas() {
+    openModal('Add IAS 41 Valuation', [
+      { name:'year', label:'Year', placeholder:'2027', required:true },
+      { name:'fair', label:'Fair Value (USD)', type:'number', placeholder:'4600000' },
+      { name:'cost', label:'Historical Cost (USD)', type:'number', placeholder:'3100000' }
+    ], (data) => {
+      agriData.ias.push({
+        id: agriData.nextIds.ias++,
+        year: data.year,
+        fair: parseFloat(data.fair) || 0,
+        cost: parseFloat(data.cost) || 0
+      });
+      saveData();
+    });
+  }
+  window.openAddIas = openAddIas;
+
+  /* ---------- DELETE ---------- */
+  function openDelete(type, id) {
+    deleteType = type;
+    deleteId = id;
+    if (confirm('Are you sure you want to delete this record?')) {
+      const map = {
+        plot:'plots', spray:'sprays', herd:'herds', vet:'vets',
+        machinery:'machinery', wear:'wear', weighbridge:'weighbridge',
+        coldroom:'coldrooms', pool:'pools', hedge:'hedges',
+        cert:'certs', nutrient:'nutrient', labor:'labor', ias:'ias'
+      };
+      const key = map[type];
+      if (key && agriData[key]) {
+        agriData[key] = agriData[key].filter(x => String(x.id) !== String(id));
+        saveData();
+        renderAll();
+        notify('Deleted.', 'success');
+      }
+    }
+  }
+  window.openDelete = openDelete;
+
+  /* ---------- GENERIC OPEN ---------- */
+  function openAddModal(type) {
+    if (!type) type = inferTypeFromTab(activeTab);
+    switch (type) {
+      case 'plot': openAddPlot(); break;
+      case 'spray': openAddSpray(); break;
+      case 'herd': openAddHerd(); break;
+      case 'vet': openAddVet(); break;
+      case 'machinery': openAddMachinery(); break;
+      case 'wear': openAddWear(); break;
+      case 'weighbridge': openAddWeighbridge(); break;
+      case 'coldroom': openAddColdRoom(); break;
+      case 'pool': openAddPool(); break;
+      case 'hedge': openAddHedge(); break;
+      case 'cert': openAddCert(); break;
+      case 'nutrient': openAddNutrient(); break;
+      case 'labor': openAddLabor(); break;
+      case 'ias': openAddIas(); break;
+      default: notify('Select a section first to add a record.', 'warning');
+    }
+  }
+  window.openAddModal = openAddModal;
+
+  function inferTypeFromTab(tab) {
+    return ({
+      overview:'plot', crops:'plot', spray:'spray',
+      herds:'herd', vet:'vet', machinery:'machinery', wear:'wear',
+      weighbridge:'weighbridge', coldchain:'coldroom', traceability:'plot',
+      pools:'pool', hedging:'hedge', certs:'cert',
+      nutrient:'nutrient', labor:'labor', 'bio-assets':'ias'
+    })[tab] || 'plot';
+  }
+
+  /* ---------- EXPORT ---------- */
+  function exportTable(type) {
+    const map = {
+      plots:'plots', sprays:'sprays', herds:'herds', vets:'vets',
+      machinery:'machinery', wear:'wear', weighbridge:'weighbridge',
+      coldrooms:'coldrooms', pools:'pools', hedges:'hedges',
+      certs:'certs', nutrient:'nutrient', labor:'labor', ias:'ias'
+    };
+    const key = map[type] || type;
+    const rows = agriData[key];
+    if (!rows || !rows.length) { notify('No data to export.', 'warning'); return; }
+    const headers = Object.keys(rows[0]);
+    const csv = [headers.join(',')]
+      .concat(rows.map(r => headers.map(h => JSON.stringify(r[h] ?? '')).join(',')))
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${key}_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    notify('Exported successfully.', 'success');
+  }
+  window.exportTable = exportTable;
+
+  function exportCurrentTab() {
+    const map = {
+      crops:'plots', spray:'sprays', herds:'herds', vet:'vets',
+      machinery:'machinery', wear:'wear', weighbridge:'weighbridge',
+      coldchain:'coldrooms', pools:'pools', hedging:'hedges',
+      certs:'certs', nutrient:'nutrient', labor:'labor', 'bio-assets':'ias'
+    };
+    const key = map[activeTab];
+    if (key) exportTable(key);
+    else notify('Nothing to export from this section.', 'warning');
+  }
+  window.exportCurrentTab = exportCurrentTab;
+
+  /* ---------- CHARTS ---------- */
+  function showEmpty(canvasId, emptyId, has) {
+    const c = document.getElementById(canvasId);
+    const e = document.getElementById(emptyId);
+    if (c) c.style.display = has ? 'block' : 'none';
+    if (e) e.style.display = has ? 'none' : 'flex';
+  }
+
+  function refreshCharts() {
+    Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} });
+    charts = {};
+
+    const commonOpts = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
+    };
+
+    // 1. Overview yield (bar)
+    const plotCrops = {};
+    agriData.plots.forEach(p => {
+      const k = p.crop || 'Other';
+      plotCrops[k] = (plotCrops[k] || 0) + (parseFloat(p.area) || 0);
+    });
+    const yieldHas = Object.keys(plotCrops).length > 0;
+    showEmpty('overviewYieldChart', 'overviewYieldChartEmpty', yieldHas);
+    if (yieldHas) {
+      charts.yield = new Chart(document.getElementById('overviewYieldChart'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(plotCrops),
+          datasets: [{
+            label: 'Area (ac)',
+            data: Object.values(plotCrops),
+            backgroundColor: ['#16a34a','#84cc16','#eab308','#dc2626','#0f7b5a','#2563eb'],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          ...commonOpts,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } }, x: { grid: { display: false } } }
+        }
+      });
+    }
+
+    // 2. Overview FCR (line, historic snapshot from current herds)
+    const fcrHas = agriData.herds.length > 0;
+    showEmpty('overviewFcrChart', 'overviewFcrChartEmpty', fcrHas);
+    if (fcrHas) {
+      const fcrBySpecies = {};
+      agriData.herds.forEach(h => {
+        const k = h.species || 'Other';
+        (fcrBySpecies[k] = fcrBySpecies[k] || []).push(parseFloat(h.fcr) || 0);
+      });
+      charts.fcr = new Chart(document.getElementById('overviewFcrChart'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(fcrBySpecies),
+          datasets: [{
+            label: 'FCR',
+            data: Object.values(fcrBySpecies).map(arr => (arr.reduce((s,v)=>s+v,0)/arr.length).toFixed(2)),
+            backgroundColor: ['#0f7b5a','#d97706','#2563eb','#8b5cf6'],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          ...commonOpts,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } }, x: { grid: { display: false } } }
+        }
+      });
+    }
+
+    // 3. Overview IAS 41 mini (doughnut from latest)
+    const latest = agriData.ias.length ? agriData.ias[agriData.ias.length - 1] : null;
+    const iasHas = !!latest;
+    showEmpty('overviewIasChart', 'overviewIasChartEmpty', iasHas);
+    if (iasHas) {
+      charts.iasMini = new Chart(document.getElementById('overviewIasChart'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Fair Value', 'Historical Cost', 'Unrealized Gain'],
+          datasets: [{
+            data: [parseFloat(latest.fair) || 0, parseFloat(latest.cost) || 0, Math.max((parseFloat(latest.fair)||0) - (parseFloat(latest.cost)||0), 0)],
+            backgroundColor: ['#16a34a','#94a3b8','#84cc16']
+          }]
+        },
+        options: commonOpts
+      });
+    }
+
+    // 4. Herds FCR curve
+    const fcrCurveHas = agriData.herds.length > 0;
+    showEmpty('fcrCurveChart', 'fcrCurveChartEmpty', fcrCurveHas);
+    if (fcrCurveHas) {
+      const speciesSet = {};
+      agriData.herds.forEach(h => {
+        const k = h.species || 'Other';
+        if (!speciesSet[k]) speciesSet[k] = [];
+        speciesSet[k].push(parseFloat(h.fcr) || 0);
+      });
+      charts.fcrCurve = new Chart(document.getElementById('fcrCurveChart'), {
+        type: 'line',
+        data: {
+          labels: Object.keys(speciesSet),
+          datasets: Object.keys(speciesSet).map((sp, i) => ({
+            label: sp,
+            data: speciesSet[sp],
+            borderColor: ['#0f7b5a','#d97706','#2563eb','#8b5cf6','#ec4899'][i % 5],
+            tension: 0.35,
+            fill: false
+          }))
+        },
+        options: {
+          ...commonOpts,
+          scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } }, x: { grid: { display: false } } }
+        }
+      });
+    }
+
+    // 5. Nutrient monitor
+    const nutrientHas = agriData.nutrient.length > 0;
+    showEmpty('nutrientChart', 'nutrientChartEmpty', nutrientHas);
+    if (nutrientHas) {
+      const sorted = [...agriData.nutrient].reverse();
+      charts.nut = new Chart(document.getElementById('nutrientChart'), {
+        type: 'line',
+        data: {
+          labels: sorted.map(n => n.date),
+          datasets: [
+            { label: 'N (mg/L)', data: sorted.map(n => parseFloat(n.n) || 0), borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.08)', tension: 0.35, fill: true },
+            { label: 'P (mg/L)', data: sorted.map(n => parseFloat(n.p) || 0), borderColor: '#d97706', tension: 0.35, fill: false },
+            { label: 'Threshold', data: sorted.map(n => parseFloat(n.threshold) || 0), borderColor: '#dc2626', borderDash: [5,5], pointRadius: 0, tension: 0 }
+          ]
+        },
+        options: {
+          ...commonOpts,
+          scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } }, x: { grid: { display: false } } }
+        }
+      });
+    }
+
+    // 6. IAS 41 chart
+    const iasChartHas = agriData.ias.length > 0;
+    showEmpty('iasChart', 'iasChartEmpty', iasChartHas);
+    if (iasChartHas) {
+      charts.ias = new Chart(document.getElementById('iasChart'), {
+        type: 'bar',
+        data: {
+          labels: agriData.ias.map(i => i.year),
+          datasets: [
+            { label: 'Fair Value (IAS 41)', data: agriData.ias.map(i => parseFloat(i.fair) || 0), backgroundColor: '#16a34a', borderRadius: 6 },
+            { label: 'Historical Cost', data: agriData.ias.map(i => parseFloat(i.cost) || 0), backgroundColor: '#94a3b8', borderRadius: 6 }
+          ]
+        },
+        options: {
+          ...commonOpts,
+          scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { callback: v => '$' + (v/1e6).toFixed(1) + 'M' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+  }
+
+  /* ---------- BOOT ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNav();
+    setupMobileMenu();
+    renderAll();
+  });
+  </script>
 </body>
 </html>
